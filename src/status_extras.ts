@@ -1,0 +1,35 @@
+export const STATUS_EXTRAS = {
+  arches: {
+    upper: [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28],
+    lower: [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38],
+    wisdom: {
+      upper: [18,28],
+      lower: [48,38],
+    },
+  },
+  options: [
+    { id: "upper-12-22-zircon", label: "felső 12-22 cirkon", type: "span", teeth: [12,11,21,22], material: "zircon" },
+    { id: "upper-13-23-zircon", label: "felső 13-23 cirkon", type: "span", teeth: [13,12,11,21,22,23], material: "zircon" },
+    { id: "upper-16-26-zircon", label: "felső 16-26 cirkon", type: "span", teeth: [16,15,14,13,12,11,21,22,23,24,25,26], material: "zircon" },
+    { id: "upper-full-zircon", label: "felső cirkon körhíd", type: "arch-bridge", arch: "upper", material: "zircon", missingMaterial: "zircon" },
+    { id: "upper-12-22-metal", label: "felső 12-22 fémkerámia", type: "span", teeth: [12,11,21,22], material: "metal" },
+    { id: "upper-13-23-metal", label: "felső 13-23 fémkerámia", type: "span", teeth: [13,12,11,21,22,23], material: "metal" },
+    { id: "upper-16-26-metal", label: "felső 16-26 fémkerámia", type: "span", teeth: [16,15,14,13,12,11,21,22,23,24,25,26], material: "metal" },
+    { id: "upper-full-metal", label: "felső fémkerámia körhíd", type: "arch-bridge", arch: "upper", material: "metal", missingMaterial: "metal" },
+    { id: "upper-partial-removable", label: "felső részleges kivehető", type: "partial-removable", arch: "upper" },
+    { id: "upper-full-removable", label: "felső teljes kivehető", type: "full-removable", arch: "upper" },
+    { id: "upper-bar-denture", label: "felső stéges fogsor", type: "bar-denture", arch: "upper", implants: [14,12,22,24], missing: [16,15,13,11,21,23,25,26] },
+
+    { id: "lower-42-32-zircon", label: "alsó 42-32 cirkon", type: "span", teeth: [42,41,31,32], material: "zircon" },
+    { id: "lower-43-33-zircon", label: "alsó 43-33 cirkon", type: "span", teeth: [43,42,41,31,32,33], material: "zircon" },
+    { id: "lower-46-36-zircon", label: "alsó 46-36 cirkon", type: "span", teeth: [46,45,44,43,42,41,31,32,33,34,35,36], material: "zircon" },
+    { id: "lower-full-zircon", label: "alsó cirkon körhíd", type: "arch-bridge", arch: "lower", material: "zircon", missingMaterial: "zircon" },
+    { id: "lower-42-32-metal", label: "alsó 42-32 fémkerámia", type: "span", teeth: [42,41,31,32], material: "metal" },
+    { id: "lower-43-33-metal", label: "alsó 43-33 fémkerámia", type: "span", teeth: [43,42,41,31,32,33], material: "metal" },
+    { id: "lower-46-36-metal", label: "alsó 46-36 fémkerámia", type: "span", teeth: [46,45,44,43,42,41,31,32,33,34,35,36], material: "metal" },
+    { id: "lower-full-metal", label: "alsó fémkerámia körhíd", type: "arch-bridge", arch: "lower", material: "metal", missingMaterial: "metal" },
+    { id: "lower-partial-removable", label: "alsó részleges kivehető", type: "partial-removable", arch: "lower" },
+    { id: "lower-full-removable", label: "alsó teljes kivehető", type: "full-removable", arch: "lower" },
+    { id: "lower-bar-denture", label: "alsó stéges fogsor", type: "bar-denture", arch: "lower", implants: [44,42,32,34], missing: [46,45,43,41,31,33,35,36] },
+  ],
+};

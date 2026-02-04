@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 256 256">
+  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+  <path id="tooth-base" d="M125.8,149c-7.3-2-11.8,14.6-14.2,20.4-1.6,4.4-3.1,8.3-4.3,12.7-4.4,16.1-1.6,34.3-6.8,50.3-3.5,12.7-15.3,14.4-21.2,2.2-2.9-6.1-3.9-12.9-4.8-19.6-1-7.7-.8-15.6.7-23.1,1.8-11.4,7.5-22,7.5-33.8,0-17.2-3-32.7-6.7-49.2-8.4-29.3-27.4-79.6,13.2-93.9,12.3-4.9,25,3.3,37.5,3,1.7,0,3.4-.2,5.1-.4,12.9-2.1,27.7-9.6,41-5.3,22.5,7.4,20.6,39.1,16.6,58.5-1,4.8-2.3,9.4-3.6,13.2-2.2,6.2-5.3,12.2-6.7,19.1-1.9,8.4-2.9,16.8-3.7,25-1.5,15.5.3,30.4.5,45.1,0,8.7-.4,17.8-1.2,26.3-.8,8.3-2.5,16.7-4.5,24.9-1.7,7.8-5.6,18.9-14.1,20.5-14.8.7-11.9-38.8-14.3-48.9-1.8-10.1-6.8-42.3-15.9-47.4h0v.4Z" style="fill: #fff; stroke: #000; stroke-miterlimit: 10; stroke-width: 8px;"/>
+  <g style="isolation: isolate;">
+    <text transform="translate(90.5 132.7)" style="fill: #111827; font-family: RobotoSlab-Bold, &apos;Roboto Slab&apos;; font-size: 137.9px; font-weight: 700; isolation: isolate;"><tspan x="0" y="0">8</tspan></text>
+  </g>
+  <g id="x-line" style="display: none;">
+    <line id="line-2" x1="21.2" y1="18.3" x2="229.8" y2="226.9" style="fill: none; stroke: #ef4444; stroke-linecap: round; stroke-width: 14px;"/>
+    <line id="line-1" x1="21.2" y1="18.3" x2="229.8" y2="226.9" style="fill: none; isolation: isolate; opacity: .2; stroke: #111827; stroke-linecap: round; stroke-width: 3px;"/>
+  </g>
+</svg>
