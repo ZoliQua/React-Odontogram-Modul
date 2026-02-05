@@ -89,7 +89,7 @@ function defaultState(){
     mods: new Set(),
     endo: "none", // none | endo-medical-filling | endo-filling | endo-glass-pin | endo-metal-pin
     caries: new Set(),
-    fillingMaterial: "none", // none | amalgam | composite | gic
+    fillingMaterial: "none", // none | amalgam | composite | gic | temporary
     fillingSurfaces: new Set(), // buccal/mesial/distal/occlusal
     fissureSealing: false,
     contactMesial: false,
@@ -194,6 +194,12 @@ function mirrorVertical(svgRoot){
 
 function svgGetById(root, id){
   return root.getElementById ? root.getElementById(id) : $("#"+id, root);
+}
+
+function svgGetByIdInGroup(root, groupId, id){
+  const group = svgGetById(root, groupId);
+  if(!group) return svgGetById(root, id);
+  return group.querySelector(`[id="${id}"]`);
 }
 
 function setManyActive(root, ids, on){
@@ -396,6 +402,7 @@ function getFillingOptions(isMilktooth){
       {value:"none", label:"nincs tömés"},
       {value:"composite", label:"kompozit tömés"},
       {value:"gic", label:"üvegionomer tömés"},
+      {value:"temporary", label:"ideiglenes tömés"},
     ];
   }
   return [
@@ -403,6 +410,7 @@ function getFillingOptions(isMilktooth){
     {value:"amalgam", label:"amalgám tömés"},
     {value:"composite", label:"kompozit tömés"},
     {value:"gic", label:"üvegionomer tömés"},
+    {value:"temporary", label:"ideiglenes tömés"},
   ];
 }
 
@@ -515,15 +523,16 @@ function applyStateToSvgSingle(toothNo, svg){
     setActive(svgGetById(svg,id), false);
   }
   // Fillings
-  for(const mat of ["amalgam","composite","gic"]){
+  for(const mat of ["amalgam","composite","gic","temporary"]){
     for(const s of GROUPS.fillingSurfaces){
       setActive(svgGetById(svg, `filling-${mat}-${s}`), false);
     }
   }
   // Restorations
-  for(const id of ["implant-base","implant-connector","implant-healing-abutment","implant-locator-screw","implant-bar","prosthesis","prosthesis-implant","prosthesis-implant-crown","prosthesis-implant-gum","telescope","zircon","metal","temporary","emax-crown","zircon-crown","metal-crown","temporary-crown","telescope-crown-inside","telescope-crown-outside","extraction-plan","zircon-bridge-connector","metal-bridge-connector","temporary-bridge-connector","telescope-bridge-connector"]){
+  for(const id of ["implant-base","implant-connector","implant-healing-abutment","implant-locator-screw","implant-bar","prosthesis","prosthesis-implant","prosthesis-implant-crown","prosthesis-implant-gum","telescope","zircon","metal","emax-crown","zircon-crown","metal-crown","temporary-crown","telescope-crown-inside","telescope-crown-outside","extraction-plan","zircon-bridge-connector","metal-bridge-connector","temporary-bridge-connector","telescope-bridge-connector"]){
     setActive(svgGetById(svg,id), false);
   }
+  setActive(svgGetByIdInGroup(svg, "restorations", "temporary"), false);
 
   const hasCrown = state.crownMaterial !== "natural";
   const brokenVariant = state.crownMaterial === "broken" ? getBrokenCrownVariant(state) : null;
@@ -662,7 +671,7 @@ function applyStateToSvgSingle(toothNo, svg){
       setActive(svgGetById(svg, "metal-crown"), true);
       setActive(svgGetById(svg, "metal-bridge-connector"), true);
     } else if(state.bridgeUnit === "temporary"){
-      setActive(svgGetById(svg, "temporary"), true);
+      setActive(svgGetByIdInGroup(svg, "restorations", "temporary"), true);
       setActive(svgGetById(svg, "temporary-crown"), true);
       setActive(svgGetById(svg, "temporary-bridge-connector"), true);
     } else if(state.bridgeUnit === "bar"){
@@ -679,7 +688,11 @@ function applyStateToSvgSingle(toothNo, svg){
   if(hasCrown && !["healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"].includes(state.crownMaterial)){
     if(state.crownMaterial !== "broken"){
       if(["zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
-        setActive(svgGetById(svg, state.crownMaterial), true);
+        if(state.crownMaterial === "temporary"){
+          setActive(svgGetByIdInGroup(svg, "restorations", "temporary"), true);
+        }else{
+          setActive(svgGetById(svg, state.crownMaterial), true);
+        }
       }
     }
     if(state.crownMaterial === "emax"){
@@ -706,7 +719,7 @@ function applyStateToSvgSingle(toothNo, svg){
       setActive(svgGetById(svg, "metal"), true);
       setActive(svgGetById(svg, "metal-bridge-connector"), true);
     } else if(state.crownMaterial === "temporary"){
-      setActive(svgGetById(svg, "temporary"), true);
+      setActive(svgGetByIdInGroup(svg, "restorations", "temporary"), true);
       setActive(svgGetById(svg, "temporary-bridge-connector"), true);
     } else if(state.crownMaterial === "telescope"){
       setActive(svgGetById(svg, "telescope"), true);
@@ -1149,6 +1162,113 @@ function setHealthyPulpVisible(on){
     applyStateToSvg(toothNo);
     updateToothTileNumber(toothNo);
   }
+}
+
+function serializeState(s){
+  return {
+    toothSelection: s.toothSelection,
+    pulpInflam: !!s.pulpInflam,
+    endoResection: !!s.endoResection,
+    mods: Array.from(s.mods || []),
+    endo: s.endo,
+    caries: Array.from(s.caries || []),
+    fillingMaterial: s.fillingMaterial,
+    fillingSurfaces: Array.from(s.fillingSurfaces || []),
+    fissureSealing: !!s.fissureSealing,
+    contactMesial: !!s.contactMesial,
+    contactDistal: !!s.contactDistal,
+    bruxismWear: !!s.bruxismWear,
+    bruxismNeckWear: !!s.bruxismNeckWear,
+    brokenMesial: !!s.brokenMesial,
+    brokenIncisal: !!s.brokenIncisal,
+    brokenDistal: !!s.brokenDistal,
+    extractionWound: !!s.extractionWound,
+    extractionPlan: !!s.extractionPlan,
+    bridgePillar: !!s.bridgePillar,
+    bridgeUnit: s.bridgeUnit,
+    mobility: s.mobility,
+    crownMaterial: s.crownMaterial,
+  };
+}
+
+function hydrateState(raw){
+  const s = defaultState();
+  if(!raw || typeof raw !== "object") return s;
+  s.toothSelection = raw.toothSelection ?? s.toothSelection;
+  s.pulpInflam = !!raw.pulpInflam;
+  s.endoResection = !!raw.endoResection;
+  s.mods = new Set(Array.isArray(raw.mods) ? raw.mods : []);
+  s.endo = raw.endo ?? s.endo;
+  s.caries = new Set(Array.isArray(raw.caries) ? raw.caries : []);
+  s.fillingMaterial = raw.fillingMaterial ?? s.fillingMaterial;
+  s.fillingSurfaces = new Set(Array.isArray(raw.fillingSurfaces) ? raw.fillingSurfaces : []);
+  s.fissureSealing = !!raw.fissureSealing;
+  s.contactMesial = !!raw.contactMesial;
+  s.contactDistal = !!raw.contactDistal;
+  s.bruxismWear = !!raw.bruxismWear;
+  s.bruxismNeckWear = !!raw.bruxismNeckWear;
+  s.brokenMesial = !!raw.brokenMesial;
+  s.brokenIncisal = !!raw.brokenIncisal;
+  s.brokenDistal = !!raw.brokenDistal;
+  s.extractionWound = !!raw.extractionWound;
+  s.extractionPlan = !!raw.extractionPlan;
+  s.bridgePillar = !!raw.bridgePillar;
+  s.bridgeUnit = raw.bridgeUnit ?? s.bridgeUnit;
+  s.mobility = raw.mobility ?? s.mobility;
+  s.crownMaterial = raw.crownMaterial ?? s.crownMaterial;
+  return s;
+}
+
+function exportStatus(){
+  const teeth = {};
+  for(const toothNo of ALL_TEETH){
+    const s = toothState.get(toothNo) ?? defaultState();
+    teeth[toothNo] = serializeState(s);
+  }
+  const payload = {
+    version: "1.1",
+    globals: {
+      wisdomVisible,
+      showBase,
+      occlusalVisible,
+      showHealthyPulp,
+      edentulous,
+    },
+    teeth,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g, "-");
+  a.href = url;
+  a.download = `odontogram-status-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function importStatus(data){
+  if(!data || typeof data !== "object") return;
+  const teeth = data.teeth || {};
+  for(const toothNo of ALL_TEETH){
+    const raw = teeth[toothNo];
+    toothState.set(toothNo, hydrateState(raw));
+    applyStateToSvg(toothNo);
+    updateToothTileNumber(toothNo);
+  }
+  if(data.globals){
+    if(typeof data.globals.wisdomVisible === "boolean") setWisdomVisible(data.globals.wisdomVisible);
+    if(typeof data.globals.showBase === "boolean") setShowBase(data.globals.showBase);
+    if(typeof data.globals.occlusalVisible === "boolean") setOcclusalVisible(data.globals.occlusalVisible);
+    if(typeof data.globals.showHealthyPulp === "boolean") setHealthyPulpVisible(data.globals.showHealthyPulp);
+    if(typeof data.globals.edentulous === "boolean"){
+      edentulous = data.globals.edentulous;
+      setToggleButton($("#btnEdentulous"), edentulous);
+    }
+  }
+  updateSelectionFilterButtons();
+  updateSelectionUI();
 }
 
 function applyStatusExtra(option){
@@ -1829,6 +1949,29 @@ function wireControls(){
       if(icon) icon.textContent = collapsed ? "+" : "−";
     });
   });
+
+  const exportBtn = $("#btnStatusExport");
+  const importBtn = $("#btnStatusImport");
+  const importInput = $("#statusImportInput") as HTMLInputElement | null;
+  if(exportBtn){
+    exportBtn.addEventListener("click", ()=>exportStatus());
+  }
+  if(importBtn && importInput){
+    importBtn.addEventListener("click", ()=>importInput.click());
+    importInput.addEventListener("change", async ()=>{
+      const file = importInput.files?.[0];
+      if(!file) return;
+      try{
+        const text = await file.text();
+        const data = JSON.parse(text);
+        importStatus(data);
+      }catch(_e){
+        // ignore invalid files
+      }finally{
+        importInput.value = "";
+      }
+    });
+  }
 }
 
 export async function initOdontogram(){

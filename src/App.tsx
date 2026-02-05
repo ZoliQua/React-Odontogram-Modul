@@ -16,7 +16,11 @@ export default function App(){
             <div className="subtitle">Válassz fogat az odontogramon, majd állítsd be a rétegeket.</div>
           </div>
         </div>
-        <div className="topbar-actions"></div>
+        <div className="topbar-actions">
+          <button id="btnStatusExport" className="btn btn-ghost btn-sm">Státusz export</button>
+          <button id="btnStatusImport" className="btn btn-ghost btn-sm">Státusz import</button>
+          <input id="statusImportInput" type="file" accept="application/json" hidden />
+        </div>
       </header>
 
       <main className="layout">
@@ -38,7 +42,6 @@ export default function App(){
           </div>
           <div id="toothGrid" className="tooth-grid" aria-label="Tooth grid"></div>
         </section>
-
         <aside className="panel">
           <div className="panel-header">
             <div>
