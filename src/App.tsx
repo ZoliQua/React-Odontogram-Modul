@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { initOdontogram, setNumberingSystem } from "./odontogram";
+import { destroyOdontogram, initOdontogram, setNumberingSystem } from "./odontogram";
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";
@@ -48,6 +48,9 @@ export default function App({
 
   useEffect(() => {
     initOdontogram();
+    return () => {
+      destroyOdontogram();
+    };
   }, []);
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { STATUS_EXTRAS } from "./status_extras";
 import { t, onI18nChange } from "./i18n/useI18n";
 import { toLabel, type NumberingSystem } from "./utils/numbering";
@@ -105,6 +104,8 @@ const FILLING_SURFACE_LABELS: Record<string, string> = {
   occlusal: "surface.occlusal",
 };
 
+type Any = any;
+
 function defaultState(){
   return {
     toothSelection: "tooth-base", // none | tooth-base | milktooth | implant | variants
@@ -133,10 +134,10 @@ function defaultState(){
 }
 
 // ---- DOM helpers ----
-const $ = (sel, el=document) => el.querySelector(sel);
-const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+const $ = (sel: string, el: ParentNode = document) => el.querySelector(sel) as any;
+const $$ = (sel: string, el: ParentNode = document) => Array.from(el.querySelectorAll(sel)) as any[];
 
-function el(tag, attrs={}, children=[]){
+function el(tag: Any, attrs: Any = {}, children: Any[] = []){
   const n=document.createElement(tag);
   for(const [k,v] of Object.entries(attrs)){
     if(k==="class") n.className=v;
@@ -148,12 +149,12 @@ function el(tag, attrs={}, children=[]){
   return n;
 }
 
-function setActive(node, on){
+function setActive(node: Any, on: Any){
   if(!node) return;
   node.setAttribute("data-active", on ? "1":"0");
 }
 
-function stripDisplayNoneToDataActive(root){
+function stripDisplayNoneToDataActive(root: Any){
   // Convert inline style display:none -> data-active=0, and remove display property from style.
   const nodes = $$("[id]", root);
   for(const n of nodes){
@@ -171,7 +172,7 @@ function stripDisplayNoneToDataActive(root){
   }
 }
 
-function ensureDataActiveForSwitchables(root){
+function ensureDataActiveForSwitchables(root: Any){
   // Every element that is inside these switchable groups and has an id should get data-active (default 0 if missing)
   const switchableGroups = ["mods","tooth-variants","endos","surfaces","restorations"];
   for(const gId of switchableGroups){
@@ -188,7 +189,7 @@ function ensureDataActiveForSwitchables(root){
   }
 }
 
-function rotate180(svgRoot){
+function rotate180(svgRoot: Any){
   // rotate around center using a wrapper group
   const vb = svgRoot.getAttribute("viewBox") || "0 0 32 64";
   const parts = vb.trim().split(/\s+/).map(Number);
@@ -203,7 +204,7 @@ function rotate180(svgRoot){
   svgRoot.appendChild(g);
 }
 
-function mirrorVertical(svgRoot){
+function mirrorVertical(svgRoot: Any){
   // mirror vertically (left-right) around center using a wrapper group
   const vb = svgRoot.getAttribute("viewBox") || "0 0 32 64";
   const parts = vb.trim().split(/\s+/).map(Number);
@@ -216,23 +217,23 @@ function mirrorVertical(svgRoot){
   svgRoot.appendChild(g);
 }
 
-function svgGetById(root, id){
+function svgGetById(root: Any, id: Any){
   return root.getElementById ? root.getElementById(id) : $("#"+id, root);
 }
 
-function svgGetByIdInGroup(root, groupId, id){
+function svgGetByIdInGroup(root: Any, groupId: Any, id: Any){
   const group = svgGetById(root, groupId);
   if(!group) return svgGetById(root, id);
   return group.querySelector(`[id="${id}"]`);
 }
 
-function setManyActive(root, ids, on){
+function setManyActive(root: Any, ids: Any, on: Any){
   for(const id of ids){
     setActive(svgGetById(root,id), on);
   }
 }
 
-function clearAllInGroup(root, ids){
+function clearAllInGroup(root: Any, ids: Any){
   setManyActive(root, ids, false);
 }
 
@@ -254,7 +255,7 @@ let numberingSystem: NumberingSystem = "FDI";
 let i18nUnsubscribe: (() => void) | null = null;
 
 // ---- UI builders ----
-function buildRadios(container, name, options, onChange){
+function buildRadios(container: Any, name: Any, options: Any, onChange: Any){
   container.innerHTML = "";
   for(const opt of options){
     const id = `${name}-${opt.value}`;
@@ -262,12 +263,13 @@ function buildRadios(container, name, options, onChange){
       el("input", { type:"radio", name, id, value:opt.value }),
       el("span", { html: opt.label })
     ]);
-    label.querySelector("input").addEventListener("change", (e)=>onChange(e.target.value));
+    const input = label.querySelector("input") as HTMLInputElement;
+    input.addEventListener("change", (e)=>onChange((e.target as HTMLInputElement).value));
     container.appendChild(label);
   }
 }
 
-function buildChecks(container, items, onToggle){
+function buildChecks(container: Any, items: Any, onToggle: Any){
   container.innerHTML = "";
   for(const it of items){
     const id = `chk-${it.value}`;
@@ -277,8 +279,8 @@ function buildChecks(container, items, onToggle){
       el("input", { type:"checkbox", id, value:it.value }),
       el("span", { id: labelId, html: labelText })
     ]);
-    const input = label.querySelector("input");
-    input.addEventListener("change", (e)=>onToggle(it.value, e.target.checked));
+    const input = label.querySelector("input") as HTMLInputElement;
+    input.addEventListener("change", (e)=>onToggle(it.value, (e.target as HTMLInputElement).checked));
     if(container.id === "cariesChecks" && it.value === "caries-subcrown"){
       setDisabled(input, true);
     }
@@ -286,16 +288,16 @@ function buildChecks(container, items, onToggle){
   }
 }
 
-function buildSelect(selectEl, options, onChange){
+function buildSelect(selectEl: Any, options: Any, onChange: Any){
   selectEl.innerHTML = "";
   for(const opt of options){
     const o = el("option", { value: opt.value, html: opt.label });
     selectEl.appendChild(o);
   }
-  selectEl.addEventListener("change", (e)=>onChange(e.target.value));
+  selectEl.addEventListener("change", (e)=>onChange((e.target as HTMLSelectElement).value));
 }
 
-async function loadInlineIcon(button){
+async function loadInlineIcon(button: Any){
   if(!button) return;
   const src = button.dataset.iconSrc;
   if(!src) return;
@@ -316,20 +318,20 @@ async function loadInlineIcon(button){
   }
 }
 
-function syncIconXLine(button){
+function syncIconXLine(button: Any){
   if(!button || !button.dataset.xline) return;
   const pressed = button.getAttribute("aria-pressed") === "true";
   const line = button.querySelector("#x-line");
   if(line) line.style.display = pressed ? "none" : "";
 }
 
-function updateWarnings(state){
+function updateWarnings(state: Any){
   const w = $("#warnings");
   if(!w) return;
   w.innerHTML = "";
 }
 
-function getControlLabel(control){
+function getControlLabel(control: Any){
   if(!control) return null;
   const wrapped = control.closest ? control.closest("label") : null;
   if(wrapped) return wrapped;
@@ -339,48 +341,48 @@ function getControlLabel(control){
   return null;
 }
 
-function syncControlLabelVisibility(control){
+function syncControlLabelVisibility(control: Any){
   const label = getControlLabel(control);
   if(!label) return;
   label.style.display = control.disabled ? "none" : "";
 }
 
-function setDisabled(control, disabled){
+function setDisabled(control: Any, disabled: Any){
   if(!control) return;
   control.disabled = !!disabled;
   syncControlLabelVisibility(control);
 }
 
-function setToggleButton(btn, on){
+function setToggleButton(btn: Any, on: Any){
   if(!btn) return;
   btn.setAttribute("aria-pressed", on ? "true" : "false");
   syncIconXLine(btn);
 }
 
-function getToggleLabel(labelKey, collapsed){
+function getToggleLabel(labelKey: Any, collapsed: Any){
   return t(collapsed ? "actions.expand" : "actions.collapse", { label: t(labelKey) });
 }
 
-function applyToggleA11y(btn, labelKey, collapsed){
+function applyToggleA11y(btn: Any, labelKey: Any, collapsed: Any){
   if(!btn) return;
   const text = getToggleLabel(labelKey, collapsed);
   btn.setAttribute("title", text);
   btn.setAttribute("aria-label", text);
 }
 
-function isToothPresent(sel){
+function isToothPresent(sel: Any){
   return sel !== "none" && sel !== "implant";
 }
 
-function isUnderGum(sel){
+function isUnderGum(sel: Any){
   return sel === "tooth-under-gum";
 }
 
-function isExtraction(sel){
+function isExtraction(sel: Any){
   return sel === "no-tooth-after-extraction";
 }
 
-function getDisplayedToothNumber(toothNo){
+function getDisplayedToothNumber(toothNo: Any){
   const s = toothState.get(toothNo);
   if(!s || s.toothSelection !== "milktooth") return toothNo;
   const firstDigit = Math.floor(toothNo / 10);
@@ -389,7 +391,7 @@ function getDisplayedToothNumber(toothNo){
   return mappedFirst * 10 + secondDigit;
 }
 
-function updateToothTileNumber(toothNo){
+function updateToothTileNumber(toothNo: Any){
   const tiles = toothTile.get(toothNo);
   if(!tiles) return;
   const text = toLabel(getDisplayedToothNumber(toothNo), numberingSystem);
@@ -405,7 +407,7 @@ function updateAllToothTileNumbers(){
   }
 }
 
-function setSelectOptions(selectEl, options, value){
+function setSelectOptions(selectEl: Any, options: Any, value: Any){
   if(!selectEl) return;
   selectEl.innerHTML = "";
   for(const opt of options){
@@ -418,7 +420,7 @@ function setSelectOptions(selectEl, options, value){
   }
 }
 
-function getEndoOptions(isMilktooth){
+function getEndoOptions(isMilktooth: Any){
   if(isMilktooth){
     return [
       {value:"none", label:t("endo.option.none")},
@@ -434,7 +436,7 @@ function getEndoOptions(isMilktooth){
   ];
 }
 
-function getFillingOptions(isMilktooth){
+function getFillingOptions(isMilktooth: Any){
   if(isMilktooth){
     return [
       {value:"none", label:t("filling.option.none")},
@@ -452,7 +454,7 @@ function getFillingOptions(isMilktooth){
   ];
 }
 
-function getCrownOptions(isImplant){
+function getCrownOptions(isImplant: Any){
   if(isImplant){
     return [
       {value:"natural", label:t("crown.option.noneImplant")},
@@ -477,7 +479,7 @@ function getCrownOptions(isImplant){
   ];
 }
 
-function getBrokenCrownVariant(state){
+function getBrokenCrownVariant(state: Any){
   const m = !!state.brokenMesial;
   const i = !!state.brokenIncisal;
   const d = !!state.brokenDistal;
@@ -536,7 +538,7 @@ function getMobilityOptions(){
 }
 
 // ---- SVG apply logic ----
-function applyStateToSvgSingle(toothNo, svg){
+function applyStateToSvgSingle(toothNo: Any, svg: Any){
   const state = toothState.get(toothNo);
   if(!state || !svg) return;
 
@@ -853,7 +855,7 @@ function applyStateToSvgSingle(toothNo, svg){
   updateWarnings(state);
 }
 
-function applyStateToSvg(toothNo){
+function applyStateToSvg(toothNo: Any){
   const roots = toothSvgRoot.get(toothNo);
   if(!roots) return;
   for(const svg of roots){
@@ -862,7 +864,7 @@ function applyStateToSvg(toothNo){
 }
 
 // ---- Control sync ----
-function syncControlsFromState(state){
+function syncControlsFromState(state: Any){
   $("#pulpInflam").checked = !!state.pulpInflam;
   $("#endoResection").checked = !!state.endoResection;
   $("#fissureSealing").checked = !!state.fissureSealing;
@@ -1037,7 +1039,7 @@ function syncControlsFromState(state){
 }
 
 // ---- Event handlers ----
-function applyAndSync(toothNo){
+function applyAndSync(toothNo: Any){
   applyStateToSvg(toothNo);
   updateToothTileNumber(toothNo);
   if(toothNo === activeTooth){
@@ -1049,7 +1051,7 @@ function applyAndSync(toothNo){
   updateSelectionFilterButtons();
 }
 
-function applyToSelected(fn){
+function applyToSelected(fn: Any){
   if(selectedTeeth.size === 0) return;
   for(const toothNo of selectedTeeth){
     const s = toothState.get(toothNo);
@@ -1104,7 +1106,7 @@ function updateSelectionFilterButtons(){
   $("#btnSelectImplants")?.classList.toggle("is-hidden", !hasImplant);
 }
 
-function setControlsEnabled(enabled){
+function setControlsEnabled(enabled: Any){
   $$(".panel-body input, .panel-body select").forEach(el => {
     if(el.id === "statusExtraSelect") return;
     setDisabled(el, !enabled);
@@ -1196,7 +1198,7 @@ function updateSelectionUI(){
   }
 }
 
-function onToothClick(toothNo, evt){
+function onToothClick(toothNo: Any, evt: Any){
   const multi = evt.metaKey || evt.ctrlKey;
   if(multi){
     if(selectedTeeth.has(toothNo)){
@@ -1236,7 +1238,7 @@ function updateToothTileVisibility(){
   updateSelectionUI();
 }
 
-function setEdentulous(on){
+function setEdentulous(on: Any){
   edentulous = on;
   setToggleButton($("#btnEdentulous"), edentulous);
   if(edentulous){
@@ -1253,13 +1255,13 @@ function setEdentulous(on){
   }
 }
 
-function setWisdomVisible(on){
+function setWisdomVisible(on: Any){
   wisdomVisible = !!on;
   setToggleButton($("#btnWisdomVisible"), wisdomVisible);
   updateToothTileVisibility();
 }
 
-function setShowBase(on){
+function setShowBase(on: Any){
   showBase = on;
   setToggleButton($("#btnBoneVisible"), showBase);
   for(const toothNo of ALL_TEETH){
@@ -1268,7 +1270,7 @@ function setShowBase(on){
   }
 }
 
-function setOcclusalVisible(on){
+function setOcclusalVisible(on: Any){
   occlusalVisible = !!on;
   setToggleButton($("#btnOcclView"), occlusalVisible);
   $$(".tooth-tile.occl-view").forEach(tile => {
@@ -1276,7 +1278,7 @@ function setOcclusalVisible(on){
   });
 }
 
-function setHealthyPulpVisible(on){
+function setHealthyPulpVisible(on: Any){
   showHealthyPulp = !!on;
   setToggleButton($("#btnPulpVisible"), showHealthyPulp);
   for(const toothNo of ALL_TEETH){
@@ -1285,7 +1287,7 @@ function setHealthyPulpVisible(on){
   }
 }
 
-function serializeState(s){
+function serializeState(s: Any){
   return {
     toothSelection: s.toothSelection,
     pulpInflam: !!s.pulpInflam,
@@ -1312,7 +1314,7 @@ function serializeState(s){
   };
 }
 
-function hydrateState(raw){
+function hydrateState(raw: Any){
   const s = defaultState();
   if(!raw || typeof raw !== "object") return s;
   s.toothSelection = raw.toothSelection ?? s.toothSelection;
@@ -1369,7 +1371,7 @@ function exportStatus(){
   URL.revokeObjectURL(url);
 }
 
-function importStatus(data){
+function importStatus(data: Any){
   if(!data || typeof data !== "object") return;
   const teeth = data.teeth || {};
   for(const toothNo of ALL_TEETH){
@@ -1392,7 +1394,7 @@ function importStatus(data){
   updateSelectionUI();
 }
 
-function applyStatusExtra(option){
+function applyStatusExtra(option: Any){
   if(!option) return;
   const meta = getStatusExtrasMeta();
   const archTeeth = (arch)=> meta?.[arch] || [];
@@ -1512,8 +1514,10 @@ function applyStatusExtra(option){
 
 // ---- Load and build grid ----
 let initialized = false;
+let controlsWired = false;
+let initToken = 0;
 
-async function loadSvg(url){
+async function loadSvg(url: Any){
   const res = await fetch(url, { cache: "no-store" });
   if(!res.ok) throw new Error(`SVG fetch failed: ${url}`);
   const txt = await res.text();
@@ -1526,8 +1530,10 @@ async function loadSvg(url){
   return svg;
 }
 
-async function buildGrid(){
+async function buildGrid(token: number){
+  if(!initialized || token !== initToken) return;
   const grid = $("#toothGrid");
+  if(!grid) return;
   grid.innerHTML = "";
 
   // preload SVG templates once
@@ -1541,8 +1547,10 @@ async function buildGrid(){
     const svg = await loadSvg(TEMPLATES_OCCL[tplNo]);
     occlCache.set(tplNo, svg);
   }
+  if(!initialized || token !== initToken) return;
 
-  function addTile({toothNo, tplNo, rot, mirror, view, clickable}){
+  function addTile({toothNo, tplNo, rot, mirror, view, clickable}: Any){
+    if(!initialized || token !== initToken) return;
     const tpl = view === "occl" ? occlCache.get(tplNo) : tplCache.get(tplNo);
     if(!tpl) return;
     const svg = tpl.cloneNode(true);
@@ -1579,7 +1587,7 @@ async function buildGrid(){
     applyStateToSvg(toothNo);
   }
 
-  function addRowSide(rowTeeth){
+  function addRowSide(rowTeeth: Any){
     for(const toothNo of rowTeeth){
       const map = TOOTH_TEMPLATE.get(toothNo);
       const tplNo = map ? map.tpl : 16;
@@ -1587,7 +1595,7 @@ async function buildGrid(){
     }
   }
 
-  function occlTemplateForTooth(toothNo){
+  function occlTemplateForTooth(toothNo: Any){
     if([14,15,24,25,34,35,44,45].includes(toothNo)) return 14;
     if([16,17,18,26,27,28,36,37,38,46,47,48].includes(toothNo)) return 16;
     return null;
@@ -1600,7 +1608,7 @@ async function buildGrid(){
     grid.appendChild(tile);
   }
 
-  function addRowOccl(rowTeeth, placeholders){
+  function addRowOccl(rowTeeth: Any, placeholders: Any){
     for(const toothNo of rowTeeth){
       const map = TOOTH_TEMPLATE.get(toothNo);
       const tplNo = occlTemplateForTooth(toothNo);
@@ -1612,7 +1620,7 @@ async function buildGrid(){
     }
   }
 
-  function addLabelRow(rowTeeth, targetMap){
+  function addLabelRow(rowTeeth: Any, targetMap: Any){
     const row = el("div", { class:"tooth-label-row" });
     for(const toothNo of rowTeeth){
       const cell = el("div", { class:"tooth-label-cell", html: toLabel(toothNo, numberingSystem) });
@@ -1628,6 +1636,7 @@ async function buildGrid(){
   const upperOcclPlaceholders = new Set([13,12,11,21,22,23]);
   const lowerOcclPlaceholders = new Set([43,42,41,31,32,33]);
 
+  if(!initialized || token !== initToken) return;
   addLabelRow(upperSide, toothLabelUpper);
   addRowSide(upperSide);
   addRowOccl(upperSide, upperOcclPlaceholders);
@@ -1646,6 +1655,8 @@ async function buildGrid(){
 
 // ---- Controls wiring ----
 function wireControls(){
+  if(controlsWired) return;
+  controlsWired = true;
   const iconButtons = ["btnOcclView","btnWisdomVisible","btnBoneVisible","btnPulpVisible"];
   iconButtons.forEach((id)=>{
     const btn = $(`#${id}`);
@@ -1705,14 +1716,14 @@ function wireControls(){
   // Pulpitis
   $("#pulpInflam").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.pulpInflam = e.target.checked;
+      s.pulpInflam = (e.target as HTMLInputElement).checked;
     });
   });
 
   // Resection
   $("#endoResection").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.endoResection = e.target.checked;
+      s.endoResection = (e.target as HTMLInputElement).checked;
     });
   });
 
@@ -1726,14 +1737,14 @@ function wireControls(){
   // Extraction wound
   $("#extractionWound").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.extractionWound = e.target.checked;
+      s.extractionWound = (e.target as HTMLInputElement).checked;
     });
   });
 
   // Extraction plan
   $("#extractionPlan").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.extractionPlan = e.target.checked;
+      s.extractionPlan = (e.target as HTMLInputElement).checked;
     });
   });
 
@@ -1778,57 +1789,57 @@ function wireControls(){
   // Fissure sealing
   $("#fissureSealing").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.fissureSealing = e.target.checked;
+      s.fissureSealing = (e.target as HTMLInputElement).checked;
     });
   });
 
   // Contact point missing
   $("#contactMesial").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.contactMesial = e.target.checked;
+      s.contactMesial = (e.target as HTMLInputElement).checked;
     });
   });
   $("#contactDistal").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.contactDistal = e.target.checked;
+      s.contactDistal = (e.target as HTMLInputElement).checked;
     });
   });
 
   // Bruxism wear
   $("#bruxismWear").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.bruxismWear = e.target.checked;
+      s.bruxismWear = (e.target as HTMLInputElement).checked;
     });
   });
 
   // Bruxism neck wear
   $("#bruxismNeckWear").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.bruxismNeckWear = e.target.checked;
+      s.bruxismNeckWear = (e.target as HTMLInputElement).checked;
     });
   });
 
   // Bridge pillar
   $("#bridgePillar").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.bridgePillar = e.target.checked;
+      s.bridgePillar = (e.target as HTMLInputElement).checked;
     });
   });
 
   // Broken crown parts
   $("#brokenMesial").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.brokenMesial = e.target.checked;
+      s.brokenMesial = (e.target as HTMLInputElement).checked;
     });
   });
   $("#brokenIncisal").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.brokenIncisal = e.target.checked;
+      s.brokenIncisal = (e.target as HTMLInputElement).checked;
     });
   });
   $("#brokenDistal").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
-      s.brokenDistal = e.target.checked;
+      s.brokenDistal = (e.target as HTMLInputElement).checked;
     });
   });
 
@@ -2050,15 +2061,18 @@ function wireControls(){
     });
   });
 
-  const exportBtn = $("#btnStatusExport");
-  const importBtn = $("#btnStatusImport");
+  const exportBtn = $("#btnStatusExport") as HTMLButtonElement | null;
+  const importBtn = $("#btnStatusImport") as HTMLButtonElement | null;
   const importInput = $("#statusImportInput") as HTMLInputElement | null;
   if(exportBtn){
-    exportBtn.addEventListener("click", ()=>exportStatus());
+    exportBtn.onclick = () => exportStatus();
   }
   if(importBtn && importInput){
-    importBtn.addEventListener("click", ()=>importInput.click());
-    importInput.addEventListener("change", async ()=>{
+    importBtn.onclick = () => {
+      importInput.value = "";
+      importInput.click();
+    };
+    importInput.onchange = async ()=>{
       const file = importInput.files?.[0];
       if(!file) return;
       try{
@@ -2070,8 +2084,25 @@ function wireControls(){
       }finally{
         importInput.value = "";
       }
-    });
+    };
   }
+}
+
+function wireTopbarButtons(){
+  const btnOccl = $("#btnOcclView") as HTMLButtonElement | null;
+  if(btnOccl) btnOccl.onclick = () => setOcclusalVisible(!occlusalVisible);
+  const btnWisdom = $("#btnWisdomVisible") as HTMLButtonElement | null;
+  if(btnWisdom) btnWisdom.onclick = () => setWisdomVisible(!wisdomVisible);
+  const btnBone = $("#btnBoneVisible") as HTMLButtonElement | null;
+  if(btnBone) btnBone.onclick = () => setShowBase(!showBase);
+  const btnPulp = $("#btnPulpVisible") as HTMLButtonElement | null;
+  if(btnPulp) btnPulp.onclick = () => setHealthyPulpVisible(!showHealthyPulp);
+  const btnClear = $("#btnSelectNoneChart") as HTMLButtonElement | null;
+  if(btnClear) btnClear.onclick = () => {
+    selectedTeeth = new Set();
+    activeTooth = null;
+    updateSelectionUI();
+  };
 }
 
 export function setNumberingSystem(system: NumberingSystem){
@@ -2084,12 +2115,47 @@ export function setNumberingSystem(system: NumberingSystem){
 export async function initOdontogram(){
   if(initialized) return;
   initialized = true;
+  const token = ++initToken;
   wireControls();
-  await buildGrid();
+  wireTopbarButtons();
+  await buildGrid(token);
+  if(!initialized || token !== initToken) return;
   if(!i18nUnsubscribe){
     i18nUnsubscribe = onI18nChange(()=>refreshLocalizedContent());
   }
   refreshLocalizedContent();
   // ensure controls match initial active tooth
-  syncControlsFromState(toothState.get(activeTooth));
+  const state = toothState.get(activeTooth);
+  if(state){
+    syncControlsFromState(state);
+  }
+}
+
+export function destroyOdontogram(){
+  if(!initialized) return;
+  initialized = false;
+  initToken++;
+  controlsWired = false;
+  if(i18nUnsubscribe){
+    i18nUnsubscribe();
+    i18nUnsubscribe = null;
+  }
+  // Clear DOM fragments built by the odontogram engine
+  const grid = $("#toothGrid") as HTMLElement | null;
+  if(grid) grid.innerHTML = "";
+  const mods = $("#modsChecks") as HTMLElement | null;
+  if(mods) mods.innerHTML = "";
+  const caries = $("#cariesChecks") as HTMLElement | null;
+  if(caries) caries.innerHTML = "";
+  const fillings = $("#fillingSurfaceChecks") as HTMLElement | null;
+  if(fillings) fillings.innerHTML = "";
+  const statusExtra = $("#statusExtraSelect") as HTMLSelectElement | null;
+  if(statusExtra) statusExtra.innerHTML = "";
+  toothState.clear();
+  toothSvgRoot.clear();
+  toothTile.clear();
+  toothLabelUpper.clear();
+  toothLabelLower.clear();
+  selectedTeeth = new Set();
+  activeTooth = null;
 }
