@@ -2,7 +2,7 @@ export type Language = "hu" | "en" | "de";
 
 export const translations: Record<Language, Record<string, string>> = {
   hu: {
-    "app.title": "Odontogram SVG Teszt UI v4",
+    "app.title": "React Odontogram Szerkesztő Modul",
     "app.subtitle": "Válassz fogat az odontogramon, majd állítsd be a rétegeket.",
     "topbar.exportStatus": "Státusz export",
     "topbar.importStatus": "Státusz import",
@@ -151,7 +151,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "statusExtras.lowerBarDenture": "alsó stéges fogsor"
   },
   en: {
-    "app.title": "Odontogram SVG Test UI v4",
+    "app.title": "React Odontogram Editor Modul",
     "app.subtitle": "Select a tooth on the odontogram, then set the layers.",
     "topbar.exportStatus": "Export status",
     "topbar.importStatus": "Import status",
@@ -300,7 +300,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "statusExtras.lowerBarDenture": "Lower bar denture"
   },
   de: {
-    "app.title": "Odontogram SVG Test UI v4",
+    "app.title": "React Odontogram Editor Modul",
     "app.subtitle": "Wähle einen Zahn im Odontogramm und stelle dann die Ebenen ein.",
     "topbar.exportStatus": "Status exportieren",
     "topbar.importStatus": "Status importieren",
