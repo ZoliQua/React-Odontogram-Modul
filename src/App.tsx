@@ -1,8 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { destroyOdontogram, initOdontogram, setNumberingSystem } from "./odontogram";
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";
+import icon8Url from "./assets/icon-svgs/icon_8.svg";
+import iconGumUrl from "./assets/icon-svgs/icon_gum.svg";
+import iconNoSelectionUrl from "./assets/icon-svgs/icon_no_selection.svg";
+import iconOcclUrl from "./assets/icon-svgs/icon_occl.svg";
+import iconPulpUrl from "./assets/icon-svgs/icon_pulp.svg";
 
 type AppProps = {
   language?: Language;
@@ -158,12 +163,12 @@ export default function App({
               <div className="chart-hint">{t("chart.hint")}</div>
             </div>
             <div className="chart-actions">
-              <button id="btnOcclView" className="btn btn-toggle btn-icon" aria-pressed="true" title={t("chart.actions.occlusal")} aria-label={t("chart.actions.occlusal")} data-icon-src="/svgs/icon_occl.svg" data-xline="1"></button>
-              <button id="btnWisdomVisible" className="btn btn-toggle btn-icon" aria-pressed="true" title={t("chart.actions.wisdom")} aria-label={t("chart.actions.wisdom")} data-icon-src="/svgs/icon_8.svg" data-xline="1"></button>
-              <button id="btnBoneVisible" className="btn btn-toggle btn-icon" aria-pressed="true" title={t("chart.actions.bone")} aria-label={t("chart.actions.bone")} data-icon-src="/svgs/icon_gum.svg" data-xline="1"></button>
-              <button id="btnPulpVisible" className="btn btn-toggle btn-icon" aria-pressed="true" title={t("chart.actions.pulp")} aria-label={t("chart.actions.pulp")} data-icon-src="/svgs/icon_pulp.svg" data-xline="1"></button>
+              <button id="btnOcclView" className="btn btn-toggle btn-icon" aria-pressed="true" title={t("chart.actions.occlusal")} aria-label={t("chart.actions.occlusal")} data-icon-src={iconOcclUrl} data-xline="1"></button>
+              <button id="btnWisdomVisible" className="btn btn-toggle btn-icon" aria-pressed="true" title={t("chart.actions.wisdom")} aria-label={t("chart.actions.wisdom")} data-icon-src={icon8Url} data-xline="1"></button>
+              <button id="btnBoneVisible" className="btn btn-toggle btn-icon" aria-pressed="true" title={t("chart.actions.bone")} aria-label={t("chart.actions.bone")} data-icon-src={iconGumUrl} data-xline="1"></button>
+              <button id="btnPulpVisible" className="btn btn-toggle btn-icon" aria-pressed="true" title={t("chart.actions.pulp")} aria-label={t("chart.actions.pulp")} data-icon-src={iconPulpUrl} data-xline="1"></button>
               <button id="btnSelectNoneChart" className="btn btn-ghost btn-icon" title={t("chart.actions.clearSelection")} aria-label={t("chart.actions.clearSelection")}>
-                <img className="icon-img" src="/svgs/icon_no_selection.svg" alt="" aria-hidden="true" />
+                <img className="icon-img" src={iconNoSelectionUrl} alt="" aria-hidden="true" />
               </button>
             </div>
           </div>

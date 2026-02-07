@@ -1,17 +1,23 @@
 import { STATUS_EXTRAS } from "./status_extras";
 import { t, onI18nChange } from "./i18n/useI18n";
 import { toLabel, type NumberingSystem } from "./utils/numbering";
+import tooth11Url from "./assets/teeth-svgs/11.svg";
+import tooth13Url from "./assets/teeth-svgs/13.svg";
+import tooth14Url from "./assets/teeth-svgs/14.svg";
+import tooth16Url from "./assets/teeth-svgs/16.svg";
+import tooth14OcclUrl from "./assets/teeth-svgs/14_occl.svg";
+import tooth16OcclUrl from "./assets/teeth-svgs/16_occl.svg";
 /* Tooth SVG Test UI (v2) - vanilla JS */
 
 const TEMPLATES = {
-  11: "/svgs/11.svg",
-  13: "/svgs/13.svg",
-  14: "/svgs/14.svg",
-  16: "/svgs/16.svg",
+  11: tooth11Url,
+  13: tooth13Url,
+  14: tooth14Url,
+  16: tooth16Url,
 };
 const TEMPLATES_OCCL = {
-  14: "/svgs/14_occl.svg",
-  16: "/svgs/16_occl.svg",
+  14: tooth14OcclUrl,
+  16: tooth16OcclUrl,
 };
 
 // Tooth mapping in details:
@@ -1018,7 +1024,7 @@ function syncControlsFromState(state: Any){
   const milkOption = $("#toothSelect").querySelector('option[value="milktooth"]');
   if(milkOption){
     const anyBlocked = selectedTeeth.size > 0
-      ? Array.from(selectedTeeth).some(t => MILKTOOTH_BLOCKED.has(t))
+      ? Array.from(selectedTeeth).some(t => MILKTOOTH_BLOCKED.has(Number(t)))
       : (activeTooth ? MILKTOOTH_BLOCKED.has(activeTooth) : false);
     milkOption.disabled = anyBlocked;
   }
