@@ -29,7 +29,9 @@ body{
 .dot{width:10px;height:10px;border-radius:999px;background:var(--accent2); box-shadow:0 0 0 6px rgba(18,185,129,.12);}
 .title{font-weight:700; letter-spacing:.2px}
 .subtitle{font-size:12px; color:var(--muted); margin-top:2px}
-.topbar-actions{display:flex; gap:10px}
+.topbar-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.topbar-group{display:flex; align-items:center; gap:8px}
+.segmented{display:flex; gap:6px}
 .btn{
   border:1px solid var(--line);
   color:var(--text);
@@ -56,6 +58,39 @@ body{
 }
 .btn-toggle[aria-pressed="false"]{
   background: rgba(0,0,0,.04);
+}
+
+.dropdown{position:relative}
+.dropdown-menu{
+  position:absolute;
+  right:0;
+  top:100%;
+  margin-top:6px;
+  background: #fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow: 0 12px 24px rgba(30,42,58,.12);
+  padding:6px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  min-width:180px;
+  z-index:20;
+}
+.dropdown-item{
+  border:1px solid var(--line);
+  background: rgba(0,0,0,.04);
+  color: var(--text);
+  padding:8px 10px;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+  text-align:left;
+}
+.dropdown-item:hover{background: rgba(0,0,0,.08)}
+.dropdown-item[aria-checked="true"]{
+  background: rgba(59,123,255,.18);
+  border-color: rgba(59,123,255,.45);
 }
 
 select{

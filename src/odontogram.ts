@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { STATUS_EXTRAS } from "./status_extras";
+import { t, onI18nChange } from "./i18n/useI18n";
+import { toLabel, type NumberingSystem } from "./utils/numbering";
 /* Tooth SVG Test UI (v2) - vanilla JS */
 
 const TEMPLATES = {
@@ -80,6 +82,28 @@ const PRIMARY_MILK = new Set([11,12,13,14,15,21,22,23,24,25,31,32,33,34,35,41,42
 const MIXED_PERMANENT = new Set([11,12,16,21,22,26,31,32,36,41,42,46]);
 const MIXED_MILK = new Set([13,14,15,23,24,25,33,34,35,43,44,45]);
 const MIXED_NONE = new Set([17,18,27,28,37,38,47,48]);
+
+const MOD_OPTIONS = [
+  { value: "parodontal", labelKey: "mods.parodontal" },
+  { value: "inflammation", labelKey: "mods.periapicalInflammation" },
+];
+
+const CARIES_OPTIONS = [
+  { value: "caries-mesial", labelKey: "surface.mesial" },
+  { value: "caries-distal", labelKey: "surface.distal" },
+  { value: "caries-buccal", labelKey: "surface.buccal" },
+  { value: "caries-lingual", labelKey: "surface.lingualPalatal" },
+  { value: "caries-occlusal", labelKey: "surface.occlusal" },
+  { value: "caries-subcrown", labelKey: "surface.subcrown" },
+];
+
+const FILLING_SURFACE_LABELS: Record<string, string> = {
+  buccal: "surface.buccal",
+  lingual: "surface.lingualPalatal",
+  mesial: "surface.mesial",
+  distal: "surface.distal",
+  occlusal: "surface.occlusal",
+};
 
 function defaultState(){
   return {
@@ -226,6 +250,8 @@ let showBase = true;
 let occlusalVisible = true;
 let showHealthyPulp = true;
 let suppressEdentulousSync = false;
+let numberingSystem: NumberingSystem = "FDI";
+let i18nUnsubscribe: (() => void) | null = null;
 
 // ---- UI builders ----
 function buildRadios(container, name, options, onChange){
@@ -246,9 +272,10 @@ function buildChecks(container, items, onToggle){
   for(const it of items){
     const id = `chk-${it.value}`;
     const labelId = `lbl-${it.value}`;
+    const labelText = it.labelKey ? t(it.labelKey) : it.label;
     const label = el("label", {}, [
       el("input", { type:"checkbox", id, value:it.value }),
-      el("span", { id: labelId, html: it.label })
+      el("span", { id: labelId, html: labelText })
     ]);
     const input = label.querySelector("input");
     input.addEventListener("change", (e)=>onToggle(it.value, e.target.checked));
@@ -330,6 +357,17 @@ function setToggleButton(btn, on){
   syncIconXLine(btn);
 }
 
+function getToggleLabel(labelKey, collapsed){
+  return t(collapsed ? "actions.expand" : "actions.collapse", { label: t(labelKey) });
+}
+
+function applyToggleA11y(btn, labelKey, collapsed){
+  if(!btn) return;
+  const text = getToggleLabel(labelKey, collapsed);
+  btn.setAttribute("title", text);
+  btn.setAttribute("aria-label", text);
+}
+
 function isToothPresent(sel){
   return sel !== "none" && sel !== "implant";
 }
@@ -354,7 +392,7 @@ function getDisplayedToothNumber(toothNo){
 function updateToothTileNumber(toothNo){
   const tiles = toothTile.get(toothNo);
   if(!tiles) return;
-  const text = String(getDisplayedToothNumber(toothNo));
+  const text = toLabel(getDisplayedToothNumber(toothNo), numberingSystem);
   const upper = toothLabelUpper.get(toothNo);
   if(upper) upper.textContent = text;
   const lower = toothLabelLower.get(toothNo);
@@ -383,59 +421,59 @@ function setSelectOptions(selectEl, options, value){
 function getEndoOptions(isMilktooth){
   if(isMilktooth){
     return [
-      {value:"none", label:"egészséges foggyökér"},
-      {value:"endo-medical-filling", label:"gyógyszeres gyökértömés"},
+      {value:"none", label:t("endo.option.none")},
+      {value:"endo-medical-filling", label:t("endo.option.medicalFilling")},
     ];
   }
   return [
-    {value:"none", label:"egészséges foggyökér"},
-    {value:"endo-medical-filling", label:"gyógyszeres gyökértömés"},
-    {value:"endo-filling", label:"gyökértömés"},
-    {value:"endo-glass-pin", label:"gyökértömés, üvegszálas csappal"},
-    {value:"endo-metal-pin", label:"gyökértömés, fémcsappal"},
+    {value:"none", label:t("endo.option.none")},
+    {value:"endo-medical-filling", label:t("endo.option.medicalFilling")},
+    {value:"endo-filling", label:t("endo.option.filling")},
+    {value:"endo-glass-pin", label:t("endo.option.glassPin")},
+    {value:"endo-metal-pin", label:t("endo.option.metalPin")},
   ];
 }
 
 function getFillingOptions(isMilktooth){
   if(isMilktooth){
     return [
-      {value:"none", label:"nincs tömés"},
-      {value:"composite", label:"kompozit tömés"},
-      {value:"gic", label:"üvegionomer tömés"},
-      {value:"temporary", label:"ideiglenes tömés"},
+      {value:"none", label:t("filling.option.none")},
+      {value:"composite", label:t("filling.option.composite")},
+      {value:"gic", label:t("filling.option.gic")},
+      {value:"temporary", label:t("filling.option.temporary")},
     ];
   }
   return [
-    {value:"none", label:"nincs tömés"},
-    {value:"amalgam", label:"amalgám tömés"},
-    {value:"composite", label:"kompozit tömés"},
-    {value:"gic", label:"üvegionomer tömés"},
-    {value:"temporary", label:"ideiglenes tömés"},
+    {value:"none", label:t("filling.option.none")},
+    {value:"amalgam", label:t("filling.option.amalgam")},
+    {value:"composite", label:t("filling.option.composite")},
+    {value:"gic", label:t("filling.option.gic")},
+    {value:"temporary", label:t("filling.option.temporary")},
   ];
 }
 
 function getCrownOptions(isImplant){
   if(isImplant){
     return [
-      {value:"natural", label:"nincs"},
-      {value:"healing-abutment", label:"gyógyulási csavar"},
-      {value:"zircon", label:"cirkon korona"},
-      {value:"metal", label:"fémkerámia korona"},
-      {value:"temporary", label:"ideiglenes korona"},
-      {value:"locator", label:"lokátor"},
-      {value:"locator-prosthesis", label:"lokátor + műfog"},
-      {value:"bar", label:"stéges implant"},
-      {value:"bar-prosthesis", label:"stég + műfog"},
+      {value:"natural", label:t("crown.option.noneImplant")},
+      {value:"healing-abutment", label:t("crown.option.healingAbutment")},
+      {value:"zircon", label:t("crown.option.zircon")},
+      {value:"metal", label:t("crown.option.metal")},
+      {value:"temporary", label:t("crown.option.temporary")},
+      {value:"locator", label:t("crown.option.locator")},
+      {value:"locator-prosthesis", label:t("crown.option.locatorProsthesis")},
+      {value:"bar", label:t("crown.option.bar")},
+      {value:"bar-prosthesis", label:t("crown.option.barProsthesis")},
     ];
   }
   return [
-    {value:"natural", label:"teljes korona"},
-    {value:"broken", label:"törött korona"},
-    {value:"emax", label:"préskerámia betét"},
-    {value:"zircon", label:"cirkon korona"},
-    {value:"metal", label:"fémkerámia korona"},
-    {value:"temporary", label:"ideiglenes korona"},
-    {value:"telescope", label:"teleszkóp korona"},
+    {value:"natural", label:t("crown.option.full")},
+    {value:"broken", label:t("crown.option.broken")},
+    {value:"emax", label:t("crown.option.emax")},
+    {value:"zircon", label:t("crown.option.zircon")},
+    {value:"metal", label:t("crown.option.metal")},
+    {value:"temporary", label:t("crown.option.temporary")},
+    {value:"telescope", label:t("crown.option.telescope")},
   ];
 }
 
@@ -455,19 +493,33 @@ function getBrokenCrownVariant(state){
 
 function getBridgeUnitOptions(){
   return [
-    {value:"none", label:"nincs"},
-    {value:"removable", label:"kivehető fogpótlás"},
-    {value:"zircon", label:"cirkon hídtag"},
-    {value:"metal", label:"fémkerámia hídtag"},
-    {value:"temporary", label:"ideiglenes hídtag"},
-    {value:"bar", label:"stég áthidalás"},
-    {value:"bar-prosthesis", label:"stég + műfog"},
+    {value:"none", label:t("bridge.option.none")},
+    {value:"removable", label:t("bridge.option.removable")},
+    {value:"zircon", label:t("bridge.option.zircon")},
+    {value:"metal", label:t("bridge.option.metal")},
+    {value:"temporary", label:t("bridge.option.temporary")},
+    {value:"bar", label:t("bridge.option.bar")},
+    {value:"bar-prosthesis", label:t("bridge.option.barProsthesis")},
+  ];
+}
+
+function getToothSelectOptions(){
+  return [
+    {value:"none", label:t("toothSelect.none")},
+    {value:"tooth-base", label:t("toothSelect.permanent")},
+    {value:"milktooth", label:t("toothSelect.milk")},
+    {value:"implant", label:t("toothSelect.implant")},
+    {value:"tooth-crownprep", label:t("toothSelect.crownPrep")},
+    {value:"tooth-under-gum", label:t("toothSelect.underGum")},
   ];
 }
 
 function getStatusExtras(){
   if(!STATUS_EXTRAS || !Array.isArray(STATUS_EXTRAS.options)) return [];
-  return STATUS_EXTRAS.options;
+  return STATUS_EXTRAS.options.map((opt)=>({
+    ...opt,
+    label: t(opt.labelKey),
+  }));
 }
 
 function getStatusExtrasMeta(){
@@ -476,10 +528,10 @@ function getStatusExtrasMeta(){
 
 function getMobilityOptions(){
   return [
-    {value:"none", label:"nincs"},
-    {value:"m1", label:"1. fokú"},
-    {value:"m2", label:"2. fokú"},
-    {value:"m3", label:"3. fokú"},
+    {value:"none", label:t("mobility.none")},
+    {value:"m1", label:t("mobility.m1")},
+    {value:"m2", label:t("mobility.m2")},
+    {value:"m3", label:t("mobility.m3")},
   ];
 }
 
@@ -958,7 +1010,7 @@ function syncControlsFromState(state){
   const periImplant = state.toothSelection === "implant" || implantSelected;
   const parodontLabel = $("#lbl-parodontal");
   if(parodontLabel){
-    parodontLabel.textContent = periImplant ? "Periimplantitis" : "parodontális gyulladás";
+    parodontLabel.textContent = periImplant ? t("mods.periimplantitis") : t("mods.parodontal");
   }
 
   const milkOption = $("#toothSelect").querySelector('option[value="milktooth"]');
@@ -971,7 +1023,7 @@ function syncControlsFromState(state){
 
   const inflammationLabel = $("#lbl-inflammation");
   if(inflammationLabel){
-    inflammationLabel.textContent = extraction ? "fogágygyulladás" : "periapikális gyulladás";
+    inflammationLabel.textContent = extraction ? t("mods.periodontalInflammation") : t("mods.periapicalInflammation");
   }
   $("#mobilityRow").classList.toggle("hidden", underGum || extraction);
   const parodontalInput = $("#chk-parodontal");
@@ -1019,12 +1071,12 @@ function updateActiveLabel(){
   const label = $("#activeToothLabel");
   if(!label) return;
   if(selectedTeeth.size === 0){
-    label.textContent = "—";
+    label.textContent = t("selection.none");
   }else if(selectedTeeth.size === 1){
     const toothNo = activeTooth ?? Array.from(selectedTeeth)[0];
-    label.textContent = String(getDisplayedToothNumber(toothNo));
+    label.textContent = toLabel(getDisplayedToothNumber(toothNo), numberingSystem);
   }else{
-    label.textContent = `${selectedTeeth.size} fog`;
+    label.textContent = t("selection.count", { count: selectedTeeth.size });
   }
 }
 
@@ -1057,6 +1109,75 @@ function setControlsEnabled(enabled){
     if(el.id === "statusExtraSelect") return;
     setDisabled(el, !enabled);
   });
+}
+
+function refreshCheckLabels(){
+  for(const opt of MOD_OPTIONS){
+    const label = $(`#lbl-${opt.value}`);
+    if(label) label.textContent = t(opt.labelKey);
+  }
+  for(const opt of CARIES_OPTIONS){
+    const label = $(`#lbl-${opt.value}`);
+    if(label) label.textContent = t(opt.labelKey);
+  }
+  for(const surface of GROUPS.fillingSurfaces){
+    const label = $(`#lbl-${surface}`);
+    const key = FILLING_SURFACE_LABELS[surface] || "surface.mesial";
+    if(label) label.textContent = t(key);
+  }
+}
+
+function refreshToothSelectOptions(){
+  const toothSelect = $("#toothSelect");
+  if(!toothSelect) return;
+  const value = toothSelect.value;
+  setSelectOptions(toothSelect, getToothSelectOptions(), value);
+}
+
+function refreshStatusExtraOptions(){
+  const selectEl = $("#statusExtraSelect");
+  if(!selectEl) return;
+  const statusExtras = getStatusExtras();
+  if(!statusExtras.length) return;
+  const options = statusExtras.map((opt)=>({ value: opt.id, label: opt.label }));
+  const value = selectEl.value || options[0]?.value;
+  setSelectOptions(selectEl, options, value);
+}
+
+function refreshToggleLabels(){
+  const statusCard = $("#statusCard");
+  const statusToggle = $("#btnToggleStatusCard");
+  if(statusCard && statusToggle){
+    applyToggleA11y(statusToggle, "status.title", statusCard.classList.contains("collapsed"));
+  }
+  const controlsActions = $("#controlsActions");
+  const controlsToggle = $("#btnToggleControlsCard");
+  if(controlsActions && controlsToggle){
+    applyToggleA11y(controlsToggle, "panel.controls", controlsActions.classList.contains("hidden"));
+  }
+  const cardConfig = [
+    { card: "#cariesSection", btn: "#btnToggleCariesCard", labelKey: "caries.title" },
+    { card: "#fillingSection", btn: "#btnToggleFillingCard", labelKey: "filling.title" },
+    { card: "#endoSection", btn: "#btnToggleEndoCard", labelKey: "endo.title" },
+    { card: "#inflammationSection", btn: "#btnToggleInflammationCard", labelKey: "inflammation.title" },
+  ];
+  for(const cfg of cardConfig){
+    const cardEl = $(cfg.card);
+    const btnEl = $(cfg.btn);
+    if(!cardEl || !btnEl) continue;
+    applyToggleA11y(btnEl, cfg.labelKey, cardEl.classList.contains("collapsed"));
+  }
+}
+
+function refreshLocalizedContent(){
+  refreshToothSelectOptions();
+  refreshStatusExtraOptions();
+  refreshCheckLabels();
+  refreshToggleLabels();
+  updateActiveLabel();
+  if(activeTooth){
+    syncControlsFromState(toothState.get(activeTooth));
+  }
 }
 
 function updateSelectionUI(){
@@ -1494,7 +1615,7 @@ async function buildGrid(){
   function addLabelRow(rowTeeth, targetMap){
     const row = el("div", { class:"tooth-label-row" });
     for(const toothNo of rowTeeth){
-      const cell = el("div", { class:"tooth-label-cell", html: String(toothNo) });
+      const cell = el("div", { class:"tooth-label-cell", html: toLabel(toothNo, numberingSystem) });
       cell.addEventListener("click", (e)=>onToothClick(toothNo, e));
       row.appendChild(cell);
       targetMap.set(toothNo, cell);
@@ -1531,15 +1652,8 @@ function wireControls(){
     if(btn) loadInlineIcon(btn).then(()=>syncIconXLine(btn));
   });
 
-  // Fog alap dropdown
-  buildSelect($("#toothSelect"), [
-    {value:"none", label:"foghiány"},
-    {value:"tooth-base", label:"maradó fog"},
-    {value:"milktooth", label:"tejfog"},
-    {value:"implant", label:"implantátum"},
-    {value:"tooth-crownprep", label:"előkészített fog koronához"},
-    {value:"tooth-under-gum", label:"íny alatti fog"},
-  ], (value)=>{
+  // Tooth base dropdown
+  buildSelect($("#toothSelect"), getToothSelectOptions(), (value)=>{
     applyToSelected((s, toothNo)=>{
       if(value === "milktooth" && MILKTOOTH_BLOCKED.has(toothNo)){
         return;
@@ -1565,7 +1679,7 @@ function wireControls(){
     if(value !== "none") setEdentulous(false);
   });
 
-  // Koronai rész dropdown
+  // Crown dropdown
   buildSelect($("#crownSelect"), getCrownOptions(false), (value)=>{
     applyToSelected((s)=>{
       s.crownMaterial = value;
@@ -1581,7 +1695,7 @@ function wireControls(){
     setEdentulous(false);
   });
 
-  // Foggyökér dropdown
+  // Root dropdown
   buildSelect($("#endoSelect"), getEndoOptions(false), (value)=>{
     applyToSelected((s)=>{
       s.endo = value;
@@ -1602,7 +1716,7 @@ function wireControls(){
     });
   });
 
-  // Bridge unit (foghiány)
+  // Bridge unit (missing tooth)
   buildSelect($("#bridgeUnitSelect"), getBridgeUnitOptions(), (value)=>{
     applyToSelected((s)=>{
       s.bridgeUnit = value;
@@ -1623,32 +1737,22 @@ function wireControls(){
     });
   });
 
-  // Mobilitás
+  // Mobility
   buildSelect($("#mobilitySelect"), getMobilityOptions(), (value)=>{
     applyToSelected((s)=>{
       s.mobility = value;
     });
   });
 
-  // Gyulladások
-  buildChecks($("#modsChecks"), [
-    {value:"parodontal", label:"parodontális gyulladás"},
-    {value:"inflammation", label:"periapikális gyulladás"},
-  ], (id, on)=>{
+  // Inflammations
+  buildChecks($("#modsChecks"), MOD_OPTIONS, (id, on)=>{
     applyToSelected((s)=>{
       if(on) s.mods.add(id); else s.mods.delete(id);
     });
   });
 
   // Caries checks (order)
-  buildChecks($("#cariesChecks"), [
-    {value:"caries-mesial", label:"mesial"},
-    {value:"caries-distal", label:"distal"},
-    {value:"caries-buccal", label:"buccal"},
-    {value:"caries-lingual", label:"lingual/palatinal"},
-    {value:"caries-occlusal", label:"occlusal"},
-    {value:"caries-subcrown", label:"subcrown"},
-  ], (id, on)=>{
+  buildChecks($("#cariesChecks"), CARIES_OPTIONS, (id, on)=>{
     applyToSelected((s)=>{
       if(on) s.caries.add(id); else s.caries.delete(id);
     });
@@ -1662,14 +1766,10 @@ function wireControls(){
   });
 
   // Filling surface checks
-  const fillingLabels = {
-    buccal: "buccal",
-    lingual: "lingual/palatinal",
-    mesial: "mesial",
-    distal: "distal",
-    occlusal: "occlusal",
-  };
-  buildChecks($("#fillingSurfaceChecks"), GROUPS.fillingSurfaces.map(s=>({value:s,label:fillingLabels[s] || s})), (surf,on)=>{
+  buildChecks($("#fillingSurfaceChecks"), GROUPS.fillingSurfaces.map((surface)=>({
+    value: surface,
+    labelKey: FILLING_SURFACE_LABELS[surface] || "surface.mesial",
+  })), (surf,on)=>{
     applyToSelected((s)=>{
       if(on) s.fillingSurfaces.add(surf); else s.fillingSurfaces.delete(surf);
     });
@@ -1910,10 +2010,10 @@ function wireControls(){
   const statusCard = $("#statusCard");
   const statusToggle = $("#btnToggleStatusCard");
   if(statusCard && statusToggle){
+    applyToggleA11y(statusToggle, "status.title", statusCard.classList.contains("collapsed"));
     statusToggle.addEventListener("click", ()=>{
       const collapsed = statusCard.classList.toggle("collapsed");
-      statusToggle.setAttribute("title", collapsed ? "Státuszok kinyitása" : "Státuszok összecsukása");
-      statusToggle.setAttribute("aria-label", collapsed ? "Státuszok kinyitása" : "Státuszok összecsukása");
+      applyToggleA11y(statusToggle, "status.title", collapsed);
       const icon = $(".toggle-icon", statusToggle);
       if(icon) icon.textContent = collapsed ? "+" : "−";
     });
@@ -1922,29 +2022,29 @@ function wireControls(){
   const controlsToggle = $("#btnToggleControlsCard");
   const controlsActions = $("#controlsActions");
   if(controlsToggle && controlsActions){
+    applyToggleA11y(controlsToggle, "panel.controls", controlsActions.classList.contains("hidden"));
     controlsToggle.addEventListener("click", ()=>{
       const collapsed = controlsActions.classList.toggle("hidden");
-      controlsToggle.setAttribute("title", collapsed ? "Vezérlők kinyitása" : "Vezérlők összecsukása");
-      controlsToggle.setAttribute("aria-label", collapsed ? "Vezérlők kinyitása" : "Vezérlők összecsukása");
+      applyToggleA11y(controlsToggle, "panel.controls", collapsed);
       const icon = $(".toggle-icon", controlsToggle);
       if(icon) icon.textContent = collapsed ? "+" : "−";
     });
   }
 
   const toggleCards = [
-    { card: "#cariesSection", btn: "#btnToggleCariesCard", label: "Fogszuvasodás" },
-    { card: "#fillingSection", btn: "#btnToggleFillingCard", label: "Tömések és Konzerválás" },
-    { card: "#endoSection", btn: "#btnToggleEndoCard", label: "Foggyökér" },
-    { card: "#inflammationSection", btn: "#btnToggleInflammationCard", label: "Fogágy és Gyulladások" },
+    { card: "#cariesSection", btn: "#btnToggleCariesCard", labelKey: "caries.title" },
+    { card: "#fillingSection", btn: "#btnToggleFillingCard", labelKey: "filling.title" },
+    { card: "#endoSection", btn: "#btnToggleEndoCard", labelKey: "endo.title" },
+    { card: "#inflammationSection", btn: "#btnToggleInflammationCard", labelKey: "inflammation.title" },
   ];
-  toggleCards.forEach(({card, btn, label})=>{
+  toggleCards.forEach(({card, btn, labelKey})=>{
     const cardEl = $(card);
     const btnEl = $(btn);
     if(!cardEl || !btnEl) return;
+    applyToggleA11y(btnEl, labelKey, cardEl.classList.contains("collapsed"));
     btnEl.addEventListener("click", ()=>{
       const collapsed = cardEl.classList.toggle("collapsed");
-      btnEl.setAttribute("title", collapsed ? `${label} kinyitása` : `${label} összecsukása`);
-      btnEl.setAttribute("aria-label", collapsed ? `${label} kinyitása` : `${label} összecsukása`);
+      applyToggleA11y(btnEl, labelKey, collapsed);
       const icon = $(".toggle-icon", btnEl);
       if(icon) icon.textContent = collapsed ? "+" : "−";
     });
@@ -1974,11 +2074,22 @@ function wireControls(){
   }
 }
 
+export function setNumberingSystem(system: NumberingSystem){
+  if(system === numberingSystem) return;
+  numberingSystem = system;
+  updateAllToothTileNumbers();
+  updateActiveLabel();
+}
+
 export async function initOdontogram(){
   if(initialized) return;
   initialized = true;
   wireControls();
   await buildGrid();
+  if(!i18nUnsubscribe){
+    i18nUnsubscribe = onI18nChange(()=>refreshLocalizedContent());
+  }
+  refreshLocalizedContent();
   // ensure controls match initial active tooth
   syncControlsFromState(toothState.get(activeTooth));
 }
