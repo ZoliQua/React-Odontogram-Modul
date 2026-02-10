@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem } from "./odontogram";
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible };
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";

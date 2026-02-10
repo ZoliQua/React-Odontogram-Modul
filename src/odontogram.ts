@@ -1650,9 +1650,9 @@ async function buildGrid(token: number){
   addRowSide(lowerSide);
   addLabelRow(lowerSide, toothLabelLower);
 
-  // default active tooth
-  selectedTeeth = new Set([11]);
-  activeTooth = 11;
+  // start with no tooth selected
+  selectedTeeth = new Set();
+  activeTooth = null;
   updateSelectionUI();
   updateToothTileVisibility();
   setOcclusalVisible(occlusalVisible);
@@ -2130,10 +2130,12 @@ export async function initOdontogram(){
     i18nUnsubscribe = onI18nChange(()=>refreshLocalizedContent());
   }
   refreshLocalizedContent();
-  // ensure controls match initial active tooth
-  const state = toothState.get(activeTooth);
-  if(state){
-    syncControlsFromState(state);
+  // ensure controls match initial active tooth (if any)
+  if(activeTooth != null){
+    const state = toothState.get(activeTooth);
+    if(state){
+      syncControlsFromState(state);
+    }
   }
 }
 
@@ -2165,3 +2167,11 @@ export function destroyOdontogram(){
   selectedTeeth = new Set();
   activeTooth = null;
 }
+
+// ---- Public API for host app ----
+export function clearSelection(){
+  selectedTeeth = new Set();
+  activeTooth = null;
+  updateSelectionUI();
+}
+export { setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible };
