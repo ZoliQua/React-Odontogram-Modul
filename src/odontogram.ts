@@ -2094,23 +2094,6 @@ function wireControls(){
   }
 }
 
-function wireTopbarButtons(){
-  const btnOccl = $("#btnOcclView") as HTMLButtonElement | null;
-  if(btnOccl) btnOccl.onclick = () => setOcclusalVisible(!occlusalVisible);
-  const btnWisdom = $("#btnWisdomVisible") as HTMLButtonElement | null;
-  if(btnWisdom) btnWisdom.onclick = () => setWisdomVisible(!wisdomVisible);
-  const btnBone = $("#btnBoneVisible") as HTMLButtonElement | null;
-  if(btnBone) btnBone.onclick = () => setShowBase(!showBase);
-  const btnPulp = $("#btnPulpVisible") as HTMLButtonElement | null;
-  if(btnPulp) btnPulp.onclick = () => setHealthyPulpVisible(!showHealthyPulp);
-  const btnClear = $("#btnSelectNoneChart") as HTMLButtonElement | null;
-  if(btnClear) btnClear.onclick = () => {
-    selectedTeeth = new Set();
-    activeTooth = null;
-    updateSelectionUI();
-  };
-}
-
 export function setNumberingSystem(system: NumberingSystem){
   if(system === numberingSystem) return;
   numberingSystem = system;
@@ -2123,7 +2106,6 @@ export async function initOdontogram(){
   initialized = true;
   const token = ++initToken;
   wireControls();
-  wireTopbarButtons();
   await buildGrid(token);
   if(!initialized || token !== initToken) return;
   if(!i18nUnsubscribe){
