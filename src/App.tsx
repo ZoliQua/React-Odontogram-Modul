@@ -248,6 +248,10 @@ export default function App({
                 <input type="checkbox" id="extractionWound" />
                 <span>{t("tooth.extractionWound")}</span>
               </label>
+              <label id="missingClosedRow" className="row">
+                <input type="checkbox" id="missingClosed" />
+                <span>{t("tooth.missingClosed")}</span>
+              </label>
               <div id="crownRow" className="row">
                 <span>{t("tooth.crownLabel")}</span>
                 <select id="crownSelect"></select>
@@ -296,6 +300,14 @@ export default function App({
                   <span>{t("tooth.extractionPlan")}</span>
                 </label>
               </div>
+              <label id="crownReplaceRow" className="row">
+                <input type="checkbox" id="crownReplace" />
+                <span>{t("tooth.crownReplace")}</span>
+              </label>
+              <label id="crownNeededRow" className="row">
+                <input type="checkbox" id="crownNeeded" />
+                <span>{t("tooth.crownNeeded")}</span>
+              </label>
             </section>
 
             <section id="cariesSection" className="card">

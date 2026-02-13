@@ -132,6 +132,9 @@ function defaultState(){
     brokenDistal: false,
     extractionWound: false,
     extractionPlan: false,
+    crownReplace: false,
+    crownNeeded: false,
+    missingClosed: false,
     bridgePillar: false,
     bridgeUnit: "none", // none | removable | zircon | metal | temporary
     mobility: "none", // none | m1 | m2 | m3
@@ -180,7 +183,7 @@ function stripDisplayNoneToDataActive(root: Any){
 
 function ensureDataActiveForSwitchables(root: Any){
   // Every element that is inside these switchable groups and has an id should get data-active (default 0 if missing)
-  const switchableGroups = ["mods","tooth-variants","endos","surfaces","restorations"];
+  const switchableGroups = ["mods","tooth-variants","endos","surfaces","restorations","specials"];
   for(const gId of switchableGroups){
     const g = root.getElementById ? root.getElementById(gId) : $("#"+gId, root);
     if(!g) continue;
@@ -592,7 +595,11 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
   for(const id of ["implant-base","implant-connector","implant-healing-abutment","implant-locator-screw","implant-bar","prosthesis","prosthesis-implant","prosthesis-implant-crown","prosthesis-implant-gum","telescope","zircon","metal","emax-crown","zircon-crown","metal-crown","temporary-crown","telescope-crown-inside","telescope-crown-outside","extraction-plan","zircon-bridge-connector","metal-bridge-connector","temporary-bridge-connector","telescope-bridge-connector"]){
     setActive(svgGetById(svg,id), false);
   }
-  setActive(svgGetByIdInGroup(svg, "restorations", "temporary"), false);
+  setActive(svgGetById(svg, "temporary-restorations"), false);
+  // Specials group layers
+  setActive(svgGetById(svg, "crown-replace"), false);
+  setActive(svgGetById(svg, "crown-needed"), false);
+  setActive(svgGetById(svg, "missing-closed"), false);
 
   const hasCrown = state.crownMaterial !== "natural";
   const brokenVariant = state.crownMaterial === "broken" ? getBrokenCrownVariant(state) : null;
@@ -657,6 +664,18 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
   }
   if(state.extractionPlan && extractionPlanAllowed){
     setActive(svgGetById(svg, "extraction-plan"), true);
+  }
+  // crown-replace: permanent tooth with emax/zircon/metal/temporary/telescope crown
+  if(state.crownReplace && state.toothSelection === "tooth-base" && ["emax","zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
+    setActive(svgGetById(svg, "crown-replace"), true);
+  }
+  // crown-needed: permanent tooth with natural (full) or broken crown
+  if(state.crownNeeded && state.toothSelection === "tooth-base" && ["natural","broken"].includes(state.crownMaterial)){
+    setActive(svgGetById(svg, "crown-needed"), true);
+  }
+  // missing-closed: foghiány
+  if(state.missingClosed && isNone){
+    setActive(svgGetById(svg, "missing-closed"), true);
   }
 
   // 3) Endo exclusivity (only if tooth present)
@@ -731,7 +750,7 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
       setActive(svgGetById(svg, "metal-crown"), true);
       setActive(svgGetById(svg, "metal-bridge-connector"), true);
     } else if(state.bridgeUnit === "temporary"){
-      setActive(svgGetByIdInGroup(svg, "restorations", "temporary"), true);
+      setActive(svgGetById(svg, "temporary-restorations"), true);
       setActive(svgGetById(svg, "temporary-crown"), true);
       setActive(svgGetById(svg, "temporary-bridge-connector"), true);
     } else if(state.bridgeUnit === "bar"){
@@ -749,7 +768,7 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
     if(state.crownMaterial !== "broken"){
       if(["zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
         if(state.crownMaterial === "temporary"){
-          setActive(svgGetByIdInGroup(svg, "restorations", "temporary"), true);
+          setActive(svgGetById(svg, "temporary-restorations"), true);
         }else{
           setActive(svgGetById(svg, state.crownMaterial), true);
         }
@@ -779,7 +798,7 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
       setActive(svgGetById(svg, "metal"), true);
       setActive(svgGetById(svg, "metal-bridge-connector"), true);
     } else if(state.crownMaterial === "temporary"){
-      setActive(svgGetByIdInGroup(svg, "restorations", "temporary"), true);
+      setActive(svgGetById(svg, "temporary-restorations"), true);
       setActive(svgGetById(svg, "temporary-bridge-connector"), true);
     } else if(state.crownMaterial === "telescope"){
       setActive(svgGetById(svg, "telescope"), true);
@@ -883,6 +902,9 @@ function syncControlsFromState(state: Any){
   $("#brokenDistal").checked = !!state.brokenDistal;
   $("#extractionWound").checked = !!state.extractionWound;
   $("#extractionPlan").checked = !!state.extractionPlan;
+  $("#crownReplace").checked = !!state.crownReplace;
+  $("#crownNeeded").checked = !!state.crownNeeded;
+  $("#missingClosed").checked = !!state.missingClosed;
   $("#bridgePillar").checked = !!state.bridgePillar;
   $("#bridgeUnitSelect").value = state.bridgeUnit;
 
@@ -986,6 +1008,24 @@ function syncControlsFromState(state: Any){
     return s && ["tooth-base","milktooth","implant","tooth-crownprep","tooth-under-gum"].includes(s.toothSelection);
   });
   $("#extractionPlanRow").classList.toggle("hidden", !extractionPlanAllowed);
+  // crown-replace: visible when permanent tooth + emax/zircon/metal/temporary/telescope crown
+  const crownReplaceAllowed = selectedList.length > 0 && selectedList.every(t => {
+    const s = toothState.get(t);
+    return s && s.toothSelection === "tooth-base" && ["emax","zircon","metal","temporary","telescope"].includes(s.crownMaterial);
+  });
+  $("#crownReplaceRow").classList.toggle("hidden", !crownReplaceAllowed);
+  // crown-needed: visible when permanent tooth + natural or broken crown
+  const crownNeededAllowed = selectedList.length > 0 && selectedList.every(t => {
+    const s = toothState.get(t);
+    return s && s.toothSelection === "tooth-base" && ["natural","broken"].includes(s.crownMaterial);
+  });
+  $("#crownNeededRow").classList.toggle("hidden", !crownNeededAllowed);
+  // missing-closed: visible when foghiány
+  const missingClosedAllowed = selectedList.length > 0 && selectedList.every(t => {
+    const s = toothState.get(t);
+    return s && s.toothSelection === "none";
+  });
+  $("#missingClosedRow").classList.toggle("hidden", !missingClosedAllowed);
   $("#bridgeUnitRow").classList.toggle("hidden", state.toothSelection !== "none");
   const crownRowHidden = $("#crownRow").classList.contains("hidden");
   const bridgePillarAllowed = !crownRowHidden && (state.crownMaterial === "zircon" || state.crownMaterial === "metal" || state.crownMaterial === "temporary" || state.crownMaterial === "telescope");
@@ -1313,6 +1353,9 @@ function serializeState(s: Any){
     brokenDistal: !!s.brokenDistal,
     extractionWound: !!s.extractionWound,
     extractionPlan: !!s.extractionPlan,
+    crownReplace: !!s.crownReplace,
+    crownNeeded: !!s.crownNeeded,
+    missingClosed: !!s.missingClosed,
     bridgePillar: !!s.bridgePillar,
     bridgeUnit: s.bridgeUnit,
     mobility: s.mobility,
@@ -1341,6 +1384,9 @@ function hydrateState(raw: Any){
   s.brokenDistal = !!raw.brokenDistal;
   s.extractionWound = !!raw.extractionWound;
   s.extractionPlan = !!raw.extractionPlan;
+  s.crownReplace = !!raw.crownReplace;
+  s.crownNeeded = !!raw.crownNeeded;
+  s.missingClosed = !!raw.missingClosed;
   s.bridgePillar = !!raw.bridgePillar;
   s.bridgeUnit = raw.bridgeUnit ?? s.bridgeUnit;
   s.mobility = raw.mobility ?? s.mobility;
@@ -1708,6 +1754,12 @@ function wireControls(){
       if(!["zircon","metal","temporary","telescope"].includes(value)){
         s.bridgePillar = false;
       }
+      if(!["emax","zircon","metal","temporary","telescope"].includes(value)){
+        s.crownReplace = false;
+      }
+      if(!["natural","broken"].includes(value)){
+        s.crownNeeded = false;
+      }
     });
     setEdentulous(false);
   });
@@ -1751,6 +1803,27 @@ function wireControls(){
   $("#extractionPlan").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
       s.extractionPlan = (e.target as HTMLInputElement).checked;
+    });
+  });
+
+  // Crown replace
+  $("#crownReplace").addEventListener("change", (e)=>{
+    applyToSelected((s)=>{
+      s.crownReplace = (e.target as HTMLInputElement).checked;
+    });
+  });
+
+  // Crown needed
+  $("#crownNeeded").addEventListener("change", (e)=>{
+    applyToSelected((s)=>{
+      s.crownNeeded = (e.target as HTMLInputElement).checked;
+    });
+  });
+
+  // Missing closed
+  $("#missingClosed").addEventListener("change", (e)=>{
+    applyToSelected((s)=>{
+      s.missingClosed = (e.target as HTMLInputElement).checked;
     });
   });
 

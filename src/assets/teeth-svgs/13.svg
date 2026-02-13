@@ -1,359 +1,371 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- Created by Zoltan Dul in 2026 - free to use with MIT license. SVG Version: 2.1.1 -->
-<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" id="canine_x5F_tooth" version="1.1" viewBox="0 0 36 64">
+<svg xmlns="http://www.w3.org/2000/svg" id="canine_x5F_tooth" version="1.1" viewBox="0 0 36 64">
   <style>
     [data-active="0"] { display: none; }
   </style>
-  <ns0:defs>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-" x1="-1126.2" y1="5663.6" x2="-1122.9" y2="5663.6" gradientTransform="translate(-360.5 -5741.5) rotate(-15)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-1" x1="-15766.4" y1="-2243.6" x2="-15763.1" y2="-2243.6" gradientTransform="translate(-14684.1 -6101.4) rotate(-165.5)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-2" x1="-504.6" y1="4916.2" x2="-501.3" y2="4916.2" gradientTransform="translate(-106.6 -4924.9) rotate(-7.3)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-3" x1="-15408.9" y1="-3319.7" x2="-15405.6" y2="-3319.7" gradientTransform="translate(-14932.7 -4977.8) rotate(-173.7)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-4" x1="-1468.5" y1="6072.7" x2="-1465.2" y2="6072.7" gradientTransform="translate(-320.6 -6229.1) rotate(-16.7)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-5" x1="-15302.1" y1="518.7" x2="-15298.8" y2="518.7" gradientTransform="translate(-14590.3 -8371.4) rotate(-148.4) scale(1.1 1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-6" x1="-15300.1" y1="521.8" x2="-15296.7" y2="521.8" gradientTransform="translate(-14590.3 -8371.4) rotate(-148.4) scale(1.1 1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-7" x1="-5665.2" y1="8340.2" x2="-5661.7" y2="8340.2" gradientTransform="translate(-1991.9 -10212.3) rotate(-47.9) scale(1.1 1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-8" x1="18.4" y1="-1962.5" x2="18.4" y2="-2009.4" gradientTransform="translate(0 -1962) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset="0" stop-color="#ff422a" data-active="1" />
-      <ns0:stop offset="1" stop-color="#9f0016" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-9" x1="-1814.7" y1="6279.8" x2="-1811.4" y2="6279.8" gradientTransform="translate(-979.8 -6438.9) rotate(-24.9)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-10" x1="-15919.9" y1="-1012.6" x2="-15916.6" y2="-1012.6" gradientTransform="translate(-13592 -8302.1) rotate(-152.2)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-11" x1="-504.6" y1="4916.2" x2="-501.3" y2="4916.2" gradientTransform="translate(-106.6 -4924.9) rotate(-7.3)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-12" x1="-15408.9" y1="-3319.7" x2="-15405.6" y2="-3319.7" gradientTransform="translate(-14932.7 -4977.8) rotate(-173.7)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-13" x1="-1468.8" y1="6073.6" x2="-1465.5" y2="6073.6" gradientTransform="translate(-320.6 -6229.1) rotate(-16.7)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-14" x1="-15302.2" y1="517.9" x2="-15298.9" y2="517.9" gradientTransform="translate(-14590.3 -8371.4) rotate(-148.4) scale(1.1 1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-15" x1="-15300.1" y1="521.8" x2="-15296.7" y2="521.8" gradientTransform="translate(-14590.3 -8371.4) rotate(-148.4) scale(1.1 1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-16" x1="-5666.5" y1="8342.4" x2="-5663" y2="8342.4" gradientTransform="translate(-1991.9 -10212.3) rotate(-47.9) scale(1.1 1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#000" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-17" x1="18.2" y1="-1997.7" x2="18.2" y2="-2007.4" gradientTransform="translate(0 -1962) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset=".2" stop-color="#cf0" stop-opacity=".5" data-active="1" />
-      <ns0:stop offset="1" stop-color="#b4c500" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-18" x1="18" y1="-1993.9" x2="18" y2="-2001.4" gradientTransform="translate(0 -1962) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset="0" stop-color="#c8c9c9" data-active="1" />
-      <ns0:stop offset="1" stop-color="#828282" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:radialGradient id="radial-gradient" cx="19.7" cy="2074.8" fx="19.7" fy="2074.8" r="11.5" gradientTransform="translate(-.3 -2028) scale(1 1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset="0" stop-color="#fff" data-active="1" />
-      <ns0:stop offset=".1" stop-color="#ececec" data-active="1" />
-      <ns0:stop offset=".3" stop-color="#cfcfcf" data-active="1" />
-      <ns0:stop offset=".6" stop-color="#bababa" data-active="1" />
-      <ns0:stop offset=".8" stop-color="#aeaeae" data-active="1" />
-      <ns0:stop offset="1" stop-color="#aaa" data-active="1" />
-      </ns0:radialGradient>
-    <ns0:radialGradient id="Salmon_Pink_Radial" data-name="Salmon Pink Radial" cx="19.4" cy="2075.5" fx="19.4" fy="2075.5" r="10.2" gradientTransform="translate(-8.4 -2028) scale(1.4 1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset="0" stop-color="#fff" data-active="1" />
-      <ns0:stop offset="0" stop-color="#fefefe" data-active="1" />
-      <ns0:stop offset=".2" stop-color="#f8d6d4" data-active="1" />
-      <ns0:stop offset=".3" stop-color="#f2b5b2" data-active="1" />
-      <ns0:stop offset=".5" stop-color="#ee9b98" data-active="1" />
-      <ns0:stop offset=".6" stop-color="#eb8985" data-active="1" />
-      <ns0:stop offset=".8" stop-color="#e97e79" data-active="1" />
-      <ns0:stop offset="1" stop-color="#e97b76" data-active="1" />
-      </ns0:radialGradient>
-    <ns0:linearGradient id="linear-gradient-tooth-13-side-19" x1="18" y1="-2015.2" x2="18" y2="-2005.5" gradientTransform="translate(0 -1962) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset="0" stop-color="#f9ae94" data-active="1" />
-      <ns0:stop offset=".5" stop-color="#cd986a" data-active="1" />
-      <ns0:stop offset="1" stop-color="#f9ae94" data-active="1" />
-      </ns0:linearGradient>
-    <ns0:radialGradient id="Orange_Radial" data-name="Orange Radial" cx="18.6" cy="46.5" fx="18.6" fy="46.5" r="12.4" gradientUnits="userSpaceOnUse" data-active="1">
-      <ns0:stop offset="0" stop-color="#fff" data-active="1" />
-      <ns0:stop offset="0" stop-color="#fdf3ea" data-active="1" />
-      <ns0:stop offset=".2" stop-color="#f9d8b9" data-active="1" />
-      <ns0:stop offset=".3" stop-color="#f5c18f" data-active="1" />
-      <ns0:stop offset=".4" stop-color="#f2ae6c" data-active="1" />
-      <ns0:stop offset=".6" stop-color="#f09f52" data-active="1" />
-      <ns0:stop offset=".7" stop-color="#ef953f" data-active="1" />
-      <ns0:stop offset=".9" stop-color="#ee8f33" data-active="1" />
-      <ns0:stop offset="1" stop-color="#ee8d30" data-active="1" />
-      </ns0:radialGradient>
-    </ns0:defs>
-  <ns0:g id="base" data-active="1">
-    <ns0:path id="bone-base" d="M35.6,16.2l-2.5,1.2c-2.3,1.4,0,8.6-1.8,10.8,0,4.4-4.1,3.5-5.3,3.4-3.5-.2-11.7,0-15.8,0s-4.5-2.9-4.6-2.8c-1.9,0-2-11.4-2-11.4l-1.3-2c-.2-.4-2.1-.9-2.1-1.4V0h35.5v16.2h-.1Z" style="fill: #fdecc5;" data-active="1" />
-    <ns0:path id="gum-base" d="M36.1,17.2c-1,1-2.5,1.7-3,3-1,3.5-.2,7.6-1.5,11-1.9,5.1-5.6.4-9.2.5-3.6,0-7.6-.2-11,.5-2.1.6-4.3,2.6-6.5,1.2C-.4,29.7,3.2,20.8,1.2,15.8c-.2-.9-1.9-2.3-1-2.8,1-.5,3.8,1,4.2,2.2,1.9,3.7-1.8,13.9,3.2,15.2,2.4.3,7.7-.6,12.2-.9,3.4-.6,8.7.9,10.5-2.3,1.9-3.2-.1-8.1,2.3-11.1s5.1-1.2,3.5.9h0v.2h-.1Z" style="fill: #f79f9a;" data-active="1" />
-    </ns0:g>
-  <ns0:g id="mods" data-active="1">
-    <ns0:path id="parodontal" d="M8.8,27.6c-.5,1.7-1.9,4.6-1.1,5.8.5.7,1.3.9,2.1,1.1,1.8.4,3.8.7,5.5,1,4.2,1,9.6.8,12.3-3.1.9-2.1-.4-4.4-.7-6.6-1.5-6.7.9-18.5-9.3-17.4-8.2,1.1-6.4,13.3-8.7,18.9v.2h-.1Z" style="display: none; fill: #ffa46a;" data-active="1" />
-    <ns0:path id="inflammation" d="M8,7.7c-.4,5.9,5.6,7.4,9.2,7.9,3.7.4,9.1.6,10.4-5.1C29,3,23,.1,18,.4,13.7.4,8.9,1.7,7.9,7.4v.2h.1Z" style="display: none; fill: #ffa46a;" data-active="1" />
-    <ns0:g id="mobility" style="display: none;" data-active="1">
-      <ns0:path id="tooth-mobility-2" d="M22.3,12.9l2.9-1.7c-.9,1.8-1.7,3.6-2.6,5.4,1.1-.6,2.1-1.2,3.2-1.7-1.2,2.1-2.3,4.3-3.3,6.5,1.3-.4,2.5-.9,3.8-1.3-1,1.6-2,3.2-3,4.8.8-.3,1.6-.5,2.4-.7-.6,1.3-1.3,2.5-2,3.7,1-.6,2-1,3.1-1.3-.8,1.2-1.6,2.5-2.2,3.8.7-.3,1.4-.5,2.2-.6-.8,1-1.5,2-2.3,2.9" style="fill: none; stroke: #f99; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
-      <ns0:path id="tooth-mobility-1" d="M11.3,12c1-.3,2.1,0,3,1-1.4,1.1-2.8,2.2-4.2,3.1,1.3,0,2.6.2,3.8.7-1.3,1-2.7,2.2-3.9,3.4,1,.1,1.9.4,2.8.8-.9.8-1.9,1.6-2.8,2.4.7,0,1.5.3,2.1.9-.9,1.1-1.8,2.4-2.7,3.7.9-.1,1.8-.3,2.7-.4-1.4,1-2.6,2.4-3.7,4,.7.2,1.5.3,2.2.2" style="fill: none; stroke: #f99; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
-      </ns0:g>
-    </ns0:g>
-  <ns0:g id="tooth-variants" data-active="1">
-    <ns0:path id="no-tooth-after-extraction" d="M18.5,31.5c1.8-.6,8.2,1.3,7.6-.4-3-8.1-.6-32.3-9-28.8-4.3,1.8-4,18.8-4.3,28.5-.3,9.7,2.9,1.4,5.7.7Z" style="display: none; fill: #fff; stroke: #f99; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-    <ns0:path id="tooth-under-gum" d="M14.4.8c-.2.6-.4,1.3-.5,2,0,2.5.5,5.2.7,7.6.5,3.1-.1,5.9.3,8.9.2,1.9,1.4,3.4,2.5,4.9,1.3,2.1,3.6,5.4,6.1,3.7,2-1.6,2.3-6.4,2-8.8-.2-1.7-.8-3.6-2-4.9s-2-1.8-2.5-3.2c-1-2-2.3-5.9-3.3-7.8-.5-1.1-1.4-1.8-2.4-2.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-broken-inicisal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5.6,2.1,1.4,4.8,2.7,7,1.3,2.2,2.6-1.3,3.4-.5s0-3.6,1.1-3.5,2.4-3.1,3.3-3.4c.7-.3.7,6.6,1.3,6s2.1,2.4,2.8,1.4c2.6-3.9,4.3-9.4,4.8-12.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-broken-mesial-distal-inicisal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.6,5.7-2.8,10.3-4,15.5s2.8,2.1,2.7,3.1c-.3,1.7,2.1,2.6,2.5,4.2s-.3,3.2,0,4.3-4,2.9-3.5,4c.6,2.2,5.1-.7,6.4,1.2s-1.3,3.7,0,4.3,2.3,4.7,4.1,4.1c1-.4-.4-2.5.5-3.5s4.2-1.1,5-2.5c1.5-2.7-1.5-.5-1.3-1.6.3-2.6-3.1-2.2-3.4-2.8s.7-3.6.9-4.3c.3-1.1,4.9-1.2,5-2.1.2-1.7,2.8-3.4,2.7-5.2s-.5-4.1-1.5-6c-1.4-2.8-3-4.9-3.3-8.1-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-broken-mesial-distal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.6,5.7-2.8,10.3-4,15.5s2.8,2.1,2.7,3.1c-.3,1.7,2.1,2.6,2.5,4.2s-.3,3.2,0,4.3-4,2.9-3.5,4c1.4,5.1,4.2,11.9,10.3,9.7,2.1-.9,4-3.3,5.5-6s-1.5-.5-1.3-1.6c.3-2.6-3.1-2.2-3.4-2.8s.7-3.6.9-4.3c.3-1.1,4.9-1.2,5-2.1.2-1.7,2.8-3.4,2.7-5.2s-.5-4.1-1.5-6c-1.4-2.8-3-4.9-3.3-8.1-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-broken-mesial-inicisal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5,1.4,5.1,4.2,13.2,10.3,11,.9-.4-3.4-1.5-2.6-2.3s1.8-.3,2.6-1.9c.8-1.6.4-2.1.8-3,.7-1.6,2.9-2.7,3.3-4.2s-2.3-1.6-2.2-2.7c.1-.9,2.9-4.6,3-5.5s4.6-1.7,4.5-2.5c-.1-2.1-.5-4.2-1.5-6.1-1.4-2.8-3-4.9-3.3-8.1-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-broken-mesial" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5,1.4,5.1,4.2,13.2,10.3,11,2.1-.9,4-3.3,5.5-6s-1.5-.5-1.3-1.6c.3-2.6-3.1-2.2-3.4-2.8s.7-3.6.9-4.3c.3-1.1,4.9-1.2,5-2.1.2-1.7,2.8-3.4,2.7-5.2s-.5-4.1-1.5-6c-1.4-2.8-3-4.9-3.3-8.1-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-broken-distal-inicisal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.6,5.9-2.9,10.5-4.1,16s-.3,1.6-.5,2.4c0,.8-.2,1.6-.2,2.4s0,1.7.3,2.5c.2.8,5.7-.4,6,.6s.1,4.2.6,5.4c.2.7,2.6,2.2,2.8,3.1.6,1.7-.3,3,.6,4.6s1.6,0,2.7.6c1.1.6-2,4-.3,3.4,4.9-2.1,8.4-11.8,9.1-16.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-broken-distal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.6,6-3,10.8-4.2,16.3s1.7.9,1.6,1.6c0,1.9,5.4,1.1,1.1,5.5-.6.7,1.9,1.2,2.4,2,.7,1,4.6,3,1.5,4.6.1.5-.7,2-.6,2.5.3.8-3,.6-2.7,1.4,1.7,4.3,4.4,8.5,9,6.9,4.9-2.1,8.4-11.8,9.1-16.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-crownprep" d="M17.2,1.8c-3.8,5.6-3.6,13.4-4.9,19.7-.5,4.9-1.9,8.5-3,12.5-.3,1.3-1.1,2.9-1,4.3.5.6,4.1-.9,5.3.5.9,1,0,2.4.3,3.5.8,2.9,4.4,1.8,6.8,1.7.5,0,1.6,0,2-.3,2-1.2-.3-4.8.5-5.5.4-.3,4.1-.5,5.4-1.2s-3.3-7.3-3.7-10.6c-.6-3.6-1-9.2-1.6-13.8-.4-4.1-1.3-7.8-4.3-10.5" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    </ns0:g>
-  <ns0:g id="tooth" data-active="1">
-    <ns0:path id="tooth-base" d="M17.1,2.3c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5,1.4,5.1,4.2,13.2,10.3,11,4.9-2.1,8.4-11.8,9.1-16.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="tooth-base-beauty" d="M26.1,52.2c-.3,2.2-2.2,4.4-3.7,6.1-1,1.1-2,1.7-1.7.9v-.3c1.4-2.2,2.8-5.5,4.3-7.4.5-.4.9.2,1,.6h.1Z" style="fill: #fefefe;" data-active="1" />
-    <ns0:g id="tooth-inflam-pulp" style="display: none;" data-active="1">
-      <ns0:path id="tooth-inflam-pulp-base" d="M19.2,4.3c0,2.6-.5,5.3-.3,8,.1,3.9.1,9.1.4,13.2,0,2.6,1.1,4.8,1.6,7.6.4,2.7-.3,6.4-1.4,9.2-1.8,3.7-3.4-5.6-3.4-6.6-.2-3.2,1.3-6.7,1.6-9.6.2-4.2-.2-8.8.2-13.1.1-2.4.2-4.9-.4-7.7-.3-1.5-1.2-4,.2-4.9,1.8-.7,1.5,2.3,1.6,3.6v.2h-.1Z" style="fill: #ff422a;" data-active="1" />
-      <ns0:path id="pulp-inflam-path-8" d="M20.8,19.7h0v-.2c-.3-.1-.6-.2-.8-.1-.6.2-1.3.3-1.8.6s-.9.7-.1.8,2.1-.2,2.7-1.1Z" style="fill: url(#linear-gradient-tooth-13-side-);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-7" d="M15.4,17.5h0v.2c.1.2.3.4.6.5.6.2,1.3.3,1.9.4s1,0,.5-.6-2-.9-2.9-.4h0Z" style="fill: url(#linear-gradient-tooth-13-side-1);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-6" d="M21.1,15.1h0v-.2c-.2-.2-.5-.3-.7-.2-.6,0-1.3.1-1.9.4s-1,.5-.1.7,2.1,0,2.8-.7h0Z" style="fill: url(#linear-gradient-tooth-13-side-2);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-5" d="M15.4,12.4h0v.2c.1.2.4.4.6.4.6,0,1.3.2,1.9,0s1-.3.3-.7-2.1-.5-2.9,0h0Z" style="fill: url(#linear-gradient-tooth-13-side-3);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-4" d="M21.1,8.5h0s0-.1-.1-.2c-.2-.1-.5-.1-.8-.1-.6,0-1.2.4-1.8.7s-.8.6,0,.7,2.1-.3,2.7-1.1Z" style="fill: url(#linear-gradient-tooth-13-side-4);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-3" d="M15.4,5.2h0v.2c0,.3.3.5.5.7.5.4,1.2.7,1.8.9s1.1.2.6-.5-1.7-1.4-2.8-1.4h-.1Z" style="fill: url(#linear-gradient-tooth-13-side-5);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-2" d="M15.1,1.3h0v.2c0,.3.3.5.5.7.5.4,1.2.7,1.8.9s1.1.2.6-.5-1.7-1.4-2.8-1.4h-.1Z" style="fill: url(#linear-gradient-tooth-13-side-6);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-1" d="M20.3,1h-.2c-.3,0-.5.2-.8.3-.5.4-.9,1-1.3,1.6s-.4,1,.3.7,1.7-1.4,1.9-2.6c0,0,.1,0,.1,0Z" style="fill: url(#linear-gradient-tooth-13-side-7);" data-active="1" />
-      </ns0:g>
-    <ns0:path id="tooth-healthy-pulp" d="M19.2,4.3c0,2.6-.5,5.3-.3,8,.1,3.9.1,9.1.4,13.2,0,2.6,1.1,4.8,1.6,7.6.4,2.7-.3,6.4-1.4,9.2-1.8,3.7-3.4-5.6-3.4-6.6-.2-3.2,1.3-6.7,1.6-9.6.2-4.2-.2-8.8.2-13.1.1-2.4.2-4.9-.4-7.7-.3-1.5-1.2-4,.2-4.9,1.8-.7,1.5,2.3,1.6,3.6v.2h-.1Z" style="fill: #fcc5bc;" data-active="1" />
-    <ns0:path id="tooth-bruxism-wear" d="M15.2,55.1c.3.8.5,2.7,1.2,1,.2-.3.4-.8.7-.8.7.3.4,1.5.9,1.9.6.2,1.5-3,2.2-1.9.2.3.3.9.4,1.2.4,1.1,1-1.9,1.3-2.1.3-.5.5,0,.7.7.6,3.3.7,0,1.3-1h.3c2.3,2.4.7,6.5-2,7.9-2.3,1.4-5.5,2-7,.7-.9-.9-1.5-1.5-2.3-2.7-.8-1.5-3.2-5.7.1-5.8,1,0,1.7.2,2.1.8h.1Z" style="display: none; fill: #fff; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
-    <ns0:path id="tooth-bruxism-neck-wear" d="M22.2,47.5c-.3-.5-.5-1.5-1.2-.6-.2.2-.4.4-.7.4-.7-.2-.4-.9-.9-1.1-.6,0-1.5,1.7-2.2,1-.2-.2-.3-.5-.4-.7-.4-.6-1,1-1.3,1.1-.3.3-.5,0-.7-.4-.6-1.9-.7,0-1.3.5h-.3c-2.3-1.4-.6-3.7,2.1-4.4,2.3-.7,5.5-1,7-.2.9.5,1.5.9,2.3,1.6.8.9,3.1,3.3-.2,3.3s-1.7,0-2.1-.5h0Z" style="display: none; fill: #fff; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
-    </ns0:g>
-  <ns0:g id="milktooth" style="display: none;" data-active="1">
-    <ns0:path id="milktooth-base" d="M17.1,2.3c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5,1.4,5.1,4.2,13.2,10.3,11,4.9-2.1,8.4-11.8,9.1-16.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="fill: #fff; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
-    <ns0:path id="milktooth-beauty" d="M26.1,52.2c-.3,2.2-2.2,4.4-3.7,6.1-1,1.1-2,1.7-1.7.9v-.3c1.4-2.2,2.8-5.5,4.3-7.4.5-.4.9.2,1,.6h.1Z" style="fill: #eaeaea;" data-active="1" />
-    <ns0:g id="milktooth-inflam-pulp" style="display: none;" data-active="1">
-      <ns0:path id="tooth-inflam-pulp-base1" d="M19.3,4.7c0,2.9-.6,5.8-.4,8.8.1,4.3.1,10,.5,14.5,0,2.9,1.4,5.3,2,8.3.5,3-.4,7-1.8,10.1-2.3,4.1-4.3-6.1-4.3-7.2-.3-3.5,1.7-7.3,2-10.5.3-4.6-.3-9.6.3-14.3.1-2.6.3-5.4-.5-8.4-.4-1.6-1.5-4.4.3-5.4,2.3-.8,1.9,2.5,2,3.9v.2s-.1,0-.1,0Z" style="fill: url(#linear-gradient-tooth-13-side-8);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-81" d="M21,19.9h0v-.2h-.8c-.6.3-1.2.5-1.7.9s-.8.8,0,.8,2-.6,2.5-1.5Z" style="fill: url(#linear-gradient-tooth-13-side-9);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-71" d="M15.6,17.1h0v.2c0,.2.2.5.4.6.5.3,1.2.6,1.8.8s1,.2.6-.5-1.7-1.3-2.7-1.1h-.1Z" style="fill: url(#linear-gradient-tooth-13-side-10);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-61" d="M21.1,15.1h0v-.2c-.2-.2-.5-.3-.7-.2-.6,0-1.3.1-1.9.4s-1,.5-.1.7,2.1,0,2.8-.7h0Z" style="fill: url(#linear-gradient-tooth-13-side-11);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-51" d="M15.4,12.4h0v.2c.1.2.4.4.6.4.6,0,1.3.2,1.9,0s1-.3.3-.7-2.1-.5-2.9,0h0Z" style="fill: url(#linear-gradient-tooth-13-side-12);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-41" d="M21.1,9.5h0s0-.1-.1-.2c-.2-.1-.5-.1-.8-.1-.6,0-1.2.4-1.8.7s-.8.6,0,.7,2.1-.3,2.7-1.1Z" style="fill: url(#linear-gradient-tooth-13-side-13);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-31" d="M15.1,5.9h0v.2c0,.3.3.5.5.7.5.4,1.2.7,1.8.9s1.1.2.6-.5-1.7-1.4-2.8-1.4h-.1Z" style="fill: url(#linear-gradient-tooth-13-side-14);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-21" d="M15.1,1.3h0v.2c0,.3.3.5.5.7.5.4,1.2.7,1.8.9s1.1.2.6-.5-1.7-1.4-2.8-1.4h-.1Z" style="fill: url(#linear-gradient-tooth-13-side-15);" data-active="1" />
-      <ns0:path id="pulp-inflam-path-11" d="M21,3.5h-.2c-.3,0-.5.2-.8.3-.5.4-.9,1-1.3,1.6s-.4,1,.3.7,1.7-1.4,1.9-2.6h.1Z" style="fill: url(#linear-gradient-tooth-13-side-16);" data-active="1" />
-      </ns0:g>
-    <ns0:path id="milktooth-healthy-pulp" d="M19,13.5c.1,4.3.1,10,.5,14.5,0,2.9,1.4,5.3,2.1,8.3.5,3-.4,7-1.8,10.1-2.4,4.1-4.5-6.1-4.5-7.2-.3-3.5,1.7-7.3,2.1-10.5.3-4.6-.3-9.6.3-14.3.1-2.6.3-5.4-.5-8.4-.4-1.6-1.6-4.4.3-5.4,2.4-.8,2,2.5,2.1,3.9v.2s-.8,5.8-.5,8.8c0,0-.1,0-.1,0Z" style="fill: #fcc5bc;" data-active="1" />
-    </ns0:g>
-  <ns0:g id="endos" data-active="1">
-    <ns0:path id="endo-medical-filling" d="M18.2,1.7c.9,2.6,1.2,8.2,1.6,11.6.5,4.6,2,17.2,2.5,21.9.3,5.2,5.9,7.1,1.9,12.1-3.7,4.7-12.1,3.7-11.4-5.7.7-7.3,2.8-4.5,3-12.2.4-6.8.9-14.5,1-20.9,0-1.1.3-10.1,1.4-7h0s0,.2,0,.2Z" style="display: none; fill: #fff; stroke: #f9ae94; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-    <ns0:path id="endo-filling" d="M18.2,1.7c.9,2.6,1.2,8.2,1.6,11.6.5,4.6,2,17.2,2.5,21.9.3,5.2,5.9,7.1,1.9,12.1-3.7,4.7-12.1,3.7-11.4-5.7.7-7.3,2.8-4.5,3-12.2.4-6.8.9-14.5,1-20.9,0-1.1.3-10.1,1.4-7h0s0,.2,0,.2Z" style="display: none; fill: #388aca;" data-active="1" />
-    <ns0:path id="endo-glass-pin" d="M18.4,8.5c.8,1.9,1.1,5.8,1.4,8.2.4,3.2,1.8,12.2,2.2,15.5.2,3.7,6,11.1,2.2,14.6-3.5,3.3-12.8,2.7-12.1-3.9.7-5.2,3.6-9.4,3.8-14.8.4-4.8.9-10.2,1.1-14.8,0-.8.3-7.1,1.4-5h0s0,.2,0,.2Z" style="display: none; fill: #c8c9c9;" data-active="1" />
-    <ns0:path id="endo-metal-pin" d="M18.4,8.5c.8,1.9,1.1,5.8,1.4,8.2.4,3.2,1.8,12.2,2.2,15.5.2,3.7,6,11.1,2.2,14.6-3.5,3.3-12.8,2.7-12.1-3.9.7-5.2,3.6-9.4,3.8-14.8.4-4.8.9-10.2,1.1-14.8,0-.8.3-7.1,1.4-5h0s0,.2,0,.2Z" style="display: none; fill: #3951a3;" data-active="1" />
-    <ns0:path id="endo-resection" d="M11,10.4S14,.4,14.5.4c1.3,0,4.5,0,6,0,1.5,0,4,10.9,4,11.2l.2,9-13.5.3-.2-10.4h0Z" style="display: none; fill: #fdecc5;" data-active="1" />
-    </ns0:g>
-  <ns0:g id="surfaces" data-active="1">
-    <ns0:g id="fillings" data-active="1">
-      <ns0:g id="amalgam" data-active="1">
-        <ns0:path id="filling-amalgam-occlusal" d="M12.4,58.7c.1.5.9,1.3,1.1,1.8,1.5,2.5,4.7,3.8,7.3,2.3,2.2-1.2,4.8-3.9,4.3-6.6-1.6-6.1-14.6-5.5-13,1.4,0,0,.3,1.1.3,1.1Z" style="display: none; fill: #aaa; stroke: #aaa; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-amalgam-buccal" d="M17.6,49c1.8,0,2.3-2.5,2.6-3.9.4-2.1-3.3-1.5-4.3-.7-1.7,1.2-.5,4.4,1.6,4.5h.2-.1Z" style="display: none; fill: #aaa; stroke: #aaa; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-amalgam-mesial" d="M26.1,32.2c-3.6-.7-4.7,11-3.3,12.9,1.2,3.3,5.3,3.6,6.5,0,1-2.8-.6-11.5-3-13h-.2Z" style="display: none; fill: #aaa; stroke: #aaa; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-amalgam-distal" d="M10.1,47.9c2.3-.4,3.1-5.4,3.3-7.8.6-3.5,0-7.6-3.4-7-4.3,1.1-4.2,14.1,0,14.8h.1Z" style="display: none; fill: #aaa; stroke: #aaa; stroke-miterlimit: 10;" data-active="1" />
-        </ns0:g>
-      <ns0:g id="composite" data-active="1">
-        <ns0:path id="filling-composite-occlusal" d="M12.3,58.7c.1.5.9,1.3,1.1,1.8,1.5,2.5,4.7,3.8,7.3,2.3,2.2-1.2,4.8-3.9,4.3-6.6-1.6-6.1-14.6-5.5-13,1.4,0,0,.3,1.1.3,1.1Z" style="display: none; fill: #feffbf; stroke: #feffbf; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-composite-buccal" d="M17.6,49c1.8,0,2.3-2.5,2.6-3.9.4-2.1-3.3-1.5-4.3-.7-1.7,1.2-.5,4.4,1.6,4.5h.2-.1Z" style="display: none; fill: #feffbf; stroke: #feffbf; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-composite-mesial" d="M26.5,32.4c-3.6-.8-5.1,10.9-3.7,12.8,1.1,3.3,5.2,3.8,6.5.3,1.1-2.8-.2-11.5-2.6-13.1,0,0-.2,0-.2,0Z" style="display: none; fill: #feffbf; stroke: #feffbf; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-composite-distal" d="M10.1,47.9c2.3-.4,3.1-5.4,3.3-7.8.6-3.5,0-7.6-3.4-7-4.3,1.1-4.2,14.1,0,14.8h.1Z" style="display: none; fill: #feffbf; stroke: #feffbf; stroke-miterlimit: 10;" data-active="1" />
-        </ns0:g>
-      <ns0:g id="gic" data-active="1">
-        <ns0:path id="filling-gic-occlusal" d="M12.4,58.7c.1.5.9,1.3,1.1,1.8,1.5,2.5,4.7,3.8,7.3,2.3,2.2-1.2,4.8-3.9,4.3-6.6-1.6-6.1-14.6-5.5-13,1.4,0,0,.3,1.1.3,1.1Z" style="display: none; fill: #f9ae94; stroke: #f99; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-gic-buccal" d="M17.6,49c1.8,0,2.3-2.5,2.6-3.9.4-2.1-3.3-1.5-4.3-.7-1.7,1.2-.5,4.4,1.6,4.5h.2-.1Z" style="display: none; fill: #f9ae94; stroke: #f99; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-gic-mesial" d="M26.1,32.2c-3.6-.7-4.7,11-3.3,12.9,1.2,3.3,5.3,3.6,6.5,0,1-2.8-.6-11.5-3-13h-.2Z" style="display: none; fill: #f9ae94; stroke: #f99; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-gic-distal" d="M10.1,47.9c2.3-.4,3.1-5.4,3.3-7.8.6-3.5,0-7.6-3.4-7-4.3,1.1-4.2,14.1,0,14.8h.1Z" style="display: none; fill: #f9ae94; stroke: #f99; stroke-miterlimit: 10;" data-active="1" />
-        </ns0:g>
-      <ns0:g id="temporary" data-active="1">
-        <ns0:path id="filling-temporary-occlusal" d="M12.4,58.7c.1.5.9,1.3,1.1,1.8,1.5,2.5,4.7,3.8,7.3,2.3,2.2-1.2,4.8-3.9,4.3-6.6-1.6-6.1-14.6-5.5-13,1.4,0,0,.3,1.1.3,1.1Z" style="display: none; fill: #ffffff; stroke: #eeeeee; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-temporary-buccal" d="M17.6,49c1.8,0,2.3-2.5,2.6-3.9.4-2.1-3.3-1.5-4.3-.7-1.7,1.2-.5,4.4,1.6,4.5h.2-.1Z" style="display: none; fill: #ffffff; stroke: #eeeeee; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-temporary-mesial" d="M26.1,32.2c-3.6-.7-4.7,11-3.3,12.9,1.2,3.3,5.3,3.6,6.5,0,1-2.8-.6-11.5-3-13h-.2Z" style="display: none; fill: #ffffff; stroke: #eeeeee; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="filling-temporary-distal" d="M10.1,47.9c2.3-.4,3.1-5.4,3.3-7.8.6-3.5,0-7.6-3.4-7-4.3,1.1-4.2,14.1,0,14.8h.1Z" style="display: none; fill: #ffffff; stroke: #eeeeee; stroke-miterlimit: 10;" data-active="1" />
-        </ns0:g>
-      </ns0:g>
-    <ns0:g id="caries" data-active="1">
-      <ns0:path id="caries-subcrown" d="M8.8,33.5c-1,2.9,3.8-1.4,5.7-2,2.9-.6,6.4-3.4,6.1-5.4-1-4-8.9-3.1-9.7-.3l-2.1,7.8h0Z" style="display: none; fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
-      <ns0:path id="caries-buccal" d="M15.8,49.4c.6.6,1.5.9,2.3.9,1.3,0,2.3-.7,2.9-1.9s.4-.8.4-1.3c-.5-2.5-6.1-1.6-6.8-.6-.4.8.7,2.2,1.2,2.8h0Z" style="display: none; fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
-      <ns0:g id="caries-mesial" style="display: none;" data-active="1">
-        <ns0:path id="mesial-shape" d="M26.6,32.9c-3.5-.8-5,10.7-3.8,12.6,1,3.3,5,3.8,6.3.3,1.1-2.7,0-11.3-2.4-12.9h-.1Z" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="mesial-patch2" d="M26.7,40.3c3.2,0-1-4.3-1.8-1.6-.3.9.8,1.7,1.5,1.6h.3Z" style="fill: #fff;" data-active="1" />
-        <ns0:path id="mesial-patch1" d="M24.9,45.8c1.4,1.3,4.6-.7,2.1-1.6-1.6-.5-2.5.6-2.1,1.5h0Z" style="fill: #fff;" data-active="1" />
-        </ns0:g>
-      <ns0:g id="caries-distal" style="display: none;" data-active="1">
-        <ns0:path id="distal-shape" d="M10.5,49.3c2.3-.4,3.1-5.3,3.4-7.7.6-3.5.2-7.6-3.2-7.1-4.3,1-4.4,14-.3,14.8h0Z" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="distal-patch2" d="M11.8,40.4c.9-.6.5-2.7-.6-2.5s-.7,3,.4,2.6h.2Z" style="fill: #fff;" data-active="1" />
-        <ns0:path id="distal-patch1" d="M9.6,45.9c.2.3.7.5,1,.6.3,0,.8.2.7,0-.3-.5-1.1-1.6-1.5-1.9-.8-.3-.4,1-.3,1.3h.1Z" style="fill: #fff;" data-active="1" />
-        </ns0:g>
-      <ns0:g id="caries-occlusal" style="display: none;" data-active="1">
-        <ns0:path id="occlusal-shape" d="M12.6,58.6c1,3.1,4.3,5.1,6.2,4.9,1.8,0,5.2-2.5,6-5.1,1.1-4.9-4.8-6.6-7.7-6.2-2.1.3-4.7,2.4-4.8,5.4v.7l.3.4h0Z" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="occlusal-patch2" d="M18.9,58.5c-.7,3,3.3,1.5,3.6,0,.5-.8.2-2-.5-2.3-1.2-.5-2.4,1-3.2,2.1h0v.2h.1Z" style="fill: #fff; stroke: #000; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-        <ns0:path id="occlusal-patch1" d="M14.3,58.6c-.1,1.5,1,2.6,1.6,1.2.4-.9.4-3.1-.4-3.1s-1.1.7-1.1,1.8v.2h-.1Z" style="fill: #fff; stroke: #000; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-        </ns0:g>
-      </ns0:g>
-    <ns0:g id="contact-point" data-active="1">
-      <ns0:g id="mesial-no-contact-point" style="display: none;" data-active="1">
-        <ns0:path d="M27.8,37.4c1.1,2.4,2.5,5.1,4,7.7" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
-        <ns0:path d="M28.3,45.6c.7-1.6.8-2.6,1.3-3.8.6-1.4,1.1-3,1.5-4.5" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
-        </ns0:g>
-      <ns0:g id="distal-no-contact-point" style="display: none;" data-active="1">
-        <ns0:path d="M5.1,38.7c1.3,2.4,2.9,5.1,4.5,7.6" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
-        <ns0:path d="M6,46.9c.6-1.6.6-2.6,1.1-3.8.6-1.4,1-3,1.3-4.5" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
-        </ns0:g>
-      </ns0:g>
-    </ns0:g>
-  <ns0:g id="restorations" style="display: none;" data-active="1">
-    <ns0:g id="implant" style="display: none;" data-active="1">
-      <ns0:path id="implant-locator-screw" d="M14.6,44.3c.9,1.5,3.8.9,5.4,1,3.2-.5,1.7-4.6,2-7,0-.7.2-1.6-.3-2.1-.2-.3-.7-.4-1-.4-1.5,0-3.4-.2-4.9.2-1.3.3-1.4,1.3-1.4,2.5,0,2-.2,3.9.1,5.7v.2h0Z" style="fill: url(#linear-gradient-tooth-13-side-17); stroke: #c8c9c9; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-      <ns0:path id="implant-connector" d="M11.7,37.6h0c.1,1.4,1.1,2.1,1.9,1.7,1.4-.7,1.6-2,3.4-2.1h3.3c.8,0,1.8,1.9,2.9,2.2s1.4-.6,1.3-1.6c0-1.9,0-5.6-.5-5.7s-3.1,0-3.7,0h-4.5c-1,0-2.7-.4-3.5.7-.8,1.1-1,2.9-.8,4l.2.7h0Z" style="fill: url(#linear-gradient-tooth-13-side-18);" data-active="1" />
-      <ns0:path id="implant-bar" d="M5.6,50.4c5.8.3,21,0,27.4.1s2.8-2.2,3-4.1.2-3.2-1-3.4-4.8,0-6.3,0c-3.6,0-6.7,0-10.1.2-3.8,0-12.1.2-12.7.1-1.1,0-2.1.7-2.2,1.7-.2,1.9-.2,5.5,1.8,5.3Z" style="fill: url(#radial-gradient);" data-active="1" />
-      <ns0:g id="implant-healing-abutment" style="display: none;" data-active="1">
-        <ns0:path id="implant-healing-abutment-connector" d="M14.7,36.8c1.7.3,3.7-.2,5.4-.2,3.3,0,4.2-1.2,3.4-5.6-.8-3.9-1.7-9-2.7-13.4-.3-1.1-.6-2.2-1.1-3.1-2.3-4.5-4.3,1.7-4.7,5-.5,3.4-.6,5.9-1.3,9-.6,2.7-2.4,7.7.7,8.3h.3Z" style="fill: #a0a0a0; stroke: #8c8c8c; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
-        <ns0:path d="M25.3,33.3h-9.2c-1.4,0-5,.2-5,.2,0,0-.4.9-.7,1.7s-.3,1.2-.3,1.8v2.7c0,.3.2.5.2.7h1.1c2.4-.3,4.9-.4,7.3-.4v-.2c.3,0-.7-.2-.9-.2.4.5-1.8,0-2.1,0-.5,0-.7-.5-.7-1v-2.4c0-.6.6-.5.4-.6l-4.1.3c-.4,0-.7.2-1.1,0l2.5-.5c3.2-.6,6.4-.3,9.5,0,.6,0,1.2,0,1.9.2h.5c.2,0,.4,0,.5.2-.2-.2,0-2.5,0-2.5h.2Z" style="fill: #475563;" data-active="1" />
-        <ns0:path d="M18.9,39.8v-.2h.2v-.2c.5,0,2,.3,2.6.2.1.3.5.2.7.2.6,0,2.3.2,2.5-.9s.2-1.8,0-2.7-.3-.4-.1-.6h.4s.2,0,.2.4v3.6c0,.2-.1.4-.2.6-.9,0-1.8-.2-2.8-.3h-3.6,0Z" style="fill: #8c8c8c;" data-active="1" />
-        <ns0:path d="M18.6,35.6c-.1-.2-.3-.2-.5-.2l-.9.2c-.1-.2-.4-.2-.6,0-.1-.2-.9,0-1,0l-4.1.3c-.4,0-.7.2-1.1,0l2.5-.5c3.2-.6,6.4-.3,9.5,0,.1.3,0,.2.3.6.2.3.3.2.4.5.1.7,0,1.5,0,2.1s-.3.8-.7.9c-.7,0-2,.2-2.7,0s-1.4-.2-1.4-.6v-.9c-.1-.4,0-1.5,0-2s.5-.7.3-.5h0Z" style="fill: #e8eef0;" data-active="1" />
-        <ns0:path d="M21.7,39.6h.7c.4-.2.7-.6.7-1v-1.9c0-.6-.9-1.1-1.5-1.1-.3-.4.9,0,.8-.2.6,0,1.2,0,1.9.2s.3,0,.5,0c-.2.2,0,.4.1.6.1.9.1,1.8,0,2.7s-1.9,1-2.5.9-.6,0-.7-.2h0Z" style="fill: #a0a0a0;" data-active="1" />
-        <ns0:path d="M15.6,35.5c.1,0,.9-.2,1,0,.2-.2.5-.2.6,0,0,0-.2.2-.2.3,0,1-.2,1.9,0,2.9s.6.6,1,.7c.4.5-1.8,0-2.1,0-.5,0-.7-.5-.7-1v-2.4c0-.8.6-.5.4-.6h0Z" style="fill: #6f7c86;" data-active="1" />
-        <ns0:path d="M18.9,39.6c.3,0-1.1-.3-.9-.2-.4,0-.9,0-1-.7-.2-.9,0-1.9,0-2.9s.2-.2.2-.3l.9-.2c.2,0,.4,0,.5.2-.2.2-.3.4-.3.7v2.5c0,.9.5.6.7.7v.2h-.2.1Z" style="fill: #a0a0a0;" data-active="1" />
-        </ns0:g>
-      <ns0:g id="implant-base" data-active="1">
-        <ns0:path d="M14.9,33.3c-.1-1.3-.2-2.7.2-4h5.6c.4,1,.2,2.9.2,4h-6Z" style="fill: #bbc3c6;" data-active="1" />
-        <ns0:path d="M16.1,6.9c-.2,0,0-2.2,0-2.4.2-1.3.9-2.4,1.9-3,1-.6.2,0,.2-.3,1.7,0,3.3,1.1,3.8,3.1s0,1.2.1,1.8h-1.3c0-.8,0-2.1-.8-2.3s-.7,0-.7.3c0,.8,0,1.5.2,2.1l-3.5.6h0Z" style="fill: #bac3c7;" data-active="1" />
-        <ns0:path d="M15.1,29.3c-.4,1.3-.3,2.7-.2,4l-3.8.2c0-.7-.3-4.2.7-4,1.1-.2,2.2-.2,3.3-.2Z" style="fill: #a0a4a5;" data-active="1" />
-        <ns0:path d="M15.7,28.8v-2.5c1.5-.3,3-.7,4.6-.7l.2,3.3h-4.8Z" style="fill: #bac3c6;" data-active="1" />
-        <ns0:path d="M18.3,1.1s-.1.2-.2.3c-1,.6-1.6,1.7-1.9,3-.3,1.3-.2,2.4,0,2.4l-2.4.6c.1-1.1,0-2.2.3-3.3s1.1-2.2,2.1-2.7,1.5-.4,2.2-.4h-.1,0Z" style="fill: #9ca3a6;" data-active="1" />
-        <ns0:path d="M20.9,33.3c0-1.1.2-3-.2-4h2.7c.2,1,.3,3,0,4h-2.5Z" style="fill: #e8eef0;" data-active="1" />
-        <ns0:path d="M15.6,26.2v2.5c.1,0-3.4.2-3.4.2,0-.7,0-1.4.1-2,1.1-.4,2.2-.5,3.2-.8h.1,0Z" style="fill: #9ea3a4;" data-active="1" />
-        <ns0:path d="M23.4,33.4c.2-1,.2-3,0-4h1.4c.8.2.7,3.3.5,4h-1.9Z" style="fill: #bcc4c7;" data-active="1" />
-        <ns0:path d="M20.5,28.8l-.2-3.3c.6-.2,1.3-.2,1.9-.2l.2,3.6h-1.9Z" style="fill: #e3eaeb;" data-active="1" />
-        <ns0:path d="M22.4,28.9l-.2-3.6c.5-.1,1.1-.1,1.7-.1l.3,3.8h-1.8Z" style="fill: #b8c2c4;" data-active="1" />
-        <ns0:path d="M15.7,24.4v-1.1c1.5-.3,3-.6,4.5-.7v1.1l-4.5.7Z" style="fill: #b7c0c3;" data-active="1" />
-        <ns0:path d="M15.8,21.5c-.1-.4,0-.8,0-1.2,1.5-.3,2.9-.5,4.3-.7v1.2l-4.4.7h0Z" style="fill: #b9c0c4;" data-active="1" />
-        <ns0:path d="M15.9,18.6c-.3-.4,0-.5-.2-1.1,1.4-.4,2.8-.6,4.3-.8v1.2c-1.3.2-2.7.4-4.1.7Z" style="fill: #b8c0c3;" data-active="1" />
-        <ns0:path d="M15.8,15.6v-1.1c1.3-.3,2.7-.6,4.1-.7v1.1l-4.1.7Z" style="fill: #b7bfc3;" data-active="1" />
-        <ns0:path d="M15.9,12.7v-1.1c1.3-.3,2.6-.5,3.9-.7v1.2l-4,.6s.1,0,0,0h0Z" style="fill: #b9c1c5;" data-active="1" />
-        <ns0:path d="M15.9,8.7c1.2-.3,2.4-.6,3.7-.7v1.2c-1.2.1-2.4.4-3.7.6v-1.1Z" style="fill: #bac3c5;" data-active="1" />
-        <ns0:path d="M15.7,25.7c0-.2,0-.5-.1-.7-.2.2-.5.3-.6,0,1.7-.4,3.5-.7,5.3-.9.1.2,0,.5,0,.8l-4.6.7h0Z" style="fill: #b7c0c3;" data-active="1" />
-        <ns0:path d="M15.8,22.8c-.2-.2,0-.5,0-.8,1.5-.3,3-.6,4.5-.7v.8l-4.4.7s-.1,0,0,0h-.1Z" style="fill: #b9c0c3;" data-active="1" />
-        <ns0:path d="M15.7,23.3v1.1l-3.2.8v-1.1c1-.4,2.1-.5,3.1-.7h.1Z" style="fill: #9a9fa1;" data-active="1" />
-        <ns0:path d="M15.9,19.8c-.1-.3-.2-.4-.2-.7,1.5-.3,2.9-.6,4.3-.7v.8l-4.2.7h.1Z" style="fill: #bac0c3;" data-active="1" />
-        <ns0:path d="M15.8,20.3c0,.4-.1.8,0,1.2l-3.1.7v-1.2c1-.4,2-.5,3-.7,0,0,.1,0,0,0h.1Z" style="fill: #999fa1;" data-active="1" />
-        <ns0:path d="M15.8,16.9v-.8c1.4-.3,2.8-.5,4.2-.7v.8s-4.2.7-4.2.7Z" style="fill: #bac1c4;" data-active="1" />
-        <ns0:path d="M15.8,14v-.7c1.3-.3,2.7-.5,4-.7v.8l-4.1.6s.1,0,.1,0Z" style="fill: #b9c0c3;" data-active="1" />
-        <ns0:path d="M15.9,11.1v-.8c1.2-.4,2.5-.5,3.8-.7,0,.2.1.5,0,.8l-3.9.7s.1,0,0,0h0Z" style="fill: #bbc2c4;" data-active="1" />
-        <ns0:path d="M15.7,17.5c.1.6,0,.7.2,1.1l-2.9.7v-1.1c.9-.5,1.8-.4,2.7-.6h0Z" style="fill: #9ba0a2;" data-active="1" />
-        <ns0:path d="M14.9,25.1c.1.2.4.2.6,0,.1.2.1.5.1.7-1.2.3-2.4.5-3.6.9s-.4-.2-.5-.4c0-.6,2.7-1,3.2-1.1h.2,0Z" style="fill: #a8aeb1;" data-active="1" />
-        <ns0:path d="M15.7,22v.8l-3.5.9c-.2,0-.4-.3-.4-.4,0-.6,3.3-1.1,3.8-1.2h0Z" style="fill: #a6abad;" data-active="1" />
-        <ns0:path d="M15.8,14.5v1.1l-2.7.7v-1.2c.9-.4,1.8-.5,2.6-.6,0,0,.1,0,0,0,0,0,.1,0,.1,0Z" style="fill: #9ba0a3;" data-active="1" />
-        <ns0:path d="M19.6,6.3c-.1-.7-.2-1.4-.2-2.1s.5-.4.7-.3c.8.2.7,1.5.8,2.3l-1.3.2h0Z" style="fill: #e4e9ea;" data-active="1" />
-        <ns0:path d="M16,8.2v-.8c1.2-.3,2.4-.5,3.7-.6v.8l-3.7.6Z" style="fill: #bcc2c4;" data-active="1" />
-        <ns0:path d="M15.7,19.1c0,.3,0,.5.2.7-1.2.2-2.2.5-3.4.8s-.4-.2-.4-.3c-.1-.7,3.1-1.1,3.6-1.2Z" style="fill: #a6abad;" data-active="1" />
-        <ns0:path d="M15.9,11.6v1.1l-2.5.7c0-.3,0-.9.1-1.1.8-.4,1.6-.4,2.4-.6h0Z" style="fill: #9da2a4;" data-active="1" />
-        <ns0:path d="M15.8,16.2v.8l-3.2.8c-.2,0-.3-.3-.3-.4s0-.3.2-.4c1.1-.4,2.2-.6,3.2-.8h.1Z" style="fill: #a5aaac;" data-active="1" />
-        <ns0:path d="M15.9,8.7v1.1l-2.4.6v-1.1c.8-.3,1.6-.4,2.3-.6h.1Z" style="fill: #9ca1a3;" data-active="1" />
-        <ns0:path d="M15.8,13.3v.7l-2.9.8c-.2,0-.4-.2-.4-.3-.2-.7,3-1.1,3.3-1.1h0Z" style="fill: #a5aaac;" data-active="1" />
-        <ns0:path d="M15.8,10.3v.8l-2.8.7c-.2,0-.3-.2-.4-.3s0-.4.3-.4c1-.3,1.9-.6,2.9-.7h0Z" style="fill: #a2a7a9;" data-active="1" />
-        <ns0:path d="M16,7.4v.8c-.9.2-1.7.4-2.6.7s-.4-.1-.4-.3,0-.3.2-.4c.9-.4,1.8-.5,2.8-.8Z" style="fill: #a7abae;" data-active="1" />
-        <ns0:path d="M20.3,23.7v-1.1c.5-.2,1.1-.2,1.7-.2.1.4,0,.8,0,1.2l-1.8.2h0Z" style="fill: #e2e9eb;" data-active="1" />
-        <ns0:path d="M20.2,20.8v-1.2l1.8-.2v1.1c-.5.2-1.1.2-1.7.3h0Z" style="fill: #e1e8e9;" data-active="1" />
-        <ns0:path d="M20,16.7c.6,0,1.2-.2,1.8-.2v1.2l-1.7.2v-1.2h0Z" style="fill: #e3e9ea;" data-active="1" />
-        <ns0:path d="M19.9,15v-1.1c.5,0,1.1-.2,1.6-.2.2.4,0,.8.2,1.1-.6,0-1.2,0-1.8.2Z" style="fill: #e3e9ea;" data-active="1" />
-        <ns0:path d="M22.1,23.5v-1.2c.5,0,1.1-.1,1.7-.1,0,.4.1.8.1,1.2-.6.2-1.2,0-1.7.1h-.1Z" style="fill: #b7bfc3;" data-active="1" />
-        <ns0:path d="M19.8,12.1c-.1-.4,0-.8,0-1.2l1.6-.2v1.1c-.4.1-1,.2-1.5.2h-.1Z" style="fill: #e4eaeb;" data-active="1" />
-        <ns0:path d="M22.2,24.8v-.8c.5,0,2.5-.5,2.4.3s-1.8.5-2.4.5Z" style="fill: #b4bdc0;" data-active="1" />
-        <ns0:path d="M22.1,21.9v-.8c.4,0,2.4-.5,2.3.2s-.2.4-.4.4h-1.9s0,.2,0,.2Z" style="fill: #b8c0c4;" data-active="1" />
-        <ns0:path d="M19.6,8c.5,0,1-.2,1.5-.2.1.4,0,.8.2,1.1-.5.1-1,.2-1.6.2v-1.2h-.1Z" style="fill: #e3e8e9;" data-active="1" />
-        <ns0:path d="M22,20.5v-1.1c.4,0,.9-.1,1.4-.1,0,.4.1.8,0,1.1-.5.2-1.1,0-1.5.1h.1Z" style="fill: #b8c0c3;" data-active="1" />
-        <ns0:path d="M21.8,19v-.8c.4,0,2.2-.5,2.2.2s-1.7.5-2.2.6Z" style="fill: #b5bdc1;" data-active="1" />
-        <ns0:path d="M21.8,17.7v-1.2c.5,0,.9-.2,1.4-.1v1.1c-.5.1-1,0-1.5.1h.1Z" style="fill: #b8c1c5;" data-active="1" />
-        <ns0:path d="M21.7,16c-.1-.2,0-.5,0-.8.5,0,2.1-.4,2.2.2s-1.5.6-2.1.6h-.1Z" style="fill: #bac0c3;" data-active="1" />
-        <ns0:path d="M21.5,13.1c-.1-.2,0-.5-.1-.8.5,0,2.1-.5,2.1.2s-1.5.5-2,.6Z" style="fill: #b6bec2;" data-active="1" />
-        <ns0:path d="M21.6,14.8c-.1-.4,0-.8-.2-1.1.5,0,.9-.2,1.4-.1,0,.4.1.8,0,1.1h-1.3.1Z" style="fill: #b9c2c6;" data-active="1" />
-        <ns0:path d="M20.3,25v-.8c.7,0,1.3-.2,2-.2v.8l-1.9.2h-.1Z" style="fill: #e5e9eb;" data-active="1" />
-        <ns0:path d="M21.3,10.2v-.8c.3,0,2.2-.5,2,.3s-1.4.4-1.9.5h-.1Z" style="fill: #bbc2c5;" data-active="1" />
-        <ns0:path d="M21.4,11.8v-1.1c.3,0,.7-.1,1.2,0,0,.3.1.7,0,1.1-.4.3-.9,0-1.3.1h0Z" style="fill: #b6bfc2;" data-active="1" />
-        <ns0:path d="M20.2,22v-.8c.6,0,1.2-.2,1.8-.2v.8l-1.9.2h.1Z" style="fill: #e6ebec;" data-active="1" />
-        <ns0:path d="M21.3,9c-.2-.3,0-.8-.2-1.1.4,0,.8-.2,1.3,0,0,.3.1.7,0,1.1-.4.2-.8,0-1.2.1h.1Z" style="fill: #bdc3c6;" data-active="1" />
-        <ns0:path d="M20.1,19.1v-.8c.6,0,1.2-.3,1.8-.2v.8l-1.8.2Z" style="fill: #e6eaeb;" data-active="1" />
-        <ns0:path d="M21.1,7.4v-.8c.4,0,2.1-.5,1.9.3s-1.4.4-1.9.4h0Z" style="fill: #bfc4c7;" data-active="1" />
-        <ns0:path d="M20,16.2v-.8l1.7-.2v.8l-1.8.2h0Z" style="fill: #e5eaeb;" data-active="1" />
-        <ns0:path d="M19.8,13.3v-.8l1.7-.2c0,.3,0,.5.1.8l-1.7.2h-.1Z" style="fill: #e6ebeb;" data-active="1" />
-        <ns0:path d="M19.7,10.4v-.8c.5,0,1-.2,1.6-.2v.8l-1.6.2Z" style="fill: #e6eaeb;" data-active="1" />
-        <ns0:path d="M19.6,6.8c.5,0,1-.2,1.5-.2v.8l-1.5.2v-.8Z" style="fill: #e1e5e6;" data-active="1" />
-        </ns0:g>
-      </ns0:g>
-    <ns0:g id="prosthesis-implant" data-active="1">
-      <ns0:g id="prosthesis-implant-gum" style="display: none; opacity: .5;" data-active="1">
-        <ns0:path d="M35.3,53.3v-11.7c0-.8-.9-1.5-2-1.5-5.4,0-20.5,0-29.8,0s-2,.6-2,1.4c-.1,2.7-.3,8.7-.4,11.7s.9,1.5,2.1,1.5c6.1,0,24,0,30.1,0s2-.7,2-1.5Z" style="fill: url(#Salmon_Pink_Radial);" data-active="1" />
-        <ns0:path d="M35.2,53.3c-.1-3.9-.4-7.9-.5-11.7-.1-.7-1.1-.9-1.7-.8-8,0-18.5-.5-26.6-.6,0,0-3,0-3,0-.5,0-1,.4-1,.9,0,.3,0,.5.1.6,0,0,0,0,0,0v.2c.1,3.8-.2,7.7-.4,11.5,0,0,.1.2.4.4.5.3,3.4.2,4,.2,0,0,5.9.2,5.9.2,3.9.1,13.9.4,17.7.5,0,0,3,0,3,0,.9,0,2.1-.4,2.1-1.4h0ZM35.4,53.3c0,1.1-1.3,1.6-2.3,1.6,0,0-3,0-3,0-3.7.1-13.8.4-17.7.5-1.9,0-7,.2-8.9.2-1.3.2-3.8-.5-3.6-2.9,0,0,0-.7,0-.7,0-3.4,0-6.9.3-10.4.1-2,1.8-1.8,3.2-1.6,9.2,0,20.3-.6,29.5-.6,1.1,0,2.7.5,2.9,1.9,0,4-.3,7.9-.5,11.9h0Z" style="fill: #ffa46a;" data-active="1" />
-        </ns0:g>
-      <ns0:path id="prosthesis-implant-crown" d="M22.7,57.3c-2,7.2-7.2,7.7-9-.2-.6-2.5-.9-5.8.5-7.7,1.5-2.1,4.6-2.5,6.6-1.2,2.7,1.8,2.7,6.1,1.9,9h0c0,0,0,.1,0,.1Z" style="display: none; fill: #f9ae94; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
-      </ns0:g>
-    <ns0:g id="prosthesis" data-active="1">
-      <ns0:path id="prosthesis-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5.1-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7,3.9,0,7.5,0,11.4-.2,4.2-.1,9.5.1,12.3-1.2h.2Z" style="display: none; fill: url(#linear-gradient-tooth-13-side-19); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-      <ns0:path id="prosthesis-crown" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="display: none; fill: #f9ae94; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
-      </ns0:g>
-    <ns0:g id="telescope" data-active="1">
-      <ns0:path id="telescope-bridge-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5.1-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7,3.9,0,7.5,0,11.4-.2,4.2-.1,9.5.1,12.3-1.2h.2Z" style="display: none; fill: #0051bf; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-      <ns0:g id="telescope-crown" style="display: none;" data-active="1">
-        <ns0:path id="telescope-crown-outside" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="fill: #0051bf; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
-        <ns0:path id="telescope-crown-inside" d="M26.7,49.6c-3.6,13.2-13.1,14.1-16.5-.4-1.1-4.6-1.7-10.5,1-14.1,2.7-3.8,8.5-4.5,12.2-2.1,4.9,3.2,4.9,11.2,3.4,16.5v.2h-.1Z" style="fill: #aaa; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
-        </ns0:g>
-      </ns0:g>
-    <ns0:g id="zircon" data-active="1">
-      <ns0:path id="zircon-bridge-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5.1-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7,3.9,0,7.5,0,11.4-.2,4.2-.1,9.5.1,12.3-1.2h.2Z" style="display: none; fill: #feffbf; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-      <ns0:path id="zircon-crown" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="display: none; fill: #feffbf; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
-      </ns0:g>
-    <ns0:g id="metal" data-active="1">
-      <ns0:path id="metal-bridge-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5.1-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7,3.9,0,7.5,0,11.4-.2,4.2-.1,9.5.1,12.3-1.2h.2Z" style="display: none; fill: #0051bf; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-      <ns0:path id="metal-crown" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="display: none; fill: #0051bf; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
-      </ns0:g>
-    <ns0:g id="emax" data-active="1">
-      <ns0:path id="emax-crown" d="M27.2,50.6c-3.8,13.7-13.7,14.7-17.2-.4-1.2-4.8-1.8-11,1-14.8,2.9-4,8.8-4.7,12.7-2.2,5.1,3.4,5.1,11.6,3.6,17.2v.2h0Z" style="display: none; fill: url(#Orange_Radial); stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
-      </ns0:g>
-    <ns0:g id="temporary" data-active="1">
-      <ns0:path id="temporary-bridge-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5.1-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7,3.9,0,7.5,0,11.4-.2,4.2-.1,9.5.1,12.3-1.2h.2Z" style="display: none; fill: #fff; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
-      <ns0:path id="temporary-crown" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="display: none; fill: #fff; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
-      </ns0:g>
-    <ns0:g id="extraction-plan" data-active="1">
-      <ns0:path d="M5.6,57.2c1.4-4,27.8-51.6,28.7-53.7" style="fill: none; stroke: #b70000; stroke-miterlimit: 10; stroke-width: 3px;" data-active="1" />
-      <ns0:path d="M6.1,4c2.7,3.5,19.6,39.4,23,48.1.6,1.5,1.2,3,2,4.3" style="fill: none; stroke: #b70000; stroke-miterlimit: 10; stroke-width: 3px;" data-active="1" />
-      </ns0:g>
-    </ns0:g>
-  </ns0:svg>
+  <defs>
+    <linearGradient id="linear-gradient-13-0" x1="-1289.5" y1="-5823.9" x2="-1286.2" y2="-5823.9" gradientTransform="translate(-244.3 -5938.6) rotate(-15) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-1" x1="-17745.4" y1="3071.8" x2="-17742.1" y2="3071.8" gradientTransform="translate(-16392.7 -7398.8) rotate(-165.5) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-2" x1="-576.6" y1="-4965.6" x2="-573.3" y2="-4965.6" gradientTransform="translate(-41.4 -4983.1) rotate(-7.3) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-3" x1="-17340.9" y1="4293.4" x2="-17337.6" y2="4293.4" gradientTransform="translate(-16746.1 -6157.6) rotate(-173.7) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-4" x1="-1653.9" y1="-6255.7" x2="-1650.6" y2="-6255.7" gradientTransform="translate(-195.6 -6457.7) rotate(-16.7) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-5" x1="-17213.2" y1="-6.9" x2="-17209.9" y2="-6.9" gradientTransform="translate(-16112.7 -9908.8) rotate(-148.4) scale(1.1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-6" x1="-17211.2" y1="-10.1" x2="-17207.8" y2="-10.1" gradientTransform="translate(-16112.7 -9908.8) rotate(-148.4) scale(1.1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-7" x1="-6374.7" y1="-8805.3" x2="-6371.2" y2="-8805.3" gradientTransform="translate(-1813.8 -11103.2) rotate(-47.9) scale(1.1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-8" x1="18.4" y1="3042.5" x2="18.4" y2="3089.4" gradientTransform="translate(0 -3042)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#ff422a" data-active="1" />
+      <stop offset="1" stop-color="#9f0016" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-9" x1="-2115.6" y1="-6562.9" x2="-2112.3" y2="-6562.9" gradientTransform="translate(-826 -6822.4) rotate(-24.9) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-10" x1="-17929.7" y1="1595.2" x2="-17926.4" y2="1595.2" gradientTransform="translate(-15098.2 -9754.8) rotate(-152.2) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-11" x1="-576.6" y1="-4965.6" x2="-573.3" y2="-4965.6" gradientTransform="translate(-41.4 -4983.1) rotate(-7.3) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-12" x1="-17340.9" y1="4293.4" x2="-17337.6" y2="4293.4" gradientTransform="translate(-16746.1 -6157.6) rotate(-173.7) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-13" x1="-1654.2" y1="-6256.6" x2="-1650.9" y2="-6256.6" gradientTransform="translate(-195.6 -6457.7) rotate(-16.7) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-14" x1="-17213.3" y1="-6.1" x2="-17210" y2="-6.1" gradientTransform="translate(-16112.7 -9908.8) rotate(-148.4) scale(1.1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-15" x1="-17211.2" y1="-10.1" x2="-17207.8" y2="-10.1" gradientTransform="translate(-16112.7 -9908.8) rotate(-148.4) scale(1.1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-16" x1="-6376" y1="-8807.5" x2="-6372.5" y2="-8807.5" gradientTransform="translate(-1813.8 -11103.2) rotate(-47.9) scale(1.1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#ff422a" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#000" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-17" x1="18.2" y1="3077.7" x2="18.2" y2="3087.4" gradientTransform="translate(0 -3042)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".2" stop-color="#cf0" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#b4c500" data-active="1" />
+      </linearGradient>
+    <linearGradient id="linear-gradient-13-18" x1="18" y1="3073.9" x2="18" y2="3081.4" gradientTransform="translate(0 -3042)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#c8c9c9" data-active="1" />
+      <stop offset="1" stop-color="#828282" data-active="1" />
+      </linearGradient>
+    <radialGradient id="radial-gradient-13-0" cx="19.7" cy="-2008.8" fx="19.7" fy="-2008.8" r="11.5" gradientTransform="translate(-.3 -1962) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#fff" data-active="1" />
+      <stop offset="0" stop-color="#ececec" data-active="1" />
+      <stop offset=".3" stop-color="#cfcfcf" data-active="1" />
+      <stop offset=".6" stop-color="#bababa" data-active="1" />
+      <stop offset=".8" stop-color="#aeaeae" data-active="1" />
+      <stop offset="1" stop-color="#aaa" data-active="1" />
+      </radialGradient>
+    <radialGradient id="radial-gradient-13-1" cx="-249.5" cy="-2009.5" fx="-249.5" fy="-2009.5" r="10.2" gradientTransform="translate(368 -1962) scale(1.4 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#fff" data-active="1" />
+      <stop offset="0" stop-color="#fefefe" data-active="1" />
+      <stop offset=".2" stop-color="#f8d6d4" data-active="1" />
+      <stop offset=".3" stop-color="#f2b5b2" data-active="1" />
+      <stop offset=".5" stop-color="#ee9b98" data-active="1" />
+      <stop offset=".6" stop-color="#eb8985" data-active="1" />
+      <stop offset=".8" stop-color="#e97e79" data-active="1" />
+      <stop offset="1" stop-color="#e97b76" data-active="1" />
+      </radialGradient>
+    <linearGradient id="linear-gradient-13-19" x1="17.9" y1="3095.2" x2="17.9" y2="3085.5" gradientTransform="translate(0 -3042)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f9ae94" data-active="1" />
+      <stop offset=".5" stop-color="#cd986a" data-active="1" />
+      <stop offset="1" stop-color="#f9ae94" data-active="1" />
+      </linearGradient>
+    <radialGradient id="radial-gradient-13-2" cx="18.6" cy="19.5" fx="18.6" fy="19.5" r="12.4" gradientTransform="translate(0 66) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#fff" data-active="1" />
+      <stop offset="0" stop-color="#fdf3ea" data-active="1" />
+      <stop offset=".2" stop-color="#f9d8b9" data-active="1" />
+      <stop offset=".3" stop-color="#f5c18f" data-active="1" />
+      <stop offset=".4" stop-color="#f2ae6c" data-active="1" />
+      <stop offset=".6" stop-color="#f09f52" data-active="1" />
+      <stop offset=".7" stop-color="#ef953f" data-active="1" />
+      <stop offset=".9" stop-color="#ee8f33" data-active="1" />
+      <stop offset="1" stop-color="#ee8d30" data-active="1" />
+      </radialGradient>
+    </defs>
+  <g id="base" data-active="1">
+    <path id="bone-base" d="M35.6,16.2l-2.5,1.2c-2.3,1.4,0,8.6-1.8,10.8,0,4.4-4.1,3.5-5.3,3.4-3.5-.2-11.7,0-15.8,0s-4.5-2.9-4.6-2.8c-1.9,0-2-11.4-2-11.4l-1.3-2c-.2-.4-2.1-.9-2.1-1.4V0h35.5v16.2h-.1Z" style="fill: #fdecc5;" data-active="1" />
+    <path id="gum-base" d="M36.1,17.2c-1,1-2.5,1.7-3,3-1,3.5-.2,7.6-1.5,11-1.9,5.1-5.6.4-9.2.5-3.6,0-7.6-.2-11,.5-2.1.6-4.3,2.6-6.5,1.2C-.4,29.7,3.2,20.8,1.2,15.8c-.2-.9-1.9-2.3-1-2.8,1-.5,3.8,1,4.2,2.2,1.9,3.7-1.8,13.9,3.2,15.2,2.4.3,7.7-.6,12.2-.9,3.4-.6,8.7.9,10.5-2.3,1.9-3.2-.1-8.1,2.3-11.1,2.4-3,5.1-1.2,3.5.9h0v.2h0,0Z" style="fill: #f79f9a;" data-active="1" />
+    </g>
+  <g id="mods" data-active="1">
+    <path id="parodontal" d="M8.8,27.6c-.5,1.7-1.9,4.6-1.1,5.8.5.7,1.3.9,2.1,1.1,1.8.4,3.8.7,5.5,1,4.2,1,9.6.8,12.3-3.1.9-2.1-.4-4.4-.7-6.6-1.5-6.7.9-18.5-9.3-17.4-8.2,1.1-6.4,13.3-8.7,18.9v.2h-.1,0Z" style="display: none; fill: #ffa46a;" data-active="1" />
+    <path id="inflammation" d="M8,7.7c-.4,5.9,5.6,7.4,9.2,7.9,3.7.4,9.1.6,10.4-5.1C29,3,23,.1,18,.4,13.7.4,8.9,1.7,7.9,7.4v.2h0Z" style="display: none; fill: #ffa46a;" data-active="1" />
+    <g id="mobility" style="display: none;" data-active="1">
+      <path id="tooth-mobility-2" d="M22.3,12.9l2.9-1.7c-.9,1.8-1.7,3.6-2.6,5.4,1.1-.6,2.1-1.2,3.2-1.7-1.2,2.1-2.3,4.3-3.3,6.5,1.3-.4,2.5-.9,3.8-1.3-1,1.6-2,3.2-3,4.8.8-.3,1.6-.5,2.4-.7-.6,1.3-1.3,2.5-2,3.7,1-.6,2-1,3.1-1.3-.8,1.2-1.6,2.5-2.2,3.8.7-.3,1.4-.5,2.2-.6-.8,1-1.5,2-2.3,2.9" style="fill: none; stroke: #f99; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+      <path id="tooth-mobility-1" d="M11.3,12c1-.3,2.1,0,3,1-1.4,1.1-2.8,2.2-4.2,3.1,1.3,0,2.6.2,3.8.7-1.3,1-2.7,2.2-3.9,3.4,1,.1,1.9.4,2.8.8-.9.8-1.9,1.6-2.8,2.4.7,0,1.5.3,2.1.9-.9,1.1-1.8,2.4-2.7,3.7.9-.1,1.8-.3,2.7-.4-1.4,1-2.6,2.4-3.7,4,.7.2,1.5.3,2.2.2" style="fill: none; stroke: #f99; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+      </g>
+    </g>
+  <g id="tooth-variants" data-active="1">
+    <path id="no-tooth-after-extraction" d="M18.5,31.5c1.8-.6,8.2,1.3,7.6-.4-3-8.1-.6-32.3-9-28.8-4.3,1.8-4,18.8-4.3,28.5-.3,9.7,2.9,1.4,5.7.7Z" style="display: none; fill: #fff; stroke: #f99; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+    <path id="tooth-under-gum" d="M14.4.8c-.2.6-.4,1.3-.5,2,0,2.5.5,5.2.7,7.6.5,3.1-.1,5.9.3,8.9.2,1.9,1.4,3.4,2.5,4.9,1.3,2.1,3.6,5.4,6.1,3.7,2-1.6,2.3-6.4,2-8.8-.2-1.7-.8-3.6-2-4.9s-2-1.8-2.5-3.2c-1-2-2.3-5.9-3.3-7.8-.5-1.1-1.4-1.8-2.4-2.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-broken-inicisal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5.6,2.1,1.4,4.8,2.7,7s2.6-1.3,3.4-.5,0-3.6,1.1-3.5,2.4-3.1,3.3-3.4c.7-.3.7,6.6,1.3,6s2.1,2.4,2.8,1.4c2.6-3.9,4.3-9.4,4.8-12.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-broken-mesial-distal-inicisal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.6,5.7-2.8,10.3-4,15.5s2.8,2.1,2.7,3.1c-.3,1.7,2.1,2.6,2.5,4.2s-.3,3.2,0,4.3-4,2.9-3.5,4c.6,2.2,5.1-.7,6.4,1.2s-1.3,3.7,0,4.3c1.3.6,2.3,4.7,4.1,4.1,1-.4-.4-2.5.5-3.5s4.2-1.1,5-2.5c1.5-2.7-1.5-.5-1.3-1.6.3-2.6-3.1-2.2-3.4-2.8s.7-3.6.9-4.3c.3-1.1,4.9-1.2,5-2.1.2-1.7,2.8-3.4,2.7-5.2s-.5-4.1-1.5-6c-1.4-2.8-3-4.9-3.3-8.1-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-broken-mesial-distal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.6,5.7-2.8,10.3-4,15.5s2.8,2.1,2.7,3.1c-.3,1.7,2.1,2.6,2.5,4.2s-.3,3.2,0,4.3-4,2.9-3.5,4c1.4,5.1,4.2,11.9,10.3,9.7,2.1-.9,4-3.3,5.5-6s-1.5-.5-1.3-1.6c.3-2.6-3.1-2.2-3.4-2.8s.7-3.6.9-4.3c.3-1.1,4.9-1.2,5-2.1.2-1.7,2.8-3.4,2.7-5.2s-.5-4.1-1.5-6c-1.4-2.8-3-4.9-3.3-8.1-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-broken-mesial-inicisal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5,1.4,5.1,4.2,13.2,10.3,11,.9-.4-3.4-1.5-2.6-2.3s1.8-.3,2.6-1.9.4-2.1.8-3c.7-1.6,2.9-2.7,3.3-4.2s-2.3-1.6-2.2-2.7c.1-.9,2.9-4.6,3-5.5s4.6-1.7,4.5-2.5c-.1-2.1-.5-4.2-1.5-6.1-1.4-2.8-3-4.9-3.3-8.1-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-broken-mesial" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5,1.4,5.1,4.2,13.2,10.3,11,2.1-.9,4-3.3,5.5-6s-1.5-.5-1.3-1.6c.3-2.6-3.1-2.2-3.4-2.8s.7-3.6.9-4.3c.3-1.1,4.9-1.2,5-2.1.2-1.7,2.8-3.4,2.7-5.2s-.5-4.1-1.5-6c-1.4-2.8-3-4.9-3.3-8.1-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-broken-distal-inicisal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.6,5.9-2.9,10.5-4.1,16s-.3,1.6-.5,2.4c0,.8-.2,1.6-.2,2.4s0,1.7.3,2.5c.2.8,5.7-.4,6,.6s.1,4.2.6,5.4c.2.7,2.6,2.2,2.8,3.1.6,1.7-.3,3,.6,4.6s1.6,0,2.7.6-2,4-.3,3.4c4.9-2.1,8.4-11.8,9.1-16.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-broken-distal" d="M17.2,1.8c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.6,6-3,10.8-4.2,16.3s1.7.9,1.6,1.6c0,1.9,5.4,1.1,1.1,5.5-.6.7,1.9,1.2,2.4,2,.7,1,4.6,3,1.5,4.6.1.5-.7,2-.6,2.5.3.8-3,.6-2.7,1.4,1.7,4.3,4.4,8.5,9,6.9,4.9-2.1,8.4-11.8,9.1-16.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-crownprep" d="M17.2,1.8c-3.8,5.6-3.6,13.4-4.9,19.7-.5,4.9-1.9,8.5-3,12.5-.3,1.3-1.1,2.9-1,4.3.5.6,4.1-.9,5.3.5.9,1,0,2.4.3,3.5.8,2.9,4.4,1.8,6.8,1.7.5,0,1.6,0,2-.3,2-1.2-.3-4.8.5-5.5.4-.3,4.1-.5,5.4-1.2s-3.3-7.3-3.7-10.6c-.6-3.6-1-9.2-1.6-13.8-.4-4.1-1.3-7.8-4.3-10.5" style="display: none; fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    </g>
+  <g id="tooth" data-active="1">
+    <path id="tooth-base" d="M17.1,2.3c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5,1.4,5.1,4.2,13.2,10.3,11,4.9-2.1,8.4-11.8,9.1-16.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="fill: #ebebeb; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="tooth-base-beauty" d="M26.1,52.2c-.3,2.2-2.2,4.4-3.7,6.1-1,1.1-2,1.7-1.7.9v-.3c1.4-2.2,2.8-5.5,4.3-7.4.5-.4.9.2,1,.6h.1Z" style="fill: #fefefe;" data-active="1" />
+    <g id="tooth-inflam-pulp" style="display: none;" data-active="1">
+      <path id="tooth-inflam-pulp-base" d="M19.2,4.3c0,2.6-.5,5.3-.3,8,.1,3.9.1,9.1.4,13.2,0,2.6,1.1,4.8,1.6,7.6.4,2.7-.3,6.4-1.4,9.2-1.8,3.7-3.4-5.6-3.4-6.6-.2-3.2,1.3-6.7,1.6-9.6.2-4.2-.2-8.8.2-13.1.1-2.4.2-4.9-.4-7.7-.3-1.5-1.2-4,.2-4.9,1.8-.7,1.5,2.3,1.6,3.6v.2h-.1Z" style="fill: #ff422a;" data-active="1" />
+      <path id="pulp-inflam-path-8" d="M20.8,19.7h0v-.2c-.3-.1-.6-.2-.8-.1-.6.2-1.3.3-1.8.6s-.9.7-.1.8,2.1-.2,2.7-1.1Z" style="fill: url(#linear-gradient-13-0);" data-active="1" />
+      <path id="pulp-inflam-path-7" d="M15.4,17.5h0v.2c.1.2.3.4.6.5.6.2,1.3.3,1.9.4s1,0,.5-.6-2-.9-2.9-.4h-.1Z" style="fill: url(#linear-gradient-13-1);" data-active="1" />
+      <path id="pulp-inflam-path-6" d="M21.1,15.1h0v-.2c-.2-.2-.5-.3-.7-.2-.6,0-1.3.1-1.9.4s-1,.5-.1.7,2.1,0,2.8-.7h0Z" style="fill: url(#linear-gradient-13-2);" data-active="1" />
+      <path id="pulp-inflam-path-5" d="M15.4,12.4h0v.2c.1.2.4.4.6.4.6,0,1.3.2,1.9,0s1-.3.3-.7-2.1-.5-2.9,0h.1Z" style="fill: url(#linear-gradient-13-3);" data-active="1" />
+      <path id="pulp-inflam-path-4" d="M21.1,8.5h0s0-.1-.1-.2c-.2-.1-.5-.1-.8-.1-.6,0-1.2.4-1.8.7s-.8.6,0,.7,2.1-.3,2.7-1.1Z" style="fill: url(#linear-gradient-13-4);" data-active="1" />
+      <path id="pulp-inflam-path-3" d="M15.4,5.2h0v.2c0,.3.3.5.5.7.5.4,1.2.7,1.8.9s1.1.2.6-.5-1.7-1.4-2.8-1.4h-.1,0Z" style="fill: url(#linear-gradient-13-5);" data-active="1" />
+      <path id="pulp-inflam-path-2" d="M15.1,1.3h0v.2c0,.3.3.5.5.7.5.4,1.2.7,1.8.9s1.1.2.6-.5-1.7-1.4-2.8-1.4h-.1,0Z" style="fill: url(#linear-gradient-13-6);" data-active="1" />
+      <path id="pulp-inflam-path-1" d="M20.3,1h-.2c-.3,0-.5.2-.8.3-.5.4-.9,1-1.3,1.6s-.4,1,.3.7,1.7-1.4,1.9-2.6c0,0,.1,0,.1,0Z" style="fill: url(#linear-gradient-13-7);" data-active="1" />
+      </g>
+    <path id="tooth-healthy-pulp" d="M19.2,4.3c0,2.6-.5,5.3-.3,8,.1,3.9.1,9.1.4,13.2,0,2.6,1.1,4.8,1.6,7.6.4,2.7-.3,6.4-1.4,9.2-1.8,3.7-3.4-5.6-3.4-6.6-.2-3.2,1.3-6.7,1.6-9.6.2-4.2-.2-8.8.2-13.1.1-2.4.2-4.9-.4-7.7-.3-1.5-1.2-4,.2-4.9,1.8-.7,1.5,2.3,1.6,3.6v.2h-.1Z" style="fill: #fcc5bc;" data-active="1" />
+    <path id="tooth-bruxism-wear" d="M15.2,55.1c.3.8.5,2.7,1.2,1,.2-.3.4-.8.7-.8.7.3.4,1.5.9,1.9.6.2,1.5-3,2.2-1.9.2.3.3.9.4,1.2.4,1.1,1-1.9,1.3-2.1.3-.5.5,0,.7.7.6,3.3.7,0,1.3-1h.3c2.3,2.4.7,6.5-2,7.9-2.3,1.4-5.5,2-7,.7-.9-.9-1.5-1.5-2.3-2.7-.8-1.5-3.2-5.7.1-5.8,1,0,1.7.2,2.1.8h.1Z" style="display: none; fill: #fff; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+    <path id="tooth-bruxism-neck-wear" d="M22.2,47.5c-.3-.5-.5-1.5-1.2-.6-.2.2-.4.4-.7.4-.7-.2-.4-.9-.9-1.1-.6,0-1.5,1.7-2.2,1s-.3-.5-.4-.7c-.4-.6-1,1-1.3,1.1-.3.3-.5,0-.7-.4-.6-1.9-.7,0-1.3.5h-.3c-2.3-1.4-.6-3.7,2.1-4.4,2.3-.7,5.5-1,7-.2.9.5,1.5.9,2.3,1.6.8.9,3.1,3.3-.2,3.3s-1.7,0-2.1-.5h0Z" style="display: none; fill: #fff; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+    </g>
+  <g id="milktooth" style="display: none;" data-active="1">
+    <path id="milktooth-base" d="M17.1,2.3c-.7,1.2-1.6,2.5-2.1,3.9-1.6,5-1.9,11-2.9,16-.7,6.7-3.6,11.9-4.6,18.3-.7,4.1.9,7.7,2.3,11.5,1.4,5.1,4.2,13.2,10.3,11,4.9-2.1,8.4-11.8,9.1-16.8.5-3.6.5-7.8-1.2-11.2s-3-4.9-3.3-8.1c-.8-4.7-1.3-13.3-2.3-17.9-.4-2.6-1.9-4.6-3.6-6.4" style="fill: #fff; stroke: #c8c9c9; stroke-miterlimit: 10;" data-active="1" />
+    <path id="milktooth-beauty" d="M26.1,52.2c-.3,2.2-2.2,4.4-3.7,6.1-1,1.1-2,1.7-1.7.9v-.3c1.4-2.2,2.8-5.5,4.3-7.4.5-.4.9.2,1,.6h.1Z" style="fill: #eaeaea;" data-active="1" />
+    <g id="milktooth-inflam-pulp" style="display: none;" data-active="1">
+      <path id="tooth-inflam-pulp-base1" d="M19.3,4.7c0,2.9-.6,5.8-.4,8.8.1,4.3.1,10,.5,14.5,0,2.9,1.4,5.3,2,8.3.5,3-.4,7-1.8,10.1-2.3,4.1-4.3-6.1-4.3-7.2-.3-3.5,1.7-7.3,2-10.5.3-4.6-.3-9.6.3-14.3.1-2.6.3-5.4-.5-8.4-.4-1.6-1.5-4.4.3-5.4,2.3-.8,1.9,2.5,2,3.9v.2s-.1,0,0,0Z" style="fill: url(#linear-gradient-13-8);" data-active="1" />
+      <path id="pulp-inflam-path-81" d="M21,19.9h0v-.2h-.8c-.6.3-1.2.5-1.7.9s-.8.8,0,.8,2-.6,2.5-1.5Z" style="fill: url(#linear-gradient-13-9);" data-active="1" />
+      <path id="pulp-inflam-path-71" d="M15.6,17.1h0v.2c0,.2.2.5.4.6.5.3,1.2.6,1.8.8s1,.2.6-.5-1.7-1.3-2.7-1.1c0,0-.1,0,0,0Z" style="fill: url(#linear-gradient-13-10);" data-active="1" />
+      <path id="pulp-inflam-path-61" d="M21.1,15.1h0v-.2c-.2-.2-.5-.3-.7-.2-.6,0-1.3.1-1.9.4s-1,.5-.1.7,2.1,0,2.8-.7h0Z" style="fill: url(#linear-gradient-13-11);" data-active="1" />
+      <path id="pulp-inflam-path-51" d="M15.4,12.4h0v.2c.1.2.4.4.6.4.6,0,1.3.2,1.9,0s1-.3.3-.7-2.1-.5-2.9,0h.1Z" style="fill: url(#linear-gradient-13-12);" data-active="1" />
+      <path id="pulp-inflam-path-41" d="M21.1,9.5h0s0-.1-.1-.2c-.2-.1-.5-.1-.8-.1-.6,0-1.2.4-1.8.7s-.8.6,0,.7,2.1-.3,2.7-1.1Z" style="fill: url(#linear-gradient-13-13);" data-active="1" />
+      <path id="pulp-inflam-path-31" d="M15.1,5.9h0v.2c0,.3.3.5.5.7.5.4,1.2.7,1.8.9s1.1.2.6-.5-1.7-1.4-2.8-1.4h-.1,0Z" style="fill: url(#linear-gradient-13-14);" data-active="1" />
+      <path id="pulp-inflam-path-21" d="M15.1,1.3h0v.2c0,.3.3.5.5.7.5.4,1.2.7,1.8.9s1.1.2.6-.5-1.7-1.4-2.8-1.4h-.1,0Z" style="fill: url(#linear-gradient-13-15);" data-active="1" />
+      <path id="pulp-inflam-path-11" d="M21,3.5h-.2c-.3,0-.5.2-.8.3-.5.4-.9,1-1.3,1.6s-.4,1,.3.7,1.7-1.4,1.9-2.6h.1Z" style="fill: url(#linear-gradient-13-16);" data-active="1" />
+      </g>
+    <path id="milktooth-healthy-pulp" d="M19,13.5c.1,4.3.1,10,.5,14.5,0,2.9,1.4,5.3,2.1,8.3.5,3-.4,7-1.8,10.1-2.4,4.1-4.5-6.1-4.5-7.2-.3-3.5,1.7-7.3,2.1-10.5.3-4.6-.3-9.6.3-14.3.1-2.6.3-5.4-.5-8.4-.4-1.6-1.6-4.4.3-5.4,2.4-.8,2,2.5,2.1,3.9v.2s-.8,5.8-.5,8.8c0,0-.1,0-.1,0Z" style="fill: #fcc5bc;" data-active="1" />
+    </g>
+  <g id="endos" data-active="1">
+    <path id="endo-medical-filling" d="M18.2,1.7c.9,2.6,1.2,8.2,1.6,11.6.5,4.6,2,17.2,2.5,21.9.3,5.2,5.9,7.1,1.9,12.1-3.7,4.7-12.1,3.7-11.4-5.7.7-7.3,2.8-4.5,3-12.2.4-6.8.9-14.5,1-20.9,0-1.1.3-10.1,1.4-7h0s0,.2,0,.2Z" style="display: none; fill: #fff; stroke: #f9ae94; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+    <path id="endo-filling" d="M18.2,1.7c.9,2.6,1.2,8.2,1.6,11.6.5,4.6,2,17.2,2.5,21.9.3,5.2,5.9,7.1,1.9,12.1-3.7,4.7-12.1,3.7-11.4-5.7.7-7.3,2.8-4.5,3-12.2.4-6.8.9-14.5,1-20.9,0-1.1.3-10.1,1.4-7h0s0,.2,0,.2Z" style="display: none; fill: #388aca;" data-active="1" />
+    <path id="endo-glass-pin" d="M18.4,8.5c.8,1.9,1.1,5.8,1.4,8.2.4,3.2,1.8,12.2,2.2,15.5.2,3.7,6,11.1,2.2,14.6-3.5,3.3-12.8,2.7-12.1-3.9.7-5.2,3.6-9.4,3.8-14.8.4-4.8.9-10.2,1.1-14.8,0-.8.3-7.1,1.4-5h0s0,.2,0,.2Z" style="display: none; fill: #c8c9c9;" data-active="1" />
+    <path id="endo-metal-pin" d="M18.4,8.5c.8,1.9,1.1,5.8,1.4,8.2.4,3.2,1.8,12.2,2.2,15.5.2,3.7,6,11.1,2.2,14.6-3.5,3.3-12.8,2.7-12.1-3.9.7-5.2,3.6-9.4,3.8-14.8.4-4.8.9-10.2,1.1-14.8,0-.8.3-7.1,1.4-5h0s0,.2,0,.2Z" style="display: none; fill: #3951a3;" data-active="1" />
+    <path id="endo-resection" d="M11,10.4S14,.4,14.5.4h6c1.5,0,4,10.9,4,11.2l.2,9-13.5.3-.2-10.4h0Z" style="display: none; fill: #fdecc5;" data-active="1" />
+    </g>
+  <g id="surfaces" data-active="1">
+    <g id="fillings" data-active="1">
+      <g id="amalgam" data-active="1">
+        <path id="filling-amalgam-occlusal" d="M12.4,58.7c.1.5.9,1.3,1.1,1.8,1.5,2.5,4.7,3.8,7.3,2.3,2.2-1.2,4.8-3.9,4.3-6.6-1.6-6.1-14.6-5.5-13,1.4,0,0,.3,1.1.3,1.1Z" style="display: none; fill: #aaa; stroke: #aaa; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-amalgam-buccal" d="M17.6,49c1.8,0,2.3-2.5,2.6-3.9.4-2.1-3.3-1.5-4.3-.7-1.7,1.2-.5,4.4,1.6,4.5h.2-.1Z" style="display: none; fill: #aaa; stroke: #aaa; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-amalgam-mesial" d="M26.1,32.2c-3.6-.7-4.7,11-3.3,12.9,1.2,3.3,5.3,3.6,6.5,0,1-2.8-.6-11.5-3-13h-.2Z" style="display: none; fill: #aaa; stroke: #aaa; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-amalgam-distal" d="M10.1,47.9c2.3-.4,3.1-5.4,3.3-7.8.6-3.5,0-7.6-3.4-7-4.3,1.1-4.2,14.1,0,14.8h.1Z" style="display: none; fill: #aaa; stroke: #aaa; stroke-miterlimit: 10;" data-active="1" />
+        </g>
+      <g id="composite" data-active="1">
+        <path id="filling-composite-occlusal" d="M12.3,58.7c.1.5.9,1.3,1.1,1.8,1.5,2.5,4.7,3.8,7.3,2.3,2.2-1.2,4.8-3.9,4.3-6.6-1.6-6.1-14.6-5.5-13,1.4l.3,1.1Z" style="display: none; fill: #feffbf; stroke: #feffbf; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-composite-buccal" d="M17.6,49c1.8,0,2.3-2.5,2.6-3.9.4-2.1-3.3-1.5-4.3-.7-1.7,1.2-.5,4.4,1.6,4.5h.2-.1Z" style="display: none; fill: #feffbf; stroke: #feffbf; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-composite-mesial" d="M26.5,32.4c-3.6-.8-5.1,10.9-3.7,12.8,1.1,3.3,5.2,3.8,6.5.3,1.1-2.8-.2-11.5-2.6-13.1,0,0-.2,0-.2,0Z" style="display: none; fill: #feffbf; stroke: #feffbf; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-composite-distal" d="M10.1,47.9c2.3-.4,3.1-5.4,3.3-7.8.6-3.5,0-7.6-3.4-7-4.3,1.1-4.2,14.1,0,14.8h.1Z" style="display: none; fill: #feffbf; stroke: #feffbf; stroke-miterlimit: 10;" data-active="1" />
+        </g>
+      <g id="gic" data-active="1">
+        <path id="filling-gic-occlusal" d="M12.4,58.7c.1.5.9,1.3,1.1,1.8,1.5,2.5,4.7,3.8,7.3,2.3,2.2-1.2,4.8-3.9,4.3-6.6-1.6-6.1-14.6-5.5-13,1.4,0,0,.3,1.1.3,1.1Z" style="display: none; fill: #f9ae94; stroke: #f99; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-gic-buccal" d="M17.6,49c1.8,0,2.3-2.5,2.6-3.9.4-2.1-3.3-1.5-4.3-.7-1.7,1.2-.5,4.4,1.6,4.5h.2-.1Z" style="display: none; fill: #f9ae94; stroke: #f99; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-gic-mesial" d="M26.1,32.2c-3.6-.7-4.7,11-3.3,12.9,1.2,3.3,5.3,3.6,6.5,0,1-2.8-.6-11.5-3-13h-.2Z" style="display: none; fill: #f9ae94; stroke: #f99; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-gic-distal" d="M10.1,47.9c2.3-.4,3.1-5.4,3.3-7.8.6-3.5,0-7.6-3.4-7-4.3,1.1-4.2,14.1,0,14.8h.1Z" style="display: none; fill: #f9ae94; stroke: #f99; stroke-miterlimit: 10;" data-active="1" />
+        </g>
+      <g id="temporary" data-active="1">
+        <path id="filling-temporary-occlusal" d="M12.4,58.7c.1.5.9,1.3,1.1,1.8,1.5,2.5,4.7,3.8,7.3,2.3,2.2-1.2,4.8-3.9,4.3-6.6-1.6-6.1-14.6-5.5-13,1.4,0,0,.3,1.1.3,1.1Z" style="display: none; fill: #fff; stroke: #eee; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-temporary-buccal" d="M17.6,49c1.8,0,2.3-2.5,2.6-3.9.4-2.1-3.3-1.5-4.3-.7-1.7,1.2-.5,4.4,1.6,4.5h.2-.1Z" style="display: none; fill: #fff; stroke: #eee; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-temporary-mesial" d="M26.1,32.2c-3.6-.7-4.7,11-3.3,12.9,1.2,3.3,5.3,3.6,6.5,0,1-2.8-.6-11.5-3-13h-.2Z" style="display: none; fill: #fff; stroke: #eee; stroke-miterlimit: 10;" data-active="1" />
+        <path id="filling-temporary-distal" d="M10.1,47.9c2.3-.4,3.1-5.4,3.3-7.8.6-3.5,0-7.6-3.4-7-4.3,1.1-4.2,14.1,0,14.8h.1Z" style="display: none; fill: #fff; stroke: #eee; stroke-miterlimit: 10;" data-active="1" />
+        </g>
+      </g>
+    <g id="caries" data-active="1">
+      <path id="caries-subcrown" d="M8.8,33.5c-1,2.9,3.8-1.4,5.7-2,2.9-.6,6.4-3.4,6.1-5.4-1-4-8.9-3.1-9.7-.3l-2.1,7.8h0Z" style="display: none; fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
+      <path id="caries-buccal" d="M15.8,49.4c.6.6,1.5.9,2.3.9,1.3,0,2.3-.7,2.9-1.9s.4-.8.4-1.3c-.5-2.5-6.1-1.6-6.8-.6-.4.8.7,2.2,1.2,2.8h0Z" style="display: none; fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
+      <g id="caries-mesial" style="display: none;" data-active="1">
+        <path id="mesial-shape" d="M26.6,32.9c-3.5-.8-5,10.7-3.8,12.6,1,3.3,5,3.8,6.3.3,1.1-2.7,0-11.3-2.4-12.9h-.1Z" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
+        <path id="mesial-patch2" d="M26.7,40.3c3.2,0-1-4.3-1.8-1.6-.3.9.8,1.7,1.5,1.6h.3Z" style="fill: #fff;" data-active="1" />
+        <path id="mesial-patch1" d="M24.9,45.8c1.4,1.3,4.6-.7,2.1-1.6-1.6-.5-2.5.6-2.1,1.5h0Z" style="fill: #fff;" data-active="1" />
+        </g>
+      <g id="caries-distal" style="display: none;" data-active="1">
+        <path id="distal-shape" d="M10.5,49.3c2.3-.4,3.1-5.3,3.4-7.7.6-3.5.2-7.6-3.2-7.1-4.3,1-4.4,14-.3,14.8h.1Z" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
+        <path id="distal-patch2" d="M11.8,40.4c.9-.6.5-2.7-.6-2.5s-.7,3,.4,2.6h.2Z" style="fill: #fff;" data-active="1" />
+        <path id="distal-patch1" d="M9.6,45.9c.2.3.7.5,1,.6.3,0,.8.2.7,0-.3-.5-1.1-1.6-1.5-1.9-.8-.3-.4,1-.3,1.3,0,0,.1,0,.1,0Z" style="fill: #fff;" data-active="1" />
+        </g>
+      <g id="caries-occlusal" style="display: none;" data-active="1">
+        <path id="occlusal-shape" d="M12.6,58.6c1,3.1,4.3,5.1,6.2,4.9,1.8,0,5.2-2.5,6-5.1,1.1-4.9-4.8-6.6-7.7-6.2-2.1.3-4.7,2.4-4.8,5.4v.7l.3.4h0Z" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
+        <path id="occlusal-patch2" d="M18.9,58.5c-.7,3,3.3,1.5,3.6,0,.5-.8.2-2-.5-2.3-1.2-.5-2.4,1-3.2,2.1h0v.2h.1Z" style="fill: #fff; stroke: #000; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+        <path id="occlusal-patch1" d="M14.3,58.6c-.1,1.5,1,2.6,1.6,1.2.4-.9.4-3.1-.4-3.1s-1.1.7-1.1,1.8v.2h-.1Z" style="fill: #fff; stroke: #000; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+        </g>
+      </g>
+    <g id="contact-point" data-active="1">
+      <g id="mesial-no-contact-point" style="display: none;" data-active="1">
+        <path d="M27.8,37.4c1.1,2.4,2.5,5.1,4,7.7" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        <path d="M28.3,45.6c.7-1.6.8-2.6,1.3-3.8.6-1.4,1.1-3,1.5-4.5" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        </g>
+      <g id="distal-no-contact-point" style="display: none;" data-active="1">
+        <path d="M5.1,38.7c1.3,2.4,2.9,5.1,4.5,7.6" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        <path d="M6,46.9c.6-1.6.6-2.6,1.1-3.8.6-1.4,1-3,1.3-4.5" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        </g>
+      </g>
+    </g>
+  <g id="restorations" data-active="1">
+    <g id="implant" style="display: none;" data-active="1">
+      <path id="implant-locator-screw" d="M14.6,44.3c.9,1.5,3.8.9,5.4,1,3.2-.5,1.7-4.6,2-7,0-.7.2-1.6-.3-2.1-.2-.3-.7-.4-1-.4-1.5,0-3.4-.2-4.9.2-1.3.3-1.4,1.3-1.4,2.5,0,2-.2,3.9.1,5.7v.2h0Z" style="fill: url(#linear-gradient-13-17); stroke: #c8c9c9; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+      <path id="implant-connector" d="M11.7,37.6h0c.1,1.4,1.1,2.1,1.9,1.7,1.4-.7,1.6-2,3.4-2.1h3.3c.8,0,1.8,1.9,2.9,2.2s1.4-.6,1.3-1.6c0-1.9,0-5.6-.5-5.7s-3.1,0-3.7,0h-4.5c-1,0-2.7-.4-3.5.7-.8,1.1-1,2.9-.8,4l.2.7h0Z" style="fill: url(#linear-gradient-13-18);" data-active="1" />
+      <path id="implant-bar" d="M5.6,50.4c5.8.3,21,0,27.4,0,6.4,0,2.8-2.2,3-4.1s.2-3.2-1-3.4-4.8,0-6.3,0c-3.6,0-6.7,0-10.1.2-3.8,0-12.1.2-12.7,0-1.1,0-2.1.7-2.2,1.7-.2,1.9-.2,5.5,1.8,5.3h0Z" style="fill: url(#radial-gradient-13-0);" data-active="1" />
+      <g id="implant-healing-abutment" style="display: none;" data-active="1">
+        <path id="implant-healing-abutment-connector" d="M14.7,36.8c1.7.3,3.7-.2,5.4-.2,3.3,0,4.2-1.2,3.4-5.6-.8-3.9-1.7-9-2.7-13.4-.3-1.1-.6-2.2-1.1-3.1-2.3-4.5-4.3,1.7-4.7,5-.5,3.4-.6,5.9-1.3,9-.6,2.7-2.4,7.7.7,8.3h.3Z" style="fill: #a0a0a0; stroke: #8c8c8c; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        <path d="M25.3,33.3h-9.2c-1.4,0-5,.2-5,.2,0,0-.4.9-.7,1.7s-.3,1.2-.3,1.8v2.7c0,.3.2.5.2.7h1.1c2.4-.3,4.9-.4,7.3-.4v-.2c.3,0-.7-.2-.9-.2.4.5-1.8,0-2.1,0-.5,0-.7-.5-.7-1v-2.4c0-.6.6-.5.4-.6l-4.1.3c-.4,0-.7.2-1.1,0l2.5-.5c3.2-.6,6.4-.3,9.5,0,.6,0,1.2,0,1.9.2h.5c.2,0,.4,0,.5.2-.2-.2,0-2.5,0-2.5h.2Z" style="fill: #475563;" data-active="1" />
+        <path d="M18.9,39.8v-.2h.2v-.2c.5,0,2,.3,2.6.2.1.3.5.2.7.2.6,0,2.3.2,2.5-.9s.2-1.8,0-2.7-.3-.4-.1-.6h.4s.2,0,.2.4v3.6c0,.2-.1.4-.2.6-.9,0-1.8-.2-2.8-.3h-3.6,0Z" style="fill: #8c8c8c;" data-active="1" />
+        <path d="M18.6,35.6c-.1-.2-.3-.2-.5-.2l-.9.2c-.1-.2-.4-.2-.6,0-.1-.2-.9,0-1,0l-4.1.3c-.4,0-.7.2-1.1,0l2.5-.5c3.2-.6,6.4-.3,9.5,0,.1.3,0,.2.3.6.2.3.3.2.4.5.1.7,0,1.5,0,2.1s-.3.8-.7.9c-.7,0-2,.2-2.7,0s-1.4-.2-1.4-.6v-.9c-.1-.4,0-1.5,0-2s.5-.7.3-.5h0Z" style="fill: #e8eef0;" data-active="1" />
+        <path d="M21.7,39.6h.7c.4-.2.7-.6.7-1v-1.9c0-.6-.9-1.1-1.5-1.1-.3-.4.9,0,.8-.2.6,0,1.2,0,1.9.2s.3,0,.5,0c-.2.2,0,.4.1.6.1.9.1,1.8,0,2.7s-1.9,1-2.5.9-.6,0-.7-.2h0Z" style="fill: #a0a0a0;" data-active="1" />
+        <path d="M15.6,35.5c.1,0,.9-.2,1,0,.2-.2.5-.2.6,0,0,0-.2.2-.2.3,0,1-.2,1.9,0,2.9s.6.6,1,.7c.4.5-1.8,0-2.1,0-.5,0-.7-.5-.7-1v-2.4c0-.8.6-.5.4-.6h0Z" style="fill: #6f7c86;" data-active="1" />
+        <path d="M18.9,39.6c.3,0-1.1-.3-.9-.2-.4,0-.9,0-1-.7-.2-.9,0-1.9,0-2.9s.2-.2.2-.3l.9-.2c.2,0,.4,0,.5.2-.2.2-.3.4-.3.7v2.5c0,.9.5.6.7.7v.2h-.2s.1,0,0,0Z" style="fill: #a0a0a0;" data-active="1" />
+        </g>
+      <g id="implant-base" data-active="1">
+        <path d="M14.9,33.3c-.1-1.3-.2-2.7.2-4h5.6c.4,1,.2,2.9.2,4h-6Z" style="fill: #bbc3c6;" data-active="1" />
+        <path d="M16.1,6.9c-.2,0,0-2.2,0-2.4.2-1.3.9-2.4,1.9-3,1-.6.2,0,.2-.3,1.7,0,3.3,1.1,3.8,3.1s0,1.2.1,1.8h-1.3c0-.8,0-2.1-.8-2.3s-.7,0-.7.3c0,.8,0,1.5.2,2.1l-3.5.6h0Z" style="fill: #bac3c7;" data-active="1" />
+        <path d="M15.1,29.3c-.4,1.3-.3,2.7-.2,4l-3.8.2c0-.7-.3-4.2.7-4,1.1-.2,2.2-.2,3.3-.2Z" style="fill: #a0a4a5;" data-active="1" />
+        <path d="M15.7,28.8v-2.5c1.5-.3,3-.7,4.6-.7l.2,3.3h-4.8Z" style="fill: #bac3c6;" data-active="1" />
+        <path d="M18.3,1.1s-.1.2-.2.3c-1,.6-1.6,1.7-1.9,3-.3,1.3-.2,2.4,0,2.4l-2.4.6c.1-1.1,0-2.2.3-3.3s1.1-2.2,2.1-2.7c1-.5,1.5-.4,2.2-.4h-.1Z" style="fill: #9ca3a6;" data-active="1" />
+        <path d="M20.9,33.3c0-1.1.2-3-.2-4h2.7c.2,1,.3,3,0,4h-2.5Z" style="fill: #e8eef0;" data-active="1" />
+        <path d="M15.6,26.2v2.5c.1,0-3.4.2-3.4.2,0-.7,0-1.4.1-2,1.1-.4,2.2-.5,3.2-.8h.1,0Z" style="fill: #9ea3a4;" data-active="1" />
+        <path d="M23.4,33.4c.2-1,.2-3,0-4h1.4c.8.2.7,3.3.5,4h-1.9Z" style="fill: #bcc4c7;" data-active="1" />
+        <path d="M20.5,28.8l-.2-3.3c.6-.2,1.3-.2,1.9-.2l.2,3.6h-1.9Z" style="fill: #e3eaeb;" data-active="1" />
+        <path d="M22.4,28.9l-.2-3.6c.5-.1,1.1-.1,1.7-.1l.3,3.8h-1.8Z" style="fill: #b8c2c4;" data-active="1" />
+        <path d="M15.7,24.4v-1.1c1.5-.3,3-.6,4.5-.7v1.1s-4.5.7-4.5.7Z" style="fill: #b7c0c3;" data-active="1" />
+        <path d="M15.8,21.5c-.1-.4,0-.8,0-1.2,1.5-.3,2.9-.5,4.3-.7v1.2l-4.4.7h0Z" style="fill: #b9c0c4;" data-active="1" />
+        <path d="M15.9,18.6c-.3-.4,0-.5-.2-1.1,1.4-.4,2.8-.6,4.3-.8v1.2c-1.3.2-2.7.4-4.1.7Z" style="fill: #b8c0c3;" data-active="1" />
+        <path d="M15.8,15.6v-1.1c1.3-.3,2.7-.6,4.1-.7v1.1s-4.1.7-4.1.7Z" style="fill: #b7bfc3;" data-active="1" />
+        <path d="M15.9,12.7v-1.1c1.3-.3,2.6-.5,3.9-.7v1.2l-4,.6s.1,0,0,0h.1Z" style="fill: #b9c1c5;" data-active="1" />
+        <path d="M15.9,8.7c1.2-.3,2.4-.6,3.7-.7v1.2c-1.2.1-2.4.4-3.7.6,0,0,0-1.1,0-1.1Z" style="fill: #bac3c5;" data-active="1" />
+        <path d="M15.7,25.7c0-.2,0-.5-.1-.7-.2.2-.5.3-.6,0,1.7-.4,3.5-.7,5.3-.9.1.2,0,.5,0,.8l-4.6.7h0Z" style="fill: #b7c0c3;" data-active="1" />
+        <path d="M15.8,22.8c-.2-.2,0-.5,0-.8,1.5-.3,3-.6,4.5-.7v.8l-4.4.7s-.1,0,0,0c0,0-.1,0,0,0Z" style="fill: #b9c0c3;" data-active="1" />
+        <path d="M15.7,23.3v1.1l-3.2.8v-1.1c1-.4,2.1-.5,3.1-.7h.1,0Z" style="fill: #9a9fa1;" data-active="1" />
+        <path d="M15.9,19.8c-.1-.3-.2-.4-.2-.7,1.5-.3,2.9-.6,4.3-.7v.8l-4.2.7h.1,0Z" style="fill: #bac0c3;" data-active="1" />
+        <path d="M15.8,20.3c0,.4-.1.8,0,1.2l-3.1.7v-1.2c1-.4,2-.5,3-.7,0,0,.1,0,0,0,0,0,.1,0,0,0Z" style="fill: #999fa1;" data-active="1" />
+        <path d="M15.8,16.9v-.8c1.4-.3,2.8-.5,4.2-.7v.8s-4.2.7-4.2.7Z" style="fill: #bac1c4;" data-active="1" />
+        <path d="M15.8,14v-.7c1.3-.3,2.7-.5,4-.7v.8l-4.1.6s.1,0,.1,0Z" style="fill: #b9c0c3;" data-active="1" />
+        <path d="M15.9,11.1v-.8c1.2-.4,2.5-.5,3.8-.7,0,.2.1.5,0,.8l-3.9.7s.1,0,0,0h.1Z" style="fill: #bbc2c4;" data-active="1" />
+        <path d="M15.7,17.5c.1.6,0,.7.2,1.1l-2.9.7v-1.1c.9-.5,1.8-.4,2.7-.6h0Z" style="fill: #9ba0a2;" data-active="1" />
+        <path d="M14.9,25.1c.1.2.4.2.6,0,.1.2.1.5.1.7-1.2.3-2.4.5-3.6.9s-.4-.2-.5-.4c0-.6,2.7-1,3.2-1.1h.2Z" style="fill: #a8aeb1;" data-active="1" />
+        <path d="M15.7,22v.8l-3.5.9c-.2,0-.4-.3-.4-.4,0-.6,3.3-1.1,3.8-1.2h0Z" style="fill: #a6abad;" data-active="1" />
+        <path d="M15.8,14.5v1.1l-2.7.7v-1.2c.9-.4,1.8-.5,2.6-.6,0,0,.1,0,0,0,0,0,.1,0,0,0Z" style="fill: #9ba0a3;" data-active="1" />
+        <path d="M19.6,6.3c-.1-.7-.2-1.4-.2-2.1s.5-.4.7-.3c.8.2.7,1.5.8,2.3l-1.3.2h0Z" style="fill: #e4e9ea;" data-active="1" />
+        <path d="M16,8.2v-.8c1.2-.3,2.4-.5,3.7-.6v.8l-3.7.6Z" style="fill: #bcc2c4;" data-active="1" />
+        <path d="M15.7,19.1c0,.3,0,.5.2.7-1.2.2-2.2.5-3.4.8s-.4-.2-.4-.3c-.1-.7,3.1-1.1,3.6-1.2Z" style="fill: #a6abad;" data-active="1" />
+        <path d="M15.9,11.6v1.1l-2.5.7c0-.3,0-.9.1-1.1.8-.4,1.6-.4,2.4-.6h0Z" style="fill: #9da2a4;" data-active="1" />
+        <path d="M15.8,16.2v.8l-3.2.8c-.2,0-.3-.3-.3-.4s0-.3.2-.4c1.1-.4,2.2-.6,3.2-.8h.1Z" style="fill: #a5aaac;" data-active="1" />
+        <path d="M15.9,8.7v1.1l-2.4.6v-1.1c.8-.3,1.6-.4,2.3-.6,0,0,.1,0,0,0Z" style="fill: #9ca1a3;" data-active="1" />
+        <path d="M15.8,13.3v.7l-2.9.8c-.2,0-.4-.2-.4-.3-.2-.7,3-1.1,3.3-1.1h0Z" style="fill: #a5aaac;" data-active="1" />
+        <path d="M15.8,10.3v.8l-2.8.7c-.2,0-.3-.2-.4-.3s0-.4.3-.4c1-.3,1.9-.6,2.9-.7h0Z" style="fill: #a2a7a9;" data-active="1" />
+        <path d="M16,7.4v.8c-.9.2-1.7.4-2.6.7s-.4-.1-.4-.3,0-.3.2-.4c.9-.4,1.8-.5,2.8-.8Z" style="fill: #a7abae;" data-active="1" />
+        <path d="M20.3,23.7v-1.1c.5-.2,1.1-.2,1.7-.2.1.4,0,.8,0,1.2l-1.8.2h0Z" style="fill: #e2e9eb;" data-active="1" />
+        <path d="M20.2,20.8v-1.2l1.8-.2v1.1c-.5.2-1.1.2-1.7.3h0Z" style="fill: #e1e8e9;" data-active="1" />
+        <path d="M20,16.7c.6,0,1.2-.2,1.8-.2v1.2l-1.7.2v-1.2h0Z" style="fill: #e3e9ea;" data-active="1" />
+        <path d="M19.9,15v-1.1c.5,0,1.1-.2,1.6-.2.2.4,0,.8.2,1.1-.6,0-1.2,0-1.8.2Z" style="fill: #e3e9ea;" data-active="1" />
+        <path d="M22.1,23.5v-1.2c.5,0,1.1-.1,1.7-.1,0,.4.1.8.1,1.2-.6.2-1.2,0-1.7.1h-.1Z" style="fill: #b7bfc3;" data-active="1" />
+        <path d="M19.8,12.1c-.1-.4,0-.8,0-1.2l1.6-.2v1.1c-.4.1-1,.2-1.5.2h-.1Z" style="fill: #e4eaeb;" data-active="1" />
+        <path d="M22.2,24.8v-.8c.5,0,2.5-.5,2.4.3s-1.8.5-2.4.5Z" style="fill: #b4bdc0;" data-active="1" />
+        <path d="M22.1,21.9v-.8c.4,0,2.4-.5,2.3.2s-.2.4-.4.4h-1.9s0,.2,0,.2Z" style="fill: #b8c0c4;" data-active="1" />
+        <path d="M19.6,8c.5,0,1-.2,1.5-.2.1.4,0,.8.2,1.1-.5.1-1,.2-1.6.2v-1.2h-.1Z" style="fill: #e3e8e9;" data-active="1" />
+        <path d="M22,20.5v-1.1c.4,0,.9-.1,1.4-.1,0,.4.1.8,0,1.1-.5.2-1.1,0-1.5.1h.1Z" style="fill: #b8c0c3;" data-active="1" />
+        <path d="M21.8,19v-.8c.4,0,2.2-.5,2.2.2s-1.7.5-2.2.6Z" style="fill: #b5bdc1;" data-active="1" />
+        <path d="M21.8,17.7v-1.2c.5,0,.9-.2,1.4-.1v1.1c-.5.1-1,0-1.5.1h.1Z" style="fill: #b8c1c5;" data-active="1" />
+        <path d="M21.7,16c-.1-.2,0-.5,0-.8.5,0,2.1-.4,2.2.2s-1.5.6-2.1.6h-.1Z" style="fill: #bac0c3;" data-active="1" />
+        <path d="M21.5,13.1c-.1-.2,0-.5-.1-.8.5,0,2.1-.5,2.1.2s-1.5.5-2,.6Z" style="fill: #b6bec2;" data-active="1" />
+        <path d="M21.6,14.8c-.1-.4,0-.8-.2-1.1.5,0,.9-.2,1.4-.1,0,.4.1.8,0,1.1h-1.3.1Z" style="fill: #b9c2c6;" data-active="1" />
+        <path d="M20.3,25v-.8c.7,0,1.3-.2,2-.2v.8l-1.9.2h-.1Z" style="fill: #e5e9eb;" data-active="1" />
+        <path d="M21.3,10.2v-.8c.3,0,2.2-.5,2,.3s-1.4.4-1.9.5h-.1Z" style="fill: #bbc2c5;" data-active="1" />
+        <path d="M21.4,11.8v-1.1c.3,0,.7-.1,1.2,0,0,.3.1.7,0,1.1-.4.3-.9,0-1.3.1h0Z" style="fill: #b6bfc2;" data-active="1" />
+        <path d="M20.2,22v-.8c.6,0,1.2-.2,1.8-.2v.8l-1.9.2h.1Z" style="fill: #e6ebec;" data-active="1" />
+        <path d="M21.3,9c-.2-.3,0-.8-.2-1.1.4,0,.8-.2,1.3,0,0,.3.1.7,0,1.1-.4.2-.8,0-1.2.1h.1Z" style="fill: #bdc3c6;" data-active="1" />
+        <path d="M20.1,19.1v-.8c.6,0,1.2-.3,1.8-.2v.8l-1.8.2Z" style="fill: #e6eaeb;" data-active="1" />
+        <path d="M21.1,7.4v-.8c.4,0,2.1-.5,1.9.3s-1.4.4-1.9.4h0Z" style="fill: #bfc4c7;" data-active="1" />
+        <path d="M20,16.2v-.8l1.7-.2v.8l-1.8.2h0Z" style="fill: #e5eaeb;" data-active="1" />
+        <path d="M19.8,13.3v-.8l1.7-.2c0,.3,0,.5.1.8l-1.7.2h-.1Z" style="fill: #e6ebeb;" data-active="1" />
+        <path d="M19.7,10.4v-.8c.5,0,1-.2,1.6-.2v.8l-1.6.2Z" style="fill: #e6eaeb;" data-active="1" />
+        <path d="M19.6,6.8c.5,0,1-.2,1.5-.2v.8l-1.5.2v-.8Z" style="fill: #e1e5e6;" data-active="1" />
+        </g>
+      </g>
+    <g id="prosthesis-implant" data-active="1">
+      <g id="prosthesis-implant-gum" style="display: none; opacity: .5;" data-active="1">
+        <path d="M35.3,53.3v-11.7c0-.8-.9-1.5-2-1.5H3.5c-9.3,0-2,.6-2,1.4-.1,2.7-.3,8.7-.4,11.7s.9,1.5,2.1,1.5h30.1c6.1,0,2-.7,2-1.5h0Z" style="fill: url(#radial-gradient-13-1);" data-active="1" />
+        <path d="M35.2,53.3c0-3.9-.4-7.9-.5-11.7,0-.7-1.1-.9-1.7-.8-8,0-18.5-.5-26.6-.6h-3c-.5,0-1,.4-1,.9s0,.5,0,.6h0v.2c0,3.8-.2,7.7-.4,11.5,0,0,0,.2.4.4.5.3,3.4.2,4,.2l5.9.2c3.9,0,13.9.4,17.7.5h3c.9,0,2.1-.4,2.1-1.4h0ZM35.4,53.3c0,1.1-1.3,1.6-2.3,1.6h-3c-3.7,0-13.8.4-17.7.5-1.9,0-7,.2-8.9.2-1.3.2-3.8-.5-3.6-2.9v-.7c0-3.4,0-6.9.3-10.4,0-2,1.8-1.8,3.2-1.6,9.2,0,20.3-.6,29.5-.6s2.7.5,2.9,1.9c0,4-.3,7.9-.5,11.9h0Z" style="fill: #ffa46a;" data-active="1" />
+        </g>
+      <path id="prosthesis-implant-crown" d="M22.7,57.3c-2,7.2-7.2,7.7-9-.2-.6-2.5-.9-5.8.5-7.7,1.5-2.1,4.6-2.5,6.6-1.2,2.7,1.8,2.7,6.1,1.9,9h0Z" style="display: none; fill: #f9ae94; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+      </g>
+    <g id="prosthesis" data-active="1">
+      <path id="prosthesis-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5,0-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7s7.5,0,11.4-.2c4.2,0,9.5,0,12.3-1.2h.2Z" style="display: none; fill: url(#linear-gradient-13-19); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+      <path id="prosthesis-crown" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="display: none; fill: #f9ae94; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+      </g>
+    <g id="telescope" data-active="1">
+      <path id="telescope-bridge-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5,0-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7s7.5,0,11.4-.2c4.2,0,9.5,0,12.3-1.2h.2Z" style="display: none; fill: #0051bf; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+      <g id="telescope-crown" style="display: none;" data-active="1">
+        <path id="telescope-crown-outside" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="fill: #0051bf; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+        <path id="telescope-crown-inside" d="M26.7,49.6c-3.6,13.2-13.1,14.1-16.5-.4-1.1-4.6-1.7-10.5,1-14.1,2.7-3.8,8.5-4.5,12.2-2.1,4.9,3.2,4.9,11.2,3.4,16.5v.2h-.1Z" style="fill: #aaa; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+        </g>
+      </g>
+    <g id="zircon" data-active="1">
+      <path id="zircon-bridge-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5,0-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7s7.5,0,11.4-.2c4.2,0,9.5,0,12.3-1.2h.2Z" style="display: none; fill: #feffbf; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+      <path id="zircon-crown" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="display: none; fill: #feffbf; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+      </g>
+    <g id="metal" data-active="1">
+      <path id="metal-bridge-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5,0-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7s7.5,0,11.4-.2c4.2,0,9.5,0,12.3-1.2h.2Z" style="display: none; fill: #0051bf; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+      <path id="metal-crown" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="display: none; fill: #0051bf; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+      </g>
+    <g id="emax" data-active="1">
+      <path id="emax-crown" d="M27.2,50.6c-3.8,13.7-13.7,14.7-17.2-.4-1.2-4.8-1.8-11,1-14.8,2.9-4,8.8-4.7,12.7-2.2,5.1,3.4,5.1,11.6,3.6,17.2v.2h-.1Z" style="display: none; fill: url(#radial-gradient-13-2); stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+      </g>
+    <g id="temporary-restorations" data-active="1">
+      <path id="temporary-bridge-connector" d="M33.4,51.8c2.9-1.2,3.4-4.8,1-6.6-2.2-1.8-6.5-1.6-10.3-1.7-6.5,0-13.2-.4-19.6.4-3.9.6-6,4.9-3.5,7.6,1.6,1.6,5.6,1.7,8.5,1.7s7.5,0,11.4-.2c4.2,0,9.5,0,12.3-1.2h.2Z" style="display: none; fill: #fff; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .2px;" data-active="1" />
+      <path id="temporary-crown" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="display: none; fill: #fff; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+      </g>
+    </g>
+  <g id="specials" data-active="1">
+    <g id="missing-closed" style="display: none;" data-active="1">
+      <path d="M2.7,6c18.4,16.6,16.4,37.8,0,54.8" style="fill: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" data-active="1" />
+      <path d="M30.9,59.4c-18.5-16.4-16.7-37.6-.5-54.8" style="fill: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" data-active="1" />
+      </g>
+    <g id="extraction-plan" style="display: none;" data-active="1">
+      <path d="M4.6,57.3c1.4-4,28.3-51.6,29.1-53.7" style="fill: none; stroke: #b70000; stroke-miterlimit: 10; stroke-width: 3px;" data-active="1" />
+      <path d="M5,4.1c2.7,3.5,19.9,39.4,23.4,48.1.6,1.5,1.2,3,2,4.3" style="fill: none; stroke: #b70000; stroke-miterlimit: 10; stroke-width: 3px;" data-active="1" />
+      </g>
+    <g id="crown-needed" style="display: none;" data-active="1">
+      <path id="crown-needed-shape" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="fill: #c83014; stroke: #000; stroke-miterlimit: 10;" data-active="1" />
+      <path id="crown-needed-path" d="M16,29.4c-1.6,3.3-3.3,6.5-4.8,9.7-.6,1.4-1.2,2.7-1.4,4.1,0,.3,0,.5.1.5.8,0,1.5-1.5,2.1-2.4,1.7-2.9,3.2-7.1,5.3-9.3,1.4-1.5,3.3-2.7,3-.8-1.5,7.4-7.7,13.1-9.5,20.2-.4,1.6-.9,3.9,0,4.4,1.7-.4,2.6-3.9,3.6-6.1,2.1-4.7,5.9-12.4,8.5-15.9,2.3-2.4,1.8,3.5.1,7.3-1.7,4.4-9.1,11.7-7.6,17.4,2.5.9,7-12.1,9.1-14.5,2.8-3.9,1.6,3.1,0,6.7-.9,2.3-2.4,4.5-3.2,6.9-.5,1.7.2,1.8.9,1.1,1.6-1.4,3.2-3.9,4.6-6.1" style="fill: #feffbf; stroke: #1b3f1c; stroke-miterlimit: 10;" data-active="1" />
+      </g>
+    <g id="crown-replace" style="display: none;" data-active="1">
+      <path id="crown-replace-shape" d="M28.5,51c-4.4,16.1-16.1,17.2-20.2-.5-1.4-5.6-2.1-12.9,1.2-17.3,3.4-4.7,10.3-5.5,14.9-2.6,6,4,6,13.6,4.2,20.1v.2h0Z" style="fill: none; stroke: #c83014; stroke-miterlimit: 10; stroke-width: 3px;" data-active="1" />
+      </g>
+    </g>
+  </svg>

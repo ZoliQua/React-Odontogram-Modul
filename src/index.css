@@ -339,6 +339,7 @@ select:focus{
 .contact-row{margin-bottom:6px}
 .bruxism-row{margin-top:6px; gap:8px}
 .fissure-row{margin-top:10px; justify-content:center; text-align:center}
+#crownReplaceRow,#crownNeededRow,#missingClosedRow{margin-top:8px}
 .bridge-pillar-row{margin-top:10px}
 .inline-checks{padding:0}
 .inline-checks label{display:flex; gap:10px; align-items:center; font-size:13px; padding:6px 10px; border-radius:12px; border:1px solid var(--line); background: rgba(0,0,0,.02); cursor:pointer}
