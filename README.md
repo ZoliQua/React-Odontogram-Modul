@@ -250,139 +250,139 @@ The export creates a JSON file (version `1.1`) containing:
 
 Test URL: https://react-odontogram-modul.vercel.app/
 
-### Attekintes
-A projekt egy interaktiv, bongeszoben futo odontogram szerkeszto, amely a fogazati statuszrogzitest modern, gyorsan kezelheto UI-val tamogatja. A rendszer kulonbozo fogtipusokat, restauraciokat, gyokerkezelesi allapotokat, fogszuvasodas feluleteket, mobilitast es egyeb odontologiai jellemzoket kepes retegzett SVG ikonokkal megjeleniteni, mikozben tobbfogos kivalasztast, szuroket es elore definialt statusz mintakat is biztosit.
+### Áttekintés
+A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a fogazati státuszrögzítést modern, gyorsan kezelhető UI-val támogatja. A rendszer különböző fogtípusokat, restaurációkat, gyökérkezelési állapotokat, fogszuvasodás felületeket, mobilitást és egyéb odontológiai jellemzőket képes rétegzett SVG ikonokkal megjeleníteni, miközben többfogos kiválasztást, szűrőket és előre definiált státusz mintákat is biztosít.
 
-### Fobb funkciok
-- Gyors fogkijeloles es tobbfogos kivalasztas (CMD/CTRL + kattintas)
-- Fogtipusok: marado, tej, implantatum, tort valtozatok, koronaelokeszites, iny alatti
-- Korona anyagok: termeszetes, e.max, cirkon, fem-keramia, ideiglenes, teleszkop
-- Implantatum feleptmenyek: gyogyulo csavar, lokator, lokator protezissel, bar, bar protezissel
-- Hidtagok: cirkon, fem, ideiglenes, kiveteheto, bar, bar protezissel
-- Kariesz kartografaas 6 feluleten: mezialis, disztalis, bukkalis, lingualis, okkluzalis, korona alatti
-- Tomes anyagok feluletenkent: amalgam, kompozit, GIC, ideiglenes
-- Endodonciai allapotok: gyogyszeres tomes, gyokertomes, uvegszalas csap, fem csap, rezekcio
-- Modositok: periapikalis gyulladas, parodontalis betegseg, mobilitas fokok (M1/M2/M3)
-- Specialis jelzok: korona szukseges, korona csere szukseges, zart hezag, extrakcios terv, bruxizmus koptatas/nyaki koptatas, fisszura zaras, kontaktpont vesztes
-- Okkluzalis nezet, bolcsessegfog, csont es pulpa lathatosag kapcsolok
-- 12 kivalasztasi szuro (osszes, jelenlevo, marado, tej, implantatum, hianyzo, felso/also, front/molarisok)
-- Elore definialt statusz mintak (alaphelyzet, tejfogazat, vegyes fogazat, fogatlan)
-- 34 elore definialt restauracios sablon (hidak, kiveteheto protezisek, bar protezisek implantokkal)
-- Allapot export/import JSON formatumban (1.1 verzio)
-- Harom szamozasi rendszer (FDI, Universal, Palmer)
-- I18n (HU/EN/DE) valaszthato nyelvvel (155+ forditasi kulcs nyelvenkent)
+### Főbb funkciók
+- Gyors fogkijelölés és többfogos kiválasztás (CMD/CTRL + kattintás)
+- Fogtípusok: maradó, tej, implantátum, tört változatok, koronaelőkészítés, íny alatti
+- Korona anyagok: természetes, e.max, cirkón, fém-kerámia, ideiglenes, teleszkóp
+- Implantátum felépítmények: gyógyuló csavar, lokátor, lokátor protézissel, bár, bár protézissel
+- Hídtagok: cirkón, fém, ideiglenes, kivehető, bár, bár protézissel
+- Kariesz kartografálás 6 felületen: meziális, disztális, bukkális, linguális, okkluzális, korona alatti
+- Tömés anyagok felületenként: amalgám, kompozit, GIC, ideiglenes
+- Endodonciai állapotok: gyógyszeres tömés, gyökértömés, üvegszálas csap, fém csap, rezekció
+- Módosítók: periapikális gyulladás, parodontális betegség, mobilitás fokok (M1/M2/M3)
+- Speciális jelzők: korona szükséges, korona csere szükséges, zárt hézag, extrakciós terv, bruxizmus koptatás/nyaki koptatás, fisszúra zárás, kontaktpont vesztés
+- Okkluzális nézet, bölcsességfog, csont és pulpa láthatóság kapcsolók
+- 12 kiválasztási szűrő (összes, jelenlévő, maradó, tej, implantátum, hiányzó, felső/alsó, front/molárisok)
+- Előre definiált státusz minták (alaphelyzet, tejfogazat, vegyes fogazat, fogatlan)
+- 34 előre definiált restaurációs sablon (hidak, kivehető protézisek, bár protézisek implantokkal)
+- Állapot export/import JSON formátumban (1.1 verzió)
+- Három számozási rendszer (FDI, Universal, Palmer)
+- I18n (HU/EN/DE) választható nyelvvel (155+ fordítási kulcs nyelvenként)
 
 ### Modulok
-- Odontogram racs es fogcsempe UI
-- Vezerlok es statusz panel
-- SVG retegelo motor es fogsablonok
-- Fogszamozas es cimke generaas (FDI/Universal/Palmer)
-- Lokalizacio (HU/EN/DE)
-- Statusz export/import
-- Statusz extr: elore definialt restauracios sablonok
+- Odontogram rács és fogcsempe UI
+- Vezérlők és státusz panel
+- SVG rétegelő motor és fogsablonok
+- Fogszámozás és címke generálás (FDI/Universal/Palmer)
+- Lokalizáció (HU/EN/DE)
+- Státusz export/import
+- Státusz extrák: előre definiált restaurációs sablonok
 
-### UI vezerlok
+### UI vezérlők
 
-**Fejlec sav:**
-- Nyelvvalaszto (HU/EN/DE lenyilo)
-- Szamozasi rendszer valaszto (FDI/Universal/Palmer lenyilo)
-- Statusz exportalas / Statusz importalas gombok
+**Fejléc sáv:**
+- Nyelvválasztó (HU/EN/DE legördülő)
+- Számozási rendszer választó (FDI/Universal/Palmer legördülő)
+- Státusz exportálás / Státusz importálás gombok
 
-**Diagram fejlec:**
-- Okkluzalis nezet kapcsolo
-- Bolcsessegfog lathatosag kapcsolo
-- Csont lathatosag kapcsolo
-- Pulpa lathatosag kapcsolo
-- Kivalasztas torlese gomb
+**Diagram fejléc:**
+- Okkluzális nézet kapcsoló
+- Bölcsességfog láthatóság kapcsoló
+- Csont láthatóság kapcsoló
+- Pulpa láthatóság kapcsoló
+- Kiválasztás törlése gomb
 
-**Kivalasztasi szurok:**
-- Osszes kivalasztasa / Osszes jelenlevo / Marado / Tej / Implantatumok / Osszes hianyzo
-- Felso / Felso front 6 / Felso molarisok
-- Also / Also front 6 / Also molarisok
+**Kiválasztási szűrők:**
+- Összes kiválasztása / Összes jelenlévő / Maradó / Tej / Implantátumok / Összes hiányzó
+- Felső / Felső front 6 / Felső molárisok
+- Alsó / Alsó front 6 / Alsó molárisok
 
-**Statusz mintak:**
-- Osszes visszaallitasa (szajureg reset)
+**Státusz minták:**
+- Összes visszaállítása (szájüreg reset)
 - Tejfogazat
 - Vegyes fogazat
-- Fogatlan kapcsolo
+- Fogatlan kapcsoló
 
-**Statusz extrak lenyilo:**
-- Felso/Also cirkon hidak (12-22, 13-23, 16-26, teljes iv)
-- Felso/Also fem hidak (12-22, 13-23, 16-26, teljes iv)
-- Felso/Also reszleges kiveteheto protezisek
-- Felso/Also teljes kiveteheto protezisek
-- Felso/Also bar protezisek implantatumokkal
+**Státusz extrák legördülő:**
+- Felső/Alsó cirkón hidak (12-22, 13-23, 16-26, teljes ív)
+- Felső/Alsó fém hidak (12-22, 13-23, 16-26, teljes ív)
+- Felső/Alsó részleges kivehető protézisek
+- Felső/Alsó teljes kivehető protézisek
+- Felső/Alsó bár protézisek implantátumokkal
 
-### Fogtipusok es allapotok
+### Fogtípusok és állapotok
 
-**Fog kivalasztas (alaptipus):**
-| Ertek | Leiras |
+**Fog kiválasztás (alaptípus):**
+| Érték | Leírás |
 |---|---|
-| `none` | Hianyzo fog |
-| `tooth-base` | Marado fog |
+| `none` | Hiányzó fog |
+| `tooth-base` | Maradó fog |
 | `milktooth` | Tejfog |
-| `implant` | Fogimplantatum |
-| `tooth-crownprep` | Koronaelokeszitett fog |
-| `tooth-under-gum` | Iny alatti (elobuvatlan) fog |
+| `implant` | Fogimplantátum |
+| `tooth-crownprep` | Koronaelőkészített fog |
+| `tooth-under-gum` | Íny alatti (előbújatlan) fog |
 
-**Tort fog valtozatok:**
+**Tört fog változatok:**
 `tooth-broken-inicisal`, `tooth-broken-distal-inicisal`, `tooth-broken-distal`, `tooth-broken-mesial-distal-inicisal`, `tooth-broken-mesial-distal`, `tooth-broken-mesial-inicisal`, `tooth-broken-mesial`, `no-tooth-after-extraction`
 
-**Korona anyagok (marado fogak):**
+**Korona anyagok (maradó fogak):**
 `natural`, `broken`, `emax`, `zircon`, `metal`, `temporary`, `telescope`
 
-**Korona anyagok (implantatumok):**
+**Korona anyagok (implantátumok):**
 `natural` (nincs), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
 
-**Hidtagok:**
+**Hídtagok:**
 `none`, `removable`, `zircon`, `metal`, `temporary`, `bar`, `bar-prosthesis`
 
-**Endodonciai lehetosegek (marado fogak):**
+**Endodonciai lehetőségek (maradó fogak):**
 `none`, `endo-medical-filling`, `endo-filling`, `endo-glass-pin`, `endo-metal-pin`
 
-**Endodonciai lehetosegek (tejfogak):**
+**Endodonciai lehetőségek (tejfogak):**
 `none`, `endo-medical-filling`
 
-**Tomes anyagok (marado fogak):**
+**Tömés anyagok (maradó fogak):**
 `amalgam`, `composite`, `gic`, `temporary`
 
-**Tomes anyagok (tejfogak):**
+**Tömés anyagok (tejfogak):**
 `composite`, `gic`, `temporary`
 
-**Tomes/kariesz feluletek:**
+**Tömés/kariesz felületek:**
 `mesial`, `distal`, `buccal`, `lingual`, `occlusal`, `subcrown` (csak kariesz)
 
-**Modositok:**
-`inflammation` (periapikalis), `parodontal` (parodontalis), `mobility` (M1/M2/M3)
+**Módosítók:**
+`inflammation` (periapikális), `parodontal` (parodontális), `mobility` (M1/M2/M3)
 
-**Specialis jelzok:**
+**Speciális jelzők:**
 `crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`
 
 ### SVG sablon rendszer
 
 **Fogsablonok** (`src/assets/teeth-svgs/`):
-| Sablon | Hasznalo fogak |
+| Sablon | Használó fogak |
 |---|---|
-| `11.svg` | 11, 12, 21, 22, 31, 32, 41, 42 (metszo fogak) |
+| `11.svg` | 11, 12, 21, 22, 31, 32, 41, 42 (metszőfogak) |
 | `13.svg` | 13, 23, 33, 43 (szemfogak) |
-| `14.svg` / `14_occl.svg` | 14, 15, 24, 25, 34, 35, 44, 45 (kis orolofogak) |
-| `16.svg` / `16_occl.svg` | 16, 17, 18, 26, 27, 28, 36, 37, 38, 46, 47, 48 (nagy orolofogak) |
+| `14.svg` / `14_occl.svg` | 14, 15, 24, 25, 34, 35, 44, 45 (kis őrlőfogak) |
+| `16.svg` / `16_occl.svg` | 16, 17, 18, 26, 27, 28, 36, 37, 38, 46, 47, 48 (nagy őrlőfogak) |
 
-A sablonok az also allcsontnal 180 fokkal elforgatva, a bal oldalnal vizszintesen tukrozve jelennek meg.
+A sablonok az alsó állcsontnál 180 fokkal elforgatva, a bal oldalnál vízszintesen tükrözve jelennek meg.
 
 **Ikon SVG-k** (`src/assets/icon-svgs/`):
-`icon_8.svg` (bolcsesseg), `icon_gum.svg` (csont), `icon_no_selection.svg` (torles), `icon_occl.svg` (okkluzalis nezet), `icon_pulp.svg` (pulpa)
+`icon_8.svg` (bölcsesség), `icon_gum.svg` (csont), `icon_no_selection.svg` (törlés), `icon_occl.svg` (okkluzális nézet), `icon_pulp.svg` (pulpa)
 
-### Szamozasi rendszerek
+### Számozási rendszerek
 
-**FDI (ISO 3950):** Felnott fogak 11-18, 21-28, 31-38, 41-48. Tejfogak 51-55, 61-65, 71-75, 81-85.
+**FDI (ISO 3950):** Felnőtt fogak 11-18, 21-28, 31-38, 41-48. Tejfogak 51-55, 61-65, 71-75, 81-85.
 
-**Universal (USA):** Felnott fogak 1-32 szamozassal. Tejfogak A-T betukkel.
+**Universal (USA):** Felnőtt fogak 1-32 számozással. Tejfogak A-T betűkkel.
 
-**Palmer (Zsigmondy-Palmer):** Kvadrans + pozicio formatum (pl. UR-1, LL-5). Tejfogak kvadransonkent A-E betukkel.
+**Palmer (Zsigmondy-Palmer):** Kvadráns + pozíció formátum (pl. UR-1, LL-5). Tejfogak kvadránsonként A-E betűkkel.
 
-### Hasznalat
-Fejlesztes inditasa:
+### Használat
+Fejlesztés indítása:
 ```bash
 npm install
 npm run dev
@@ -391,14 +391,14 @@ Build:
 ```bash
 npm run build
 ```
-Elozetes megtekintes:
+Előzetes megtekintés:
 ```bash
 npm run preview
 ```
 
-### Integracio
-A komponens kulon is felhasznalhato React alkalmazasban.
-Peldakent:
+### Integráció
+A komponens külön is felhasználható React alkalmazásban.
+Példaként:
 ```tsx
 import App from "./App";
 
@@ -414,77 +414,77 @@ export default function Host(){
 }
 ```
 
-### Nyilvanos API
+### Nyilvános API
 
-A motor az alabbi fuggvenyeket exportalja kulso vezerleshez:
+A motor az alábbi függvényeket exportálja külső vezérléshez:
 
-| Fuggveny | Leiras |
+| Függvény | Leírás |
 |---|---|
-| `initOdontogram()` | Motor inicializalasa es osszes fog renderelese |
-| `destroyOdontogram()` | Motor leallitasa es esemenykezelok eltavolitasa |
-| `setNumberingSystem(system)` | Valtas FDI, Universal, Palmer kozott |
-| `clearSelection()` | Osszes fog kivalasztasanak torlese |
-| `setOcclusalVisible(on)` | Okkluzalis nezet be/ki |
-| `setWisdomVisible(on)` | Bolcsessegfogak mutatasa/elrejtese |
-| `setShowBase(on)` | Csont reteg mutatasa/elrejtese |
-| `setHealthyPulpVisible(on)` | Egeszsege pulpa mutatasa/elrejtese |
+| `initOdontogram()` | Motor inicializálása és összes fog renderelése |
+| `destroyOdontogram()` | Motor leállítása és eseménykezelők eltávolítása |
+| `setNumberingSystem(system)` | Váltás FDI, Universal, Palmer között |
+| `clearSelection()` | Összes fog kiválasztásának törlése |
+| `setOcclusalVisible(on)` | Okkluzális nézet be/ki |
+| `setWisdomVisible(on)` | Bölcsességfogak mutatása/elrejtése |
+| `setShowBase(on)` | Csont réteg mutatása/elrejtése |
+| `setHealthyPulpVisible(on)` | Egészséges pulpa mutatása/elrejtése |
 
-### Statusz export/import formatum
-Az export egy JSON fajlt hoz letre (`1.1` verzio), amely tartalmazza:
+### Státusz export/import formátum
+Az export egy JSON fájlt hoz létre (`1.1` verzió), amely tartalmazza:
 
-**Globalis mezok:**
-- `wisdomVisible` - bolcsessegfogak lathatoak
-- `showBase` - csont reteg lathato
-- `occlusalVisible` - okkluzalis nezet aktiv
-- `showHealthyPulp` - egeszseg pulpa lathato
-- `edentulous` - fogatlan mod aktiv
+**Globális mezők:**
+- `wisdomVisible` - bölcsességfogak láthatóak
+- `showBase` - csont réteg látható
+- `occlusalVisible` - okkluzális nézet aktív
+- `showHealthyPulp` - egészséges pulpa látható
+- `edentulous` - fogatlan mód aktív
 
-**Fogankenti mezok (32 fog):**
-- `toothSelection` - fog alaptipusa
-- `crownMaterial` - korona/feleptmeny anyaga
-- `bridgeUnit` - hidtag tipusa
-- `endo` - endodonciai allapot
-- `mods` - modositok tombje (gyulladas, parodontalis)
-- `caries` - aktiv kariesz feluletek
-- `fillingMaterial` - tomes anyaga
-- `fillingSurfaces` - tomott feluletek
-- `pulpInflam` - pulpa gyulladas jelzo
-- `endoResection` - csucsi rezekcio jelzo
-- `fissureSealing` - fisszura zaras jelzo
-- `contactMesial` - mezialis kontaktpont vesztes
-- `contactDistal` - disztalis kontaktpont vesztes
-- `bruxismWear` - okkluzalis bruxizmus koptatas
-- `bruxismNeckWear` - nyaki bruxizmus koptatas
-- `brokenMesial`, `brokenIncisal`, `brokenDistal` - tores helyek
-- `extractionWound` - extrakcios seb
-- `extractionPlan` - tervezett extrakio
-- `bridgePillar` - hid pillerfog
-- `mobility` - mobilitas fok (none/m1/m2/m3)
-- `crownNeeded` - korona szukseges jelzo
-- `crownReplace` - korona csere szukseges jelzo
-- `missingClosed` - zart hezag extrakio utan
+**Fogankénti mezők (32 fog):**
+- `toothSelection` - fog alaptípusa
+- `crownMaterial` - korona/felépítmény anyaga
+- `bridgeUnit` - hídtag típusa
+- `endo` - endodonciai állapot
+- `mods` - módosítók tömbje (gyulladás, parodontális)
+- `caries` - aktív kariesz felületek
+- `fillingMaterial` - tömés anyaga
+- `fillingSurfaces` - tömött felületek
+- `pulpInflam` - pulpa gyulladás jelző
+- `endoResection` - csúcsi rezekció jelző
+- `fissureSealing` - fisszúra zárás jelző
+- `contactMesial` - meziális kontaktpont vesztés
+- `contactDistal` - disztális kontaktpont vesztés
+- `bruxismWear` - okkluzális bruxizmus koptatás
+- `bruxismNeckWear` - nyaki bruxizmus koptatás
+- `brokenMesial`, `brokenIncisal`, `brokenDistal` - törés helyek
+- `extractionWound` - extrakciós seb
+- `extractionPlan` - tervezett extrakció
+- `bridgePillar` - híd pillérfog
+- `mobility` - mobilitás fok (none/m1/m2/m3)
+- `crownNeeded` - korona szükséges jelző
+- `crownReplace` - korona csere szükséges jelző
+- `missingClosed` - zárt hézag extrakció után
 
-### Mappastruktura
-- `src/App.tsx` - UI vaz, fejlec vezerlok, nyelv/szamozas valaszto
-- `src/odontogram.ts` - SVG retegelo motor, fog allapotkezeles, UI osszekotes
-- `src/status_extras.ts` - 34 elore definialt restauracios sablon (hidak, protezisek, bar konstrukciok)
-- `src/i18n/` - forditasok (HU/EN/DE) es i18n hook
-- `src/utils/numbering.ts` - FDI, Universal, Palmer szamozasi konverzio
-- `src/assets/teeth-svgs/` - SVG fogsablonok (6 fajl: metszok, szemfogak, kis orolok, nagy orolok + okkluzalis nezetek)
-- `src/assets/icon-svgs/` - eszkoztar ikon SVG-k (5 fajl)
+### Mappastruktúra
+- `src/App.tsx` - UI váz, fejléc vezérlők, nyelv/számozás választó
+- `src/odontogram.ts` - SVG rétegelő motor, fog állapotkezelés, UI összekötés
+- `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, bár konstrukciók)
+- `src/i18n/` - fordítások (HU/EN/DE) és i18n hook
+- `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
+- `src/assets/teeth-svgs/` - SVG fogsablonok (6 fájl: metszők, szemfogak, kis őrlők, nagy őrlők + okkluzális nézetek)
+- `src/assets/icon-svgs/` - eszköztár ikon SVG-k (5 fájl)
 
-### Technologia
+### Technológia
 - React 18 + Vite + TypeScript
-- Tailwind CSS a UI stilusokhoz
-- SVG retegeles DOM manipulacioval (nem React state, a teljesitmeny erdekeben)
-- Egyszeru egyedi i18n rendszer
-- Vite utvonal alias: `@` a `./src` mappara kepezve
+- Tailwind CSS a UI stílusokhoz
+- SVG rétegelés DOM manipulációval (nem React state, a teljesítmény érdekében)
+- Egyszerű egyedi i18n rendszer
+- Vite útvonal alias: `@` a `./src` mappára képezve
 
-### Megjegyzesek
-- A SVG sablonok `src/assets/teeth-svgs` es `src/assets/icon-svgs` mappa alol kerulnek betoltesre, ezert statikus hostingnal a public mappa elerhetosege kotelezo.
-- Az UI retegeles es allapotkezeles jelenleg nem React state-ben, hanem sajat belso allapotban mukodik.
-- A tejfogaknal szukebb anyagvalasztek all rendelkezesre (nincs amalgam tomes, nincs csapos endo).
-- Az implantatum fogaknal a koronalehetosegek elternek a termeszetes fogaketol (lokator, bar, gyogyulo csavar).
+### Megjegyzések
+- A SVG sablonok `src/assets/teeth-svgs` és `src/assets/icon-svgs` mappa alól kerülnek betöltésre, ezért statikus hostingnál a public mappa elérhetősége kötelező.
+- Az UI rétegelés és állapotkezelés jelenleg nem React state-ben, hanem saját belső állapotban működik.
+- A tejfogaknál szűkebb anyagválaszték áll rendelkezésre (nincs amalgám tömés, nincs csapos endo).
+- Az implantátum fogaknál a koronalehetőségek eltérnek a természetes fogakétól (lokátor, bár, gyógyuló csavar).
 
 ## License
 
