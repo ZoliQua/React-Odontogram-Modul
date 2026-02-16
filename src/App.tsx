@@ -359,6 +359,10 @@ export default function App({
                   <input type="checkbox" id="endoResection" />
                   <span>{t("endo.resection")}</span>
                 </label>
+                <label>
+                  <input type="checkbox" id="parapulpalPin" />
+                  <span>{t("endo.parapulpalPin")}</span>
+                </label>
               </div>
             </section>
 

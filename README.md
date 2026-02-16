@@ -12,13 +12,13 @@ This project is an interactive, browser-based odontogram editor that supports fa
 ### Key features
 - Fast selection and multi-select (CMD/CTRL + click)
 - Tooth types: permanent, primary (milk), implant, broken variants, crown prep, subgingival
-- Crown materials: natural, e.max, zircon, metal-ceramic, temporary, telescope
+- Crown materials: natural, e.max, zircon, metal-ceramic, temporary, telescope, radix
 - Implant abutments: healing abutment, locator, locator with prosthesis, bar, bar with prosthesis
 - Bridge units: zircon, metal, temporary, removable, bar, bar with prosthesis
 - Caries charting on 6 surfaces: mesial, distal, buccal, lingual, occlusal, subcrown
 - Filling materials per surface: amalgam, composite, GIC, temporary
-- Endodontic states: medicinal filling, root canal filling, glass fiber post, metal post, resection
-- Modifications: periapical inflammation, periodontal disease, mobility grades (M1/M2/M3)
+- Endodontic states: medicinal filling, root canal filling, incomplete root filling, glass fiber post, metal post, resection, parapulpal pin
+- Modifications: periapical inflammation (inside/outside), periodontal disease, mobility grades (M1/M2/M3)
 - Special indicators: crown needed, crown replacement needed, missing closed gap, extraction plan, bruxism wear/neck wear, fissure sealing, contact point loss
 - Occlusal view, wisdom teeth, bone and pulp visibility toggles
 - 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
@@ -85,7 +85,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 `tooth-broken-inicisal`, `tooth-broken-distal-inicisal`, `tooth-broken-distal`, `tooth-broken-mesial-distal-inicisal`, `tooth-broken-mesial-distal`, `tooth-broken-mesial-inicisal`, `tooth-broken-mesial`, `no-tooth-after-extraction`
 
 **Crown materials (permanent teeth):**
-`natural`, `broken`, `emax`, `zircon`, `metal`, `temporary`, `telescope`
+`natural`, `broken`, `radix`, `emax`, `zircon`, `metal`, `temporary`, `telescope`
 
 **Crown materials (implants):**
 `natural` (none), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
@@ -94,7 +94,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 `none`, `removable`, `zircon`, `metal`, `temporary`, `bar`, `bar-prosthesis`
 
 **Endodontic options (permanent teeth):**
-`none`, `endo-medical-filling`, `endo-filling`, `endo-glass-pin`, `endo-metal-pin`
+`none`, `endo-medical-filling`, `endo-filling`, `endo-filling-incomplete`, `endo-glass-pin`, `endo-metal-pin`
 
 **Endodontic options (milk teeth):**
 `none`, `endo-medical-filling`
@@ -112,7 +112,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 `inflammation` (periapical), `parodontal` (periodontal), `mobility` (M1/M2/M3)
 
 **Special indicators:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `parapulpalPin`
 
 ### SVG template system
 
@@ -214,6 +214,7 @@ The export creates a JSON file (version `1.1`) containing:
 - `brokenMesial`, `brokenIncisal`, `brokenDistal` - fracture locations
 - `extractionWound` - post-extraction wound
 - `extractionPlan` - planned extraction
+- `parapulpalPin` - parapulpal pin flag
 - `bridgePillar` - bridge abutment tooth
 - `mobility` - mobility grade (none/m1/m2/m3)
 - `crownNeeded` - crown needed indicator
@@ -256,13 +257,13 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 ### Főbb funkciók
 - Gyors fogkijelölés és többfogos kiválasztás (CMD/CTRL + kattintás)
 - Fogtípusok: maradó, tej, implantátum, tört változatok, koronaelőkészítés, íny alatti
-- Korona anyagok: természetes, e.max, cirkón, fém-kerámia, ideiglenes, teleszkóp
+- Korona anyagok: természetes, e.max, cirkón, fém-kerámia, ideiglenes, teleszkóp, radix
 - Implantátum felépítmények: gyógyuló csavar, lokátor, lokátor protézissel, bár, bár protézissel
 - Hídtagok: cirkón, fém, ideiglenes, kivehető, bár, bár protézissel
 - Kariesz kartografálás 6 felületen: meziális, disztális, bukkális, linguális, okkluzális, korona alatti
 - Tömés anyagok felületenként: amalgám, kompozit, GIC, ideiglenes
-- Endodonciai állapotok: gyógyszeres tömés, gyökértömés, üvegszálas csap, fém csap, rezekció
-- Módosítók: periapikális gyulladás, parodontális betegség, mobilitás fokok (M1/M2/M3)
+- Endodonciai állapotok: gyógyszeres tömés, gyökértömés, incomplét gyökértömés, üvegszálas csap, fém csap, rezekció, parapulpális csap
+- Módosítók: periapikális gyulladás (belső/külső), parodontális betegség, mobilitás fokok (M1/M2/M3)
 - Speciális jelzők: korona szükséges, korona csere szükséges, zárt hézag, extrakciós terv, bruxizmus koptatás/nyaki koptatás, fisszúra zárás, kontaktpont vesztés
 - Okkluzális nézet, bölcsességfog, csont és pulpa láthatóság kapcsolók
 - 12 kiválasztási szűrő (összes, jelenlévő, maradó, tej, implantátum, hiányzó, felső/alsó, front/molárisok)
@@ -329,7 +330,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 `tooth-broken-inicisal`, `tooth-broken-distal-inicisal`, `tooth-broken-distal`, `tooth-broken-mesial-distal-inicisal`, `tooth-broken-mesial-distal`, `tooth-broken-mesial-inicisal`, `tooth-broken-mesial`, `no-tooth-after-extraction`
 
 **Korona anyagok (maradó fogak):**
-`natural`, `broken`, `emax`, `zircon`, `metal`, `temporary`, `telescope`
+`natural`, `broken`, `radix`, `emax`, `zircon`, `metal`, `temporary`, `telescope`
 
 **Korona anyagok (implantátumok):**
 `natural` (nincs), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
@@ -338,7 +339,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 `none`, `removable`, `zircon`, `metal`, `temporary`, `bar`, `bar-prosthesis`
 
 **Endodonciai lehetőségek (maradó fogak):**
-`none`, `endo-medical-filling`, `endo-filling`, `endo-glass-pin`, `endo-metal-pin`
+`none`, `endo-medical-filling`, `endo-filling`, `endo-filling-incomplete`, `endo-glass-pin`, `endo-metal-pin`
 
 **Endodonciai lehetőségek (tejfogak):**
 `none`, `endo-medical-filling`
@@ -356,7 +357,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 `inflammation` (periapikális), `parodontal` (parodontális), `mobility` (M1/M2/M3)
 
 **Speciális jelzők:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `parapulpalPin`
 
 ### SVG sablon rendszer
 
@@ -458,6 +459,7 @@ Az export egy JSON fájlt hoz létre (`1.1` verzió), amely tartalmazza:
 - `brokenMesial`, `brokenIncisal`, `brokenDistal` - törés helyek
 - `extractionWound` - extrakciós seb
 - `extractionPlan` - tervezett extrakció
+- `parapulpalPin` - parapulpális csap jelző
 - `bridgePillar` - híd pillérfog
 - `mobility` - mobilitás fok (none/m1/m2/m3)
 - `crownNeeded` - korona szükséges jelző

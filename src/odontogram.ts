@@ -66,9 +66,10 @@ const GROUPS = {
     "tooth-crownprep",
     "tooth-under-gum",
     "no-tooth-after-extraction",
+    "tooth-radix",
   ],
   mods: ["inflammation", "parodontal", "mobility"],
-  endo: ["endo-medical-filling", "endo-filling", "endo-glass-pin", "endo-metal-pin", "endo-resection"],
+  endo: ["endo-medical-filling", "endo-filling", "endo-filling-incomplete", "endo-glass-pin", "endo-metal-pin", "endo-resection", "parapulpal-pin"],
   caries: ["caries-subcrown","caries-buccal","caries-lingual","caries-mesial","caries-distal","caries-occlusal"],
   fillingSurfaces: ["buccal","lingual","mesial","distal","occlusal"],
   crownMaterial: ["zircon","metal","temporary","telescope","emax"],
@@ -132,6 +133,7 @@ function defaultState(){
     brokenDistal: false,
     extractionWound: false,
     extractionPlan: false,
+    parapulpalPin: false,
     crownReplace: false,
     crownNeeded: false,
     missingClosed: false,
@@ -440,6 +442,7 @@ function getEndoOptions(isMilktooth: Any){
     {value:"none", label:t("endo.option.none")},
     {value:"endo-medical-filling", label:t("endo.option.medicalFilling")},
     {value:"endo-filling", label:t("endo.option.filling")},
+    {value:"endo-filling-incomplete", label:t("endo.option.incompleteFilling")},
     {value:"endo-glass-pin", label:t("endo.option.glassPin")},
     {value:"endo-metal-pin", label:t("endo.option.metalPin")},
   ];
@@ -480,6 +483,7 @@ function getCrownOptions(isImplant: Any){
   return [
     {value:"natural", label:t("crown.option.full")},
     {value:"broken", label:t("crown.option.broken")},
+    {value:"radix", label:t("crown.option.radix")},
     {value:"emax", label:t("crown.option.emax")},
     {value:"zircon", label:t("crown.option.zircon")},
     {value:"metal", label:t("crown.option.metal")},
@@ -651,6 +655,10 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
     setActive(svgGetById(svg, "tooth-base"), false);
     setActive(svgGetById(svg, brokenVariant), true);
   }
+  if(state.crownMaterial === "radix" && state.toothSelection === "tooth-base"){
+    setActive(svgGetById(svg, "tooth-base"), false);
+    setActive(svgGetById(svg, "tooth-radix"), true);
+  }
   if(state.toothSelection === "none" && state.extractionWound){
     setActive(svgGetById(svg, "no-tooth-after-extraction"), true);
   }
@@ -687,6 +695,8 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
     } else if(state.endo === "endo-glass-pin"){
       setActive(svgGetById(svg, "endo-filling"), true);
       setActive(svgGetById(svg, "endo-glass-pin"), true);
+    } else if(state.endo === "endo-filling-incomplete"){
+      setActive(svgGetById(svg, "endo-filling-incomplete"), true);
     } else if(state.endo === "endo-metal-pin"){
       setActive(svgGetById(svg, "endo-filling"), true);
       setActive(svgGetById(svg, "endo-metal-pin"), true);
@@ -694,6 +704,9 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
   }
   if(state.endoResection && isToothPresent(state.toothSelection) && !underGum && !extraction){
     setActive(svgGetById(svg, "endo-resection"), true);
+  }
+  if(state.parapulpalPin && isToothPresent(state.toothSelection) && !underGum && !extraction){
+    setActive(svgGetById(svg, "parapulpal-pin"), true);
   }
 
   // 4) Removable prosthesis
@@ -902,6 +915,7 @@ function syncControlsFromState(state: Any){
   $("#brokenDistal").checked = !!state.brokenDistal;
   $("#extractionWound").checked = !!state.extractionWound;
   $("#extractionPlan").checked = !!state.extractionPlan;
+  $("#parapulpalPin").checked = !!state.parapulpalPin;
   $("#crownReplace").checked = !!state.crownReplace;
   $("#crownNeeded").checked = !!state.crownNeeded;
   $("#missingClosed").checked = !!state.missingClosed;
@@ -964,6 +978,7 @@ function syncControlsFromState(state: Any){
   setDisabled($("#endoSelect"), endoDisabled);
   setDisabled($("#pulpInflam"), endoDisabled);
   setDisabled($("#endoResection"), endoDisabled);
+  setDisabled($("#parapulpalPin"), endoDisabled);
   const mobilityDisabled = state.toothSelection === "none" || extraction;
   setDisabled($("#mobilitySelect"), mobilityDisabled);
 
@@ -975,9 +990,10 @@ function syncControlsFromState(state: Any){
   const noneSelected = selectedTeeth.size > 0 && Array.from(selectedTeeth).some(t => toothState.get(t)?.toothSelection === "none");
   const implantSelected = selectedTeeth.size > 0 && Array.from(selectedTeeth).some(t => toothState.get(t)?.toothSelection === "implant");
   const hideByNone = state.toothSelection === "none" || noneSelected;
-  $("#cariesSection").classList.toggle("hidden", hideByBase);
+  const hideByRadix = state.crownMaterial === "radix";
+  $("#cariesSection").classList.toggle("hidden", hideByBase || hideByRadix);
   $("#endoSection").classList.toggle("hidden", hideByBase);
-  const hideFillingsByCrown = state.toothSelection === "tooth-base" && hasCrown;
+  const hideFillingsByCrown = state.toothSelection === "tooth-base" && hasCrown && state.crownMaterial !== "radix";
   $("#fillingSection").classList.toggle("hidden", hideByBase || hideFillingsByCrown);
   const hideCrownRow = hideByNone || isMilktooth || underGum || extraction;
   $("#crownRow").classList.toggle("hidden", hideCrownRow);
@@ -1353,6 +1369,7 @@ function serializeState(s: Any){
     brokenDistal: !!s.brokenDistal,
     extractionWound: !!s.extractionWound,
     extractionPlan: !!s.extractionPlan,
+    parapulpalPin: !!s.parapulpalPin,
     crownReplace: !!s.crownReplace,
     crownNeeded: !!s.crownNeeded,
     missingClosed: !!s.missingClosed,
@@ -1384,6 +1401,7 @@ function hydrateState(raw: Any){
   s.brokenDistal = !!raw.brokenDistal;
   s.extractionWound = !!raw.extractionWound;
   s.extractionPlan = !!raw.extractionPlan;
+  s.parapulpalPin = !!raw.parapulpalPin;
   s.crownReplace = !!raw.crownReplace;
   s.crownNeeded = !!raw.crownNeeded;
   s.missingClosed = !!raw.missingClosed;
@@ -1782,6 +1800,13 @@ function wireControls(){
   $("#endoResection").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
       s.endoResection = (e.target as HTMLInputElement).checked;
+    });
+  });
+
+  // Parapulpal pin
+  $("#parapulpalPin").addEventListener("change", (e)=>{
+    applyToSelected((s)=>{
+      s.parapulpalPin = (e.target as HTMLInputElement).checked;
     });
   });
 
