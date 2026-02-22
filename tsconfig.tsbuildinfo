@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/odontogram.ts","./src/status_extras.ts","./src/vite-env.d.ts","./src/i18n/translations.ts","./src/i18n/usei18n.ts","./src/utils/numbering.ts"],"version":"5.9.3"}
+{"root":["./src/App.tsx","./src/main.tsx","./src/odontogram.ts","./src/status_extras.ts","./src/vite-env.d.ts","./src/i18n/translations.ts","./src/i18n/useI18n.ts","./src/utils/numbering.ts"],"version":"5.9.3"}
