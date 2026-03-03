@@ -1234,9 +1234,26 @@ function refreshToggleLabels(){
   }
 }
 
-function refreshLocalizedContent(){
+function refreshAllSelectOptions(){
   refreshToothSelectOptions();
   refreshStatusExtraOptions();
+  const state = activeTooth ? toothState.get(activeTooth) : null;
+  const isMilktooth = state?.toothSelection === "milktooth";
+  const isImplant = state?.toothSelection === "implant";
+  const crownEl = $("#crownSelect");
+  if(crownEl) setSelectOptions(crownEl, getCrownOptions(isImplant), crownEl.value);
+  const bridgeEl = $("#bridgeUnitSelect");
+  if(bridgeEl) setSelectOptions(bridgeEl, getBridgeUnitOptions(), bridgeEl.value);
+  const endoEl = $("#endoSelect");
+  if(endoEl) setSelectOptions(endoEl, getEndoOptions(isMilktooth), endoEl.value);
+  const fillingEl = $("#fillingSelect");
+  if(fillingEl) setSelectOptions(fillingEl, getFillingOptions(isMilktooth), fillingEl.value);
+  const mobilityEl = $("#mobilitySelect");
+  if(mobilityEl) setSelectOptions(mobilityEl, getMobilityOptions(), mobilityEl.value);
+}
+
+function refreshLocalizedContent(){
+  refreshAllSelectOptions();
   refreshCheckLabels();
   refreshToggleLabels();
   updateActiveLabel();

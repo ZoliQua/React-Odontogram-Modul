@@ -27,6 +27,11 @@ const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
   { value: "hu", labelKey: "language.hu" },
   { value: "en", labelKey: "language.en" },
   { value: "de", labelKey: "language.de" },
+  { value: "es", labelKey: "language.es" },
+  { value: "it", labelKey: "language.it" },
+  { value: "sk", labelKey: "language.sk" },
+  { value: "pl", labelKey: "language.pl" },
+  { value: "ru", labelKey: "language.ru" },
 ];
 
 export default function App({
