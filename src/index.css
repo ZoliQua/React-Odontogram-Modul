@@ -388,3 +388,104 @@ select:focus{
   .layout{grid-template-columns:1fr}
   .panel{order:2}
 }
+
+/* ── Dark mode ────────────────────────────────── */
+.dark{
+  --bg:#0f172a;
+  --panel:#1e293b;
+  --card:#1e293b;
+  --muted:#94a3b8;
+  --text:#f1f5f9;
+  --line:#334155;
+}
+.dark body{
+  background: var(--bg);
+}
+.dark .topbar{
+  background: rgba(15,23,42,.92);
+  backdrop-filter: blur(10px);
+}
+.dark .btn{
+  background: rgba(96,165,250,.15);
+}
+.dark .btn:hover{background: rgba(96,165,250,.25)}
+.dark .btn-ghost{background: rgba(255,255,255,.06)}
+.dark .btn-ghost:hover{background: rgba(255,255,255,.12)}
+.dark .btn-danger{
+  background: rgba(248,113,113,.12);
+  border-color: rgba(248,113,113,.3);
+  color:#f87171;
+}
+.dark .btn-danger:hover{background: rgba(248,113,113,.22)}
+.dark .btn-toggle[aria-pressed="false"]{background: rgba(255,255,255,.06)}
+.dark .dropdown-menu{
+  background:#1e293b;
+  box-shadow: 0 12px 24px rgba(0,0,0,.45);
+}
+.dark .dropdown-item{background: rgba(255,255,255,.06)}
+.dark .dropdown-item:hover{background: rgba(255,255,255,.12)}
+.dark .dropdown-item[aria-checked="true"]{
+  background: rgba(96,165,250,.2);
+  border-color: rgba(96,165,250,.45);
+}
+.dark select{
+  background: rgba(96,165,250,.15);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text) 50%),
+    linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 52%,
+    calc(100% - 12px) 52%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat:no-repeat;
+}
+.dark .chart{background: rgba(30,41,59,.9)}
+.dark .tooth-label-cell{color: rgba(241,245,249,.6)}
+.dark .tooth-label-cell:hover{color: rgba(241,245,249,1)}
+.dark .tooth-tile{background: rgba(30,41,59,.7)}
+.dark .tooth-tile.placeholder{background: rgba(30,41,59,.3)}
+.dark .tooth-tile:hover{background: rgba(96,165,250,.12)}
+.dark .panel{background: rgba(30,41,59,.95)}
+.dark .card{background: rgba(30,41,59,.8); border-color: var(--line)}
+.dark .icon-btn{background: rgba(30,41,59,.7)}
+.dark .icon-btn:hover{background: rgba(96,165,250,.15)}
+.dark .icon-btn-danger{
+  color:#f87171;
+  border-color: rgba(248,113,113,.3);
+  background: rgba(248,113,113,.1);
+}
+.dark .icon-btn-danger:hover{background: rgba(248,113,113,.2)}
+.dark .warning{
+  color:#fbbf24;
+  border-color: rgba(251,191,36,.3);
+  background: rgba(251,191,36,.1);
+}
+.dark .inline-checks label,
+.dark .check-grid label,
+.dark .radio-list label{background: rgba(255,255,255,.04)}
+.dark .inline-checks label:hover,
+.dark .check-grid label:hover,
+.dark .radio-list label:hover{background: rgba(96,165,250,.1)}
+.dark .row:has(input[type="checkbox"]){background: rgba(255,255,255,.04)}
+.dark .pill{
+  background: rgba(52,211,153,.15);
+  border-color: rgba(52,211,153,.3);
+}
+/* Theme toggle button */
+.btn-theme{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background: rgba(0,0,0,.04);
+  color:var(--text);
+  cursor:pointer;
+  transition: background .15s ease;
+}
+.btn-theme:hover{background: rgba(59,123,255,.12)}
+.dark .btn-theme{background: rgba(255,255,255,.06)}
+.dark .btn-theme:hover{background: rgba(96,165,250,.15)}

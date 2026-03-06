@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-06
+
+Dark mode support with standalone and controlled integration modes.
+
+### Added
+- **Dark mode** — full light/dark theme switching with comprehensive CSS overrides for all UI elements
+  - New toggle button in the topbar (sun/moon icon) placed between the language selector and numbering system selector
+  - **Standalone mode**: omit `darkMode` prop — the component manages its own theme state, toggling the `.dark` class on `<html>`
+  - **Controlled mode**: pass `darkMode` and `onDarkModeChange` props to let the parent application control the theme
+- New component props: `darkMode?: boolean`, `onDarkModeChange?: (dark: boolean) => void`
+- Dark mode i18n labels (`theme.light` / `theme.dark`) for all 8 supported languages (HU/EN/DE/ES/IT/SK/PL/RU)
+- 40+ dark theme CSS overrides: topbar, chart header, panel, cards, buttons, inputs, selects, tooltips, scrollbars, tooth labels, selection filters, status presets, and all interactive elements
+- `.btn-theme` CSS class for the dark mode toggle button styling
+
+### Changed
+- `src/App.tsx` — added dark mode state management (internal + controlled), toggle button rendering with sun/moon SVG icons, `.dark` class lifecycle management
+- `src/index.css` — added `.dark` block with comprehensive CSS overrides for all color-sensitive selectors
+- `src/i18n/translations.ts` — added `theme.light` and `theme.dark` translation keys for all 8 languages
+- README.md updated with dark mode integration instructions, component props table, and topbar description in all 4 documentation languages (EN/DE/ES/HU)
+
 ## [1.1.0] - 2026-03-03
 
 Multi-language expansion and README overhaul.
@@ -58,5 +78,6 @@ First stable release of the React Odontogram Module — an interactive, SVG-base
 - Odontogram init lifecycle and import handling
 - Topbar toggle buttons duplicate click bindings
 
+[1.2.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ZoliQua/React-Odontogram-Modul/releases/tag/v1.0.0

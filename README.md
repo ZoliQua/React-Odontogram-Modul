@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Editor Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.1.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.2.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -41,6 +41,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 💾 Status export/import in JSON (version 1.1)
 - 🔢 Three numbering systems (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) with language switcher (157+ translation keys per language)
+- 🌗 Dark mode support with toggle button (standalone or controlled by parent app)
 
 ### 📦 Modules
 - 🦷 Odontogram grid and tooth tile UI
@@ -55,6 +56,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 
 **🔝 Topbar:**
 - Language switcher (HU/EN/DE/ES/IT/SK/PL/RU dropdown)
+- Dark mode toggle button (sun/moon icon, switches between light and dark theme)
 - Numbering system switcher (FDI/Universal/Palmer dropdown)
 - Export Status / Import Status buttons
 
@@ -179,14 +181,31 @@ export default function Host(){
       onLanguageChange={(lang) => console.log(lang)}
       numberingSystem="FDI"
       onNumberingChange={(system) => console.log(system)}
+      darkMode={false}
+      onDarkModeChange={(dark) => console.log(dark)}
     />
   );
 }
 ```
 
+**Dark mode integration:**
+- **Standalone mode:** Omit `darkMode` prop — the component manages its own theme state via the topbar toggle button and adds/removes the `.dark` class on `<html>`.
+- **Controlled mode:** Pass `darkMode` and `onDarkModeChange` — the parent app controls the theme. The toggle button still appears but calls `onDarkModeChange` instead of managing internal state. The parent is responsible for adding/removing the `.dark` class on `<html>`.
+
 ### 📡 Public API
 
-The engine exports the following functions for external control:
+**Component props:**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `language` | `string` | `'hu'` | UI language (hu/en/de/es/it/sk/pl/ru) |
+| `onLanguageChange` | `(lang) => void` | — | Callback when language changes |
+| `numberingSystem` | `string` | `'FDI'` | Numbering system (FDI/Universal/Palmer) |
+| `onNumberingChange` | `(system) => void` | — | Callback when numbering changes |
+| `darkMode` | `boolean` | `undefined` | Dark mode state. Omit for standalone mode. |
+| `onDarkModeChange` | `(dark) => void` | — | Callback when dark mode toggles. Required for controlled mode. |
+
+**Exported functions for external control:**
 
 | Function | Description |
 |---|---|
@@ -236,7 +255,7 @@ The export creates a JSON file (version `1.1`) containing:
 - `missingClosed` - gap closed after extraction
 
 ### 📁 Folder Structure
-- `src/App.tsx` - shell UI, topbar controls, language/numbering switcher
+- `src/App.tsx` - shell UI, topbar controls, language/numbering/dark mode switcher
 - `src/odontogram.ts` - SVG layering engine, tooth state management, UI wiring
 - `src/status_extras.ts` - 34 predefined restoration templates (bridges, dentures, bar constructions)
 - `src/i18n/` - translations (HU/EN/DE/ES/IT/SK/PL/RU) and i18n hook
@@ -282,6 +301,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 💾 Status-Export/Import in JSON (Version 1.1)
 - 🔢 Drei Nummerierungssysteme (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) mit Sprachumschalter (157+ Übersetzungsschlüssel pro Sprache)
+- 🌗 Dunkler Modus mit Umschalt-Button (eigenständig oder von der übergeordneten App gesteuert)
 
 ### 📦 Module
 - 🦷 Odontogramm-Raster und Zahngitter-UI
@@ -296,6 +316,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 
 **🔝 Kopfleiste:**
 - Sprachumschalter (HU/EN/DE/ES/IT/SK/PL/RU Dropdown)
+- Dunkelmodus-Umschalter (Sonnen-/Mond-Symbol, wechselt zwischen hellem und dunklem Thema)
 - Nummerierungssystem-Umschalter (FDI/Universal/Palmer Dropdown)
 - Status exportieren / Status importieren Buttons
 
@@ -420,14 +441,31 @@ export default function Host(){
       onLanguageChange={(lang) => console.log(lang)}
       numberingSystem="FDI"
       onNumberingChange={(system) => console.log(system)}
+      darkMode={false}
+      onDarkModeChange={(dark) => console.log(dark)}
     />
   );
 }
 ```
 
+**Dunkelmodus-Integration:**
+- **Eigenständiger Modus:** `darkMode`-Prop weglassen — die Komponente verwaltet ihren eigenen Theme-Zustand über den Umschalter in der Kopfleiste und fügt die `.dark`-Klasse auf `<html>` hinzu/entfernt sie.
+- **Gesteuerter Modus:** `darkMode` und `onDarkModeChange` übergeben — die übergeordnete App steuert das Theme. Der Umschalter erscheint weiterhin, ruft aber `onDarkModeChange` auf, anstatt den internen Zustand zu verwalten. Die übergeordnete App ist für das Hinzufügen/Entfernen der `.dark`-Klasse auf `<html>` verantwortlich.
+
 ### 📡 Öffentliche API
 
-Der Motor exportiert folgende Funktionen zur externen Steuerung:
+**Komponenten-Props:**
+
+| Prop | Typ | Standard | Beschreibung |
+|---|---|---|---|
+| `language` | `string` | `'hu'` | UI-Sprache (hu/en/de/es/it/sk/pl/ru) |
+| `onLanguageChange` | `(lang) => void` | — | Callback bei Sprachänderung |
+| `numberingSystem` | `string` | `'FDI'` | Nummerierungssystem (FDI/Universal/Palmer) |
+| `onNumberingChange` | `(system) => void` | — | Callback bei Nummerierungsänderung |
+| `darkMode` | `boolean` | `undefined` | Dunkelmodus-Zustand. Weglassen für eigenständigen Modus. |
+| `onDarkModeChange` | `(dark) => void` | — | Callback beim Umschalten des Dunkelmodus. Erforderlich für gesteuerten Modus. |
+
+**Exportierte Funktionen zur externen Steuerung:**
 
 | Funktion | Beschreibung |
 |---|---|
@@ -441,7 +479,7 @@ Der Motor exportiert folgende Funktionen zur externen Steuerung:
 | `setHealthyPulpVisible(on)` | Gesunde Pulpa anzeigen/verbergen |
 
 ### 📁 Ordnerstruktur
-- `src/App.tsx` - UI-Hülle, Kopfleisten-Steuerung, Sprach-/Nummerierungsumschalter
+- `src/App.tsx` - UI-Hülle, Kopfleisten-Steuerung, Sprach-/Nummerierungs-/Dunkelmodus-Umschalter
 - `src/odontogram.ts` - SVG-Schichtungsmotor, Zahnstatusmanagement, UI-Verdrahtung
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU) und i18n-Hook
@@ -481,6 +519,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 💾 Exportación/importación de estado en JSON (versión 1.1)
 - 🔢 Tres sistemas de numeración (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) con selector de idioma (157+ claves de traducción por idioma)
+- 🌗 Modo oscuro con botón de alternancia (independiente o controlado por la aplicación principal)
 
 ### 📦 Módulos
 - 🦷 Cuadrícula del odontograma e interfaz de mosaicos dentales
@@ -495,6 +534,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 
 **🔝 Barra superior:**
 - Selector de idioma (HU/EN/DE/ES/IT/SK/PL/RU desplegable)
+- Botón de modo oscuro (icono sol/luna, alterna entre tema claro y oscuro)
 - Selector de sistema de numeración (FDI/Universal/Palmer desplegable)
 - Botones Exportar estado / Importar estado
 
@@ -619,14 +659,31 @@ export default function Host(){
       onLanguageChange={(lang) => console.log(lang)}
       numberingSystem="FDI"
       onNumberingChange={(system) => console.log(system)}
+      darkMode={false}
+      onDarkModeChange={(dark) => console.log(dark)}
     />
   );
 }
 ```
 
+**Integración del modo oscuro:**
+- **Modo independiente:** Omitir la prop `darkMode` — el componente gestiona su propio estado de tema a través del botón en la barra superior y añade/elimina la clase `.dark` en `<html>`.
+- **Modo controlado:** Pasar `darkMode` y `onDarkModeChange` — la aplicación principal controla el tema. El botón de alternancia sigue apareciendo pero llama a `onDarkModeChange` en lugar de gestionar el estado interno. La aplicación principal es responsable de añadir/eliminar la clase `.dark` en `<html>`.
+
 ### 📡 API pública
 
-El motor exporta las siguientes funciones para control externo:
+**Props del componente:**
+
+| Prop | Tipo | Predeterminado | Descripción |
+|---|---|---|---|
+| `language` | `string` | `'hu'` | Idioma de la UI (hu/en/de/es/it/sk/pl/ru) |
+| `onLanguageChange` | `(lang) => void` | — | Callback cuando cambia el idioma |
+| `numberingSystem` | `string` | `'FDI'` | Sistema de numeración (FDI/Universal/Palmer) |
+| `onNumberingChange` | `(system) => void` | — | Callback cuando cambia la numeración |
+| `darkMode` | `boolean` | `undefined` | Estado del modo oscuro. Omitir para modo independiente. |
+| `onDarkModeChange` | `(dark) => void` | — | Callback al alternar modo oscuro. Requerido para modo controlado. |
+
+**Funciones exportadas para control externo:**
 
 | Función | Descripción |
 |---|---|
@@ -640,7 +697,7 @@ El motor exporta las siguientes funciones para control externo:
 | `setHealthyPulpVisible(on)` | Mostrar/ocultar pulpa sana |
 
 ### 📁 Estructura de carpetas
-- `src/App.tsx` - UI principal, controles de barra superior, selector de idioma/numeración
+- `src/App.tsx` - UI principal, controles de barra superior, selector de idioma/numeración/modo oscuro
 - `src/odontogram.ts` - Motor de capas SVG, gestión de estado dental, cableado UI
 - `src/status_extras.ts` - 34 plantillas de restauración predefinidas (puentes, prótesis, construcciones con barra)
 - `src/i18n/` - traducciones (HU/EN/DE/ES/IT/SK/PL/RU) y hook i18n
@@ -682,6 +739,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 💾 Állapot export/import JSON formátumban (1.1 verzió)
 - 🔢 Három számozási rendszer (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) választható nyelvvel (157+ fordítási kulcs nyelvenként)
+- 🌗 Sötét mód támogatás váltógombbal (önálló vagy szülő alkalmazás által vezérelt)
 
 ### 📦 Modulok
 - 🦷 Odontogram rács és fogcsempe UI
@@ -696,6 +754,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 
 **🔝 Fejléc sáv:**
 - Nyelvválasztó (HU/EN/DE/ES/IT/SK/PL/RU legördülő)
+- Sötét mód váltógomb (nap/hold ikon, világos és sötét téma között vált)
 - Számozási rendszer választó (FDI/Universal/Palmer legördülő)
 - Státusz exportálás / Státusz importálás gombok
 
@@ -820,14 +879,31 @@ export default function Host(){
       onLanguageChange={(lang) => console.log(lang)}
       numberingSystem="FDI"
       onNumberingChange={(system) => console.log(system)}
+      darkMode={false}
+      onDarkModeChange={(dark) => console.log(dark)}
     />
   );
 }
 ```
 
+**Sötét mód integráció:**
+- **Önálló mód:** A `darkMode` prop elhagyása — a komponens saját maga kezeli a téma állapotát a fejléc váltógombján keresztül, és hozzáadja/eltávolítja a `.dark` osztályt a `<html>` elemen.
+- **Vezérelt mód:** A `darkMode` és `onDarkModeChange` átadása — a szülő alkalmazás vezérli a témát. A váltógomb továbbra is megjelenik, de a `onDarkModeChange` callbacket hívja a belső állapot kezelése helyett. A szülő alkalmazás felelős a `.dark` osztály hozzáadásáért/eltávolításáért a `<html>` elemen.
+
 ### 📡 Nyilvános API
 
-A motor az alábbi függvényeket exportálja külső vezérléshez:
+**Komponens propok:**
+
+| Prop | Típus | Alapértelmezett | Leírás |
+|---|---|---|---|
+| `language` | `string` | `'hu'` | UI nyelv (hu/en/de/es/it/sk/pl/ru) |
+| `onLanguageChange` | `(lang) => void` | — | Callback nyelvváltáskor |
+| `numberingSystem` | `string` | `'FDI'` | Számozási rendszer (FDI/Universal/Palmer) |
+| `onNumberingChange` | `(system) => void` | — | Callback számozásváltáskor |
+| `darkMode` | `boolean` | `undefined` | Sötét mód állapot. Elhagyva: önálló mód. |
+| `onDarkModeChange` | `(dark) => void` | — | Callback sötét mód váltáskor. Szükséges vezérelt módhoz. |
+
+**Exportált függvények külső vezérléshez:**
 
 | Függvény | Leírás |
 |---|---|
@@ -841,7 +917,7 @@ A motor az alábbi függvényeket exportálja külső vezérléshez:
 | `setHealthyPulpVisible(on)` | Egészséges pulpa mutatása/elrejtése |
 
 ### 📁 Mappastruktúra
-- `src/App.tsx` - UI váz, fejléc vezérlők, nyelv/számozás választó
+- `src/App.tsx` - UI váz, fejléc vezérlők, nyelv/számozás/sötét mód választó
 - `src/odontogram.ts` - SVG rétegelő motor, fog állapotkezelés, UI összekötés
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, bár konstrukciók)
 - `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU) és i18n hook
