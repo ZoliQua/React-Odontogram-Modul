@@ -1,3 +1,10 @@
+/**
+ * Pre-configured dental status presets for quick application of common
+ * restorative scenarios (bridges, full-arch, partial/full removable, bar dentures).
+ *
+ * `arches` defines the FDI tooth layout; `options` is the array of presets
+ * selectable from the "Extras" dropdown in the UI.
+ */
 export const STATUS_EXTRAS = {
   arches: {
     upper: [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28],

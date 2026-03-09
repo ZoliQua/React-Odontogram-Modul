@@ -1335,12 +1335,14 @@ function setEdentulous(on: Any){
   }
 }
 
+/** Toggle visibility of wisdom teeth (18, 28, 38, 48). */
 function setWisdomVisible(on: Any){
   wisdomVisible = !!on;
   setToggleButton($("#btnWisdomVisible"), wisdomVisible);
   updateToothTileVisibility();
 }
 
+/** Toggle visibility of the bone/gum base layer on all teeth. */
 function setShowBase(on: Any){
   showBase = on;
   setToggleButton($("#btnBoneVisible"), showBase);
@@ -1349,6 +1351,7 @@ function setShowBase(on: Any){
   }
 }
 
+/** Toggle visibility of occlusal-view tiles (premolars and molars). */
 function setOcclusalVisible(on: Any){
   occlusalVisible = !!on;
   setToggleButton($("#btnOcclView"), occlusalVisible);
@@ -1357,6 +1360,7 @@ function setOcclusalVisible(on: Any){
   });
 }
 
+/** Toggle visibility of the healthy-pulp layer on all teeth. */
 function setHealthyPulpVisible(on: Any){
   showHealthyPulp = !!on;
   setToggleButton($("#btnPulpVisible"), showHealthyPulp);
@@ -2230,6 +2234,10 @@ function wireControls(){
   }
 }
 
+/**
+ * Switch the displayed tooth numbering system and re-render all tooth labels.
+ * @param system - The target {@link NumberingSystem}.
+ */
 export function setNumberingSystem(system: NumberingSystem){
   if(system === numberingSystem) return;
   numberingSystem = system;
@@ -2237,6 +2245,11 @@ export function setNumberingSystem(system: NumberingSystem){
   updateActiveLabel();
 }
 
+/**
+ * Initialise the odontogram engine: wire up DOM controls, build the SVG tooth
+ * grid, and start listening for i18n changes. Safe to call multiple times
+ * (subsequent calls are no-ops).
+ */
 export async function initOdontogram(){
   if(initialized) return;
   initialized = true;
@@ -2257,6 +2270,11 @@ export async function initOdontogram(){
   }
 }
 
+/**
+ * Tear down the odontogram engine: clear all DOM elements built by the engine,
+ * unsubscribe from i18n changes, and reset internal state. After this call,
+ * {@link initOdontogram} may be called again to re-initialise.
+ */
 export function destroyOdontogram(){
   if(!initialized) return;
   initialized = false;
@@ -2286,7 +2304,10 @@ export function destroyOdontogram(){
   activeTooth = null;
 }
 
-// ---- Public API for host app ----
+/**
+ * Clear the current tooth selection and reset the active tooth. Useful when
+ * switching to view or quote-builder mode from the host application.
+ */
 export function clearSelection(){
   selectedTeeth = new Set();
   activeTooth = null;

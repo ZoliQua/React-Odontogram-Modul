@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-03-09
+
+Automatizált tesztelés, API dokumentáció és egyedi téma konfiguráció.
+
+### Added
+- **Vitest tesztelési keretrendszer** — 128 teszt 6 fájlban, teljes lefedettség a publikus API-ra
+  - `numbering.test.ts` — FDI/Universal/Palmer konverzió mind a 32 felnőtt + 20 tejfogra, edge case-ek
+  - `translations.test.ts` — mind a 8 nyelv kulcskonzisztencia, üres értékek, placeholder-ek ellenőrzése
+  - `status_extras.test.ts` — 21 preset struktúra validáció (ívek, anyagok, fogak, átfedések)
+  - `useI18n.test.ts` — `t()` fordító függvény, nyelvváltás, listener rendszer
+  - `App.test.tsx` — renderelés, controlled/standalone mód, dark mode, dropdown-ok
+  - `theme.test.ts` — CSS custom property alkalmazás, null/undefined kezelés
+- **TypeDoc API dokumentáció** — JSDoc kommentek minden exportált típusra és függvényre
+  - `typedoc.json` konfiguráció GitHub Pages támogatással
+  - `npm run docs` script a `docs/` könyvtár generálásához
+- **Téma konfiguráció rendszer** (`OdontogramThemeConfig`)
+  - 8 szín property: `background`, `panel`, `card`, `text`, `muted`, `line`, `accent`, `accent2`
+  - CSS custom property-k (`--odon-*`) fallback rendszerrel — Tailwind és vanilla CSS projektekhez egyaránt
+  - Új `themeConfig` prop az `App` komponensen
+  - `applyThemeConfig()` utility függvény runtime szín felülíráshoz
+  - Dark mode és theme config egymással kompatibilis
+- Új npm scriptek: `test`, `test:watch`, `test:coverage`, `docs`
+
+### Changed
+- `src/App.tsx` — új `themeConfig` prop, `OdontogramThemeConfig` export, `.odontogram-root` wrapper div a CSS custom property-khez
+- `src/index.css` — CSS változók átírva `var(--odon-*, fallback)` formátumra, új `.odontogram-root` és `.dark .odontogram-root` szelektorok
+- `src/theme.ts` — új fájl: `OdontogramThemeConfig` típus és `applyThemeConfig()` függvény
+- `src/odontogram.ts` — JSDoc kommentek a publikus API függvényekhez (`initOdontogram`, `destroyOdontogram`, `setNumberingSystem`, `clearSelection`, `setWisdomVisible`, `setShowBase`, `setOcclusalVisible`, `setHealthyPulpVisible`)
+- `src/i18n/translations.ts` — JSDoc kommentek a `Language` típushoz és `translations` objektumhoz
+- `src/i18n/useI18n.ts` — JSDoc kommentek: `t()`, `getI18nLanguage()`, `setI18nLanguage()`, `onI18nChange()`, `useI18n()`
+- `src/utils/numbering.ts` — JSDoc kommentek: `NumberingSystem` típus, `toLabel()` függvény példákkal
+- `src/status_extras.ts` — JSDoc komment a `STATUS_EXTRAS` objektumhoz
+- `vitest.config.ts` — új fájl: Vitest konfiguráció jsdom környezettel
+- `package.json` — verzió 1.2.0 → 1.3.0, új dev dependency-k (vitest, @testing-library/react, @testing-library/jest-dom, jsdom, typedoc)
+
 ## [1.2.0] - 2026-03-06
 
 Dark mode support with standalone and controlled integration modes.
@@ -78,6 +113,7 @@ First stable release of the React Odontogram Module — an interactive, SVG-base
 - Odontogram init lifecycle and import handling
 - Topbar toggle buttons duplicate click bindings
 
+[1.3.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ZoliQua/React-Odontogram-Modul/releases/tag/v1.0.0

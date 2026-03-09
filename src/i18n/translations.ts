@@ -1,5 +1,27 @@
+/**
+ * Supported UI languages.
+ *
+ * | Code | Language   |
+ * |------|-----------|
+ * | hu   | Hungarian |
+ * | en   | English   |
+ * | de   | German    |
+ * | es   | Spanish   |
+ * | it   | Italian   |
+ * | sk   | Slovak    |
+ * | pl   | Polish    |
+ * | ru   | Russian   |
+ */
 export type Language = "hu" | "en" | "de" | "es" | "it" | "sk" | "pl" | "ru";
 
+/**
+ * Master translation table keyed by {@link Language}.
+ * Hungarian (`hu`) is the authoritative source — all other languages must
+ * contain exactly the same set of keys.
+ *
+ * Template placeholders use `{{name}}` syntax and are resolved at runtime
+ * by the `t()` function in `useI18n.ts`.
+ */
 export const translations: Record<Language, Record<string, string>> = {
   hu: {
     "app.title": "React Odontogram Szerkesztő Modul",

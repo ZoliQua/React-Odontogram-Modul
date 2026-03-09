@@ -1,0 +1,23 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/App.tsx",
+    "src/odontogram.ts",
+    "src/i18n/translations.ts",
+    "src/i18n/useI18n.ts",
+    "src/utils/numbering.ts",
+    "src/status_extras.ts",
+    "src/theme.ts"
+  ],
+  "out": "docs",
+  "name": "React Odontogram Editor Module",
+  "readme": "README.md",
+  "tsconfig": "tsconfig.json",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "includeVersion": true,
+  "githubPages": true,
+  "navigationLinks": {
+    "GitHub": "https://github.com/ZoliQua/React-Odontogram-Modul"
+  }
+}

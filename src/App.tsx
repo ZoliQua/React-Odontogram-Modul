@@ -4,19 +4,39 @@ export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setH
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";
+import { applyThemeConfig, type OdontogramThemeConfig } from "./theme";
+export type { OdontogramThemeConfig };
 import icon8Url from "./assets/icon-svgs/icon_8.svg";
 import iconGumUrl from "./assets/icon-svgs/icon_gum.svg";
 import iconNoSelectionUrl from "./assets/icon-svgs/icon_no_selection.svg";
 import iconOcclUrl from "./assets/icon-svgs/icon_occl.svg";
 import iconPulpUrl from "./assets/icon-svgs/icon_pulp.svg";
 
+/**
+ * Props for the main Odontogram application component.
+ *
+ * All props are optional — when omitted, the component operates in
+ * **standalone** mode with internal state. When provided, the component
+ * operates in **controlled** mode and delegates state to the parent.
+ */
 type AppProps = {
+  /** Override the UI language (controlled mode). */
   language?: Language;
+  /** Callback when the user changes the language. */
   onLanguageChange?: (lang: Language) => void;
+  /** Override the tooth numbering system (controlled mode). */
   numberingSystem?: NumberingSystem;
+  /** Callback when the user changes the numbering system. */
   onNumberingChange?: (system: NumberingSystem) => void;
+  /** Override dark mode state (controlled mode). */
   darkMode?: boolean;
+  /** Callback when the user toggles dark mode. */
   onDarkModeChange?: (dark: boolean) => void;
+  /**
+   * Custom theme configuration. Overrides the default color palette via
+   * CSS custom properties (`--odon-*`). See {@link OdontogramThemeConfig}.
+   */
+  themeConfig?: OdontogramThemeConfig;
 };
 
 const NUMBERING_OPTIONS: { value: NumberingSystem; labelKey: string }[] = [
@@ -36,6 +56,29 @@ const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
   { value: "ru", labelKey: "language.ru" },
 ];
 
+/**
+ * Root React component for the Odontogram Editor.
+ *
+ * Renders the full dental chart UI: top bar with language/numbering/dark-mode
+ * controls, the SVG tooth grid, and the right-hand control panel for setting
+ * tooth states (caries, fillings, crowns, endo, inflammation, etc.).
+ *
+ * @example
+ * ```tsx
+ * // Standalone usage
+ * <App />
+ *
+ * // Controlled by a host application
+ * <App
+ *   language="en"
+ *   onLanguageChange={setLang}
+ *   numberingSystem="FDI"
+ *   onNumberingChange={setNumbering}
+ *   darkMode={isDark}
+ *   onDarkModeChange={setDark}
+ * />
+ * ```
+ */
 export default function App({
   language,
   onLanguageChange,
@@ -43,9 +86,11 @@ export default function App({
   onNumberingChange,
   darkMode,
   onDarkModeChange,
+  themeConfig,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
+  const themeRootRef = useRef<HTMLDivElement | null>(null);
   const currentNumbering = numberingSystem ?? internalNumbering;
   const [languageOpen, setLanguageOpen] = useState(false);
   const [numberingOpen, setNumberingOpen] = useState(false);
@@ -97,6 +142,11 @@ export default function App({
     setNumberingSystem(currentNumbering);
   }, [currentNumbering]);
 
+  // Apply custom theme config as CSS custom properties
+  useEffect(() => {
+    applyThemeConfig(themeRootRef.current, themeConfig);
+  }, [themeConfig]);
+
   useEffect(() => {
     const handler = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -118,7 +168,7 @@ export default function App({
       : "numbering.palmer";
 
   return (
-    <>
+    <div ref={themeRootRef} className="odontogram-root">
       <header className="topbar">
         <div className="brand">
           <div className="dot"></div>
@@ -434,6 +484,6 @@ export default function App({
           </div>
         </aside>
       </main>
-    </>
+    </div>
   );
 }

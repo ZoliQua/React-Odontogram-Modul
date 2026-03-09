@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Editor Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.2.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.3.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -42,6 +42,9 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔢 Three numbering systems (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) with language switcher (157+ translation keys per language)
 - 🌗 Dark mode support with toggle button (standalone or controlled by parent app)
+- 🎨 Custom theme configuration (`themeConfig` prop) with CSS custom properties (`--odon-*`)
+- 🧪 128 automated tests (Vitest) covering numbering, translations, presets, i18n, App component and theme
+- 📖 TypeDoc API documentation with JSDoc comments on all public exports (`npm run docs`)
 
 ### 📦 Modules
 - 🦷 Odontogram grid and tooth tile UI
@@ -51,6 +54,8 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🌐 Localization (HU/EN/DE/ES/IT/SK/PL/RU)
 - 💾 Status export/import
 - 📋 Status extras: predefined restoration templates
+- 🎨 Theme configuration: customizable color palette via `--odon-*` CSS properties
+- 🧪 Automated test suite (Vitest + Testing Library)
 
 ### 🛠️ UI Controls
 
@@ -192,6 +197,31 @@ export default function Host(){
 - **Standalone mode:** Omit `darkMode` prop — the component manages its own theme state via the topbar toggle button and adds/removes the `.dark` class on `<html>`.
 - **Controlled mode:** Pass `darkMode` and `onDarkModeChange` — the parent app controls the theme. The toggle button still appears but calls `onDarkModeChange` instead of managing internal state. The parent is responsible for adding/removing the `.dark` class on `<html>`.
 
+**Custom theme:**
+```tsx
+<App
+  themeConfig={{
+    colors: {
+      accent: '#e74c3c',
+      background: '#fafafa',
+      text: '#222222',
+    },
+  }}
+/>
+```
+
+### 🧪 Testing
+```bash
+npm run test           # Run all 128 tests
+npm run test:watch     # Watch mode
+npm run test:coverage  # Coverage report
+```
+
+### 📖 API Documentation
+```bash
+npm run docs           # Generate TypeDoc docs in docs/
+```
+
 ### 📡 Public API
 
 **Component props:**
@@ -204,6 +234,7 @@ export default function Host(){
 | `onNumberingChange` | `(system) => void` | — | Callback when numbering changes |
 | `darkMode` | `boolean` | `undefined` | Dark mode state. Omit for standalone mode. |
 | `onDarkModeChange` | `(dark) => void` | — | Callback when dark mode toggles. Required for controlled mode. |
+| `themeConfig` | `OdontogramThemeConfig` | `undefined` | Custom color overrides via CSS custom properties (`--odon-*`). |
 
 **Exported functions for external control:**
 
@@ -255,11 +286,13 @@ The export creates a JSON file (version `1.1`) containing:
 - `missingClosed` - gap closed after extraction
 
 ### 📁 Folder Structure
-- `src/App.tsx` - shell UI, topbar controls, language/numbering/dark mode switcher
+- `src/App.tsx` - shell UI, topbar controls, language/numbering/dark mode/theme switcher
 - `src/odontogram.ts` - SVG layering engine, tooth state management, UI wiring
+- `src/theme.ts` - `OdontogramThemeConfig` type and `applyThemeConfig()` utility
 - `src/status_extras.ts` - 34 predefined restoration templates (bridges, dentures, bar constructions)
 - `src/i18n/` - translations (HU/EN/DE/ES/IT/SK/PL/RU) and i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer numbering conversion
+- `src/__tests__/` - Vitest test suite (128 tests)
 - `src/assets/teeth-svgs/` - SVG tooth templates (6 files: incisors, canines, premolars, molars + occlusal views)
 - `src/assets/icon-svgs/` - toolbar icon SVGs (5 files)
 
@@ -268,6 +301,8 @@ The export creates a JSON file (version `1.1`) containing:
 - Tailwind CSS for UI styling
 - SVG layering via DOM manipulation (non-React state for performance)
 - Lightweight custom i18n system
+- Vitest + Testing Library for automated tests
+- TypeDoc for API documentation
 - Vite path alias: `@` mapped to `./src`
 
 ### 📝 Notes
@@ -302,6 +337,9 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔢 Drei Nummerierungssysteme (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) mit Sprachumschalter (157+ Übersetzungsschlüssel pro Sprache)
 - 🌗 Dunkler Modus mit Umschalt-Button (eigenständig oder von der übergeordneten App gesteuert)
+- 🎨 Benutzerdefinierte Theme-Konfiguration (`themeConfig`-Prop) mit CSS Custom Properties (`--odon-*`)
+- 🧪 128 automatisierte Tests (Vitest) für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente und Theme
+- 📖 TypeDoc API-Dokumentation mit JSDoc-Kommentaren für alle öffentlichen Exporte (`npm run docs`)
 
 ### 📦 Module
 - 🦷 Odontogramm-Raster und Zahngitter-UI
@@ -311,6 +349,8 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🌐 Lokalisierung (HU/EN/DE/ES/IT/SK/PL/RU)
 - 💾 Status-Export/Import
 - 📋 Status-Extras: vordefinierte Restaurationsvorlagen
+- 🎨 Theme-Konfiguration: anpassbare Farbpalette über `--odon-*` CSS-Eigenschaften
+- 🧪 Automatisierte Testsuite (Vitest + Testing Library)
 
 ### 🛠️ UI-Steuerung
 
@@ -464,6 +504,7 @@ export default function Host(){
 | `onNumberingChange` | `(system) => void` | — | Callback bei Nummerierungsänderung |
 | `darkMode` | `boolean` | `undefined` | Dunkelmodus-Zustand. Weglassen für eigenständigen Modus. |
 | `onDarkModeChange` | `(dark) => void` | — | Callback beim Umschalten des Dunkelmodus. Erforderlich für gesteuerten Modus. |
+| `themeConfig` | `OdontogramThemeConfig` | `undefined` | Benutzerdefinierte Farbüberschreibungen über CSS Custom Properties (`--odon-*`). |
 
 **Exportierte Funktionen zur externen Steuerung:**
 
@@ -479,11 +520,13 @@ export default function Host(){
 | `setHealthyPulpVisible(on)` | Gesunde Pulpa anzeigen/verbergen |
 
 ### 📁 Ordnerstruktur
-- `src/App.tsx` - UI-Hülle, Kopfleisten-Steuerung, Sprach-/Nummerierungs-/Dunkelmodus-Umschalter
+- `src/App.tsx` - UI-Hülle, Kopfleisten-Steuerung, Sprach-/Nummerierungs-/Dunkelmodus-/Theme-Umschalter
 - `src/odontogram.ts` - SVG-Schichtungsmotor, Zahnstatusmanagement, UI-Verdrahtung
+- `src/theme.ts` - `OdontogramThemeConfig`-Typ und `applyThemeConfig()`-Hilfsfunktion
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
+- `src/__tests__/` - Vitest-Testsuite (128 Tests)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
 - `src/assets/icon-svgs/` - Toolbar-Icon-SVGs (5 Dateien)
 
@@ -492,6 +535,8 @@ export default function Host(){
 - Tailwind CSS für UI-Styling
 - SVG-Schichtung über DOM-Manipulation (nicht React-State für Performance)
 - Leichtgewichtiges eigenes i18n-System
+- Vitest + Testing Library für automatisierte Tests
+- TypeDoc für API-Dokumentation
 - Vite-Pfadalias: `@` auf `./src` abgebildet
 
 ---
@@ -520,6 +565,9 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔢 Tres sistemas de numeración (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) con selector de idioma (157+ claves de traducción por idioma)
 - 🌗 Modo oscuro con botón de alternancia (independiente o controlado por la aplicación principal)
+- 🎨 Configuración de tema personalizado (prop `themeConfig`) con CSS custom properties (`--odon-*`)
+- 🧪 128 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App y tema
+- 📖 Documentación API TypeDoc con comentarios JSDoc en todas las exportaciones públicas (`npm run docs`)
 
 ### 📦 Módulos
 - 🦷 Cuadrícula del odontograma e interfaz de mosaicos dentales
@@ -529,6 +577,8 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🌐 Localización (HU/EN/DE/ES/IT/SK/PL/RU)
 - 💾 Exportación/importación de estado
 - 📋 Extras de estado: plantillas de restauración predefinidas
+- 🎨 Configuración de tema: paleta de colores personalizable mediante propiedades CSS `--odon-*`
+- 🧪 Suite de pruebas automatizadas (Vitest + Testing Library)
 
 ### 🛠️ Controles de interfaz
 
@@ -682,6 +732,7 @@ export default function Host(){
 | `onNumberingChange` | `(system) => void` | — | Callback cuando cambia la numeración |
 | `darkMode` | `boolean` | `undefined` | Estado del modo oscuro. Omitir para modo independiente. |
 | `onDarkModeChange` | `(dark) => void` | — | Callback al alternar modo oscuro. Requerido para modo controlado. |
+| `themeConfig` | `OdontogramThemeConfig` | `undefined` | Personalización de colores mediante CSS custom properties (`--odon-*`). |
 
 **Funciones exportadas para control externo:**
 
@@ -697,11 +748,13 @@ export default function Host(){
 | `setHealthyPulpVisible(on)` | Mostrar/ocultar pulpa sana |
 
 ### 📁 Estructura de carpetas
-- `src/App.tsx` - UI principal, controles de barra superior, selector de idioma/numeración/modo oscuro
+- `src/App.tsx` - UI principal, controles de barra superior, selector de idioma/numeración/modo oscuro/tema
 - `src/odontogram.ts` - Motor de capas SVG, gestión de estado dental, cableado UI
+- `src/theme.ts` - tipo `OdontogramThemeConfig` y función `applyThemeConfig()`
 - `src/status_extras.ts` - 34 plantillas de restauración predefinidas (puentes, prótesis, construcciones con barra)
 - `src/i18n/` - traducciones (HU/EN/DE/ES/IT/SK/PL/RU) y hook i18n
 - `src/utils/numbering.ts` - conversión de numeración FDI, Universal, Palmer
+- `src/__tests__/` - suite de pruebas Vitest (128 pruebas)
 - `src/assets/teeth-svgs/` - plantillas SVG dentales (6 archivos: incisivos, caninos, premolares, molares + vistas oclusales)
 - `src/assets/icon-svgs/` - SVGs de iconos de barra de herramientas (5 archivos)
 
@@ -710,6 +763,8 @@ export default function Host(){
 - Tailwind CSS para estilos de UI
 - Capas SVG mediante manipulación del DOM (no React state por rendimiento)
 - Sistema i18n propio ligero
+- Vitest + Testing Library para pruebas automatizadas
+- TypeDoc para documentación de API
 - Alias de ruta Vite: `@` mapeado a `./src`
 
 ---
@@ -740,6 +795,9 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 🔢 Három számozási rendszer (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) választható nyelvvel (157+ fordítási kulcs nyelvenként)
 - 🌗 Sötét mód támogatás váltógombbal (önálló vagy szülő alkalmazás által vezérelt)
+- 🎨 Egyedi téma konfiguráció (`themeConfig` prop) CSS custom property-kkel (`--odon-*`)
+- 🧪 128 automatizált teszt (Vitest) a számozás, fordítások, presetek, i18n, App komponens és téma lefedésére
+- 📖 TypeDoc API dokumentáció JSDoc kommentekkel minden publikus exporton (`npm run docs`)
 
 ### 📦 Modulok
 - 🦷 Odontogram rács és fogcsempe UI
@@ -749,6 +807,8 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 🌐 Lokalizáció (HU/EN/DE/ES/IT/SK/PL/RU)
 - 💾 Státusz export/import
 - 📋 Státusz extrák: előre definiált restaurációs sablonok
+- 🎨 Téma konfiguráció: testreszabható színpaletta `--odon-*` CSS property-kkel
+- 🧪 Automatizált tesztcsomag (Vitest + Testing Library)
 
 ### 🛠️ UI vezérlők
 
@@ -902,6 +962,7 @@ export default function Host(){
 | `onNumberingChange` | `(system) => void` | — | Callback számozásváltáskor |
 | `darkMode` | `boolean` | `undefined` | Sötét mód állapot. Elhagyva: önálló mód. |
 | `onDarkModeChange` | `(dark) => void` | — | Callback sötét mód váltáskor. Szükséges vezérelt módhoz. |
+| `themeConfig` | `OdontogramThemeConfig` | `undefined` | Egyedi szín felülírások CSS custom property-kkel (`--odon-*`). |
 
 **Exportált függvények külső vezérléshez:**
 
@@ -917,11 +978,13 @@ export default function Host(){
 | `setHealthyPulpVisible(on)` | Egészséges pulpa mutatása/elrejtése |
 
 ### 📁 Mappastruktúra
-- `src/App.tsx` - UI váz, fejléc vezérlők, nyelv/számozás/sötét mód választó
+- `src/App.tsx` - UI váz, fejléc vezérlők, nyelv/számozás/sötét mód/téma választó
 - `src/odontogram.ts` - SVG rétegelő motor, fog állapotkezelés, UI összekötés
+- `src/theme.ts` - `OdontogramThemeConfig` típus és `applyThemeConfig()` segédfüggvény
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, bár konstrukciók)
 - `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU) és i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
+- `src/__tests__/` - Vitest tesztcsomag (128 teszt)
 - `src/assets/teeth-svgs/` - SVG fogsablonok (6 fájl: metszők, szemfogak, kis őrlők, nagy őrlők + okkluzális nézetek)
 - `src/assets/icon-svgs/` - eszköztár ikon SVG-k (5 fájl)
 
@@ -930,6 +993,8 @@ export default function Host(){
 - Tailwind CSS a UI stílusokhoz
 - SVG rétegelés DOM manipulációval (nem React state, a teljesítmény érdekében)
 - Egyszerű egyedi i18n rendszer
+- Vitest + Testing Library automatizált tesztekhez
+- TypeDoc API dokumentációhoz
 - Vite útvonal alias: `@` a `./src` mappára képezve
 
 ### 📝 Megjegyzések
