@@ -3,16 +3,16 @@
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
 [![Version](https://img.shields.io/badge/version-1.3.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
+
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 
 ---
 
-> 🌐 **Languages / Sprachen / Idiomas / Nyelvek:** [English](#-english) | [Deutsch](#-deutsch) | [Español](#-español) | [Magyar](#-magyar)
+> 🌐 **Languages / Sprachen / Idiomas / Nyelvek:**  🇬🇧 [English](#-english) | 🇩🇪 [Deutsch](#-deutsch) | 🇪🇸 [Español](#-español) | 🇭🇺 [Magyar](#-magyar)
 
 ---
-
-<img width="1721" height="782" alt="react-odontogram-modul-preview" src="https://github.com/user-attachments/assets/26facfbc-26c0-4ae6-9fab-d430b9f036f6" />
+<img width="1728" height="922" alt="react-odontogram-modul-english-preview" src="https://github.com/user-attachments/assets/0d6e076e-a840-408c-93cc-974e0767aaaf" />
 
 🔗 **Test URL:** https://react-odontogram-modul.vercel.app/
 
@@ -312,6 +312,11 @@ The export creates a JSON file (version `1.1`) containing:
 - Implant teeth have a different set of crown/abutment options than natural teeth.
 
 ---
+<img width="1728" height="869" alt="react-odontogram-modul-german-preview" src="https://github.com/user-attachments/assets/ea3844c7-62a7-4dfc-bb71-755f9f3f7d07" />
+
+🔗 **Test URL:** https://react-odontogram-modul.vercel.app/
+
+---
 
 ## 🇩🇪 Deutsch
 
@@ -538,6 +543,11 @@ export default function Host(){
 - Vitest + Testing Library für automatisierte Tests
 - TypeDoc für API-Dokumentation
 - Vite-Pfadalias: `@` auf `./src` abgebildet
+- 
+---
+<img width="1727" height="870" alt="react-odontogram-modul-spanish-preview" src="https://github.com/user-attachments/assets/ef914e4f-0c7e-4c8b-a95b-76d94080a1a6" />
+
+🔗 **Test URL:** https://react-odontogram-modul.vercel.app/
 
 ---
 
@@ -766,6 +776,11 @@ export default function Host(){
 - Vitest + Testing Library para pruebas automatizadas
 - TypeDoc para documentación de API
 - Alias de ruta Vite: `@` mapeado a `./src`
+
+---
+<img width="1725" height="913" alt="react-odontogram-modul-hungarian-preview" src="https://github.com/user-attachments/assets/ce7af57c-dc5a-4745-b861-4b85854dbd2e" />
+
+🔗 **Test URL:** https://react-odontogram-modul.vercel.app/
 
 ---
 
@@ -1007,5 +1022,5 @@ export default function Host(){
 
 ## 📄 License
 
-Created by Zoltan Dul (2026)
-Use it by MIT license.
+Created with ❤️ by Zoltan Dul (2026)
+Released under the MIT License.
