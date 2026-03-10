@@ -510,3 +510,204 @@ select:focus{
 .btn-theme:hover{background: rgba(59,123,255,.12)}
 .dark .btn-theme{background: rgba(255,255,255,.06)}
 .dark .btn-theme:hover{background: rgba(96,165,250,.15)}
+
+/* ── State warnings ──────────────────────────── */
+.warning-item{
+  padding:6px 10px;
+  border-radius:8px;
+  background: rgba(234,179,8,.12);
+  color:#92400e;
+  font-size:12px;
+  font-weight:600;
+  line-height:1.4;
+  margin-bottom:4px;
+}
+.dark .warning-item{
+  background: rgba(250,204,21,.1);
+  color:#fde047;
+}
+
+/* ── Mobile / Touch UX ───────────────────────── */
+
+/* Zoom popover */
+.odon-zoom-overlay{
+  position:fixed; inset:0; z-index:100;
+  background: rgba(0,0,0,.4);
+  display:flex; align-items:center; justify-content:center;
+  animation: odon-fade-in .15s ease;
+}
+@keyframes odon-fade-in{ from{opacity:0} to{opacity:1} }
+.odon-zoom-popover{
+  background: var(--panel, #fff);
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  padding:16px;
+  max-width:min(360px, 90vw);
+  width:100%;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+}
+.odon-zoom-header{
+  width:100%;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.odon-zoom-title{
+  font-weight:800; font-size:16px; color:var(--text);
+}
+.odon-zoom-close{
+  width:32px; height:32px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background: rgba(0,0,0,.04);
+  color:var(--text);
+  font-size:18px; font-weight:700;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  line-height:1;
+}
+.odon-zoom-close:hover{background: rgba(217,69,69,.12); color:#d94545}
+.odon-zoom-svg{
+  width:200px; height:200px;
+  display:flex; align-items:center; justify-content:center;
+}
+.odon-zoom-svg svg{
+  width:180px; height:180px;
+  pointer-events:none;
+}
+.odon-zoom-actions{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:8px;
+  width:100%;
+}
+.odon-zoom-btn{
+  border:1px solid var(--line);
+  background: rgba(59,123,255,.08);
+  color:var(--text);
+  padding:10px 8px;
+  border-radius:12px;
+  font-weight:600;
+  font-size:13px;
+  cursor:pointer;
+  text-align:center;
+}
+.odon-zoom-btn:hover{background: rgba(59,123,255,.18)}
+.odon-zoom-btn.active{
+  background: rgba(18,185,129,.18);
+  border-color: rgba(18,185,129,.5);
+}
+.odon-zoom-btn.danger{
+  background: rgba(217,69,69,.08);
+  border-color: rgba(217,69,69,.3);
+  color:#b83a3a;
+}
+.odon-zoom-btn.danger:hover{background: rgba(217,69,69,.18)}
+
+/* Context menu (long-press) */
+.odon-ctx-menu{
+  position:fixed;
+  z-index:110;
+  background: var(--panel, #fff);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.2);
+  padding:6px;
+  min-width:180px;
+  display:flex; flex-direction:column; gap:4px;
+  animation: odon-ctx-pop .12s ease;
+}
+@keyframes odon-ctx-pop{ from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
+.odon-ctx-item{
+  border:1px solid var(--line);
+  background: rgba(0,0,0,.02);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:12px;
+  font-weight:600;
+  font-size:13px;
+  cursor:pointer;
+  text-align:left;
+}
+.odon-ctx-item:hover{background: rgba(59,123,255,.1)}
+.odon-ctx-item.danger{color:#b83a3a}
+.odon-ctx-item.danger:hover{background: rgba(217,69,69,.12)}
+.odon-ctx-divider{height:1px;background:var(--line);margin:2px 0}
+
+/* Dark mode overrides for touch UI */
+.dark .odon-zoom-overlay{background: rgba(0,0,0,.6)}
+.dark .odon-zoom-popover{background: var(--panel); box-shadow: 0 20px 60px rgba(0,0,0,.5)}
+.dark .odon-zoom-close{background: rgba(255,255,255,.06)}
+.dark .odon-zoom-close:hover{background: rgba(248,113,113,.15); color:#f87171}
+.dark .odon-zoom-btn{background: rgba(96,165,250,.1)}
+.dark .odon-zoom-btn:hover{background: rgba(96,165,250,.2)}
+.dark .odon-zoom-btn.active{background: rgba(52,211,153,.18); border-color: rgba(52,211,153,.4)}
+.dark .odon-zoom-btn.danger{background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.25); color:#f87171}
+.dark .odon-ctx-menu{background: var(--panel); box-shadow: 0 12px 40px rgba(0,0,0,.5)}
+.dark .odon-ctx-item{background: rgba(255,255,255,.04)}
+.dark .odon-ctx-item:hover{background: rgba(96,165,250,.12)}
+.dark .odon-ctx-item.danger{color:#f87171}
+
+/* Pinch-to-zoom on grid */
+.tooth-grid.odon-pinch-active{
+  touch-action: none;
+  transform-origin: center center;
+  transition: transform .05s ease;
+}
+
+/* Mobile touch targets & layout */
+@media (pointer: coarse){
+  .tooth-tile{
+    min-height:56px;
+  }
+  .tooth-tile .tooth-svg{
+    height:80px;
+  }
+  .tooth-tile.occl-view .tooth-svg{
+    height:60px;
+  }
+  .tooth-label-cell{
+    min-height:44px;
+    min-width:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .chart-actions .btn-icon{
+    min-width:44px;
+    min-height:44px;
+  }
+}
+
+/* Swipe arch toggle bar (mobile only) */
+.odon-arch-toggle{
+  display:none;
+  justify-content:center;
+  gap:8px;
+  padding:8px 10px;
+  border-bottom:1px solid var(--line);
+}
+.odon-arch-toggle .odon-arch-btn{
+  border:1px solid var(--line);
+  background: rgba(0,0,0,.04);
+  color:var(--text);
+  padding:8px 20px;
+  border-radius:12px;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
+  flex:1;
+  text-align:center;
+}
+.odon-arch-toggle .odon-arch-btn.active{
+  background: rgba(59,123,255,.18);
+  border-color: rgba(59,123,255,.45);
+}
+.dark .odon-arch-toggle .odon-arch-btn{background: rgba(255,255,255,.06)}
+.dark .odon-arch-toggle .odon-arch-btn.active{background: rgba(96,165,250,.2); border-color: rgba(96,165,250,.45)}
+@media (max-width: 600px){
+  .odon-arch-toggle{display:flex}
+  .tooth-grid.odon-arch-upper .lower-row,
+  .tooth-grid.odon-arch-upper .lower-row + .tooth-label-row{display:none !important}
+  .tooth-grid.odon-arch-lower .upper-row,
+  .tooth-grid.odon-arch-lower .tooth-label-row:first-child{display:none !important}
+}

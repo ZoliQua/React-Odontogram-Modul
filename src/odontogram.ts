@@ -1,6 +1,7 @@
 import { STATUS_EXTRAS } from "./status_extras";
-import { t, onI18nChange } from "./i18n/useI18n";
+import { t, onI18nChange, getI18nLanguage } from "./i18n/useI18n";
 import { toLabel, type NumberingSystem } from "./utils/numbering";
+import { type OdontogramPlugin, getQuadrant, LAYER_Z } from "./plugin";
 import tooth11Url from "./assets/teeth-svgs/11.svg";
 import tooth13Url from "./assets/teeth-svgs/13.svg";
 import tooth14Url from "./assets/teeth-svgs/14.svg";
@@ -141,6 +142,7 @@ function defaultState(){
     bridgeUnit: "none", // none | removable | zircon | metal | temporary
     mobility: "none", // none | m1 | m2 | m3
     crownMaterial: "natural",   // natural | broken | emax | zircon | metal | temporary | telescope
+    customStates: {} as Record<string, unknown>,
   };
 }
 
@@ -265,6 +267,30 @@ let suppressEdentulousSync = false;
 let numberingSystem: NumberingSystem = "FDI";
 let i18nUnsubscribe: (() => void) | null = null;
 
+// ---- Plugin state ----
+let registeredPlugins: OdontogramPlugin[] = [];
+// Map: toothNo -> Map: pluginId -> <g> element (inside the tooth SVG)
+const pluginOverlays = new Map<number, Map<string, SVGGElement>>();
+
+// ---- Touch state ----
+const isTouchDevice = () => window.matchMedia("(pointer: coarse)").matches;
+let touchStartTime = 0;
+let touchStartX = 0;
+let touchStartY = 0;
+let touchMoved = false;
+let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+const LONG_PRESS_MS = 500;
+const TOUCH_MOVE_THRESHOLD = 10;
+
+// Pinch state
+let pinchStartDist = 0;
+let pinchScale = 1;
+let isPinching = false;
+
+// Arch toggle state
+let archMode: "both" | "upper" | "lower" = "both";
+let archToggleBar: HTMLElement | null = null;
+
 // ---- UI builders ----
 function buildRadios(container: Any, name: Any, options: Any, onChange: Any){
   container.innerHTML = "";
@@ -337,9 +363,7 @@ function syncIconXLine(button: Any){
 }
 
 function updateWarnings(state: Any){
-  const w = $("#warnings");
-  if(!w) return;
-  w.innerHTML = "";
+  updateWarningsFromState(state);
 }
 
 function getControlLabel(control: Any){
@@ -899,6 +923,218 @@ function applyStateToSvg(toothNo: Any){
   for(const svg of roots){
     applyStateToSvgSingle(toothNo, svg);
   }
+  applyPluginOverlays(toothNo);
+  updateToothTooltip(toothNo);
+}
+
+// ---- Plugin overlay rendering ----
+function applyPluginOverlays(toothNo: number){
+  if(registeredPlugins.length === 0) return;
+  const roots = toothSvgRoot.get(toothNo);
+  if(!roots) return;
+  const state = toothState.get(toothNo);
+  const quadrant = getQuadrant(toothNo);
+
+  for(const svg of roots){
+    let overlayMap = pluginOverlays.get(toothNo);
+    if(!overlayMap){
+      overlayMap = new Map();
+      pluginOverlays.set(toothNo, overlayMap);
+    }
+
+    for(const plugin of registeredPlugins){
+      // Remove previous overlay for this plugin
+      const existing = overlayMap.get(plugin.id);
+      if(existing && existing.parentElement) existing.remove();
+
+      const customState = state?.customStates?.[plugin.id];
+      let svgContent: string | null | undefined;
+      try{
+        svgContent = plugin.renderSvg(toothNo, quadrant, customState);
+      }catch(_e){
+        // Plugin render error — skip silently
+        continue;
+      }
+      if(!svgContent) continue;
+
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      g.setAttribute("data-plugin", plugin.id);
+      g.setAttribute("data-layer", plugin.layer);
+      g.innerHTML = svgContent;
+
+      // Insert into SVG at the correct z-position based on layer
+      insertPluginGroup(svg, g, plugin.layer);
+      overlayMap.set(plugin.id, g);
+    }
+  }
+}
+
+function insertPluginGroup(svg: SVGElement, g: SVGGElement, layer: string){
+  const z = LAYER_Z[layer as keyof typeof LAYER_Z] ?? 6;
+  // Find the right insertion point based on layer order:
+  // base(0) < tooth(1) < endo(2) < restoration(3) < crown(4) < caries(5) < overlay(6)
+  // Plugin groups are appended; overlay goes last, base goes first.
+  const existingPlugins = svg.querySelectorAll("g[data-plugin]");
+  let inserted = false;
+  for(const ep of existingPlugins){
+    const epLayer = ep.getAttribute("data-layer") || "overlay";
+    const epZ = LAYER_Z[epLayer as keyof typeof LAYER_Z] ?? 6;
+    if(epZ > z){
+      ep.parentElement?.insertBefore(g, ep);
+      inserted = true;
+      break;
+    }
+  }
+  if(!inserted){
+    // For overlay: append at end. For base: insert before first child group.
+    if(layer === "base" && svg.firstChild){
+      svg.insertBefore(g, svg.firstChild);
+    }else{
+      svg.appendChild(g);
+    }
+  }
+}
+
+// ---- State tooltip ----
+function getStateSummary(toothNo: number): string[]{
+  const state = toothState.get(toothNo);
+  if(!state) return [];
+  const summary: string[] = [];
+
+  // Tooth base
+  if(state.toothSelection === "none") summary.push(t("toothSelect.none"));
+  else if(state.toothSelection === "milktooth") summary.push(t("toothSelect.milk"));
+  else if(state.toothSelection === "implant") summary.push(t("toothSelect.implant"));
+  else if(state.toothSelection === "tooth-crownprep") summary.push(t("toothSelect.crownPrep"));
+  else if(state.toothSelection === "tooth-under-gum") summary.push(t("toothSelect.underGum"));
+
+  // Crown
+  if(state.crownMaterial !== "natural"){
+    const crownKey = {
+      broken: "crown.option.broken", radix: "crown.option.radix", emax: "crown.option.emax",
+      zircon: "crown.option.zircon", metal: "crown.option.metal", temporary: "crown.option.temporary",
+      telescope: "crown.option.telescope", "healing-abutment": "crown.option.healingAbutment",
+      locator: "crown.option.locator", "locator-prosthesis": "crown.option.locatorProsthesis",
+      bar: "crown.option.bar", "bar-prosthesis": "crown.option.barProsthesis",
+    }[state.crownMaterial];
+    if(crownKey) summary.push(t(crownKey));
+  }
+
+  // Endo
+  if(state.endo !== "none"){
+    const endoKey = {
+      "endo-medical-filling": "endo.option.medicalFilling",
+      "endo-filling": "endo.option.filling",
+      "endo-filling-incomplete": "endo.option.incompleteFilling",
+      "endo-glass-pin": "endo.option.glassPin",
+      "endo-metal-pin": "endo.option.metalPin",
+    }[state.endo];
+    if(endoKey) summary.push(t(endoKey));
+  }
+
+  // Filling
+  if(state.fillingMaterial !== "none"){
+    const fillKey = {
+      amalgam: "filling.option.amalgam", composite: "filling.option.composite",
+      gic: "filling.option.gic", temporary: "filling.option.temporary",
+    }[state.fillingMaterial];
+    if(fillKey) summary.push(t(fillKey));
+  }
+
+  // Caries
+  if(state.caries.size > 0) summary.push(t("caries.title"));
+
+  // Bridge
+  if(state.bridgeUnit !== "none"){
+    const bridgeKey = {
+      removable: "bridge.option.removable", zircon: "bridge.option.zircon",
+      metal: "bridge.option.metal", temporary: "bridge.option.temporary",
+      bar: "bridge.option.bar", "bar-prosthesis": "bridge.option.barProsthesis",
+    }[state.bridgeUnit];
+    if(bridgeKey) summary.push(t(bridgeKey));
+  }
+
+  // Mods
+  if(state.mods.size > 0){
+    for(const mod of state.mods){
+      if(mod === "parodontal") summary.push(t("mods.parodontal"));
+      else if(mod === "inflammation") summary.push(t("mods.periapicalInflammation"));
+    }
+  }
+  if(state.mobility !== "none") summary.push(t("inflammation.mobilityLabel") + " " + t(`mobility.${state.mobility}`));
+
+  // Flags
+  if(state.extractionPlan) summary.push(t("tooth.extractionPlan"));
+  if(state.crownReplace) summary.push(t("tooth.crownReplace"));
+  if(state.crownNeeded) summary.push(t("tooth.crownNeeded"));
+  if(state.bridgePillar) summary.push(t("tooth.bridgePillar"));
+  if(state.extractionWound) summary.push(t("tooth.extractionWound"));
+  if(state.missingClosed) summary.push(t("tooth.missingClosed"));
+
+  // Plugin states
+  const lang = getI18nLanguage();
+  for(const plugin of registeredPlugins){
+    const cs = state.customStates?.[plugin.id];
+    if(cs !== undefined && cs !== null){
+      const label = plugin.label[lang] || plugin.label["en"] || plugin.id;
+      summary.push(label);
+    }
+  }
+
+  return summary;
+}
+
+function updateToothTooltip(toothNo: number){
+  const tiles = toothTile.get(toothNo);
+  if(!tiles) return;
+  const summary = getStateSummary(toothNo);
+  const text = summary.length > 0 ? summary.join(" · ") : "";
+  for(const tile of tiles){
+    if(text) tile.setAttribute("title", text);
+    else tile.removeAttribute("title");
+  }
+}
+
+// ---- State validation ----
+function getStateWarnings(state: Any): string[]{
+  const warnings: string[] = [];
+  const isPresent = isToothPresent(state.toothSelection);
+  const isNone = state.toothSelection === "none";
+  const isImplant = state.toothSelection === "implant";
+
+  // Endo on missing or implant tooth
+  if(state.endo !== "none" && (isNone || isImplant)){
+    warnings.push(t("warn.endoOnMissing"));
+  }
+  // Filling on missing tooth
+  if(state.fillingMaterial !== "none" && isNone){
+    warnings.push(t("warn.fillingOnMissing"));
+  }
+  // Crown replace without crown
+  if(state.crownReplace && !["emax","zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
+    warnings.push(t("warn.crownReplaceNoCrown"));
+  }
+  // Caries on missing tooth
+  if(state.caries.size > 0 && isNone){
+    warnings.push(t("warn.cariesOnMissing"));
+  }
+  // Bridge pillar without crown material
+  if(state.bridgePillar && !["zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
+    warnings.push(t("warn.pillarNoCrown"));
+  }
+
+  return warnings;
+}
+
+function updateWarningsFromState(state: Any){
+  const w = $("#warnings");
+  if(!w) return;
+  const warnings = getStateWarnings(state);
+  w.innerHTML = "";
+  for(const msg of warnings){
+    const item = el("div", { class: "warning-item", text: "⚠ " + msg });
+    w.appendChild(item);
+  }
 }
 
 // ---- Control sync ----
@@ -1257,6 +1493,7 @@ function refreshLocalizedContent(){
   refreshCheckLabels();
   refreshToggleLabels();
   updateActiveLabel();
+  refreshArchToggleLabels();
   if(activeTooth){
     syncControlsFromState(toothState.get(activeTooth));
   }
@@ -1276,6 +1513,301 @@ function updateSelectionUI(){
     syncControlsFromState(defaultState());
     setControlsEnabled(false);
   }
+}
+
+// ---- Touch: Zoom Popover ----
+function showZoomPopover(toothNo: number){
+  hideZoomPopover();
+  hideContextMenu();
+  const svgs = toothSvgRoot.get(toothNo);
+  const sideSvg = svgs?.find((_s: Any, i: number) => {
+    const tiles = toothTile.get(toothNo);
+    return tiles?.[i]?.classList.contains("side-view");
+  }) || svgs?.[0];
+  if(!sideSvg) return;
+
+  const overlay = el("div", { class: "odon-zoom-overlay" });
+  const popover = el("div", { class: "odon-zoom-popover" });
+
+  // Header
+  const label = toLabel(toothNo, numberingSystem);
+  const header = el("div", { class: "odon-zoom-header" });
+  const title = el("span", { class: "odon-zoom-title", text: t("touch.zoom.title", { tooth: label }) });
+  const closeBtn = el("button", { class: "odon-zoom-close", text: "✕" });
+  closeBtn.addEventListener("click", hideZoomPopover);
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+
+  // SVG clone
+  const svgWrap = el("div", { class: "odon-zoom-svg" });
+  const clonedSvg = sideSvg.cloneNode(true) as SVGElement;
+  svgWrap.appendChild(clonedSvg);
+
+  // Actions
+  const actions = el("div", { class: "odon-zoom-actions" });
+
+  const isSelected = selectedTeeth.has(toothNo);
+  const selectBtn = el("button", {
+    class: isSelected ? "odon-zoom-btn active" : "odon-zoom-btn",
+    text: isSelected ? t("touch.zoom.deselect") : t("touch.zoom.select"),
+  });
+  selectBtn.addEventListener("click", () => {
+    if(selectedTeeth.has(toothNo)){
+      selectedTeeth.delete(toothNo);
+      if(activeTooth === toothNo) activeTooth = selectedTeeth.values().next().value ?? null;
+    }else{
+      selectedTeeth.add(toothNo);
+      activeTooth = toothNo;
+    }
+    updateSelectionUI();
+    hideZoomPopover();
+  });
+
+  const infoBtn = el("button", { class: "odon-zoom-btn", text: t("touch.zoom.info") });
+  infoBtn.addEventListener("click", () => {
+    selectedTeeth = new Set([toothNo]);
+    activeTooth = toothNo;
+    updateSelectionUI();
+    hideZoomPopover();
+    // Scroll controls panel into view
+    const panel = $("#controlsActions");
+    if(panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  const resetBtn = el("button", { class: "odon-zoom-btn danger", text: t("touch.ctx.reset") });
+  resetBtn.addEventListener("click", () => {
+    toothState.set(toothNo, defaultState());
+    applyStateToSvg(toothNo);
+    updateToothTileNumber(toothNo);
+    if(activeTooth === toothNo) syncControlsFromState(toothState.get(toothNo));
+    hideZoomPopover();
+  });
+
+  const closeActionBtn = el("button", { class: "odon-zoom-btn", text: t("touch.zoom.close") });
+  closeActionBtn.addEventListener("click", hideZoomPopover);
+
+  actions.appendChild(selectBtn);
+  actions.appendChild(infoBtn);
+  actions.appendChild(resetBtn);
+  actions.appendChild(closeActionBtn);
+
+  popover.appendChild(header);
+  popover.appendChild(svgWrap);
+  popover.appendChild(actions);
+
+  overlay.addEventListener("click", (e) => {
+    if(e.target === overlay) hideZoomPopover();
+  });
+
+  overlay.appendChild(popover);
+  document.body.appendChild(overlay);
+}
+
+function hideZoomPopover(){
+  const overlay = document.querySelector(".odon-zoom-overlay");
+  if(overlay) overlay.remove();
+}
+
+// ---- Touch: Context Menu ----
+function showContextMenu(toothNo: number, touch: Touch){
+  hideContextMenu();
+  hideZoomPopover();
+
+  const menu = el("div", { class: "odon-ctx-menu" });
+  const isSelected = selectedTeeth.has(toothNo);
+
+  if(isSelected){
+    const multiItem = el("button", { class: "odon-ctx-item", text: t("touch.ctx.deselect") });
+    multiItem.addEventListener("click", () => {
+      selectedTeeth.delete(toothNo);
+      if(activeTooth === toothNo) activeTooth = selectedTeeth.values().next().value ?? null;
+      updateSelectionUI();
+      hideContextMenu();
+    });
+    menu.appendChild(multiItem);
+  }else{
+    const selectItem = el("button", { class: "odon-ctx-item", text: t("touch.ctx.select") });
+    selectItem.addEventListener("click", () => {
+      selectedTeeth = new Set([toothNo]);
+      activeTooth = toothNo;
+      updateSelectionUI();
+      hideContextMenu();
+    });
+    menu.appendChild(selectItem);
+
+    if(selectedTeeth.size > 0){
+      const multiItem = el("button", { class: "odon-ctx-item", text: t("touch.ctx.multiSelect") });
+      multiItem.addEventListener("click", () => {
+        selectedTeeth.add(toothNo);
+        activeTooth = toothNo;
+        updateSelectionUI();
+        hideContextMenu();
+      });
+      menu.appendChild(multiItem);
+    }
+  }
+
+  menu.appendChild(el("div", { class: "odon-ctx-divider" }));
+
+  const resetItem = el("button", { class: "odon-ctx-item danger", text: t("touch.ctx.reset") });
+  resetItem.addEventListener("click", () => {
+    toothState.set(toothNo, defaultState());
+    applyStateToSvg(toothNo);
+    updateToothTileNumber(toothNo);
+    if(activeTooth === toothNo) syncControlsFromState(toothState.get(toothNo));
+    hideContextMenu();
+  });
+  menu.appendChild(resetItem);
+
+  // Position the menu near the touch point
+  const x = Math.min(touch.clientX, window.innerWidth - 200);
+  const y = Math.min(touch.clientY - 10, window.innerHeight - 200);
+  menu.style.left = x + "px";
+  menu.style.top = y + "px";
+
+  document.body.appendChild(menu);
+
+  // Close on outside tap
+  const closeHandler = (e: Event) => {
+    if(!menu.contains(e.target as Node)){
+      hideContextMenu();
+      document.removeEventListener("touchstart", closeHandler, true);
+      document.removeEventListener("click", closeHandler, true);
+    }
+  };
+  setTimeout(() => {
+    document.addEventListener("touchstart", closeHandler, true);
+    document.addEventListener("click", closeHandler, true);
+  }, 50);
+}
+
+function hideContextMenu(){
+  const menu = document.querySelector(".odon-ctx-menu");
+  if(menu) menu.remove();
+}
+
+// ---- Touch: Pinch-to-zoom ----
+function getTouchDist(t1: Touch, t2: Touch){
+  const dx = t1.clientX - t2.clientX;
+  const dy = t1.clientY - t2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function onGridTouchStart(e: TouchEvent){
+  if(e.touches.length === 2){
+    isPinching = true;
+    pinchStartDist = getTouchDist(e.touches[0], e.touches[1]);
+    const grid = $("#toothGrid") as HTMLElement | null;
+    if(grid) grid.classList.add("odon-pinch-active");
+    e.preventDefault();
+  }
+}
+
+function onGridTouchMove(e: TouchEvent){
+  if(isPinching && e.touches.length === 2){
+    const dist = getTouchDist(e.touches[0], e.touches[1]);
+    const scale = Math.max(0.5, Math.min(3, (dist / pinchStartDist) * pinchScale));
+    const grid = $("#toothGrid") as HTMLElement | null;
+    if(grid) grid.style.transform = `scale(${scale})`;
+    e.preventDefault();
+  }
+}
+
+function onGridTouchEnd(e: TouchEvent){
+  if(isPinching && e.touches.length < 2){
+    isPinching = false;
+    const grid = $("#toothGrid") as HTMLElement | null;
+    if(grid){
+      // Read current scale from transform
+      const match = grid.style.transform.match(/scale\(([\d.]+)\)/);
+      pinchScale = match ? parseFloat(match[1]) : 1;
+      // Snap back to 1 if close
+      if(pinchScale > 0.9 && pinchScale < 1.1){
+        pinchScale = 1;
+        grid.style.transform = "";
+        grid.classList.remove("odon-pinch-active");
+      }
+    }
+  }
+}
+
+// ---- Touch: Arch toggle bar ----
+function buildArchToggle(){
+  const grid = $("#toothGrid") as HTMLElement | null;
+  if(!grid) return;
+  // Remove existing
+  if(archToggleBar) archToggleBar.remove();
+
+  archToggleBar = el("div", { class: "odon-arch-toggle" });
+  const btnUpper = el("button", { class: "odon-arch-btn", text: t("touch.arch.upper") });
+  const btnLower = el("button", { class: "odon-arch-btn", text: t("touch.arch.lower") });
+  const btnBoth = el("button", { class: "odon-arch-btn active", text: t("touch.arch.both") });
+
+  function setArch(mode: "both" | "upper" | "lower"){
+    archMode = mode;
+    btnUpper.classList.toggle("active", mode === "upper");
+    btnLower.classList.toggle("active", mode === "lower");
+    btnBoth.classList.toggle("active", mode === "both");
+    grid!.classList.toggle("odon-arch-upper", mode === "upper");
+    grid!.classList.toggle("odon-arch-lower", mode === "lower");
+  }
+
+  btnUpper.addEventListener("click", () => setArch(archMode === "upper" ? "both" : "upper"));
+  btnLower.addEventListener("click", () => setArch(archMode === "lower" ? "both" : "lower"));
+  btnBoth.addEventListener("click", () => setArch("both"));
+
+  archToggleBar.appendChild(btnUpper);
+  archToggleBar.appendChild(btnBoth);
+  archToggleBar.appendChild(btnLower);
+
+  // Insert before the grid
+  grid.parentElement?.insertBefore(archToggleBar, grid);
+}
+
+function refreshArchToggleLabels(){
+  if(!archToggleBar) return;
+  const btns = archToggleBar.querySelectorAll(".odon-arch-btn");
+  if(btns[0]) btns[0].textContent = t("touch.arch.upper");
+  if(btns[1]) btns[1].textContent = t("touch.arch.both");
+  if(btns[2]) btns[2].textContent = t("touch.arch.lower");
+}
+
+// ---- Touch: tile event wiring ----
+function addTouchToTile(tile: HTMLElement, toothNo: number){
+  tile.addEventListener("touchstart", (e: TouchEvent) => {
+    if(e.touches.length !== 1) return;
+    touchStartTime = Date.now();
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchMoved = false;
+
+    const touch = e.touches[0];
+    longPressTimer = setTimeout(() => {
+      if(!touchMoved){
+        showContextMenu(toothNo, touch);
+      }
+    }, LONG_PRESS_MS);
+  }, { passive: true });
+
+  tile.addEventListener("touchmove", (e: TouchEvent) => {
+    if(e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    if(Math.abs(dx) > TOUCH_MOVE_THRESHOLD || Math.abs(dy) > TOUCH_MOVE_THRESHOLD){
+      touchMoved = true;
+      if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
+    }
+  }, { passive: true });
+
+  tile.addEventListener("touchend", (e: TouchEvent) => {
+    if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
+    const elapsed = Date.now() - touchStartTime;
+    if(!touchMoved && elapsed < LONG_PRESS_MS){
+      // Short tap — show zoom popover on touch devices
+      e.preventDefault(); // prevent click from also firing
+      showZoomPopover(toothNo);
+    }
+  });
 }
 
 function onToothClick(toothNo: Any, evt: Any){
@@ -1397,6 +1929,7 @@ function serializeState(s: Any){
     bridgeUnit: s.bridgeUnit,
     mobility: s.mobility,
     crownMaterial: s.crownMaterial,
+    ...(Object.keys(s.customStates || {}).length > 0 ? { customStates: s.customStates } : {}),
   };
 }
 
@@ -1449,6 +1982,15 @@ function hydrateState(raw: Any){
   s.bridgeUnit = validateEnum(raw.bridgeUnit, VALID_BRIDGE_UNIT, s.bridgeUnit);
   s.mobility = validateEnum(raw.mobility, VALID_MOBILITY, s.mobility);
   s.crownMaterial = validateEnum(raw.crownMaterial, VALID_CROWN_MATERIAL, s.crownMaterial);
+  // Restore plugin custom states (only for registered plugin IDs)
+  if(raw.customStates && typeof raw.customStates === "object"){
+    const validIds = new Set(registeredPlugins.map(p => p.id));
+    for(const [key, val] of Object.entries(raw.customStates)){
+      if(validIds.has(key)){
+        s.customStates[key] = val;
+      }
+    }
+  }
   return s;
 }
 
@@ -1459,7 +2001,7 @@ function exportStatus(){
     teeth[toothNo] = serializeState(s);
   }
   const payload = {
-    version: "1.1",
+    version: "1.2",
     globals: {
       wisdomVisible,
       showBase,
@@ -1684,6 +2226,7 @@ async function buildGrid(token: number){
 
     if(clickable){
       tile.addEventListener("click", (e)=>onToothClick(toothNo, e));
+      if(isTouchDevice()) addTouchToTile(tile, toothNo);
     }else{
       tile.removeAttribute("data-tooth");
     }
@@ -1763,6 +2306,14 @@ async function buildGrid(token: number){
   updateToothTileVisibility();
   setOcclusalVisible(occlusalVisible);
   setHealthyPulpVisible(showHealthyPulp);
+
+  // Wire touch interactions
+  if(isTouchDevice()){
+    grid.addEventListener("touchstart", onGridTouchStart, { passive: false });
+    grid.addEventListener("touchmove", onGridTouchMove, { passive: false });
+    grid.addEventListener("touchend", onGridTouchEnd);
+    buildArchToggle();
+  }
 }
 
 // ---- Controls wiring ----
@@ -2286,7 +2837,22 @@ export function destroyOdontogram(){
   }
   // Clear DOM fragments built by the odontogram engine
   const grid = $("#toothGrid") as HTMLElement | null;
-  if(grid) grid.innerHTML = "";
+  if(grid){
+    grid.removeEventListener("touchstart", onGridTouchStart);
+    grid.removeEventListener("touchmove", onGridTouchMove);
+    grid.removeEventListener("touchend", onGridTouchEnd);
+    grid.style.transform = "";
+    grid.classList.remove("odon-pinch-active", "odon-arch-upper", "odon-arch-lower");
+    grid.innerHTML = "";
+  }
+  if(archToggleBar){ archToggleBar.remove(); archToggleBar = null; }
+  hideZoomPopover();
+  hideContextMenu();
+  if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
+  pinchScale = 1;
+  isPinching = false;
+  archMode = "both";
+  pluginOverlays.clear();
   const mods = $("#modsChecks") as HTMLElement | null;
   if(mods) mods.innerHTML = "";
   const caries = $("#cariesChecks") as HTMLElement | null;
@@ -2313,4 +2879,62 @@ export function clearSelection(){
   activeTooth = null;
   updateSelectionUI();
 }
+/**
+ * Register one or more custom SVG plugins. Plugins can inject visual overlays
+ * into the tooth SVG and maintain per-tooth custom state included in export/import.
+ *
+ * @param plugins - Array of {@link OdontogramPlugin} definitions.
+ */
+export function registerPlugins(plugins: OdontogramPlugin[]){
+  registeredPlugins = [...plugins];
+  // Re-render plugin overlays for all teeth
+  for(const toothNo of ALL_TEETH){
+    applyPluginOverlays(toothNo);
+    updateToothTooltip(toothNo);
+  }
+}
+
+/**
+ * Set a plugin's custom state for a specific tooth. Triggers SVG re-render
+ * for that tooth and updates the tooltip.
+ *
+ * @param toothNo - The FDI tooth number (11–48).
+ * @param pluginId - The plugin's unique identifier.
+ * @param value - The custom state value (any JSON-serializable value, or `undefined` to clear).
+ */
+export function setPluginState(toothNo: number, pluginId: string, value: unknown){
+  const state = toothState.get(toothNo);
+  if(!state) return;
+  if(value === undefined){
+    delete state.customStates[pluginId];
+  }else{
+    state.customStates[pluginId] = value;
+  }
+  applyStateToSvg(toothNo);
+  updateToothTileNumber(toothNo);
+}
+
+/**
+ * Get a plugin's custom state for a specific tooth.
+ *
+ * @param toothNo - The FDI tooth number (11–48).
+ * @param pluginId - The plugin's unique identifier.
+ * @returns The custom state value, or `undefined` if not set.
+ */
+export function getPluginState(toothNo: number, pluginId: string): unknown{
+  const state = toothState.get(toothNo);
+  return state?.customStates?.[pluginId];
+}
+
+/**
+ * Get a human-readable summary of all active states for a tooth.
+ * Useful for building custom tooltip or info-panel UIs.
+ *
+ * @param toothNo - The FDI tooth number (11–48).
+ * @returns Array of localized state description strings.
+ */
+export function getToothStateSummary(toothNo: number): string[]{
+  return getStateSummary(toothNo);
+}
+
 export { setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible };

@@ -12,6 +12,10 @@ vi.mock('../odontogram', () => ({
   setWisdomVisible: vi.fn(),
   setShowBase: vi.fn(),
   setHealthyPulpVisible: vi.fn(),
+  registerPlugins: vi.fn(),
+  setPluginState: vi.fn(),
+  getPluginState: vi.fn(),
+  getToothStateSummary: vi.fn().mockReturnValue([]),
 }));
 
 describe('App.tsx', () => {

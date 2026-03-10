@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible };
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary };
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";
 import { applyThemeConfig, type OdontogramThemeConfig } from "./theme";
 export type { OdontogramThemeConfig };
+import type { OdontogramPlugin, PluginLayer } from "./plugin";
+export type { OdontogramPlugin, PluginLayer };
 import icon8Url from "./assets/icon-svgs/icon_8.svg";
 import iconGumUrl from "./assets/icon-svgs/icon_gum.svg";
 import iconNoSelectionUrl from "./assets/icon-svgs/icon_no_selection.svg";
@@ -37,6 +39,11 @@ type AppProps = {
    * CSS custom properties (`--odon-*`). See {@link OdontogramThemeConfig}.
    */
   themeConfig?: OdontogramThemeConfig;
+  /**
+   * Custom SVG plugins for extending the odontogram with additional visual
+   * overlays and per-tooth custom state. See {@link OdontogramPlugin}.
+   */
+  plugins?: OdontogramPlugin[];
 };
 
 const NUMBERING_OPTIONS: { value: NumberingSystem; labelKey: string }[] = [
@@ -87,6 +94,7 @@ export default function App({
   darkMode,
   onDarkModeChange,
   themeConfig,
+  plugins,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
@@ -146,6 +154,11 @@ export default function App({
   useEffect(() => {
     applyThemeConfig(themeRootRef.current, themeConfig);
   }, [themeConfig]);
+
+  // Register plugins when provided or changed
+  useEffect(() => {
+    registerPlugins(plugins ?? []);
+  }, [plugins]);
 
   useEffect(() => {
     const handler = (event: MouseEvent) => {

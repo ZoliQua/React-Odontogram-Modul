@@ -7,7 +7,8 @@
     "src/i18n/useI18n.ts",
     "src/utils/numbering.ts",
     "src/status_extras.ts",
-    "src/theme.ts"
+    "src/theme.ts",
+    "src/plugin.ts"
   ],
   "out": "docs",
   "name": "React Odontogram Editor Module",
