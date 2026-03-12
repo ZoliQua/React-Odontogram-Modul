@@ -201,7 +201,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.fillingOnMissing": "Tömés nem lehetséges hiányzó fogon",
     "warn.crownReplaceNoCrown": "Cserélendő korona jelölés korona nélkül",
     "warn.cariesOnMissing": "Szuvasodás nem lehetséges hiányzó fogon",
-    "warn.pillarNoCrown": "Hídpillér jelölés koronaanyag nélkül"
+    "warn.pillarNoCrown": "Hídpillér jelölés koronaanyag nélkül",
+    "readOnly.label": "Csak olvasható"
   },
   en: {
     "app.title": "React Odontogram Editor Modul",
@@ -381,7 +382,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.fillingOnMissing": "Filling not possible on missing tooth",
     "warn.crownReplaceNoCrown": "Crown replacement flag set without a crown",
     "warn.cariesOnMissing": "Caries not possible on missing tooth",
-    "warn.pillarNoCrown": "Bridge pillar flag set without crown material"
+    "warn.pillarNoCrown": "Bridge pillar flag set without crown material",
+    "readOnly.label": "Read-only"
   },
   de: {
     "app.title": "React Odontogram Editor Modul",
@@ -561,7 +563,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.fillingOnMissing": "Füllung bei fehlendem Zahn nicht möglich",
     "warn.crownReplaceNoCrown": "Kronenwechsel ohne Krone markiert",
     "warn.cariesOnMissing": "Karies bei fehlendem Zahn nicht möglich",
-    "warn.pillarNoCrown": "Brückenpfeiler ohne Kronenmaterial markiert"
+    "warn.pillarNoCrown": "Brückenpfeiler ohne Kronenmaterial markiert",
+    "readOnly.label": "Schreibgeschützt"
   },
   es: {
     "app.title": "Módulo Editor de Odontograma React",
@@ -741,7 +744,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.fillingOnMissing": "Obturación no posible en diente ausente",
     "warn.crownReplaceNoCrown": "Reemplazo de corona marcado sin corona",
     "warn.cariesOnMissing": "Caries no posible en diente ausente",
-    "warn.pillarNoCrown": "Pilar de puente marcado sin material de corona"
+    "warn.pillarNoCrown": "Pilar de puente marcado sin material de corona",
+    "readOnly.label": "Solo lectura"
   },
   it: {
     "app.title": "Modulo Editor Odontogramma React",
@@ -921,7 +925,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.fillingOnMissing": "Otturazione non possibile su dente mancante",
     "warn.crownReplaceNoCrown": "Sostituzione corona segnata senza corona",
     "warn.cariesOnMissing": "Carie non possibile su dente mancante",
-    "warn.pillarNoCrown": "Pilastro del ponte segnato senza materiale corona"
+    "warn.pillarNoCrown": "Pilastro del ponte segnato senza materiale corona",
+    "readOnly.label": "Sola lettura"
   },
   sk: {
     "app.title": "React Odontogram Editor Modul",
@@ -1101,7 +1106,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.fillingOnMissing": "Plomba nie je možná pri chýbajúcom zube",
     "warn.crownReplaceNoCrown": "Výmena korunky označená bez korunky",
     "warn.cariesOnMissing": "Kaz nie je možný pri chýbajúcom zube",
-    "warn.pillarNoCrown": "Mostový pilier označený bez materiálu korunky"
+    "warn.pillarNoCrown": "Mostový pilier označený bez materiálu korunky",
+    "readOnly.label": "Iba na čítanie"
   },
   pl: {
     "app.title": "Moduł Edytora Odontogramu React",
@@ -1281,7 +1287,8 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.fillingOnMissing": "Wypełnienie niemożliwe przy brakującym zębie",
     "warn.crownReplaceNoCrown": "Wymiana korony oznaczona bez korony",
     "warn.cariesOnMissing": "Próchnica niemożliwa przy brakującym zębie",
-    "warn.pillarNoCrown": "Filar mostu oznaczony bez materiału korony"
+    "warn.pillarNoCrown": "Filar mostu oznaczony bez materiału korony",
+    "readOnly.label": "Tylko do odczytu"
   },
   ru: {
     "app.title": "Модуль редактора одонтограммы React",
@@ -1461,6 +1468,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.fillingOnMissing": "Пломба невозможна на отсутствующем зубе",
     "warn.crownReplaceNoCrown": "Замена коронки отмечена без коронки",
     "warn.cariesOnMissing": "Кариес невозможен на отсутствующем зубе",
-    "warn.pillarNoCrown": "Опора моста отмечена без материала коронки"
+    "warn.pillarNoCrown": "Опора моста отмечена без материала коронки",
+    "readOnly.label": "Только чтение"
   }
 };

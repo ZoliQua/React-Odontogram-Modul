@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-03-12
+
+Keyboard accessibility (WCAG), read-only mode, and selection animations.
+
+### Added
+- **Keyboard accessibility (WCAG compliance)**
+  - ARIA `listbox`/`option` roles on tooth grid and tiles
+  - `aria-selected` attribute synced with selection state
+  - `aria-multiselectable="true"` on the grid container
+  - `aria-hidden="true"` and `tabindex="-1"` on decorative label rows
+  - Enter/Space to toggle tooth selection
+  - Arrow key navigation (Left/Right within row, Up/Down between upper/lower arches)
+  - Escape to clear selection
+  - `:focus-visible` outline styles in both light and dark mode
+  - Wisdom teeth get `tabindex="-1"` and `aria-hidden` when hidden
+- **Read-only mode**
+  - New `readOnly` prop on the `App` component
+  - New `setReadOnly(value)` / `getReadOnly()` exported API functions
+  - When active: all click, touch, and keyboard interactions are disabled
+  - Control panel is dimmed (`opacity: 0.5`, `pointer-events: none`)
+  - Tooth tiles become non-interactive with `pointer-events: none`
+  - All tiles get `tabindex="-1"` to remove from tab order
+  - Useful for print, report, and view-only use cases
+- **Selection animations**
+  - Pulsing dashed border via `::after` pseudo-element (`odon-dash-pulse` keyframes)
+  - Glowing `drop-shadow` effect on selected tooth SVGs (`odon-glow-pulse` keyframes)
+  - Smooth `.25s ease` transitions for selection/deselection
+  - Full dark mode support with separate keyframes (`odon-dash-pulse-dark`, `odon-glow-pulse-dark`)
+  - `prefers-reduced-motion: reduce` support — static styles for motion-sensitive users
+- New `readOnly.label` i18n key in all 8 languages (HU/EN/DE/ES/IT/SK/PL/RU)
+- 7 new tests in `a11y.test.ts` — total 161 tests across 9 files
+
+### Changed
+- `src/odontogram.ts` — added `readOnly` state, `onToothKeydown()` handler, `navigateToTooth()` navigation, ARIA attributes in `addTile()`/`addLabelRow()`/`buildGrid()`/`updateSelectionUI()`/`updateToothTileVisibility()`, read-only guards in event handlers
+- `src/App.tsx` — new `readOnly` prop, `setReadOnly`/`getReadOnly` imports and exports, sync useEffect
+- `src/index.css` — selection animation keyframes and styles, focus-visible styles, read-only mode styles, dark mode overrides, prefers-reduced-motion media query
+- `src/i18n/translations.ts` — 1 new key × 8 languages = 8 new translations
+- `src/__tests__/App.test.tsx` — mock updates for `setReadOnly`/`getReadOnly`
+- `package.json` — version 1.4.0 → 1.4.1
+
 ## [1.4.0] - 2026-03-10
 
 Mobile touch UX interactions and custom SVG plugin system.
@@ -152,6 +192,7 @@ First stable release of the React Odontogram Module — an interactive, SVG-base
 - Odontogram init lifecycle and import handling
 - Topbar toggle buttons duplicate click bindings
 
+[1.4.1]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.1.0...v1.2.0

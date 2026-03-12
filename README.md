@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Editor Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.4.1-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -47,7 +47,10 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔌 Custom SVG plugin system: inject visual overlays, per-tooth custom state, JSON export/import support
 - ⚠️ State validation warnings for incompatible tooth state combinations
 - 🏷️ Automatic state tooltip on tooth tiles (shows all active states)
-- 🧪 154 automated tests (Vitest) across 8 test files covering numbering, translations, presets, i18n, App component, theme, touch and plugins
+- ♿ Keyboard accessibility (WCAG): ARIA listbox/option roles, Enter/Space selection, arrow key navigation, focus-visible outlines
+- 🔒 Read-only mode: disable all interactions for print/report/view use cases
+- ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
+- 🧪 161 automated tests (Vitest) across 9 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins and accessibility
 - 📖 TypeDoc API documentation with JSDoc comments on all public exports (`npm run docs`)
 
 ### 📦 Modules
@@ -62,6 +65,9 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 📱 Mobile touch interactions (tap-to-zoom, long-press, pinch-to-zoom, arch toggle)
 - 🔌 Custom SVG plugin system
 - ⚠️ State validation and tooltip system
+- ♿ Keyboard accessibility and ARIA support
+- 🔒 Read-only mode
+- ✨ Selection animations
 - 🧪 Automated test suite (Vitest + Testing Library)
 
 ### 🛠️ UI Controls
@@ -239,7 +245,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testing
 ```bash
-npm run test           # Run all 154 tests
+npm run test           # Run all 161 tests
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
 ```
@@ -263,6 +269,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `onDarkModeChange` | `(dark) => void` | — | Callback when dark mode toggles. Required for controlled mode. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Custom color overrides via CSS custom properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Custom SVG plugins for visual overlays and per-tooth custom state. |
+| `readOnly` | `boolean` | `undefined` | Disable all interactions (click, touch, keyboard). Useful for print/report views. |
 
 **Exported functions for external control:**
 
@@ -280,6 +287,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `setPluginState(toothNo, pluginId, value)` | Set a plugin's custom state for a tooth |
 | `getPluginState(toothNo, pluginId)` | Get a plugin's custom state for a tooth |
 | `getToothStateSummary(toothNo)` | Get localized summary of all active states |
+| `setReadOnly(value)` | Enable/disable read-only mode |
+| `getReadOnly()` | Get current read-only state |
 
 ### 💾 Status Export/Import Format
 The export creates a JSON file (version `1.2`) containing:
@@ -326,7 +335,7 @@ The export creates a JSON file (version `1.2`) containing:
 - `src/status_extras.ts` - 34 predefined restoration templates (bridges, dentures, bar constructions)
 - `src/i18n/` - translations (HU/EN/DE/ES/IT/SK/PL/RU) and i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer numbering conversion
-- `src/__tests__/` - Vitest test suite (154 tests across 8 files)
+- `src/__tests__/` - Vitest test suite (161 tests across 9 files)
 - `src/assets/teeth-svgs/` - SVG tooth templates (6 files: incisors, canines, premolars, molars + occlusal views)
 - `src/assets/icon-svgs/` - toolbar icon SVGs (5 files)
 
@@ -381,7 +390,10 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔌 Benutzerdefiniertes SVG-Plugin-System: visuelle Overlays, per-Zahn Custom State, JSON Export/Import-Unterstützung
 - ⚠️ Statusvalidierung mit Warnungen bei inkompatiblen Zahnzustandskombinationen
 - 🏷️ Automatische Status-Tooltips auf Zahnkacheln (zeigt alle aktiven Zustände)
-- 🧪 154 automatisierte Tests (Vitest) für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente und Theme
+- ♿ Tastaturzugänglichkeit (WCAG): ARIA listbox/option Rollen, Enter/Leertaste Auswahl, Pfeiltasten-Navigation, focus-visible Umrisse
+- 🔒 Schreibgeschützter Modus: alle Interaktionen deaktivieren für Druck-/Berichtsansichten
+- ✨ Auswahl-Animationen: pulsierende gestrichelte Umrandung und leuchtender Schatten auf ausgewählten Zähnen
+- 🧪 161 automatisierte Tests (Vitest) für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
 - 📖 TypeDoc API-Dokumentation mit JSDoc-Kommentaren für alle öffentlichen Exporte (`npm run docs`)
 
 ### 📦 Module
@@ -396,6 +408,9 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 📱 Mobile Touch-Interaktionen (Tap-to-Zoom, Langes Drücken, Pinch-to-Zoom, Kieferbogen-Umschalter)
 - 🔌 Benutzerdefiniertes SVG-Plugin-System
 - ⚠️ Statusvalidierung und Tooltip-System
+- ♿ Tastaturzugänglichkeit und ARIA-Unterstützung
+- 🔒 Schreibgeschützter Modus
+- ✨ Auswahl-Animationen
 - 🧪 Automatisierte Testsuite (Vitest + Testing Library)
 
 ### 🛠️ UI-Steuerung
@@ -552,6 +567,7 @@ export default function Host(){
 | `onDarkModeChange` | `(dark) => void` | — | Callback beim Umschalten des Dunkelmodus. Erforderlich für gesteuerten Modus. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Benutzerdefinierte Farbüberschreibungen über CSS Custom Properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Benutzerdefinierte SVG-Plugins für visuelle Overlays und per-Zahn Custom State. |
+| `readOnly` | `boolean` | `undefined` | Alle Interaktionen deaktivieren (Klick, Touch, Tastatur). Nützlich für Druck-/Berichtsansichten. |
 
 **Exportierte Funktionen zur externen Steuerung:**
 
@@ -569,6 +585,8 @@ export default function Host(){
 | `setPluginState(toothNo, pluginId, value)` | Plugin Custom State für einen Zahn setzen |
 | `getPluginState(toothNo, pluginId)` | Plugin Custom State eines Zahns abrufen |
 | `getToothStateSummary(toothNo)` | Lokalisierte Zusammenfassung aller aktiven Zustände |
+| `setReadOnly(value)` | Schreibgeschützten Modus aktivieren/deaktivieren |
+| `getReadOnly()` | Aktuellen Schreibgeschützt-Zustand abrufen |
 
 ### 📁 Ordnerstruktur
 - `src/App.tsx` - UI-Hülle, Kopfleisten-Steuerung, Sprach-/Nummerierungs-/Dunkelmodus-/Theme-Umschalter
@@ -578,7 +596,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
-- `src/__tests__/` - Vitest-Testsuite (154 Tests)
+- `src/__tests__/` - Vitest-Testsuite (161 Tests)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
 - `src/assets/icon-svgs/` - Toolbar-Icon-SVGs (5 Dateien)
 
@@ -628,7 +646,10 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔌 Sistema de plugins SVG personalizados: superposiciones visuales, estado personalizado por diente, soporte de exportación/importación JSON
 - ⚠️ Validación de estado con advertencias para combinaciones incompatibles
 - 🏷️ Tooltip automático de estado en las losetas dentales (muestra todos los estados activos)
-- 🧪 154 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App y tema
+- ♿ Accesibilidad por teclado (WCAG): roles ARIA listbox/option, selección con Enter/Espacio, navegación con flechas, contornos focus-visible
+- 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
+- ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados
+- 🧪 161 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins y accesibilidad
 - 📖 Documentación API TypeDoc con comentarios JSDoc en todas las exportaciones públicas (`npm run docs`)
 
 ### 📦 Módulos
@@ -643,6 +664,9 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 📱 Interacciones táctiles móviles (zoom al tocar, pulsación larga, zoom con pellizco, alternador de arcada)
 - 🔌 Sistema de plugins SVG personalizados
 - ⚠️ Sistema de validación de estado y tooltips
+- ♿ Accesibilidad por teclado y soporte ARIA
+- 🔒 Modo solo lectura
+- ✨ Animaciones de selección
 - 🧪 Suite de pruebas automatizadas (Vitest + Testing Library)
 
 ### 🛠️ Controles de interfaz
@@ -799,6 +823,7 @@ export default function Host(){
 | `onDarkModeChange` | `(dark) => void` | — | Callback al alternar modo oscuro. Requerido para modo controlado. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Personalización de colores mediante CSS custom properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Plugins SVG personalizados para superposiciones visuales y estado personalizado por diente. |
+| `readOnly` | `boolean` | `undefined` | Desactivar todas las interacciones (clic, táctil, teclado). Útil para vistas de impresión/informes. |
 
 **Funciones exportadas para control externo:**
 
@@ -816,6 +841,8 @@ export default function Host(){
 | `setPluginState(toothNo, pluginId, value)` | Establecer estado personalizado del plugin para un diente |
 | `getPluginState(toothNo, pluginId)` | Obtener estado personalizado del plugin de un diente |
 | `getToothStateSummary(toothNo)` | Obtener resumen localizado de todos los estados activos |
+| `setReadOnly(value)` | Activar/desactivar modo solo lectura |
+| `getReadOnly()` | Obtener estado actual de solo lectura |
 
 ### 📁 Estructura de carpetas
 - `src/App.tsx` - UI principal, controles de barra superior, selector de idioma/numeración/modo oscuro/tema
@@ -825,7 +852,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 plantillas de restauración predefinidas (puentes, prótesis, construcciones con barra)
 - `src/i18n/` - traducciones (HU/EN/DE/ES/IT/SK/PL/RU) y hook i18n
 - `src/utils/numbering.ts` - conversión de numeración FDI, Universal, Palmer
-- `src/__tests__/` - suite de pruebas Vitest (154 pruebas)
+- `src/__tests__/` - suite de pruebas Vitest (161 pruebas)
 - `src/assets/teeth-svgs/` - plantillas SVG dentales (6 archivos: incisivos, caninos, premolares, molares + vistas oclusales)
 - `src/assets/icon-svgs/` - SVGs de iconos de barra de herramientas (5 archivos)
 
@@ -874,7 +901,10 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 🔌 Egyedi SVG plugin rendszer: vizuális fedvények, foganként egyedi állapot, JSON export/import támogatás
 - ⚠️ Állapot validáció figyelmeztetésekkel inkompatibilis fogállapot-kombinációkra
 - 🏷️ Automatikus állapot tooltip a fogcsempéken (összes aktív állapot megjelenítése)
-- 🧪 154 automatizált teszt (Vitest) a számozás, fordítások, presetek, i18n, App komponens és téma lefedésére
+- ♿ Billentyűzet akadálymentesítés (WCAG): ARIA listbox/option szerepkörök, Enter/Space kijelölés, nyílbillentyűs navigáció, focus-visible körvonalak
+- 🔒 Csak olvasható mód: összes interakció letiltása nyomtatási/jelentés nézetekhez
+- ✨ Kijelölési animációk: pulzáló szaggatott keret és ragyogó árnyék a kijelölt fogakon
+- 🧪 161 automatizált teszt (Vitest) a számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés lefedésére
 - 📖 TypeDoc API dokumentáció JSDoc kommentekkel minden publikus exporton (`npm run docs`)
 
 ### 📦 Modulok
@@ -889,6 +919,9 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 📱 Mobil érintéses interakciók (koppintásos nagyító, hosszú nyomás, csípéses zoom, fogív váltó)
 - 🔌 Egyedi SVG plugin rendszer
 - ⚠️ Állapot validáció és tooltip rendszer
+- ♿ Billentyűzet akadálymentesítés és ARIA támogatás
+- 🔒 Csak olvasható mód
+- ✨ Kijelölési animációk
 - 🧪 Automatizált tesztcsomag (Vitest + Testing Library)
 
 ### 🛠️ UI vezérlők
@@ -1045,6 +1078,7 @@ export default function Host(){
 | `onDarkModeChange` | `(dark) => void` | — | Callback sötét mód váltáskor. Szükséges vezérelt módhoz. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Egyedi szín felülírások CSS custom property-kkel (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Egyedi SVG pluginek vizuális fedvényekhez és foganként egyedi állapothoz. |
+| `readOnly` | `boolean` | `undefined` | Összes interakció letiltása (kattintás, érintés, billentyűzet). Nyomtatási/jelentés nézetekhez. |
 
 **Exportált függvények külső vezérléshez:**
 
@@ -1062,6 +1096,8 @@ export default function Host(){
 | `setPluginState(toothNo, pluginId, value)` | Plugin egyedi állapot beállítása egy foghoz |
 | `getPluginState(toothNo, pluginId)` | Plugin egyedi állapot lekérdezése egy foghoz |
 | `getToothStateSummary(toothNo)` | Lokalizált összesítés az összes aktív állapotról |
+| `setReadOnly(value)` | Csak olvasható mód be/kikapcsolása |
+| `getReadOnly()` | Aktuális csak olvasható állapot lekérdezése |
 
 ### 📁 Mappastruktúra
 - `src/App.tsx` - UI váz, fejléc vezérlők, nyelv/számozás/sötét mód/téma választó
@@ -1071,7 +1107,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, stég konstrukciók)
 - `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU) és i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
-- `src/__tests__/` - Vitest tesztcsomag (154 teszt)
+- `src/__tests__/` - Vitest tesztcsomag (161 teszt)
 - `src/assets/teeth-svgs/` - SVG fogsablonok (6 fájl: metszők, szemfogak, kis őrlők, nagy őrlők + okkluzális nézetek)
 - `src/assets/icon-svgs/` - eszköztár ikon SVG-k (5 fájl)
 

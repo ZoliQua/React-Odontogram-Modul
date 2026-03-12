@@ -206,9 +206,78 @@ select:focus{
 }
 .tooth-tile:hover{background: rgba(59,123,255,.08)}
 .tooth-tile:active{transform: scale(.99)}
+
+/* ── Selection animation ─────────────────────── */
+@keyframes odon-dash-pulse{
+  0%, 100%{ border-color: rgba(59,123,255,.5); }
+  50%{ border-color: rgba(59,123,255,.9); }
+}
+@keyframes odon-glow-pulse{
+  0%, 100%{ filter: drop-shadow(0 0 3px rgba(59,123,255,.2)); }
+  50%{ filter: drop-shadow(0 0 7px rgba(59,123,255,.45)); }
+}
+.tooth-tile::after{
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 15px;
+  border: 2px dashed transparent;
+  pointer-events: none;
+  transition: border-color .25s ease;
+}
+.tooth-tile .tooth-svg svg{
+  transition: filter .25s ease;
+}
 .tooth-tile.active{
-  border-color: rgba(59,123,255,.85);
-  box-shadow: 0 0 0 3px rgba(59,123,255,.18) inset;
+  border-color: rgba(59,123,255,.7);
+  background: rgba(59,123,255,.06);
+  transition: border-color .2s ease, background .2s ease;
+}
+.tooth-tile.active::after{
+  border-color: rgba(59,123,255,.55);
+  animation: odon-dash-pulse 1.6s ease-in-out infinite;
+}
+.tooth-tile.active .tooth-svg svg{
+  filter: drop-shadow(0 0 4px rgba(59,123,255,.3));
+  animation: odon-glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* ── Focus-visible (keyboard a11y) ───────────── */
+.tooth-tile:focus{outline:none}
+.tooth-tile:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(59,123,255,.25);
+  z-index: 1;
+}
+
+/* ── Read-only mode ──────────────────────────── */
+.tooth-grid.read-only .tooth-tile{
+  cursor: default;
+  pointer-events: none;
+}
+.tooth-grid.read-only .tooth-tile:hover{
+  background: inherit;
+}
+.tooth-grid.read-only .tooth-label-cell{
+  cursor: default;
+  pointer-events: none;
+}
+.panel.read-only{
+  pointer-events: none;
+  opacity: 0.5;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .tooth-tile.active::after{
+    animation: none;
+    border-color: rgba(59,123,255,.7);
+  }
+  .tooth-tile.active .tooth-svg svg{
+    animation: none;
+    filter: drop-shadow(0 0 4px rgba(59,123,255,.35));
+  }
 }
 .tooth-svg{
   width:100%;
@@ -466,6 +535,31 @@ select:focus{
 .dark .tooth-tile{background: rgba(30,41,59,.7)}
 .dark .tooth-tile.placeholder{background: rgba(30,41,59,.3)}
 .dark .tooth-tile:hover{background: rgba(96,165,250,.12)}
+/* Dark selection animation */
+@keyframes odon-dash-pulse-dark{
+  0%, 100%{ border-color: rgba(96,165,250,.45); }
+  50%{ border-color: rgba(96,165,250,.85); }
+}
+@keyframes odon-glow-pulse-dark{
+  0%, 100%{ filter: drop-shadow(0 0 3px rgba(96,165,250,.2)); }
+  50%{ filter: drop-shadow(0 0 7px rgba(96,165,250,.45)); }
+}
+.dark .tooth-tile.active{
+  border-color: rgba(96,165,250,.6);
+  background: rgba(96,165,250,.08);
+}
+.dark .tooth-tile.active::after{
+  border-color: rgba(96,165,250,.45);
+  animation-name: odon-dash-pulse-dark;
+}
+.dark .tooth-tile.active .tooth-svg svg{
+  animation-name: odon-glow-pulse-dark;
+  filter: drop-shadow(0 0 4px rgba(96,165,250,.3));
+}
+.dark .tooth-tile:focus-visible{
+  outline-color: rgba(96,165,250,.8);
+  box-shadow: 0 0 0 3px rgba(96,165,250,.25);
+}
 .dark .panel{background: rgba(30,41,59,.95)}
 .dark .card{background: rgba(30,41,59,.8); border-color: var(--line)}
 .dark .icon-btn{background: rgba(30,41,59,.7)}

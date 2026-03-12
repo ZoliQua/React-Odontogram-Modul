@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary };
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly };
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";
@@ -44,6 +44,11 @@ type AppProps = {
    * overlays and per-tooth custom state. See {@link OdontogramPlugin}.
    */
   plugins?: OdontogramPlugin[];
+  /**
+   * When true, disables all interactions (click, touch, keyboard).
+   * Useful for print/report/view modes.
+   */
+  readOnly?: boolean;
 };
 
 const NUMBERING_OPTIONS: { value: NumberingSystem; labelKey: string }[] = [
@@ -95,6 +100,7 @@ export default function App({
   onDarkModeChange,
   themeConfig,
   plugins,
+  readOnly: readOnlyProp,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
@@ -159,6 +165,11 @@ export default function App({
   useEffect(() => {
     registerPlugins(plugins ?? []);
   }, [plugins]);
+
+  // Sync read-only mode
+  useEffect(() => {
+    setReadOnly(readOnlyProp ?? false);
+  }, [readOnlyProp]);
 
   useEffect(() => {
     const handler = (event: MouseEvent) => {

@@ -265,6 +265,7 @@ let occlusalVisible = true;
 let showHealthyPulp = true;
 let suppressEdentulousSync = false;
 let numberingSystem: NumberingSystem = "FDI";
+let readOnly = false;
 let i18nUnsubscribe: (() => void) | null = null;
 
 // ---- Plugin state ----
@@ -1502,7 +1503,9 @@ function refreshLocalizedContent(){
 function updateSelectionUI(){
   $$(".tooth-tile").forEach(tile => {
     const toothNo = Number(tile.dataset.tooth);
-    tile.classList.toggle("active", selectedTeeth.has(toothNo));
+    const isSelected = selectedTeeth.has(toothNo);
+    tile.classList.toggle("active", isSelected);
+    if(tile.hasAttribute("role")) tile.setAttribute("aria-selected", String(isSelected));
   });
   updateSelectionFilterButtons();
   updateActiveLabel();
@@ -1775,6 +1778,7 @@ function refreshArchToggleLabels(){
 // ---- Touch: tile event wiring ----
 function addTouchToTile(tile: HTMLElement, toothNo: number){
   tile.addEventListener("touchstart", (e: TouchEvent) => {
+    if(readOnly) return;
     if(e.touches.length !== 1) return;
     touchStartTime = Date.now();
     touchStartX = e.touches[0].clientX;
@@ -1800,6 +1804,7 @@ function addTouchToTile(tile: HTMLElement, toothNo: number){
   }, { passive: true });
 
   tile.addEventListener("touchend", (e: TouchEvent) => {
+    if(readOnly) return;
     if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
     const elapsed = Date.now() - touchStartTime;
     if(!touchMoved && elapsed < LONG_PRESS_MS){
@@ -1811,6 +1816,7 @@ function addTouchToTile(tile: HTMLElement, toothNo: number){
 }
 
 function onToothClick(toothNo: Any, evt: Any){
+  if(readOnly) return;
   const multi = evt.metaKey || evt.ctrlKey;
   if(multi){
     if(selectedTeeth.has(toothNo)){
@@ -1829,6 +1835,90 @@ function onToothClick(toothNo: Any, evt: Any){
   updateSelectionUI();
 }
 
+// ---- Keyboard accessibility ----
+const NAV_ROWS = [
+  [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28],
+  [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38],
+];
+
+function isTileNavigable(toothNo: number): boolean{
+  const tiles = toothTile.get(toothNo);
+  if(!tiles || tiles.length === 0) return false;
+  return tiles.some(t => !t.classList.contains("wisdom-hidden") && !t.classList.contains("placeholder"));
+}
+
+function navigateToTooth(currentTooth: number, direction: string){
+  const rowIdx = NAV_ROWS.findIndex(r => r.includes(currentTooth));
+  if(rowIdx < 0) return;
+  const row = NAV_ROWS[rowIdx];
+  const colIdx = row.indexOf(currentTooth);
+
+  let targetTooth: number | null = null;
+  if(direction === "ArrowRight"){
+    for(let i = colIdx + 1; i < row.length; i++){
+      if(isTileNavigable(row[i])){ targetTooth = row[i]; break; }
+    }
+  }else if(direction === "ArrowLeft"){
+    for(let i = colIdx - 1; i >= 0; i--){
+      if(isTileNavigable(row[i])){ targetTooth = row[i]; break; }
+    }
+  }else if(direction === "ArrowDown"){
+    if(rowIdx < NAV_ROWS.length - 1){
+      const nextRow = NAV_ROWS[rowIdx + 1];
+      const nextCol = Math.min(colIdx, nextRow.length - 1);
+      for(let i = nextCol; i < nextRow.length; i++){
+        if(isTileNavigable(nextRow[i])){ targetTooth = nextRow[i]; break; }
+      }
+      if(!targetTooth){
+        for(let i = nextCol - 1; i >= 0; i--){
+          if(isTileNavigable(nextRow[i])){ targetTooth = nextRow[i]; break; }
+        }
+      }
+    }
+  }else if(direction === "ArrowUp"){
+    if(rowIdx > 0){
+      const prevRow = NAV_ROWS[rowIdx - 1];
+      const prevCol = Math.min(colIdx, prevRow.length - 1);
+      for(let i = prevCol; i < prevRow.length; i++){
+        if(isTileNavigable(prevRow[i])){ targetTooth = prevRow[i]; break; }
+      }
+      if(!targetTooth){
+        for(let i = prevCol - 1; i >= 0; i--){
+          if(isTileNavigable(prevRow[i])){ targetTooth = prevRow[i]; break; }
+        }
+      }
+    }
+  }
+
+  if(targetTooth !== null){
+    const tiles = toothTile.get(targetTooth);
+    const sideTile = tiles?.find((t: HTMLElement) => t.classList.contains("side-view"));
+    if(sideTile) sideTile.focus();
+  }
+}
+
+function onToothKeydown(toothNo: number, evt: KeyboardEvent){
+  if(readOnly) return;
+  switch(evt.key){
+    case "Enter":
+    case " ":
+      evt.preventDefault();
+      onToothClick(toothNo, evt);
+      break;
+    case "ArrowRight":
+    case "ArrowLeft":
+    case "ArrowUp":
+    case "ArrowDown":
+      evt.preventDefault();
+      navigateToTooth(toothNo, evt.key);
+      break;
+    case "Escape":
+      evt.preventDefault();
+      clearSelection();
+      break;
+  }
+}
+
 function updateToothTileVisibility(){
   const hiddenSet = new Set([18,28,38,48]);
   for(const toothNo of ALL_TEETH){
@@ -1837,6 +1927,11 @@ function updateToothTileVisibility(){
     const hide = !wisdomVisible && hiddenSet.has(toothNo);
     for(const tile of tiles){
       tile.classList.toggle("wisdom-hidden", hide);
+      if(tile.hasAttribute("role")){
+        tile.setAttribute("tabindex", hide || readOnly ? "-1" : "0");
+        if(hide) tile.setAttribute("aria-hidden", "true");
+        else tile.removeAttribute("aria-hidden");
+      }
     }
   }
   selectedTeeth = new Set([...selectedTeeth].filter(tn => {
@@ -2226,6 +2321,13 @@ async function buildGrid(token: number){
 
     if(clickable){
       tile.addEventListener("click", (e)=>onToothClick(toothNo, e));
+      tile.addEventListener("keydown", (e)=>onToothKeydown(toothNo, e));
+      if(view === "side"){
+        tile.setAttribute("role", "option");
+        tile.setAttribute("aria-selected", "false");
+        tile.setAttribute("tabindex", readOnly ? "-1" : "0");
+        tile.setAttribute("aria-label", toLabel(toothNo, numberingSystem));
+      }
       if(isTouchDevice()) addTouchToTile(tile, toothNo);
     }else{
       tile.removeAttribute("data-tooth");
@@ -2276,9 +2378,9 @@ async function buildGrid(token: number){
   }
 
   function addLabelRow(rowTeeth: Any, targetMap: Any){
-    const row = el("div", { class:"tooth-label-row" });
+    const row = el("div", { class:"tooth-label-row", "aria-hidden":"true" });
     for(const toothNo of rowTeeth){
-      const cell = el("div", { class:"tooth-label-cell", text: toLabel(toothNo, numberingSystem) });
+      const cell = el("div", { class:"tooth-label-cell", text: toLabel(toothNo, numberingSystem), tabindex:"-1" });
       cell.addEventListener("click", (e)=>onToothClick(toothNo, e));
       row.appendChild(cell);
       targetMap.set(toothNo, cell);
@@ -2298,6 +2400,10 @@ async function buildGrid(token: number){
   addRowOccl(lowerSide, lowerOcclPlaceholders);
   addRowSide(lowerSide);
   addLabelRow(lowerSide, toothLabelLower);
+
+  // ARIA on grid container
+  grid.setAttribute("role", "listbox");
+  grid.setAttribute("aria-multiselectable", "true");
 
   // start with no tooth selected
   selectedTeeth = new Set();
@@ -2852,6 +2958,7 @@ export function destroyOdontogram(){
   pinchScale = 1;
   isPinching = false;
   archMode = "both";
+  readOnly = false;
   pluginOverlays.clear();
   const mods = $("#modsChecks") as HTMLElement | null;
   if(mods) mods.innerHTML = "";
@@ -2935,6 +3042,32 @@ export function getPluginState(toothNo: number, pluginId: string): unknown{
  */
 export function getToothStateSummary(toothNo: number): string[]{
   return getStateSummary(toothNo);
+}
+
+/**
+ * Enable or disable read-only mode. When read-only, all click, touch, and
+ * keyboard interactions are disabled. The control panel is dimmed and
+ * non-interactive. Useful for print/report views.
+ *
+ * @param value - `true` to enable read-only mode, `false` to disable.
+ */
+export function setReadOnly(value: boolean){
+  readOnly = value;
+  const grid = $("#toothGrid") as HTMLElement | null;
+  if(grid) grid.classList.toggle("read-only", readOnly);
+  const panel = $(".panel") as HTMLElement | null;
+  if(panel) panel.classList.toggle("read-only", readOnly);
+  // Update tabindex on all navigable tiles
+  $$(".tooth-tile[role='option']").forEach(tile => {
+    tile.setAttribute("tabindex", readOnly ? "-1" : "0");
+  });
+}
+
+/**
+ * Get the current read-only mode state.
+ */
+export function getReadOnly(): boolean{
+  return readOnly;
 }
 
 export { setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible };
