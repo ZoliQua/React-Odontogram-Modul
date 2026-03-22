@@ -28,6 +28,28 @@ describe('Accessibility & Read-only i18n', () => {
   });
 });
 
+describe('Notes i18n', () => {
+  const NOTE_KEYS = ['note.title', 'note.save', 'note.delete', 'note.placeholder'];
+
+  it('all languages have all note keys', () => {
+    for (const lang of LANGUAGES) {
+      const t = translations[lang] as Record<string, string>;
+      for (const key of NOTE_KEYS) {
+        expect(t[key], `${lang} missing ${key}`).toBeDefined();
+        expect(t[key].length, `${lang} empty ${key}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('note key count matches across all languages', () => {
+    const huKeys = Object.keys(translations.hu).filter(k => k.startsWith('note.'));
+    for (const lang of LANGUAGES) {
+      const langKeys = Object.keys(translations[lang] as Record<string, string>).filter(k => k.startsWith('note.'));
+      expect(langKeys.length, `${lang} note key count mismatch`).toBe(huKeys.length);
+    }
+  });
+});
+
 describe('ARIA navigation rows', () => {
   const UPPER = [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28];
   const LOWER = [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38];

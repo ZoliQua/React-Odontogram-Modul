@@ -202,7 +202,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.crownReplaceNoCrown": "Cserélendő korona jelölés korona nélkül",
     "warn.cariesOnMissing": "Szuvasodás nem lehetséges hiányzó fogon",
     "warn.pillarNoCrown": "Hídpillér jelölés koronaanyag nélkül",
-    "readOnly.label": "Csak olvasható"
+    "readOnly.label": "Csak olvasható",
+    "note.title": "Megjegyzés",
+    "note.save": "Mentés",
+    "note.delete": "Törlés",
+    "note.placeholder": "Írj megjegyzést..."
   },
   en: {
     "app.title": "React Odontogram Editor Modul",
@@ -383,7 +387,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.crownReplaceNoCrown": "Crown replacement flag set without a crown",
     "warn.cariesOnMissing": "Caries not possible on missing tooth",
     "warn.pillarNoCrown": "Bridge pillar flag set without crown material",
-    "readOnly.label": "Read-only"
+    "readOnly.label": "Read-only",
+    "note.title": "Note",
+    "note.save": "Save",
+    "note.delete": "Delete",
+    "note.placeholder": "Add a note..."
   },
   de: {
     "app.title": "React Odontogram Editor Modul",
@@ -564,7 +572,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.crownReplaceNoCrown": "Kronenwechsel ohne Krone markiert",
     "warn.cariesOnMissing": "Karies bei fehlendem Zahn nicht möglich",
     "warn.pillarNoCrown": "Brückenpfeiler ohne Kronenmaterial markiert",
-    "readOnly.label": "Schreibgeschützt"
+    "readOnly.label": "Schreibgeschützt",
+    "note.title": "Notiz",
+    "note.save": "Speichern",
+    "note.delete": "Löschen",
+    "note.placeholder": "Notiz hinzufügen..."
   },
   es: {
     "app.title": "Módulo Editor de Odontograma React",
@@ -745,7 +757,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.crownReplaceNoCrown": "Reemplazo de corona marcado sin corona",
     "warn.cariesOnMissing": "Caries no posible en diente ausente",
     "warn.pillarNoCrown": "Pilar de puente marcado sin material de corona",
-    "readOnly.label": "Solo lectura"
+    "readOnly.label": "Solo lectura",
+    "note.title": "Nota",
+    "note.save": "Guardar",
+    "note.delete": "Eliminar",
+    "note.placeholder": "Añadir una nota..."
   },
   it: {
     "app.title": "Modulo Editor Odontogramma React",
@@ -926,7 +942,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.crownReplaceNoCrown": "Sostituzione corona segnata senza corona",
     "warn.cariesOnMissing": "Carie non possibile su dente mancante",
     "warn.pillarNoCrown": "Pilastro del ponte segnato senza materiale corona",
-    "readOnly.label": "Sola lettura"
+    "readOnly.label": "Sola lettura",
+    "note.title": "Nota",
+    "note.save": "Salva",
+    "note.delete": "Elimina",
+    "note.placeholder": "Aggiungi una nota..."
   },
   sk: {
     "app.title": "React Odontogram Editor Modul",
@@ -1107,7 +1127,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.crownReplaceNoCrown": "Výmena korunky označená bez korunky",
     "warn.cariesOnMissing": "Kaz nie je možný pri chýbajúcom zube",
     "warn.pillarNoCrown": "Mostový pilier označený bez materiálu korunky",
-    "readOnly.label": "Iba na čítanie"
+    "readOnly.label": "Iba na čítanie",
+    "note.title": "Poznámka",
+    "note.save": "Uložiť",
+    "note.delete": "Vymazať",
+    "note.placeholder": "Pridať poznámku..."
   },
   pl: {
     "app.title": "Moduł Edytora Odontogramu React",
@@ -1288,7 +1312,11 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.crownReplaceNoCrown": "Wymiana korony oznaczona bez korony",
     "warn.cariesOnMissing": "Próchnica niemożliwa przy brakującym zębie",
     "warn.pillarNoCrown": "Filar mostu oznaczony bez materiału korony",
-    "readOnly.label": "Tylko do odczytu"
+    "readOnly.label": "Tylko do odczytu",
+    "note.title": "Notatka",
+    "note.save": "Zapisz",
+    "note.delete": "Usuń",
+    "note.placeholder": "Dodaj notatkę..."
   },
   ru: {
     "app.title": "Модуль редактора одонтограммы React",
@@ -1469,6 +1497,10 @@ export const translations: Record<Language, Record<string, string>> = {
     "warn.crownReplaceNoCrown": "Замена коронки отмечена без коронки",
     "warn.cariesOnMissing": "Кариес невозможен на отсутствующем зубе",
     "warn.pillarNoCrown": "Опора моста отмечена без материала коронки",
-    "readOnly.label": "Только чтение"
+    "readOnly.label": "Только чтение",
+    "note.title": "Заметка",
+    "note.save": "Сохранить",
+    "note.delete": "Удалить",
+    "note.placeholder": "Добавить заметку..."
   }
 };

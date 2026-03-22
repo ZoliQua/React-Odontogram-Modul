@@ -18,6 +18,8 @@ vi.mock('../odontogram', () => ({
   getToothStateSummary: vi.fn().mockReturnValue([]),
   setReadOnly: vi.fn(),
   getReadOnly: vi.fn().mockReturnValue(false),
+  setNotesEnabled: vi.fn(),
+  getNotesEnabled: vi.fn().mockReturnValue(false),
 }));
 
 describe('App.tsx', () => {

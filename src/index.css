@@ -560,6 +560,11 @@ select:focus{
   outline-color: rgba(96,165,250,.8);
   box-shadow: 0 0 0 3px rgba(96,165,250,.25);
 }
+/* Dark note popover */
+.dark .odon-note-backdrop{background: rgba(0,0,0,.55)}
+.dark .odon-note-popover{background: var(--panel); box-shadow: 0 16px 48px rgba(0,0,0,.5)}
+.dark .odon-note-textarea{background: rgba(255,255,255,.06); border-color: var(--line); color: var(--text)}
+.dark .odon-note-textarea:focus{box-shadow: 0 0 0 3px rgba(96,165,250,.2); border-color: rgba(96,165,250,.5)}
 .dark .panel{background: rgba(30,41,59,.95)}
 .dark .card{background: rgba(30,41,59,.8); border-color: var(--line)}
 .dark .icon-btn{background: rgba(30,41,59,.7)}
@@ -604,6 +609,65 @@ select:focus{
 .btn-theme:hover{background: rgba(59,123,255,.12)}
 .dark .btn-theme{background: rgba(255,255,255,.06)}
 .dark .btn-theme:hover{background: rgba(96,165,250,.15)}
+
+/* ── Note icon in label cell ─────────────────── */
+.tooth-note-icon{
+  display: inline-block;
+  font-size: 9px;
+  margin-left: 2px;
+  vertical-align: middle;
+  opacity: .75;
+}
+
+/* ── Note editor popover ─────────────────────── */
+.odon-note-backdrop{
+  position: fixed; inset: 0; z-index: 120;
+  background: rgba(0,0,0,.35);
+  animation: odon-fade-in .12s ease;
+}
+.odon-note-popover{
+  position: relative;
+  background: var(--panel, #fff);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.2);
+  padding: 14px;
+  width: min(320px, 90vw);
+  display: flex; flex-direction: column; gap: 10px;
+  animation: odon-ctx-pop .12s ease;
+}
+.odon-note-header{
+  display: flex; align-items: center; justify-content: space-between;
+}
+.odon-note-title{
+  font-weight: 700; font-size: 14px; color: var(--text);
+}
+.odon-note-textarea{
+  width: 100%;
+  min-height: 60px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: rgba(0,0,0,.02);
+  resize: vertical;
+}
+.odon-note-textarea:focus{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,123,255,.18);
+  border-color: rgba(59,123,255,.5);
+}
+.odon-note-textarea::placeholder{
+  color: var(--muted);
+}
+.odon-note-actions{
+  display: flex; gap: 8px;
+}
+.odon-note-actions .odon-zoom-btn{
+  flex: 1;
+}
 
 /* ── State warnings ──────────────────────────── */
 .warning-item{

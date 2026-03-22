@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2026-03-22
+
+Per-tooth notes with double-click editor, label icons, and JSON export/import.
+
+### Added
+- **Per-tooth notes system**
+  - `note` field added to tooth state model (string, empty by default)
+  - Double-click a tooth tile to open the note editor popover
+  - Note editor positioned near the tooth tile with viewport clamping
+  - Save and Delete buttons in the popover
+  - Note icon (📝) displayed next to the tooth number in label cells
+  - Note text included in hover tooltips with 📝 prefix
+  - Notes included in JSON export/import (optional field, only when non-empty)
+  - Touch support: "Note" button added to the zoom popover on touch devices
+  - Read-only mode guard: note editor does not open in read-only mode
+- New `enableNotes` prop on the `App` component (default `false` — opt-in)
+- New `setNotesEnabled(value)` / `getNotesEnabled()` exported API functions
+- 4 new i18n keys (`note.title`, `note.save`, `note.delete`, `note.placeholder`) × 8 languages = 32 new translations
+- 2 new tests in `a11y.test.ts` for note i18n validation — total 163 tests across 9 files
+
+### Changed
+- JSON export/import version bumped from 1.2 to 1.3 (backward compatible — `note` field is optional)
+- `src/odontogram.ts` — `note` in `defaultState()`/`serializeState()`/`hydrateState()`, `showNoteEditor()`/`hideNoteEditor()` functions, `dblclick` handler in `addTile()`, note button in zoom popover, `updateToothLabelNoteIcon()`, label icon refresh on import
+- `src/App.tsx` — `enableNotes` prop, `setNotesEnabled`/`getNotesEnabled` imports and exports, sync useEffect
+- `src/index.css` — note editor popover styles (`.odon-note-popover`, `.odon-note-backdrop`, `.odon-note-textarea`), note icon in label cells (`.tooth-note-icon`), dark mode overrides
+- `src/i18n/translations.ts` — 32 new translation entries (4 keys × 8 languages)
+- `src/__tests__/App.test.tsx` — mock updates for `setNotesEnabled`/`getNotesEnabled`
+- `package.json` — version 1.4.1 → 1.4.2
+
 ## [1.4.1] - 2026-03-12
 
 Keyboard accessibility (WCAG), read-only mode, and selection animations.
@@ -192,6 +221,7 @@ First stable release of the React Odontogram Module — an interactive, SVG-base
 - Odontogram init lifecycle and import handling
 - Topbar toggle buttons duplicate click bindings
 
+[1.4.2]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.2.0...v1.3.0

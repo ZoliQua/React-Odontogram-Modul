@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Editor Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.4.1-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.4.2-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -38,7 +38,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 1.2, with plugin custom states)
+- 💾 Status export/import in JSON (version 1.3, with plugin custom states and per-tooth notes)
 - 🔢 Three numbering systems (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) with language switcher (190+ translation keys per language)
 - 🌗 Dark mode support with toggle button (standalone or controlled by parent app)
@@ -50,7 +50,8 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - ♿ Keyboard accessibility (WCAG): ARIA listbox/option roles, Enter/Space selection, arrow key navigation, focus-visible outlines
 - 🔒 Read-only mode: disable all interactions for print/report/view use cases
 - ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
-- 🧪 161 automated tests (Vitest) across 9 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins and accessibility
+- 📝 Per-tooth notes: double-click to add/edit notes, note icon next to tooth number, hover tooltip with note text, JSON export/import
+- 🧪 163 automated tests (Vitest) across 9 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins and accessibility
 - 📖 TypeDoc API documentation with JSDoc comments on all public exports (`npm run docs`)
 
 ### 📦 Modules
@@ -68,6 +69,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - ♿ Keyboard accessibility and ARIA support
 - 🔒 Read-only mode
 - ✨ Selection animations
+- 📝 Per-tooth notes system
 - 🧪 Automated test suite (Vitest + Testing Library)
 
 ### 🛠️ UI Controls
@@ -245,7 +247,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testing
 ```bash
-npm run test           # Run all 161 tests
+npm run test           # Run all 163 tests
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
 ```
@@ -270,6 +272,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Custom color overrides via CSS custom properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Custom SVG plugins for visual overlays and per-tooth custom state. |
 | `readOnly` | `boolean` | `undefined` | Disable all interactions (click, touch, keyboard). Useful for print/report views. |
+| `enableNotes` | `boolean` | `undefined` | Enable per-tooth notes. Double-click a tooth to add/edit notes. |
 
 **Exported functions for external control:**
 
@@ -289,9 +292,11 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `getToothStateSummary(toothNo)` | Get localized summary of all active states |
 | `setReadOnly(value)` | Enable/disable read-only mode |
 | `getReadOnly()` | Get current read-only state |
+| `setNotesEnabled(value)` | Enable/disable per-tooth notes |
+| `getNotesEnabled()` | Get current notes-enabled state |
 
 ### 💾 Status Export/Import Format
-The export creates a JSON file (version `1.2`) containing:
+The export creates a JSON file (version `1.3`) containing:
 
 **Global fields:**
 - `wisdomVisible` - wisdom teeth visible
@@ -326,6 +331,7 @@ The export creates a JSON file (version `1.2`) containing:
 - `crownReplace` - crown replacement needed indicator
 - `missingClosed` - gap closed after extraction
 - `customStates` - plugin custom states (object, keyed by plugin ID)
+- `note` - per-tooth text note (string, optional — only present when non-empty)
 
 ### 📁 Folder Structure
 - `src/App.tsx` - shell UI, topbar controls, language/numbering/dark mode/theme/plugin switcher
@@ -335,7 +341,7 @@ The export creates a JSON file (version `1.2`) containing:
 - `src/status_extras.ts` - 34 predefined restoration templates (bridges, dentures, bar constructions)
 - `src/i18n/` - translations (HU/EN/DE/ES/IT/SK/PL/RU) and i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer numbering conversion
-- `src/__tests__/` - Vitest test suite (161 tests across 9 files)
+- `src/__tests__/` - Vitest test suite (163 tests across 9 files)
 - `src/assets/teeth-svgs/` - SVG tooth templates (6 files: incisors, canines, premolars, molars + occlusal views)
 - `src/assets/icon-svgs/` - toolbar icon SVGs (5 files)
 
@@ -381,7 +387,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔢 12 Auswahlfilter (alle, vorhandene, bleibende, Milch, Implantate, fehlende, Ober-/Unterkiefer, Front/Molaren)
 - 📊 Vordefinierte Statusvorlagen (Zurücksetzen, Milchgebiss, Wechselgebiss, zahnlos)
 - 📦 34 vordefinierte Restaurationsvorlagen (Brücken, herausnehmbare Prothesen, Stegprothesen mit Implantaten)
-- 💾 Status-Export/Import in JSON (Version 1.2, mit Plugin Custom States)
+- 💾 Status-Export/Import in JSON (Version 1.3, mit Plugin Custom States und per-Zahn Notizen)
 - 🔢 Drei Nummerierungssysteme (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) mit Sprachumschalter (190+ Übersetzungsschlüssel pro Sprache)
 - 🌗 Dunkler Modus mit Umschalt-Button (eigenständig oder von der übergeordneten App gesteuert)
@@ -393,7 +399,8 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - ♿ Tastaturzugänglichkeit (WCAG): ARIA listbox/option Rollen, Enter/Leertaste Auswahl, Pfeiltasten-Navigation, focus-visible Umrisse
 - 🔒 Schreibgeschützter Modus: alle Interaktionen deaktivieren für Druck-/Berichtsansichten
 - ✨ Auswahl-Animationen: pulsierende gestrichelte Umrandung und leuchtender Schatten auf ausgewählten Zähnen
-- 🧪 161 automatisierte Tests (Vitest) für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
+- 📝 Per-Zahn Notizen: Doppelklick zum Hinzufügen/Bearbeiten, Notiz-Symbol neben der Zahnnummer, Hover-Tooltip mit Notiztext, JSON Export/Import
+- 🧪 163 automatisierte Tests (Vitest) für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
 - 📖 TypeDoc API-Dokumentation mit JSDoc-Kommentaren für alle öffentlichen Exporte (`npm run docs`)
 
 ### 📦 Module
@@ -411,6 +418,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - ♿ Tastaturzugänglichkeit und ARIA-Unterstützung
 - 🔒 Schreibgeschützter Modus
 - ✨ Auswahl-Animationen
+- 📝 Per-Zahn Notizen
 - 🧪 Automatisierte Testsuite (Vitest + Testing Library)
 
 ### 🛠️ UI-Steuerung
@@ -568,6 +576,7 @@ export default function Host(){
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Benutzerdefinierte Farbüberschreibungen über CSS Custom Properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Benutzerdefinierte SVG-Plugins für visuelle Overlays und per-Zahn Custom State. |
 | `readOnly` | `boolean` | `undefined` | Alle Interaktionen deaktivieren (Klick, Touch, Tastatur). Nützlich für Druck-/Berichtsansichten. |
+| `enableNotes` | `boolean` | `undefined` | Per-Zahn Notizen aktivieren. Doppelklick auf einen Zahn zum Hinzufügen/Bearbeiten. |
 
 **Exportierte Funktionen zur externen Steuerung:**
 
@@ -587,6 +596,8 @@ export default function Host(){
 | `getToothStateSummary(toothNo)` | Lokalisierte Zusammenfassung aller aktiven Zustände |
 | `setReadOnly(value)` | Schreibgeschützten Modus aktivieren/deaktivieren |
 | `getReadOnly()` | Aktuellen Schreibgeschützt-Zustand abrufen |
+| `setNotesEnabled(value)` | Per-Zahn Notizen aktivieren/deaktivieren |
+| `getNotesEnabled()` | Aktuellen Notizen-Status abrufen |
 
 ### 📁 Ordnerstruktur
 - `src/App.tsx` - UI-Hülle, Kopfleisten-Steuerung, Sprach-/Nummerierungs-/Dunkelmodus-/Theme-Umschalter
@@ -596,7 +607,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
-- `src/__tests__/` - Vitest-Testsuite (161 Tests)
+- `src/__tests__/` - Vitest-Testsuite (163 Tests)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
 - `src/assets/icon-svgs/` - Toolbar-Icon-SVGs (5 Dateien)
 
@@ -637,7 +648,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 1.2, con estados personalizados de plugins)
+- 💾 Exportación/importación de estado en JSON (versión 1.3, con estados personalizados de plugins y notas por diente)
 - 🔢 Tres sistemas de numeración (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) con selector de idioma (190+ claves de traducción por idioma)
 - 🌗 Modo oscuro con botón de alternancia (independiente o controlado por la aplicación principal)
@@ -649,7 +660,8 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - ♿ Accesibilidad por teclado (WCAG): roles ARIA listbox/option, selección con Enter/Espacio, navegación con flechas, contornos focus-visible
 - 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
 - ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados
-- 🧪 161 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins y accesibilidad
+- 📝 Notas por diente: doble clic para añadir/editar notas, icono de nota junto al número de diente, tooltip con texto de nota, exportación/importación JSON
+- 🧪 163 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins y accesibilidad
 - 📖 Documentación API TypeDoc con comentarios JSDoc en todas las exportaciones públicas (`npm run docs`)
 
 ### 📦 Módulos
@@ -667,6 +679,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - ♿ Accesibilidad por teclado y soporte ARIA
 - 🔒 Modo solo lectura
 - ✨ Animaciones de selección
+- 📝 Notas por diente
 - 🧪 Suite de pruebas automatizadas (Vitest + Testing Library)
 
 ### 🛠️ Controles de interfaz
@@ -824,6 +837,7 @@ export default function Host(){
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Personalización de colores mediante CSS custom properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Plugins SVG personalizados para superposiciones visuales y estado personalizado por diente. |
 | `readOnly` | `boolean` | `undefined` | Desactivar todas las interacciones (clic, táctil, teclado). Útil para vistas de impresión/informes. |
+| `enableNotes` | `boolean` | `undefined` | Activar notas por diente. Doble clic en un diente para añadir/editar notas. |
 
 **Funciones exportadas para control externo:**
 
@@ -843,6 +857,8 @@ export default function Host(){
 | `getToothStateSummary(toothNo)` | Obtener resumen localizado de todos los estados activos |
 | `setReadOnly(value)` | Activar/desactivar modo solo lectura |
 | `getReadOnly()` | Obtener estado actual de solo lectura |
+| `setNotesEnabled(value)` | Activar/desactivar notas por diente |
+| `getNotesEnabled()` | Obtener estado actual de notas |
 
 ### 📁 Estructura de carpetas
 - `src/App.tsx` - UI principal, controles de barra superior, selector de idioma/numeración/modo oscuro/tema
@@ -852,7 +868,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 plantillas de restauración predefinidas (puentes, prótesis, construcciones con barra)
 - `src/i18n/` - traducciones (HU/EN/DE/ES/IT/SK/PL/RU) y hook i18n
 - `src/utils/numbering.ts` - conversión de numeración FDI, Universal, Palmer
-- `src/__tests__/` - suite de pruebas Vitest (161 pruebas)
+- `src/__tests__/` - suite de pruebas Vitest (163 pruebas)
 - `src/assets/teeth-svgs/` - plantillas SVG dentales (6 archivos: incisivos, caninos, premolares, molares + vistas oclusales)
 - `src/assets/icon-svgs/` - SVGs de iconos de barra de herramientas (5 archivos)
 
@@ -892,7 +908,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 🔢 12 kiválasztási szűrő (összes, jelenlévő, maradó, tej, implantátum, hiányzó, felső/alsó, front/molárisok)
 - 📊 Előre definiált státusz minták (alaphelyzet, tejfogazat, vegyes fogazat, fogatlan)
 - 📦 34 előre definiált restaurációs sablon (hidak, kivehető protézisek, bár protézisek implantokkal)
-- 💾 Állapot export/import JSON formátumban (1.2 verzió, plugin egyedi állapotokkal)
+- 💾 Állapot export/import JSON formátumban (1.3 verzió, plugin egyedi állapotokkal és fogankénti megjegyzésekkel)
 - 🔢 Három számozási rendszer (FDI, Universal, Palmer)
 - 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) választható nyelvvel (190+ fordítási kulcs nyelvenként)
 - 🌗 Sötét mód támogatás váltógombbal (önálló vagy szülő alkalmazás által vezérelt)
@@ -904,7 +920,8 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - ♿ Billentyűzet akadálymentesítés (WCAG): ARIA listbox/option szerepkörök, Enter/Space kijelölés, nyílbillentyűs navigáció, focus-visible körvonalak
 - 🔒 Csak olvasható mód: összes interakció letiltása nyomtatási/jelentés nézetekhez
 - ✨ Kijelölési animációk: pulzáló szaggatott keret és ragyogó árnyék a kijelölt fogakon
-- 🧪 161 automatizált teszt (Vitest) a számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés lefedésére
+- 📝 Fogankénti megjegyzések: dupla kattintás megjegyzés hozzáadásához/szerkesztéséhez, megjegyzés ikon a fogszám mellett, hover tooltip a megjegyzés szövegével, JSON export/import
+- 🧪 163 automatizált teszt (Vitest) a számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés lefedésére
 - 📖 TypeDoc API dokumentáció JSDoc kommentekkel minden publikus exporton (`npm run docs`)
 
 ### 📦 Modulok
@@ -922,6 +939,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - ♿ Billentyűzet akadálymentesítés és ARIA támogatás
 - 🔒 Csak olvasható mód
 - ✨ Kijelölési animációk
+- 📝 Fogankénti megjegyzés rendszer
 - 🧪 Automatizált tesztcsomag (Vitest + Testing Library)
 
 ### 🛠️ UI vezérlők
@@ -1079,6 +1097,7 @@ export default function Host(){
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Egyedi szín felülírások CSS custom property-kkel (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Egyedi SVG pluginek vizuális fedvényekhez és foganként egyedi állapothoz. |
 | `readOnly` | `boolean` | `undefined` | Összes interakció letiltása (kattintás, érintés, billentyűzet). Nyomtatási/jelentés nézetekhez. |
+| `enableNotes` | `boolean` | `undefined` | Fogankénti megjegyzések engedélyezése. Dupla kattintás a fogra megjegyzés hozzáadásához. |
 
 **Exportált függvények külső vezérléshez:**
 
@@ -1098,6 +1117,8 @@ export default function Host(){
 | `getToothStateSummary(toothNo)` | Lokalizált összesítés az összes aktív állapotról |
 | `setReadOnly(value)` | Csak olvasható mód be/kikapcsolása |
 | `getReadOnly()` | Aktuális csak olvasható állapot lekérdezése |
+| `setNotesEnabled(value)` | Fogankénti megjegyzések be/kikapcsolása |
+| `getNotesEnabled()` | Aktuális megjegyzés-engedélyezés állapot lekérdezése |
 
 ### 📁 Mappastruktúra
 - `src/App.tsx` - UI váz, fejléc vezérlők, nyelv/számozás/sötét mód/téma választó
@@ -1107,7 +1128,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, stég konstrukciók)
 - `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU) és i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
-- `src/__tests__/` - Vitest tesztcsomag (161 teszt)
+- `src/__tests__/` - Vitest tesztcsomag (163 teszt)
 - `src/assets/teeth-svgs/` - SVG fogsablonok (6 fájl: metszők, szemfogak, kis őrlők, nagy őrlők + okkluzális nézetek)
 - `src/assets/icon-svgs/` - eszköztár ikon SVG-k (5 fájl)
 

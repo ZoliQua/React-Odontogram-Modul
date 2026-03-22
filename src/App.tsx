@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly };
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled };
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";
@@ -49,6 +49,11 @@ type AppProps = {
    * Useful for print/report/view modes.
    */
   readOnly?: boolean;
+  /**
+   * When true, enables per-tooth notes. Double-click a tooth to add/edit a note.
+   * Notes are shown in hover tooltips and included in JSON export/import.
+   */
+  enableNotes?: boolean;
 };
 
 const NUMBERING_OPTIONS: { value: NumberingSystem; labelKey: string }[] = [
@@ -101,6 +106,7 @@ export default function App({
   themeConfig,
   plugins,
   readOnly: readOnlyProp,
+  enableNotes,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
@@ -170,6 +176,11 @@ export default function App({
   useEffect(() => {
     setReadOnly(readOnlyProp ?? false);
   }, [readOnlyProp]);
+
+  // Sync notes enabled
+  useEffect(() => {
+    setNotesEnabled(enableNotes ?? false);
+  }, [enableNotes]);
 
   useEffect(() => {
     const handler = (event: MouseEvent) => {

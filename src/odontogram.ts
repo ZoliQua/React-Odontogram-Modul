@@ -143,6 +143,7 @@ function defaultState(){
     mobility: "none", // none | m1 | m2 | m3
     crownMaterial: "natural",   // natural | broken | emax | zircon | metal | temporary | telescope
     customStates: {} as Record<string, unknown>,
+    note: "",
   };
 }
 
@@ -266,6 +267,7 @@ let showHealthyPulp = true;
 let suppressEdentulousSync = false;
 let numberingSystem: NumberingSystem = "FDI";
 let readOnly = false;
+let notesEnabled = false;
 let i18nUnsubscribe: (() => void) | null = null;
 
 // ---- Plugin state ----
@@ -1089,10 +1091,32 @@ function updateToothTooltip(toothNo: number){
   const tiles = toothTile.get(toothNo);
   if(!tiles) return;
   const summary = getStateSummary(toothNo);
-  const text = summary.length > 0 ? summary.join(" · ") : "";
+  const state = toothState.get(toothNo);
+  const note = notesEnabled && state?.note ? state.note : "";
+  let text = summary.length > 0 ? summary.join(" · ") : "";
+  if(note) text = text ? text + "\n\u{1F4DD} " + note : "\u{1F4DD} " + note;
   for(const tile of tiles){
     if(text) tile.setAttribute("title", text);
     else tile.removeAttribute("title");
+  }
+}
+
+function updateToothLabelNoteIcon(toothNo: number){
+  const state = toothState.get(toothNo);
+  const hasNote = notesEnabled && !!state?.note;
+  // Update both upper and lower label maps
+  for(const labelMap of [toothLabelUpper, toothLabelLower]){
+    const cell = labelMap.get(toothNo);
+    if(!cell) continue;
+    let icon = cell.querySelector(".tooth-note-icon") as HTMLElement | null;
+    if(hasNote){
+      if(!icon){
+        icon = el("span", { class: "tooth-note-icon", "aria-hidden": "true", text: "\u{1F4DD}" });
+        cell.appendChild(icon);
+      }
+    }else{
+      if(icon) icon.remove();
+    }
   }
 }
 
@@ -1591,6 +1615,14 @@ function showZoomPopover(toothNo: number){
 
   actions.appendChild(selectBtn);
   actions.appendChild(infoBtn);
+  if(notesEnabled && !readOnly){
+    const noteBtn = el("button", { class: "odon-zoom-btn", text: t("note.title") });
+    noteBtn.addEventListener("click", () => {
+      hideZoomPopover();
+      showNoteEditor(toothNo);
+    });
+    actions.appendChild(noteBtn);
+  }
   actions.appendChild(resetBtn);
   actions.appendChild(closeActionBtn);
 
@@ -1687,6 +1719,86 @@ function showContextMenu(toothNo: number, touch: Touch){
 function hideContextMenu(){
   const menu = document.querySelector(".odon-ctx-menu");
   if(menu) menu.remove();
+}
+
+// ---- Note Editor Popover ----
+function showNoteEditor(toothNo: number){
+  hideNoteEditor();
+  if(!notesEnabled || readOnly) return;
+  const state = toothState.get(toothNo);
+  if(!state) return;
+
+  // Find the side-view tile for positioning
+  const tiles = toothTile.get(toothNo);
+  const anchorTile = tiles?.find((t: HTMLElement) => t.classList.contains("side-view")) || tiles?.[0];
+
+  const label = toLabel(toothNo, numberingSystem);
+  const popover = el("div", { class: "odon-note-popover" });
+
+  const header = el("div", { class: "odon-note-header" });
+  const title = el("span", { class: "odon-note-title", text: t("note.title") + " \u2014 " + label });
+  const closeBtn = el("button", { class: "odon-zoom-close", text: "\u2715" });
+  closeBtn.addEventListener("click", hideNoteEditor);
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+
+  const textarea = document.createElement("textarea");
+  textarea.className = "odon-note-textarea";
+  textarea.value = state.note || "";
+  textarea.placeholder = t("note.placeholder");
+  textarea.rows = 3;
+
+  const actions = el("div", { class: "odon-note-actions" });
+  const saveBtn = el("button", { class: "odon-zoom-btn", text: t("note.save") });
+  saveBtn.addEventListener("click", () => {
+    state.note = textarea.value.trim();
+    updateToothTooltip(toothNo);
+    updateToothLabelNoteIcon(toothNo);
+    hideNoteEditor();
+  });
+  const deleteBtn = el("button", { class: "odon-zoom-btn danger", text: t("note.delete") });
+  deleteBtn.addEventListener("click", () => {
+    state.note = "";
+    updateToothTooltip(toothNo);
+    updateToothLabelNoteIcon(toothNo);
+    hideNoteEditor();
+  });
+  actions.appendChild(saveBtn);
+  actions.appendChild(deleteBtn);
+
+  popover.appendChild(header);
+  popover.appendChild(textarea);
+  popover.appendChild(actions);
+
+  // Backdrop
+  const backdrop = el("div", { class: "odon-note-backdrop" });
+  backdrop.addEventListener("click", hideNoteEditor);
+  backdrop.appendChild(popover);
+  document.body.appendChild(backdrop);
+
+  popover.addEventListener("click", (e) => e.stopPropagation());
+
+  // Position popover near the tooth tile
+  if(anchorTile){
+    const rect = anchorTile.getBoundingClientRect();
+    const pw = 320; // popover width
+    let left = rect.left + rect.width / 2 - pw / 2;
+    let top = rect.bottom + 8;
+    // Clamp to viewport
+    if(left < 8) left = 8;
+    if(left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+    if(top + 200 > window.innerHeight) top = rect.top - 208;
+    popover.style.position = "fixed";
+    popover.style.left = left + "px";
+    popover.style.top = top + "px";
+  }
+
+  textarea.focus();
+}
+
+function hideNoteEditor(){
+  const backdrop = document.querySelector(".odon-note-backdrop");
+  if(backdrop) backdrop.remove();
 }
 
 // ---- Touch: Pinch-to-zoom ----
@@ -2025,6 +2137,7 @@ function serializeState(s: Any){
     mobility: s.mobility,
     crownMaterial: s.crownMaterial,
     ...(Object.keys(s.customStates || {}).length > 0 ? { customStates: s.customStates } : {}),
+    ...(s.note ? { note: s.note } : {}),
   };
 }
 
@@ -2077,6 +2190,8 @@ function hydrateState(raw: Any){
   s.bridgeUnit = validateEnum(raw.bridgeUnit, VALID_BRIDGE_UNIT, s.bridgeUnit);
   s.mobility = validateEnum(raw.mobility, VALID_MOBILITY, s.mobility);
   s.crownMaterial = validateEnum(raw.crownMaterial, VALID_CROWN_MATERIAL, s.crownMaterial);
+  // Restore note
+  if(typeof raw.note === "string") s.note = raw.note;
   // Restore plugin custom states (only for registered plugin IDs)
   if(raw.customStates && typeof raw.customStates === "object"){
     const validIds = new Set(registeredPlugins.map(p => p.id));
@@ -2096,7 +2211,7 @@ function exportStatus(){
     teeth[toothNo] = serializeState(s);
   }
   const payload = {
-    version: "1.2",
+    version: "1.3",
     globals: {
       wisdomVisible,
       showBase,
@@ -2126,6 +2241,7 @@ function importStatus(data: Any){
     toothState.set(toothNo, hydrateState(raw));
     applyStateToSvg(toothNo);
     updateToothTileNumber(toothNo);
+    updateToothLabelNoteIcon(toothNo);
   }
   if(data.globals){
     if(typeof data.globals.wisdomVisible === "boolean") setWisdomVisible(data.globals.wisdomVisible);
@@ -2321,6 +2437,10 @@ async function buildGrid(token: number){
 
     if(clickable){
       tile.addEventListener("click", (e)=>onToothClick(toothNo, e));
+      tile.addEventListener("dblclick", ()=>{
+        if(!notesEnabled || readOnly) return;
+        showNoteEditor(toothNo);
+      });
       tile.addEventListener("keydown", (e)=>onToothKeydown(toothNo, e));
       if(view === "side"){
         tile.setAttribute("role", "option");
@@ -2954,11 +3074,13 @@ export function destroyOdontogram(){
   if(archToggleBar){ archToggleBar.remove(); archToggleBar = null; }
   hideZoomPopover();
   hideContextMenu();
+  hideNoteEditor();
   if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
   pinchScale = 1;
   isPinching = false;
   archMode = "both";
   readOnly = false;
+  notesEnabled = false;
   pluginOverlays.clear();
   const mods = $("#modsChecks") as HTMLElement | null;
   if(mods) mods.innerHTML = "";
@@ -3068,6 +3190,29 @@ export function setReadOnly(value: boolean){
  */
 export function getReadOnly(): boolean{
   return readOnly;
+}
+
+/**
+ * Enable or disable per-tooth notes. When enabled, double-clicking a tooth
+ * opens a note editor popover, and notes are shown in hover tooltips with
+ * a badge indicator.
+ *
+ * @param value - `true` to enable notes, `false` to disable.
+ */
+export function setNotesEnabled(value: boolean){
+  notesEnabled = value;
+  // Refresh tooltips and label icons for all teeth
+  for(const toothNo of ALL_TEETH){
+    updateToothTooltip(toothNo);
+    updateToothLabelNoteIcon(toothNo);
+  }
+}
+
+/**
+ * Get the current notes-enabled state.
+ */
+export function getNotesEnabled(): boolean{
+  return notesEnabled;
 }
 
 export { setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible };
