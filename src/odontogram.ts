@@ -601,6 +601,7 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
   setActive(svgGetById(svg, "tooth-inflam-pulp"), false);
   setActive(svgGetById(svg, "tooth-bruxism-wear"), false);
   setActive(svgGetById(svg, "tooth-bruxism-neck-wear"), false);
+  setActive(svgGetById(svg, "tooth-base-beauty"), false);
   setActive(svgGetById(svg, "endo-resection"), false);
   setActive(svgGetById(svg, "milktooth-base"), false);
   setActive(svgGetById(svg, "milktooth-beauty"), false);
@@ -668,6 +669,7 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
   }else if(isToothPresent(state.toothSelection)){
     if(state.toothSelection === "tooth-base"){
       setActive(svgGetById(svg, "tooth-base"), true);
+      setActive(svgGetById(svg, "tooth-base-beauty"), true);
     }else{
       setActive(svgGetById(svg, state.toothSelection), true);
     }
@@ -2911,7 +2913,7 @@ function wireControls(){
     updateToothTileVisibility();
   });
   $("#btnSelectUpperMolar").addEventListener("click", ()=>{
-    const molars = [16,17,27,28];
+    const molars = [18,17,16,26,27,28];
     selectedTeeth = new Set(molars);
     activeTooth = molars[0];
     updateToothTileVisibility();
@@ -2928,7 +2930,7 @@ function wireControls(){
     updateToothTileVisibility();
   });
   $("#btnSelectLowerMolar").addEventListener("click", ()=>{
-    const molars = [36,37,46,47];
+    const molars = [38,37,36,46,47,48];
     selectedTeeth = new Set(molars);
     activeTooth = molars[0];
     updateToothTileVisibility();
