@@ -15,6 +15,7 @@
     "docs": "typedoc"
   },
   "dependencies": {
+    "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
     "nanoid": "^5.0.7",
     "react": "^18.3.1",

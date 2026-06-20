@@ -2292,6 +2292,31 @@ function downloadJson(payload: Any, filenamePrefix: string){
   URL.revokeObjectURL(url);
 }
 
+function downloadDataUrl(dataUrl: string, filename: string){
+  const a = document.createElement("a");
+  a.href = dataUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+/**
+ * Export the rendered odontogram (tooth grid) as a downloadable PNG or JPG.
+ * @param format - "png" | "jpg".
+ */
+export async function exportImage(format: "png" | "jpg" = "png"){
+  const target = (document.querySelector("#toothGrid, .tooth-grid") as HTMLElement | null) ?? document.body;
+  const html2canvas = (await import("html2canvas")).default;
+  const canvas = await html2canvas(target, { backgroundColor: "#ffffff", scale: 2, useCORS: true, logging: false });
+  const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g, "-");
+  if(format === "jpg"){
+    downloadDataUrl(canvas.toDataURL("image/jpeg", 0.92), `odontogram-${stamp}.jpg`);
+  }else{
+    downloadDataUrl(canvas.toDataURL("image/png"), `odontogram-${stamp}.png`);
+  }
+}
+
 function exportStatus(){
   downloadJson(collectExportPayload(), "odontogram-status");
 }
@@ -3090,6 +3115,14 @@ function wireControls(){
   }
   if(fhirBtn){
     fhirBtn.onclick = () => exportFhir();
+  }
+  const pngBtn = $("#btnStatusPngExport") as HTMLButtonElement | null;
+  const jpgBtn = $("#btnStatusJpgExport") as HTMLButtonElement | null;
+  if(pngBtn){
+    pngBtn.onclick = () => { exportImage("png").catch((e)=>console.error("PNG export failed", e)); };
+  }
+  if(jpgBtn){
+    jpgBtn.onclick = () => { exportImage("jpg").catch((e)=>console.error("JPG export failed", e)); };
   }
   if(importBtn && importInput){
     importBtn.onclick = () => {

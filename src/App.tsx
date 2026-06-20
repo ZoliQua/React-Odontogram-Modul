@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir };
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage };
 export type { FhirExportOptions } from "./fhir/types";
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
@@ -289,6 +289,8 @@ export default function App({
           </div>
           <button id="btnStatusExport" className="btn btn-ghost btn-sm">{t("topbar.exportStatus")}</button>
           <button id="btnStatusFhirExport" className="btn btn-ghost btn-sm">{t("topbar.exportFhir")}</button>
+          <button id="btnStatusPngExport" className="btn btn-ghost btn-sm">{t("topbar.exportPng")}</button>
+          <button id="btnStatusJpgExport" className="btn btn-ghost btn-sm">{t("topbar.exportJpg")}</button>
           <button id="btnStatusImport" className="btn btn-ghost btn-sm">{t("topbar.importStatus")}</button>
           <input id="statusImportInput" type="file" accept="application/json" hidden />
         </div>
