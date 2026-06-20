@@ -12,6 +12,7 @@ export interface ToothRecord {
   caries?: string[];
   fillingMaterial?: string;
   fillingSurfaces?: string[];
+  fillingSurfaceMaterials?: Record<string, string>;
   fissureSealing?: boolean;
   contactMesial?: boolean;
   contactDistal?: boolean;

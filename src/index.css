@@ -460,6 +460,10 @@ select:focus{
 .surface-cross .pos-distal{grid-column:3; grid-row:2}
 .surface-cross .pos-lingual{grid-column:2; grid-row:3}
 .subcrown-row{margin-top:8px}
+.surface-cross .surface-cell[data-material="amalgam"]{box-shadow:inset 0 0 0 2px #7a7f87}
+.surface-cross .surface-cell[data-material="composite"]{box-shadow:inset 0 0 0 2px #d9a441}
+.surface-cross .surface-cell[data-material="gic"]{box-shadow:inset 0 0 0 2px #4aa3df}
+.surface-cross .surface-cell[data-material="temporary"]{box-shadow:inset 0 0 0 2px #b07ad9}
 .row input[type="checkbox"]{display:none}
 .row:has(input[type="checkbox"]){
   border-radius:12px;

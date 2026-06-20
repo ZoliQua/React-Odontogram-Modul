@@ -55,11 +55,12 @@ describe("FHIR field mappings", () => {
       FIELD_MAPPINGS.flatMap((m) => (m.kind === "restoration" ? [m.surfacesField] : [])),
     );
     // Handled outside FIELD_MAPPINGS by design (special-cased in buildFhirBundle):
-    const SPECIAL = new Set(["customStates", "note"]);
+    // fillingSurfaceMaterials is consumed inline by the restoration emitter (per-surface materials).
+    const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials"]);
     // Full output of serializeState() (odontogram.ts:2111-2142):
     const SERIALIZED = [
       "toothSelection", "pulpInflam", "endoResection", "mods", "endo", "caries",
-      "fillingMaterial", "fillingSurfaces", "fissureSealing", "contactMesial", "contactDistal",
+      "fillingMaterial", "fillingSurfaces", "fillingSurfaceMaterials", "fissureSealing", "contactMesial", "contactDistal",
       "bruxismWear", "bruxismNeckWear", "brokenMesial", "brokenIncisal", "brokenDistal",
       "extractionWound", "extractionPlan", "parapulpalPin", "crownReplace", "crownNeeded",
       "missingClosed", "bridgePillar", "bridgeUnit", "mobility", "crownMaterial",
@@ -138,7 +139,7 @@ describe("buildFhirBundle — review fixes", () => {
     expect(custom.find((o) => o.code.coding?.[0].code === "custom-state:pluginC")?.valueBoolean).toBe(true);
   });
 
-  it("gives set and restoration components an explicit valueBoolean", () => {
+  it("gives set components an explicit valueBoolean and restoration components a per-surface material", () => {
     const b = buildFhirBundle({
       version: "1.3",
       teeth: { "21": { caries: ["caries-mesial"], fillingMaterial: "composite", fillingSurfaces: ["occlusal"] } },
@@ -146,7 +147,8 @@ describe("buildFhirBundle — review fixes", () => {
     const caries = obsOf(b).find((o) => o.code.coding?.[0].code === "caries");
     expect(caries?.component?.[0].valueBoolean).toBe(true);
     const rest = obsOf(b).find((o) => o.code.coding?.[0].code === "restoration");
-    expect(rest?.component?.[0].valueBoolean).toBe(true);
+    expect(rest?.component?.[0].code.coding?.[0].code).toBe("occlusal");
+    expect(rest?.component?.[0].valueCodeableConcept?.coding?.[0].code).toBe("composite");
   });
 
   it("gives the placeholder Patient a fullUrl that every Observation.subject resolves to", () => {
@@ -186,12 +188,14 @@ describe("buildFhirBundle — mapping behavior", () => {
     expect(caries[0].component?.map((c) => c.code.coding?.[0].code).sort()).toEqual(["caries-mesial", "caries-occlusal"]);
   });
 
-  it("emits restoration with material value and surface components", () => {
+  it("emits restoration with per-surface material components", () => {
     const b = buildFhirBundle({ version: "1.3", teeth: { "36": { fillingMaterial: "composite", fillingSurfaces: ["occlusal"] } } });
     const r = obsOf(b).filter((o) => o.code.coding?.[0].code === "restoration");
     expect(r).toHaveLength(1);
-    expect(r[0].valueCodeableConcept?.coding?.[0].code).toBe("composite");
+    // No top-level material value; material lives on each surface component.
+    expect(r[0].valueCodeableConcept).toBeUndefined();
     expect(r[0].component?.[0].code.coding?.[0].code).toBe("occlusal");
+    expect(r[0].component?.[0].valueCodeableConcept?.coding?.[0].code).toBe("composite");
   });
 
   it("emits boolean findings only when true", () => {
@@ -219,5 +223,33 @@ describe("buildFhirBundle — mapping behavior", () => {
       expect(o.status).toBe("final");
       expect(o.code.coding?.some((c) => c.system === LS)).toBe(true);
     }
+  });
+});
+
+describe("buildFhirBundle — per-surface restoration materials", () => {
+  it("emits one component per surface carrying that surface's material", () => {
+    const b = buildFhirBundle({
+      version: "1.4",
+      teeth: { "36": { fillingSurfaceMaterials: { buccal: "amalgam", distal: "composite" } } },
+    });
+    const rest = obsOf(b).find((o) => o.code.coding?.[0].code === "restoration");
+    expect(rest).toBeDefined();
+    const comps = rest?.component ?? [];
+    expect(comps).toHaveLength(2);
+    const bySurface = Object.fromEntries(
+      comps.map((c) => [c.code.coding?.[0].code, c.valueCodeableConcept?.coding?.[0].code]),
+    );
+    expect(bySurface["buccal"]).toBe("amalgam");
+    expect(bySurface["distal"]).toBe("composite");
+  });
+
+  it("still maps legacy single-material restorations (fillingMaterial + fillingSurfaces)", () => {
+    const b = buildFhirBundle({
+      version: "1.3",
+      teeth: { "36": { fillingMaterial: "composite", fillingSurfaces: ["occlusal"] } },
+    });
+    const rest = obsOf(b).find((o) => o.code.coding?.[0].code === "restoration");
+    expect(rest?.component?.[0].code.coding?.[0].code).toBe("occlusal");
+    expect(rest?.component?.[0].valueCodeableConcept?.coding?.[0].code).toBe("composite");
   });
 });

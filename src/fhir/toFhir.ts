@@ -93,18 +93,29 @@ function emitForField(
       return [obs];
     }
     case "restoration": {
-      const material = typeof raw === "string" ? raw : "";
-      const surfaces = Array.isArray(rec[mapping.surfacesField as keyof ToothRecord] as unknown)
-        ? ((rec[mapping.surfacesField as keyof ToothRecord] as unknown[]).filter((v): v is string => typeof v === "string"))
-        : [];
-      if ((!material || material === mapping.skipValue) && surfaces.length === 0) return [];
+      // Per-surface materials (v1.4) take precedence; fall back to legacy single material.
+      const fsm = (rec as Record<string, unknown>).fillingSurfaceMaterials;
+      const perSurface: Array<[string, string]> = [];
+      if (fsm && typeof fsm === "object") {
+        for (const [surf, mat] of Object.entries(fsm as Record<string, unknown>)) {
+          if (typeof mat === "string" && mat) perSurface.push([surf, mat]);
+        }
+      }
+      if (perSurface.length === 0) {
+        const material = typeof raw === "string" ? raw : "";
+        const surfaces = Array.isArray(rec[mapping.surfacesField as keyof ToothRecord] as unknown)
+          ? ((rec[mapping.surfacesField as keyof ToothRecord] as unknown[]).filter((v): v is string => typeof v === "string"))
+          : [];
+        if (material && material !== mapping.skipValue) {
+          for (const s of surfaces) perSurface.push([s, material]);
+        }
+      }
+      if (perSurface.length === 0) return [];
       const obs = baseObservation(subjectRef, tooth, findingConcept(mapping.findingCode, mapping.findingDisplay));
-      if (material && material !== mapping.skipValue) {
-        obs.valueCodeableConcept = valueConcept(mapping.valueGroup, material);
-      }
-      if (surfaces.length > 0) {
-        obs.component = surfaces.map((v) => ({ code: valueConcept("fillingSurfaces", v), valueBoolean: true }));
-      }
+      obs.component = perSurface.map(([surf, mat]) => ({
+        code: valueConcept("fillingSurfaces", surf),
+        valueCodeableConcept: valueConcept("fillingMaterial", mat),
+      }));
       return [obs];
     }
     default:

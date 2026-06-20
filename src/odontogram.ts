@@ -124,8 +124,9 @@ function defaultState(){
     mods: new Set(),
     endo: "none", // none | endo-medical-filling | endo-filling | endo-glass-pin | endo-metal-pin
     caries: new Set(),
-    fillingMaterial: "none", // none | amalgam | composite | gic | temporary
-    fillingSurfaces: new Set(), // buccal/mesial/distal/occlusal
+    fillingMaterial: "none", // active material chosen in the dropdown (applied on surface tap)
+    fillingSurfaces: new Set(), // buccal/mesial/distal/occlusal (= keys of fillingSurfaceMaterials)
+    fillingSurfaceMaterials: new Map(), // surface -> amalgam|composite|gic|temporary
     fissureSealing: false,
     contactMesial: false,
     contactDistal: false,
@@ -891,17 +892,17 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
       setActive(svgGetById(svg, id), true);
     }
 
-    // Fillings: any material with surfaces
-    if(state.fillingMaterial !== "none" && !hasCrown){
-      for(const s of state.fillingSurfaces){
-        setActive(svgGetById(svg, `filling-${state.fillingMaterial}-${s}`), true);
+    // Fillings: each surface rendered with its own material
+    if(state.fillingSurfaceMaterials.size > 0 && !hasCrown){
+      for(const [s, mat] of state.fillingSurfaceMaterials){
+        setActive(svgGetById(svg, `filling-${mat}-${s}`), true);
       }
     }
 
     // 6) Caries vs Filling same surface: if filling ON on surface, caries OFF on that surface
     // (Prefer filling)
-    if(state.fillingMaterial !== "none" && !hasRestoration && !hasCrown){
-      for(const s of state.fillingSurfaces){
+    if(state.fillingSurfaceMaterials.size > 0 && !hasRestoration && !hasCrown){
+      for(const s of state.fillingSurfaceMaterials.keys()){
         const cariesId = `caries-${s}`;
         setActive(svgGetById(svg, cariesId), false);
       }
@@ -1251,7 +1252,14 @@ function syncControlsFromState(state: Any){
   $$("#cariesChecks input[type=checkbox], #cariesSubcrownRow input[type=checkbox]").forEach(c => c.checked = state.caries.has(c.value));
 
   // filling surfaces
-  $$("#fillingSurfaceChecks input[type=checkbox]").forEach(c => c.checked = state.fillingSurfaces.has(c.value));
+  $$("#fillingSurfaceChecks input[type=checkbox]").forEach(c => {
+    c.checked = state.fillingSurfaceMaterials.has(c.value);
+    const cell = c.closest(".surface-cell") as HTMLElement | null;
+    if(cell){
+      const mat = state.fillingSurfaceMaterials.get(c.value);
+      cell.setAttribute("data-material", mat || "");
+    }
+  });
 
   // disable logic in UI
   const hasCrown = state.crownMaterial !== "natural";
@@ -2148,6 +2156,7 @@ function serializeState(s: Any){
     caries: Array.from(s.caries || []),
     fillingMaterial: s.fillingMaterial,
     fillingSurfaces: Array.from(s.fillingSurfaces || []),
+    fillingSurfaceMaterials: Object.fromEntries(s.fillingSurfaceMaterials || new Map()),
     fissureSealing: !!s.fissureSealing,
     contactMesial: !!s.contactMesial,
     contactDistal: !!s.contactDistal,
@@ -2202,6 +2211,23 @@ function hydrateState(raw: Any){
   s.caries = filterSet(raw.caries, VALID_CARIES);
   s.fillingMaterial = validateEnum(raw.fillingMaterial, VALID_FILLING_MATERIAL, s.fillingMaterial);
   s.fillingSurfaces = filterSet(raw.fillingSurfaces, VALID_FILLING_SURFACES);
+  s.fillingSurfaceMaterials = new Map();
+  const rawFSM = raw.fillingSurfaceMaterials;
+  if(rawFSM && typeof rawFSM === "object"){
+    // v1.4 format
+    for(const [surf, mat] of Object.entries(rawFSM)){
+      if(VALID_FILLING_SURFACES.has(surf) && typeof mat === "string" && VALID_FILLING_MATERIAL.has(mat) && mat !== "none"){
+        s.fillingSurfaceMaterials.set(surf, mat);
+      }
+    }
+  }else if(s.fillingMaterial !== "none" && s.fillingSurfaces.size > 0){
+    // legacy v1.3: one material applied to all filled surfaces
+    for(const surf of s.fillingSurfaces){
+      s.fillingSurfaceMaterials.set(surf, s.fillingMaterial);
+    }
+  }
+  // keep fillingSurfaces in sync with the map keys
+  s.fillingSurfaces = new Set(s.fillingSurfaceMaterials.keys());
   s.fissureSealing = !!raw.fissureSealing;
   s.contactMesial = !!raw.contactMesial;
   s.contactDistal = !!raw.contactDistal;
@@ -2241,7 +2267,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "1.3",
+    version: "1.4",
     globals: {
       wisdomVisible,
       showBase,
@@ -2751,6 +2777,13 @@ function wireControls(){
   buildSelect($("#fillingSelect"), getFillingOptions(false), (mat)=>{
     applyToSelected((s)=>{
       s.fillingMaterial = mat;
+      // Clearing the active material removes any existing per-surface fillings,
+      // otherwise they would become orphaned (surface UI hides but state lingers,
+      // still rendering/serializing/exporting). Keeps the map and set in sync.
+      if(mat === "none"){
+        s.fillingSurfaces.clear();
+        s.fillingSurfaceMaterials.clear();
+      }
     });
   });
 
@@ -2763,7 +2796,13 @@ function wireControls(){
     { value: "lingual", labelKey: "surface.lingualPalatal", letter: "L", pos: "lingual" },
   ], (surf: Any, on: Any)=>{
     applyToSelected((s)=>{
-      if(on) s.fillingSurfaces.add(surf); else s.fillingSurfaces.delete(surf);
+      if(on && s.fillingMaterial !== "none"){
+        s.fillingSurfaces.add(surf);
+        s.fillingSurfaceMaterials.set(surf, s.fillingMaterial);
+      }else{
+        s.fillingSurfaces.delete(surf);
+        s.fillingSurfaceMaterials.delete(surf);
+      }
     });
   });
 
