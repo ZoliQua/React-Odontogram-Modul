@@ -117,6 +117,10 @@ export default function App({
   const [numberingOpen, setNumberingOpen] = useState(false);
   const languageRef = useRef<HTMLDivElement | null>(null);
   const numberingRef = useRef<HTMLDivElement | null>(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  const exportRef = useRef<HTMLDivElement | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  const importRef = useRef<HTMLDivElement | null>(null);
 
   // Dark mode: controlled via prop or standalone via internal state
   const [internalDark, setInternalDark] = useState<boolean>(() => {
@@ -191,6 +195,12 @@ export default function App({
       }
       if(!numberingRef.current?.contains(target)){
         setNumberingOpen(false);
+      }
+      if(!exportRef.current?.contains(target)){
+        setExportOpen(false);
+      }
+      if(!importRef.current?.contains(target)){
+        setImportOpen(false);
       }
     };
     document.addEventListener("click", handler);
@@ -287,10 +297,24 @@ export default function App({
               </div>
             )}
           </div>
-          <button id="btnStatusExport" className="btn btn-ghost btn-sm">{t("topbar.exportStatus")}</button>
-          <button id="btnStatusFhirExport" className="btn btn-ghost btn-sm">{t("topbar.exportFhir")}</button>
-          <button id="btnStatusPngExport" className="btn btn-ghost btn-sm">{t("topbar.exportPng")}</button>
-          <button id="btnStatusJpgExport" className="btn btn-ghost btn-sm">{t("topbar.exportJpg")}</button>
+          {/* Hidden export buttons kept for host capture + wireControls wiring */}
+          <button id="btnStatusExport" hidden aria-hidden="true" tabIndex={-1}>{t("topbar.exportStatus")}</button>
+          <button id="btnStatusFhirExport" hidden aria-hidden="true" tabIndex={-1}>{t("topbar.exportFhir")}</button>
+          <button id="btnStatusPngExport" hidden aria-hidden="true" tabIndex={-1}>{t("topbar.exportPng")}</button>
+          <button id="btnStatusJpgExport" hidden aria-hidden="true" tabIndex={-1}>{t("topbar.exportJpg")}</button>
+          <div className="topbar-group dropdown" ref={exportRef}>
+            <button id="btnExportMenu" className="btn btn-ghost btn-sm" onClick={() => setExportOpen((o) => !o)} aria-haspopup="menu" aria-expanded={exportOpen}>
+              {t("topbar.export")} ▾
+            </button>
+            {exportOpen && (
+              <div className="dropdown-menu" role="menu" aria-label={t("topbar.export")}>
+                <button className="dropdown-item" role="menuitem" onClick={() => { (document.getElementById("btnStatusExport") as HTMLButtonElement | null)?.click(); setExportOpen(false); }}>{t("export.menu.statusJson")}</button>
+                <button className="dropdown-item" role="menuitem" onClick={() => { (document.getElementById("btnStatusFhirExport") as HTMLButtonElement | null)?.click(); setExportOpen(false); }}>{t("export.menu.fhir")}</button>
+                <button className="dropdown-item" role="menuitem" onClick={() => { (document.getElementById("btnStatusPngExport") as HTMLButtonElement | null)?.click(); setExportOpen(false); }}>{t("export.menu.png")}</button>
+                <button className="dropdown-item" role="menuitem" onClick={() => { (document.getElementById("btnStatusJpgExport") as HTMLButtonElement | null)?.click(); setExportOpen(false); }}>{t("export.menu.jpg")}</button>
+              </div>
+            )}
+          </div>
           <button id="btnStatusImport" className="btn btn-ghost btn-sm">{t("topbar.importStatus")}</button>
           <input id="statusImportInput" type="file" accept="application/json" hidden />
         </div>
