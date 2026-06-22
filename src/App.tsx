@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage, setImportFormat } from "./odontogram";
 export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage, setImportFormat };
 export type { FhirExportOptions } from "./fhir/types";
+import { startIntroTour } from "./tour";
+export { startIntroTour } from "./tour";
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";
@@ -224,6 +226,7 @@ export default function App({
           </div>
         </div>
         <div className="topbar-actions">
+          <button className="btn btn-ghost btn-sm" onClick={() => startIntroTour()}>{t("intro.start")}</button>
           <div className="topbar-group dropdown" ref={languageRef}>
             <button
               className="btn btn-ghost btn-sm"

@@ -892,3 +892,15 @@ select:focus{
 .odon-export-title{font-weight:600; font-size:14px; color:var(--muted); margin-bottom:8px}
 .odon-export-pct{font-weight:800; font-size:40px; line-height:1; color:var(--text)}
 .odon-export-phase{font-size:12px; color:var(--muted); margin-top:8px}
+.odon-tour-backdrop{position:fixed; inset:0; z-index:140; background:rgba(20,28,40,.45)}
+.odon-tour-highlight{position:fixed; z-index:141; border:3px solid var(--accent,#3b7bff); border-radius:12px; box-shadow:0 0 0 9999px rgba(20,28,40,.45); pointer-events:none; transition:all .15s ease}
+.odon-tour-card{position:fixed; z-index:142; background:var(--panel); border-radius:16px; box-shadow:0 16px 48px rgba(30,42,58,.25); padding:18px 20px; width:300px}
+.odon-tour-card-center{top:50%; left:50%; transform:translate(-50%,-50%)}
+.odon-tour-counter{font-size:11px; color:var(--muted); margin-bottom:6px}
+.odon-tour-title{font-weight:700; font-size:16px; margin-bottom:6px; color:var(--text)}
+.odon-tour-text{font-size:13px; color:var(--muted); margin-bottom:14px}
+.odon-tour-actions{display:flex; gap:8px; justify-content:flex-end}
+.odon-tour-btn{border:1px solid var(--line); background:rgba(0,0,0,.04); color:var(--text); padding:6px 12px; border-radius:10px; font-weight:600; cursor:pointer}
+.odon-tour-btn:disabled{opacity:.4; cursor:default}
+.odon-tour-skip{margin-right:auto; background:transparent}
+.odon-tour-next{background:rgba(59,123,255,.18); border-color:rgba(59,123,255,.45)}
