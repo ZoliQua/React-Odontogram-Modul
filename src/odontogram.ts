@@ -3,6 +3,7 @@ import { t, onI18nChange, getI18nLanguage } from "./i18n/useI18n";
 import { toLabel, type NumberingSystem } from "./utils/numbering";
 import { type OdontogramPlugin, getQuadrant, LAYER_Z } from "./plugin";
 import { buildFhirBundle } from "./fhir/toFhir";
+import { parseFhirBundle } from "./fhir/fromFhir";
 import type { FhirExportOptions } from "./fhir/types";
 import tooth11Url from "./assets/teeth-svgs/11.svg";
 import tooth13Url from "./assets/teeth-svgs/13.svg";
@@ -2353,6 +2354,16 @@ function importStatus(data: Any){
   }
   updateSelectionFilterButtons();
   updateSelectionUI();
+}
+
+/** Import a FHIR R4 Bundle (object or JSON string) produced by this module. */
+export function importFhirBundle(input: Any){
+  let bundle = input;
+  if(typeof input === "string"){
+    try{ bundle = JSON.parse(input); }catch(e){ console.error("Invalid FHIR JSON", e); return; }
+  }
+  const payload = parseFhirBundle(bundle);
+  importStatus(payload);
 }
 
 function applyStatusExtra(option: Any){
