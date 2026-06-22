@@ -98,6 +98,13 @@ const MOD_OPTIONS = [
   { value: "inflammation", labelKey: "mods.periapicalInflammation" },
 ];
 
+const PERIAPICAL_TYPE_OPTIONS = [
+  { value: "none", labelKey: "periapical.type.none" },
+  { value: "granuloma", labelKey: "periapical.type.granuloma" },
+  { value: "cyst", labelKey: "periapical.type.cyst" },
+  { value: "abscess", labelKey: "periapical.type.abscess" },
+];
+
 const CARIES_OPTIONS = [
   { value: "caries-mesial", labelKey: "surface.mesial" },
   { value: "caries-distal", labelKey: "surface.distal" },
@@ -123,6 +130,7 @@ function defaultState(){
     pulpInflam: false,
     endoResection: false,
     mods: new Set(),
+    periapicalType: "none", // none | granuloma | cyst | abscess (qualifies mods "inflammation")
     endo: "none", // none | endo-medical-filling | endo-filling | endo-glass-pin | endo-metal-pin
     caries: new Set(),
     fillingMaterial: "none", // active material chosen in the dropdown (applied on surface tap)
@@ -1248,6 +1256,12 @@ function syncControlsFromState(state: Any){
   }
   // mods
   $$("#modsChecks input[type=checkbox]").forEach(c => c.checked = state.mods.has(c.value));
+  const hasInflammation = state.mods.has("inflammation");
+  $("#periapicalTypeRow").classList.toggle("hidden", !hasInflammation);
+  setSelectOptions($("#periapicalTypeSelect"), PERIAPICAL_TYPE_OPTIONS, state.periapicalType);
+  if($("#periapicalTypeSelect").value !== state.periapicalType){
+    state.periapicalType = $("#periapicalTypeSelect").value;
+  }
 
   // caries (cross surfaces + the separate subcrown row)
   $$("#cariesChecks input[type=checkbox], #cariesSubcrownRow input[type=checkbox]").forEach(c => c.checked = state.caries.has(c.value));
@@ -2153,6 +2167,7 @@ function serializeState(s: Any){
     pulpInflam: !!s.pulpInflam,
     endoResection: !!s.endoResection,
     mods: Array.from(s.mods || []),
+    periapicalType: s.periapicalType,
     endo: s.endo,
     caries: Array.from(s.caries || []),
     fillingMaterial: s.fillingMaterial,
@@ -2189,6 +2204,7 @@ const VALID_BRIDGE_UNIT = new Set(["none","removable","zircon","metal","temporar
 const VALID_MOBILITY = new Set(["none","m1","m2","m3"]);
 const VALID_CROWN_MATERIAL = new Set(["natural","broken","radix","emax","zircon","metal","temporary","telescope","healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"]);
 const VALID_MODS = new Set(["inflammation","parodontal","mobility"]);
+const VALID_PERIAPICAL_TYPE = new Set(["none","granuloma","cyst","abscess"]);
 const VALID_CARIES = new Set(["caries-subcrown","caries-buccal","caries-lingual","caries-mesial","caries-distal","caries-occlusal"]);
 const VALID_FILLING_SURFACES = new Set(["buccal","lingual","mesial","distal","occlusal"]);
 
@@ -2208,6 +2224,7 @@ function hydrateState(raw: Any){
   s.pulpInflam = !!raw.pulpInflam;
   s.endoResection = !!raw.endoResection;
   s.mods = filterSet(raw.mods, VALID_MODS);
+  s.periapicalType = validateEnum(raw.periapicalType, VALID_PERIAPICAL_TYPE, "none");
   s.endo = validateEnum(raw.endo, VALID_ENDO, s.endo);
   s.caries = filterSet(raw.caries, VALID_CARIES);
   s.fillingMaterial = validateEnum(raw.fillingMaterial, VALID_FILLING_MATERIAL, s.fillingMaterial);
@@ -2838,6 +2855,9 @@ function wireControls(){
     applyToSelected((s)=>{
       if(on) s.mods.add(id); else s.mods.delete(id);
     });
+  });
+  buildSelect($("#periapicalTypeSelect"), PERIAPICAL_TYPE_OPTIONS, (val)=>{
+    applyToSelected((s)=>{ s.periapicalType = val; });
   });
 
   // Caries surfaces in a cross layout; subcrown stays as a separate row.

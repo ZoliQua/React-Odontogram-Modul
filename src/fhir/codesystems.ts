@@ -88,6 +88,12 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "parodontal": { code: "parodontal", display: "Periodontal involvement" },
     "mobility": { code: "mobility", display: "Mobility" },
   },
+  periapicalType: {
+    "none": { code: "none", display: "No periapical lesion" },
+    "granuloma": { code: "granuloma", display: "Periapical granuloma" },
+    "cyst": { code: "cyst", display: "Radicular cyst" },
+    "abscess": { code: "abscess", display: "Periapical abscess" },
+  },
   caries: {
     "caries-subcrown": { code: "caries-subcrown", display: "Subcrown caries" },
     "caries-buccal": { code: "caries-buccal", display: "Buccal caries" },

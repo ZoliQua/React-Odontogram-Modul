@@ -557,6 +557,10 @@ export default function App({
                 <select id="mobilitySelect"></select>
               </div>
               <div id="modsChecks" className="check-grid"></div>
+              <div id="periapicalTypeRow" className="row hidden">
+                <span>{t("periapical.typeLabel")}</span>
+                <select id="periapicalTypeSelect"></select>
+              </div>
             </section>
 
           </div>

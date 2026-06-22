@@ -59,7 +59,7 @@ describe("FHIR field mappings", () => {
     const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials"]);
     // Full output of serializeState() (odontogram.ts:2111-2142):
     const SERIALIZED = [
-      "toothSelection", "pulpInflam", "endoResection", "mods", "endo", "caries",
+      "toothSelection", "pulpInflam", "endoResection", "mods", "periapicalType", "endo", "caries",
       "fillingMaterial", "fillingSurfaces", "fillingSurfaceMaterials", "fissureSealing", "contactMesial", "contactDistal",
       "bruxismWear", "bruxismNeckWear", "brokenMesial", "brokenIncisal", "brokenDistal",
       "extractionWound", "extractionPlan", "parapulpalPin", "crownReplace", "crownNeeded",

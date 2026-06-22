@@ -8,6 +8,7 @@ export interface ToothRecord {
   pulpInflam?: boolean;
   endoResection?: boolean;
   mods?: string[];
+  periapicalType?: string;
   endo?: string;
   caries?: string[];
   fillingMaterial?: string;

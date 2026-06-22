@@ -37,6 +37,7 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
 
   { field: "caries", kind: "set", valueGroup: "caries", findingCode: "caries", findingDisplay: "Dental caries" },
   { field: "mods", kind: "set", valueGroup: "mods", findingCode: "tooth-modifier", findingDisplay: "Tooth modifier" },
+  { field: "periapicalType", kind: "enum", valueGroup: "periapicalType", skipValue: "none", findingCode: "periapical-lesion-type", findingDisplay: "Periapical lesion type" },
 
   { field: "fillingMaterial", kind: "restoration", valueGroup: "fillingMaterial", skipValue: "none", surfacesField: "fillingSurfaces", findingCode: "restoration", findingDisplay: "Dental restoration" },
 
