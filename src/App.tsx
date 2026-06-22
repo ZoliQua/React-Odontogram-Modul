@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage };
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage, setImportFormat } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage, setImportFormat };
 export type { FhirExportOptions } from "./fhir/types";
 import { useI18n } from "./i18n/useI18n";
 import type { Language } from "./i18n/translations";
@@ -315,7 +315,18 @@ export default function App({
               </div>
             )}
           </div>
-          <button id="btnStatusImport" className="btn btn-ghost btn-sm">{t("topbar.importStatus")}</button>
+          <button id="btnStatusImport" hidden aria-hidden="true" tabIndex={-1}>{t("topbar.importStatus")}</button>
+          <div className="topbar-group dropdown" ref={importRef}>
+            <button id="btnImportMenu" className="btn btn-ghost btn-sm" onClick={() => setImportOpen((o) => !o)} aria-haspopup="menu" aria-expanded={importOpen}>
+              {t("topbar.import")} ▾
+            </button>
+            {importOpen && (
+              <div className="dropdown-menu" role="menu" aria-label={t("topbar.import")}>
+                <button className="dropdown-item" role="menuitem" onClick={() => { setImportFormat("status"); (document.getElementById("btnStatusImport") as HTMLButtonElement | null)?.click(); setImportOpen(false); }}>{t("import.menu.statusJson")}</button>
+                <button className="dropdown-item" role="menuitem" onClick={() => { setImportFormat("fhir"); (document.getElementById("btnStatusImport") as HTMLButtonElement | null)?.click(); setImportOpen(false); }}>{t("import.menu.fhir")}</button>
+              </div>
+            )}
+          </div>
           <input id="statusImportInput" type="file" accept="application/json" hidden />
         </div>
       </header>

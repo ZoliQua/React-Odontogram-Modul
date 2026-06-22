@@ -2651,6 +2651,12 @@ async function buildGrid(token: number){
   }
 }
 
+let pendingImportFormat: "status" | "fhir" = "status";
+/** Set which parser the next file import uses. Defaults back to "status" after each import. */
+export function setImportFormat(format: "status" | "fhir"){
+  pendingImportFormat = format === "fhir" ? "fhir" : "status";
+}
+
 // ---- Controls wiring ----
 function wireControls(){
   if(controlsWired) return;
@@ -3143,14 +3149,20 @@ function wireControls(){
     importInput.onchange = async ()=>{
       const file = importInput.files?.[0];
       if(!file) return;
+      const format = pendingImportFormat;
       try{
         const text = await file.text();
         const data = JSON.parse(text);
-        importStatus(data);
-      }catch(_e){
-        // ignore invalid files
+        if(format === "fhir"){
+          importFhirBundle(data);
+        }else{
+          importStatus(data);
+        }
+      }catch(e){
+        console.error("Odontogram import failed", e);
       }finally{
         importInput.value = "";
+        pendingImportFormat = "status";
       }
     };
   }
