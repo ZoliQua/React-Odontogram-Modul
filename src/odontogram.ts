@@ -98,12 +98,14 @@ const MOD_OPTIONS = [
   { value: "inflammation", labelKey: "mods.periapicalInflammation" },
 ];
 
-const PERIAPICAL_TYPE_OPTIONS = [
-  { value: "none", labelKey: "periapical.type.none" },
-  { value: "granuloma", labelKey: "periapical.type.granuloma" },
-  { value: "cyst", labelKey: "periapical.type.cyst" },
-  { value: "abscess", labelKey: "periapical.type.abscess" },
-];
+function getPeriapicalTypeOptions(){
+  return [
+    {value:"none", label:t("periapical.type.none")},
+    {value:"granuloma", label:t("periapical.type.granuloma")},
+    {value:"cyst", label:t("periapical.type.cyst")},
+    {value:"abscess", label:t("periapical.type.abscess")},
+  ];
+}
 
 const CARIES_OPTIONS = [
   { value: "caries-mesial", labelKey: "surface.mesial" },
@@ -1151,7 +1153,8 @@ function updateToothLabelNoteIcon(toothNo: number){
     let icon = cell.querySelector(".tooth-note-icon") as HTMLElement | null;
     if(hasNote){
       if(!icon){
-        icon = el("span", { class: "tooth-note-icon", "aria-hidden": "true", text: "\u{1F4DD}" });
+        icon = el("span", { class: "tooth-note-icon", "aria-hidden": "true" });
+        icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>';
         cell.appendChild(icon);
       }
     }else{
@@ -1258,7 +1261,7 @@ function syncControlsFromState(state: Any){
   $$("#modsChecks input[type=checkbox]").forEach(c => c.checked = state.mods.has(c.value));
   const hasInflammation = state.mods.has("inflammation");
   $("#periapicalTypeRow").classList.toggle("hidden", !hasInflammation);
-  setSelectOptions($("#periapicalTypeSelect"), PERIAPICAL_TYPE_OPTIONS, state.periapicalType);
+  setSelectOptions($("#periapicalTypeSelect"), getPeriapicalTypeOptions(), state.periapicalType);
   if($("#periapicalTypeSelect").value !== state.periapicalType){
     state.periapicalType = $("#periapicalTypeSelect").value;
   }
@@ -1564,6 +1567,8 @@ function refreshAllSelectOptions(){
   if(fillingEl) setSelectOptions(fillingEl, getFillingOptions(isMilktooth), fillingEl.value);
   const mobilityEl = $("#mobilitySelect");
   if(mobilityEl) setSelectOptions(mobilityEl, getMobilityOptions(), mobilityEl.value);
+  const periapicalEl = $("#periapicalTypeSelect");
+  if(periapicalEl) setSelectOptions(periapicalEl, getPeriapicalTypeOptions(), periapicalEl.value);
 }
 
 function refreshLocalizedContent(){
@@ -2856,7 +2861,7 @@ function wireControls(){
       if(on) s.mods.add(id); else s.mods.delete(id);
     });
   });
-  buildSelect($("#periapicalTypeSelect"), PERIAPICAL_TYPE_OPTIONS, (val)=>{
+  buildSelect($("#periapicalTypeSelect"), getPeriapicalTypeOptions(), (val)=>{
     applyToSelected((s)=>{ s.periapicalType = val; });
   });
 

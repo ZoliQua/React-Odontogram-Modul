@@ -629,11 +629,15 @@ select:focus{
 
 /* ── Note icon in label cell ─────────────────── */
 .tooth-note-icon{
-  display: inline-block;
-  font-size: 9px;
-  margin-left: 2px;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 3px;
   vertical-align: middle;
-  opacity: .75;
+  color: var(--text);
+}
+.tooth-note-icon svg{
+  width: 13px;
+  height: 13px;
 }
 
 /* ── Note editor popover ─────────────────────── */

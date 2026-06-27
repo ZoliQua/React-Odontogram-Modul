@@ -511,7 +511,7 @@ export default function App({
                 <span>{t("filling.typeLabel")}</span>
                 <select id="fillingSelect"></select>
               </div>
-              <div id="fillingSurfaceChecks" className="check-grid hidden"></div>
+              <div id="fillingSurfaceChecks" className="hidden"></div>
               <label id="fissureSealingRow" className="row fissure-row">
                 <input type="checkbox" id="fissureSealing" />
                 <span>{t("filling.fissureSealing")}</span>
