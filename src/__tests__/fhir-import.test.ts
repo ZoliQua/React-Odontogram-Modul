@@ -13,7 +13,7 @@ describe("parseFhirBundle (FHIR import)", () => {
         "36": { fillingSurfaceMaterials: { buccal: "amalgam", distal: "composite" } },
         "46": { mobility: "m2", extractionPlan: true },
         "16": { mods: ["inflammation"], periapicalType: "cyst" },
-        "26": { cariesDepth: "deep", calculus: true, rootResorption: true },
+        "26": { calculus: true, rootResorption: true },
       },
     };
     const bundle = buildFhirBundle(payload as never);
@@ -26,7 +26,6 @@ describe("parseFhirBundle (FHIR import)", () => {
     expect(out.teeth["46"].mobility).toBe("m2");
     expect(out.teeth["46"].extractionPlan).toBe(true);
     expect(out.teeth["16"].periapicalType).toBe("cyst");
-    expect(out.teeth["26"].cariesDepth).toBe("deep");
     expect(out.teeth["26"].calculus).toBe(true);
     expect(out.teeth["26"].rootResorption).toBe(true);
   });

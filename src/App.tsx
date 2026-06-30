@@ -498,12 +498,12 @@ export default function App({
                 </button>
               </div>
               <div className="hint">{t("caries.hint")}</div>
-              <div id="cariesChecks"></div>
-              <div id="cariesSubcrownRow" className="check-grid subcrown-row"></div>
-              <div id="cariesDepthRow" className="row hidden">
+              <div id="cariesDepthRow" className="row">
                 <span>{t("caries.depthLabel")}</span>
                 <select id="cariesDepthSelect"></select>
               </div>
+              <div id="cariesChecks"></div>
+              <div id="cariesSubcrownRow" className="check-grid subcrown-row"></div>
             </section>
 
             <section id="fillingSection" className="card">
@@ -573,8 +573,8 @@ export default function App({
                 <span>{t("periapical.typeLabel")}</span>
                 <select id="periapicalTypeSelect"></select>
               </div>
-              <div id="calculusRow" className="check-grid hidden">
-                <label><input type="checkbox" id="calculus" /><span>{t("calculus.label")}</span></label>
+              <div id="calculusRow" className="row inline-checks hidden">
+                <label><input type="checkbox" id="calculusToggle" /><span>{t("calculus.label")}</span></label>
               </div>
             </section>
 

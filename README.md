@@ -45,7 +45,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🖼️ PNG/JPG/SVG image export of the chart (downloadable; PNG/JPG rasterized from vector SVG)
 - 🦷 Secondary (recurrent) caries — auto-derived when caries overlaps a filling
 - 🪨 Calculus, root resorption, and typed periapical lesions (granuloma / cyst / abscess)
-- 📏 Per-tooth caries depth (superficial / dentin / deep)
+- 📏 Per-surface caries depth (superficial / dentin / deep)
 - 🗂️ Consolidated Export dropdown (Status JSON / FHIR / PNG / JPG)
 - 📥 Import dropdown with FHIR import (round-trips exported Bundles)
 - ⏳ Progress overlay during image export
@@ -411,7 +411,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🖼️ PNG/JPG/SVG-Bildexport des Befunds (herunterladbar; PNG/JPG aus Vektor-SVG gerastert)
 - 🦷 Sekundärkaries — automatisch abgeleitet, wenn Karies eine Füllung überlappt
 - 🪨 Zahnstein, Wurzelresorption und typisierte periapikale Läsionen (Granulom / Zyste / Abszess)
-- 📏 Kariestiefe pro Zahn (oberflächlich / Dentin / tief)
+- 📏 Kariestiefe pro Fläche (oberflächlich / Dentin / tief)
 - 🗂️ Konsolidiertes Export-Dropdown (Status JSON / FHIR / PNG / JPG)
 - 📥 Import-Dropdown mit FHIR-Import (liest exportierte Bundles zurück)
 - ⏳ Fortschrittsanzeige beim Bildexport
@@ -689,7 +689,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🖼️ Exportación de imagen PNG/JPG/SVG del odontograma (descargable; PNG/JPG rasterizado desde SVG vectorial)
 - 🦷 Caries secundaria — derivada automáticamente cuando la caries coincide con una obturación
 - 🪨 Cálculo, reabsorción radicular y lesiones periapicales tipificadas (granuloma / quiste / absceso)
-- 📏 Profundidad de caries por diente (superficial / dentina / profunda)
+- 📏 Profundidad de caries por superficie (superficial / dentina / profunda)
 - 🗂️ Menú de exportación unificado (Estado JSON / FHIR / PNG / JPG)
 - 📥 Menú de importación con importación FHIR (recupera Bundles exportados)
 - ⏳ Superposición de progreso durante la exportación de imagen
@@ -966,7 +966,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 🖼️ PNG/JPG/SVG képexport az odontogramról (letölthető; a PNG/JPG vektoros SVG-ből rasterizált)
 - 🦷 Szekunder (másodlagos) caries — automatikusan, ha a caries tömésre esik
 - 🪨 Fogkő, gyökérreszorpció és típusos periapikális léziók (granuloma / ciszta / tályog)
-- 📏 Fogankénti caries-mélység (felületes / dentin / mély)
+- 📏 Felületenkénti caries-mélység (felületes / dentin / mély)
 - 🗂️ Egységes Export menü (Státusz JSON / FHIR / PNG / JPG)
 - 📥 Import menü FHIR importtal (visszatölti az exportált Bundle-öket)
 - ⏳ Folyamatjelző overlay a képexport alatt

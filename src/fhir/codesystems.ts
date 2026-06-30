@@ -102,11 +102,6 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "caries-distal": { code: "caries-distal", display: "Distal caries" },
     "caries-occlusal": { code: "caries-occlusal", display: "Occlusal caries" },
   },
-  cariesDepth: {
-    "surface": { code: "surface", display: "Superficial (enamel) caries" },
-    "dentin": { code: "dentin", display: "Dentin caries" },
-    "deep": { code: "deep", display: "Deep caries (near pulp)" },
-  },
   fillingSurfaces: {
     "buccal": { code: "buccal", display: "Buccal surface" },
     "lingual": { code: "lingual", display: "Lingual surface" },

@@ -432,6 +432,7 @@ select:focus{
 #crownReplaceRow,#crownNeededRow,#missingClosedRow{margin-top:8px}
 .bridge-pillar-row{margin-top:10px}
 .inline-checks{padding:0}
+.inline-checks + .inline-checks{margin-top:8px}
 .inline-checks label{display:flex; gap:10px; align-items:center; font-size:13px; padding:6px 10px; border-radius:12px; border:1px solid var(--line); background: rgba(0,0,0,.02); cursor:pointer}
 .inline-checks label:hover{background: rgba(59,123,255,.06)}
 .inline-checks input[type="checkbox"]{display:none}
@@ -464,6 +465,21 @@ select:focus{
 .surface-cross .surface-cell[data-material="composite"]{box-shadow:inset 0 0 0 2px #d9a441}
 .surface-cross .surface-cell[data-material="gic"]{box-shadow:inset 0 0 0 2px #4aa3df}
 .surface-cross .surface-cell[data-material="temporary"]{box-shadow:inset 0 0 0 2px #b07ad9}
+/* Per-surface caries depth indicator: 3 stacked bars inside the active cell.
+   1 filled = superficial, 2 = dentin, 3 = deep. Click opens the depth popup. */
+.surface-cross .surface-cell{position:relative}
+.surf-depth{position:absolute; top:5px; right:5px; display:none; flex-direction:column; gap:1.5px; padding:2px; cursor:pointer; border-radius:4px}
+.surface-cross .surface-cell:has(input[type="checkbox"]:checked) .surf-depth{display:flex}
+.surf-depth:hover{background:rgba(0,0,0,.06)}
+.surf-depth i{display:block; width:11px; height:3px; border-radius:1px; background:rgba(179,38,30,.22)}
+.surf-depth[data-depth="surface"] i:nth-child(1){background:#b3261e}
+.surf-depth[data-depth="dentin"] i:nth-child(-n+2){background:#b3261e}
+.surf-depth[data-depth="deep"] i{background:#b3261e}
+
+/* Caries depth popup */
+.odon-depth-popup{position:fixed; z-index:130; background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:0 12px 24px rgba(30,42,58,.18); padding:6px; display:flex; flex-direction:column; gap:4px; min-width:150px}
+.odon-depth-option{border:1px solid var(--line); background:rgba(0,0,0,.04); color:var(--text); padding:8px 10px; border-radius:10px; font-weight:600; cursor:pointer; text-align:left; font-size:13px}
+.odon-depth-option:hover{background:rgba(59,123,255,.12)}
 .row input[type="checkbox"]{display:none}
 .row:has(input[type="checkbox"]){
   border-radius:12px;

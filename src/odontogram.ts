@@ -136,7 +136,8 @@ function defaultState(){
     periapicalType: "none", // none | granuloma | cyst | abscess (qualifies mods "inflammation")
     endo: "none", // none | endo-medical-filling | endo-filling | endo-glass-pin | endo-metal-pin
     caries: new Set(),
-    cariesDepth: "surface", // surface | dentin | deep (opacity + deep contour on the caries group)
+    cariesActiveDepth: "surface", // active depth chosen in the dropdown (applied on caries tap)
+    cariesDepths: new Map(), // surface -> surface|dentin|deep (per-caried-surface depth)
     fillingMaterial: "none", // active material chosen in the dropdown (applied on surface tap)
     fillingSurfaces: new Set(), // buccal/mesial/distal/occlusal (= keys of fillingSurfaceMaterials)
     fillingSurfaceMaterials: new Map(), // surface -> amalgam|composite|gic|temporary
@@ -480,6 +481,9 @@ function updateToothTileNumber(toothNo: Any){
   if(upper) upper.textContent = text;
   const lower = toothLabelLower.get(toothNo);
   if(lower) lower.textContent = text;
+  // Setting textContent above wipes the note icon span; re-add it if the tooth
+  // still has a note, so the icon persists across state/label updates.
+  updateToothLabelNoteIcon(toothNo);
 }
 
 function updateAllToothTileNumbers(){
@@ -930,18 +934,15 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
       // Derive secondary caries: if this surface also has a filling, show the
       // subcaries layer at that surface instead of the normal caries layer.
       const surface = id.replace("caries-", ""); // e.g. caries-mesial -> mesial
-      if(state.fillingSurfaceMaterials.has(surface)){
-        setActive(svgGetById(svg, `subcaries-${surface}`), true);
-      }else{
-        setActive(svgGetById(svg, id), true);
+      const targetId = state.fillingSurfaceMaterials.has(surface) ? `subcaries-${surface}` : id;
+      const surfEl = svgGetById(svg, targetId) as SVGElement | null;
+      setActive(surfEl, true);
+      // Per-surface caries depth: opacity encodes depth; "deep" recolors the contour.
+      if(surfEl){
+        const depth = state.cariesDepths.get(surface) || "surface";
+        surfEl.style.opacity = depth === "deep" ? "1" : depth === "dentin" ? "0.7" : "0.45";
+        surfEl.classList.toggle("caries-deep", depth === "deep");
       }
-    }
-
-    const cariesGroup = svgGetById(svg, "caries") as SVGElement | null;
-    if(cariesGroup){
-      const op = state.cariesDepth === "deep" ? "1" : state.cariesDepth === "dentin" ? "0.7" : "0.45";
-      cariesGroup.style.opacity = state.caries.size > 0 ? op : "";
-      cariesGroup.classList.toggle("caries-deep", state.caries.size > 0 && state.cariesDepth === "deep");
     }
 
     // Fillings: each surface rendered with its own material
@@ -1299,18 +1300,26 @@ function syncControlsFromState(state: Any){
   if($("#periapicalTypeSelect").value !== state.periapicalType){
     state.periapicalType = $("#periapicalTypeSelect").value;
   }
-  $("#calculus").checked = !!state.calculus;
+  $("#calculusToggle").checked = !!state.calculus;
   const calculusAllowed = state.toothSelection === "tooth-base" || state.toothSelection === "milktooth";
   $("#calculusRow").classList.toggle("hidden", !calculusAllowed);
   $("#rootResorption").checked = !!state.rootResorption;
 
-  // caries (cross surfaces + the separate subcrown row)
+  // caries (cross surfaces + the separate subcrown row) + per-surface depth indicator
   $$("#cariesChecks input[type=checkbox], #cariesSubcrownRow input[type=checkbox]").forEach(c => c.checked = state.caries.has(c.value));
+  $$("#cariesChecks .surface-cell").forEach(cell => {
+    const c = cell.querySelector("input[type=checkbox]") as HTMLInputElement | null;
+    const ind = cell.querySelector(".surf-depth") as HTMLElement | null;
+    if(c && ind){
+      const surface = String(c.value).replace("caries-", "");
+      ind.setAttribute("data-depth", state.cariesDepths.get(surface) || "surface");
+    }
+  });
 
-  $("#cariesDepthRow").classList.toggle("hidden", state.caries.size === 0);
-  setSelectOptions($("#cariesDepthSelect"), getCariesDepthOptions(), state.cariesDepth);
-  if($("#cariesDepthSelect").value !== state.cariesDepth){
-    state.cariesDepth = $("#cariesDepthSelect").value;
+  // Depth selector at the top sets the DEFAULT depth for newly tapped surfaces.
+  setSelectOptions($("#cariesDepthSelect"), getCariesDepthOptions(), state.cariesActiveDepth);
+  if($("#cariesDepthSelect").value !== state.cariesActiveDepth){
+    state.cariesActiveDepth = $("#cariesDepthSelect").value;
   }
 
   // filling surfaces
@@ -1905,6 +1914,48 @@ function hideNoteEditor(){
   if(backdrop) backdrop.remove();
 }
 
+function hideCariesDepthPopup(){
+  const p = document.querySelector(".odon-depth-popup");
+  if(p) p.remove();
+}
+
+/** Popup to change the caries depth of a single surface on the selected teeth. */
+function showCariesDepthPopup(surface: string, anchor: HTMLElement){
+  hideCariesDepthPopup();
+  const rect = anchor.getBoundingClientRect();
+  const popup = el("div", { class: "odon-depth-popup" });
+  for(const opt of getCariesDepthOptions()){
+    const btn = el("button", { class: "odon-depth-option", text: opt.label }) as HTMLButtonElement;
+    btn.addEventListener("click", (e: Any)=>{
+      e.stopPropagation();
+      applyToSelected((s)=>{
+        if(s.caries.has(`caries-${surface}`)) s.cariesDepths.set(surface, opt.value);
+      });
+      hideCariesDepthPopup();
+    });
+    popup.appendChild(btn);
+  }
+  document.body.appendChild(popup);
+  // Position below-right of the indicator, clamped to the viewport.
+  const pw = popup.offsetWidth || 140;
+  const left = Math.min(rect.left, window.innerWidth - pw - 8);
+  const top = Math.min(rect.bottom + 4, window.innerHeight - popup.offsetHeight - 8);
+  popup.style.left = `${Math.max(8, left)}px`;
+  popup.style.top = `${Math.max(8, top)}px`;
+  // Close on outside click / Escape.
+  const onDoc = (e: Any)=>{ if(!popup.contains(e.target)){ cleanup(); } };
+  const onKey = (e: Any)=>{ if(e.key === "Escape") cleanup(); };
+  function cleanup(){
+    hideCariesDepthPopup();
+    document.removeEventListener("mousedown", onDoc, true);
+    document.removeEventListener("keydown", onKey, true);
+  }
+  setTimeout(()=>{
+    document.addEventListener("mousedown", onDoc, true);
+    document.addEventListener("keydown", onKey, true);
+  }, 0);
+}
+
 // ---- Touch: Pinch-to-zoom ----
 function getTouchDist(t1: Touch, t2: Touch){
   const dx = t1.clientX - t2.clientX;
@@ -2222,7 +2273,8 @@ function serializeState(s: Any){
     periapicalType: s.periapicalType,
     endo: s.endo,
     caries: Array.from(s.caries || []),
-    cariesDepth: s.cariesDepth,
+    cariesActiveDepth: s.cariesActiveDepth,
+    cariesDepths: Object.fromEntries(s.cariesDepths || new Map()),
     fillingMaterial: s.fillingMaterial,
     fillingSurfaces: Array.from(s.fillingSurfaces || []),
     fillingSurfaceMaterials: Object.fromEntries(s.fillingSurfaceMaterials || new Map()),
@@ -2283,7 +2335,15 @@ function hydrateState(raw: Any){
   s.periapicalType = validateEnum(raw.periapicalType, VALID_PERIAPICAL_TYPE, "none");
   s.endo = validateEnum(raw.endo, VALID_ENDO, s.endo);
   s.caries = filterSet(raw.caries, VALID_CARIES);
-  s.cariesDepth = validateEnum(raw.cariesDepth, VALID_CARIES_DEPTH, "surface");
+  s.cariesActiveDepth = validateEnum(raw.cariesActiveDepth, VALID_CARIES_DEPTH, "surface");
+  s.cariesDepths = new Map();
+  if(raw.cariesDepths && typeof raw.cariesDepths === "object"){
+    for(const [surf, depth] of Object.entries(raw.cariesDepths)){
+      if(VALID_FILLING_SURFACES.has(surf) && typeof depth === "string" && VALID_CARIES_DEPTH.has(depth)){
+        s.cariesDepths.set(surf, depth);
+      }
+    }
+  }
   s.fillingMaterial = validateEnum(raw.fillingMaterial, VALID_FILLING_MATERIAL, s.fillingMaterial);
   s.fillingSurfaces = filterSet(raw.fillingSurfaces, VALID_FILLING_SURFACES);
   s.fillingSurfaceMaterials = new Map();
@@ -3088,8 +3148,18 @@ function wireControls(){
   });
 
   // Caries surfaces in a cross layout; subcrown stays as a separate row.
+  // Toggling a surface on records its depth (from the active-depth dropdown);
+  // toggling off clears it. Subcrown carries no per-surface depth.
   const cariesOnToggle = (id: Any, on: Any)=>{
-    applyToSelected((s)=>{ if(on) s.caries.add(id); else s.caries.delete(id); });
+    applyToSelected((s)=>{
+      if(on){
+        s.caries.add(id);
+        if(id !== "caries-subcrown") s.cariesDepths.set(id.replace("caries-",""), s.cariesActiveDepth);
+      }else{
+        s.caries.delete(id);
+        s.cariesDepths.delete(id.replace("caries-",""));
+      }
+    });
   };
   buildSurfaceCross($("#cariesChecks"), [
     { value: "caries-buccal", labelKey: "surface.buccal", letter: "B", pos: "buccal" },
@@ -3098,11 +3168,26 @@ function wireControls(){
     { value: "caries-distal", labelKey: "surface.distal", letter: "D", pos: "distal" },
     { value: "caries-lingual", labelKey: "surface.lingualPalatal", letter: "L", pos: "lingual" },
   ], cariesOnToggle);
+  // Add a per-surface depth indicator (3 stacked bars) inside each caries cell.
+  // Clicking it opens a popup to change that surface's depth (only when caried).
+  $$("#cariesChecks .surface-cell").forEach((cell) => {
+    const input = cell.querySelector("input") as HTMLInputElement | null;
+    if(!input) return;
+    const surface = String(input.value).replace("caries-", "");
+    const ind = el("span", { class: "surf-depth", title: t("caries.depthLabel") }, [ el("i"), el("i"), el("i") ]);
+    ind.addEventListener("click", (e: Any)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if(!input.checked || readOnly) return;
+      showCariesDepthPopup(surface, ind);
+    });
+    cell.appendChild(ind);
+  });
   buildChecks($("#cariesSubcrownRow"), [
     { value: "caries-subcrown", labelKey: "surface.subcrown" },
   ], cariesOnToggle);
   buildSelect($("#cariesDepthSelect"), getCariesDepthOptions(), (val)=>{
-    applyToSelected((s)=>{ s.cariesDepth = val; });
+    applyToSelected((s)=>{ s.cariesActiveDepth = val; });
   });
 
   // Filling material dropdown
@@ -3146,7 +3231,7 @@ function wireControls(){
   });
 
   // Calculus
-  $("#calculus").addEventListener("change", (e)=>{
+  $("#calculusToggle").addEventListener("change", (e)=>{
     applyToSelected((s)=>{ s.calculus = (e.target as HTMLInputElement).checked; });
   });
 

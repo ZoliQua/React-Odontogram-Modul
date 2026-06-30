@@ -56,11 +56,11 @@ describe("FHIR field mappings", () => {
     );
     // Handled outside FIELD_MAPPINGS by design (special-cased in buildFhirBundle):
     // fillingSurfaceMaterials is consumed inline by the restoration emitter (per-surface materials).
-    const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials"]);
+    const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials", "cariesActiveDepth", "cariesDepths"]);
     // Full output of serializeState() (odontogram.ts:2111-2142):
     const SERIALIZED = [
       "toothSelection", "pulpInflam", "endoResection", "mods", "periapicalType", "endo", "caries",
-      "cariesDepth", "calculus", "rootResorption",
+      "cariesActiveDepth", "cariesDepths", "calculus", "rootResorption",
       "fillingMaterial", "fillingSurfaces", "fillingSurfaceMaterials", "fissureSealing", "contactMesial", "contactDistal",
       "bruxismWear", "bruxismNeckWear", "brokenMesial", "brokenIncisal", "brokenDistal",
       "extractionWound", "extractionPlan", "parapulpalPin", "crownReplace", "crownNeeded",

@@ -36,7 +36,6 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "mobility", kind: "enum", valueGroup: "mobility", skipValue: "none", findingCode: "tooth-mobility", findingDisplay: "Tooth mobility" },
 
   { field: "caries", kind: "set", valueGroup: "caries", findingCode: "caries", findingDisplay: "Dental caries" },
-  { field: "cariesDepth", kind: "enum", valueGroup: "cariesDepth", skipValue: "surface", findingCode: "caries-depth", findingDisplay: "Caries depth" },
   { field: "mods", kind: "set", valueGroup: "mods", findingCode: "tooth-modifier", findingDisplay: "Tooth modifier" },
   { field: "calculus", kind: "boolean", findingCode: "calculus", findingDisplay: "Dental calculus" },
   { field: "rootResorption", kind: "boolean", findingCode: "root-resorption", findingDisplay: "Root resorption" },
