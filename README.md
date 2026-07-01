@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Editor Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -45,7 +45,8 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🖼️ PNG/JPG/SVG image export of the chart (downloadable; PNG/JPG rasterized from vector SVG)
 - 🦷 Secondary (recurrent) caries — auto-derived when caries overlaps a filling
 - 🪨 Calculus, root resorption, and typed periapical lesions (granuloma / cyst / abscess)
-- 📏 Per-surface caries depth (superficial / dentin / deep)
+- 📏 Per-surface caries depth (superficial / dentin / deep), or optional ICDAS II scoring (0–6) via `enableIcdas`
+- 🧰 Unified topbar icon row with a Settings menu (numbering, notes, ICDAS)
 - 🗂️ Consolidated Export dropdown (Status JSON / FHIR / PNG / JPG)
 - 📥 Import dropdown with FHIR import (round-trips exported Bundles)
 - ⏳ Progress overlay during image export
@@ -411,7 +412,8 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🖼️ PNG/JPG/SVG-Bildexport des Befunds (herunterladbar; PNG/JPG aus Vektor-SVG gerastert)
 - 🦷 Sekundärkaries — automatisch abgeleitet, wenn Karies eine Füllung überlappt
 - 🪨 Zahnstein, Wurzelresorption und typisierte periapikale Läsionen (Granulom / Zyste / Abszess)
-- 📏 Kariestiefe pro Fläche (oberflächlich / Dentin / tief)
+- 📏 Kariestiefe pro Fläche (oberflächlich / Dentin / tief) oder optionales ICDAS-II-Scoring (0–6) via `enableIcdas`
+- 🧰 Vereinheitlichte Topbar-Icon-Leiste mit Einstellungsmenü (Nummerierung, Notizen, ICDAS)
 - 🗂️ Konsolidiertes Export-Dropdown (Status JSON / FHIR / PNG / JPG)
 - 📥 Import-Dropdown mit FHIR-Import (liest exportierte Bundles zurück)
 - ⏳ Fortschrittsanzeige beim Bildexport
@@ -689,7 +691,8 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🖼️ Exportación de imagen PNG/JPG/SVG del odontograma (descargable; PNG/JPG rasterizado desde SVG vectorial)
 - 🦷 Caries secundaria — derivada automáticamente cuando la caries coincide con una obturación
 - 🪨 Cálculo, reabsorción radicular y lesiones periapicales tipificadas (granuloma / quiste / absceso)
-- 📏 Profundidad de caries por superficie (superficial / dentina / profunda)
+- 📏 Profundidad de caries por superficie (superficial / dentina / profunda), o puntuación ICDAS II opcional (0–6) con `enableIcdas`
+- 🧰 Barra superior unificada de iconos con menú de Ajustes (numeración, notas, ICDAS)
 - 🗂️ Menú de exportación unificado (Estado JSON / FHIR / PNG / JPG)
 - 📥 Menú de importación con importación FHIR (recupera Bundles exportados)
 - ⏳ Superposición de progreso durante la exportación de imagen
@@ -966,7 +969,8 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 🖼️ PNG/JPG/SVG képexport az odontogramról (letölthető; a PNG/JPG vektoros SVG-ből rasterizált)
 - 🦷 Szekunder (másodlagos) caries — automatikusan, ha a caries tömésre esik
 - 🪨 Fogkő, gyökérreszorpció és típusos periapikális léziók (granuloma / ciszta / tályog)
-- 📏 Felületenkénti caries-mélység (felületes / dentin / mély)
+- 📏 Felületenkénti caries-mélység (felületes / dentin / mély), vagy opcionális ICDAS II pontozás (0–6) az `enableIcdas` proppal
+- 🧰 Egységes ikon-fejléc Beállítások menüvel (számozás, jegyzetek, ICDAS)
 - 🗂️ Egységes Export menü (Státusz JSON / FHIR / PNG / JPG)
 - 📥 Import menü FHIR importtal (visszatölti az exportált Bundle-öket)
 - ⏳ Folyamatjelző overlay a képexport alatt

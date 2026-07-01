@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, exportFhir, exportImage, exportSvg, setImportFormat };
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, exportFhir, exportImage, exportSvg, setImportFormat };
 export type { FhirExportOptions } from "./fhir/types";
 import { startIntroTour } from "./tour";
 export { startIntroTour } from "./tour";
@@ -57,6 +57,12 @@ type AppProps = {
    * Notes are shown in hover tooltips and included in JSON export/import.
    */
   enableNotes?: boolean;
+  /**
+   * Enable ICDAS II per-surface caries scoring (0–6). When enabled, the depth
+   * selector/popup expose ICDAS codes 1–6 and the surface indicator shows a
+   * numeric badge; otherwise the 3-level scale is used.
+   */
+  enableIcdas?: boolean;
 };
 
 const NUMBERING_OPTIONS: { value: NumberingSystem; labelKey: string }[] = [
@@ -110,15 +116,18 @@ export default function App({
   plugins,
   readOnly: readOnlyProp,
   enableNotes,
+  enableIcdas,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
   const themeRootRef = useRef<HTMLDivElement | null>(null);
   const currentNumbering = numberingSystem ?? internalNumbering;
   const [languageOpen, setLanguageOpen] = useState(false);
-  const [numberingOpen, setNumberingOpen] = useState(false);
   const languageRef = useRef<HTMLDivElement | null>(null);
-  const numberingRef = useRef<HTMLDivElement | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const settingsRef = useRef<HTMLDivElement | null>(null);
+  const [notesOn, setNotesOn] = useState<boolean>(enableNotes ?? false);
+  const [icdasOn, setIcdasOn] = useState<boolean>(enableIcdas ?? false);
   const [exportOpen, setExportOpen] = useState(false);
   const exportRef = useRef<HTMLDivElement | null>(null);
   const [importOpen, setImportOpen] = useState(false);
@@ -187,7 +196,14 @@ export default function App({
   // Sync notes enabled
   useEffect(() => {
     setNotesEnabled(enableNotes ?? false);
+    setNotesOn(enableNotes ?? false);
   }, [enableNotes]);
+
+  // Sync ICDAS mode enabled
+  useEffect(() => {
+    setIcdasEnabled(enableIcdas ?? false);
+    setIcdasOn(enableIcdas ?? false);
+  }, [enableIcdas]);
 
   useEffect(() => {
     const handler = (event: MouseEvent) => {
@@ -195,8 +211,8 @@ export default function App({
       if(!languageRef.current?.contains(target)){
         setLanguageOpen(false);
       }
-      if(!numberingRef.current?.contains(target)){
-        setNumberingOpen(false);
+      if(!settingsRef.current?.contains(target)){
+        setSettingsOpen(false);
       }
       if(!exportRef.current?.contains(target)){
         setExportOpen(false);
@@ -209,12 +225,6 @@ export default function App({
     return () => document.removeEventListener("click", handler);
   }, []);
 
-  const numberingLabelKey = currentNumbering === "FDI"
-    ? "numbering.fdi"
-    : currentNumbering === "UNIVERSAL"
-      ? "numbering.universal"
-      : "numbering.palmer";
-
   return (
     <div ref={themeRootRef} className="odontogram-root">
       <header className="topbar">
@@ -226,15 +236,12 @@ export default function App({
           </div>
         </div>
         <div className="topbar-actions">
-          <button className="btn btn-ghost btn-sm" onClick={() => startIntroTour()}>{t("intro.start")}</button>
+          <button className="btn-theme" onClick={() => startIntroTour()} title={t("intro.start")} aria-label={t("intro.start")}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </button>
           <div className="topbar-group dropdown" ref={languageRef}>
-            <button
-              className="btn btn-ghost btn-sm"
-              onClick={() => setLanguageOpen((open) => !open)}
-              aria-haspopup="menu"
-              aria-expanded={languageOpen}
-            >
-              {t("language.label")}: {t(LANGUAGE_OPTIONS.find((opt) => opt.value === lang)?.labelKey ?? "language.hu")}
+            <button className="btn-theme" onClick={() => setLanguageOpen((open) => !open)} aria-haspopup="menu" aria-expanded={languageOpen} title={t("language.label")} aria-label={t("language.label")}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
             </button>
             {languageOpen && (
               <div className="dropdown-menu" role="menu" aria-label={t("language.label")}>
@@ -272,31 +279,28 @@ export default function App({
               </svg>
             )}
           </button>
-          <div className="topbar-group dropdown" ref={numberingRef}>
-            <button
-              className="btn btn-ghost btn-sm"
-              onClick={() => setNumberingOpen((open) => !open)}
-              aria-haspopup="menu"
-              aria-expanded={numberingOpen}
-            >
-              {t("numbering.label")}: {t(numberingLabelKey)}
+          <div className="topbar-group dropdown" ref={settingsRef}>
+            <button className="btn-theme" onClick={() => setSettingsOpen((o) => !o)} aria-haspopup="menu" aria-expanded={settingsOpen} title={t("settings.title")} aria-label={t("settings.title")}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
-            {numberingOpen && (
-              <div className="dropdown-menu" role="menu" aria-label={t("numbering.label")}>
+            {settingsOpen && (
+              <div className="dropdown-menu settings-menu" role="menu" aria-label={t("settings.title")}>
+                <div className="settings-group-label">{t("numbering.label")}</div>
                 {NUMBERING_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    className={"dropdown-item"}
-                    role="menuitemradio"
-                    aria-checked={currentNumbering === opt.value}
-                    onClick={() => {
-                      setNumbering(opt.value);
-                      setNumberingOpen(false);
-                    }}
-                  >
+                  <button key={opt.value} className="dropdown-item" role="menuitemradio" aria-checked={currentNumbering === opt.value}
+                    onClick={() => { setNumbering(opt.value); }}>
                     {t(opt.labelKey)}
                   </button>
                 ))}
+                <div className="settings-sep" />
+                <button className="dropdown-item" role="menuitemcheckbox" aria-checked={notesOn}
+                  onClick={() => { const v = !notesOn; setNotesOn(v); setNotesEnabled(v); }}>
+                  {t("settings.notes")}{notesOn ? " ✓" : ""}
+                </button>
+                <button className="dropdown-item" role="menuitemcheckbox" aria-checked={icdasOn}
+                  onClick={() => { const v = !icdasOn; setIcdasOn(v); setIcdasEnabled(v); }}>
+                  {t("icdas.enable")}{icdasOn ? " ✓" : ""}
+                </button>
               </div>
             )}
           </div>
@@ -307,8 +311,8 @@ export default function App({
           <button id="btnStatusJpgExport" hidden aria-hidden="true" tabIndex={-1}>{t("topbar.exportJpg")}</button>
           <button id="btnStatusSvgExport" hidden aria-hidden="true" tabIndex={-1}>{t("export.menu.svg")}</button>
           <div className="topbar-group dropdown" ref={exportRef}>
-            <button id="btnExportMenu" className="btn btn-ghost btn-sm" onClick={() => setExportOpen((o) => !o)} aria-haspopup="menu" aria-expanded={exportOpen}>
-              {t("topbar.export")} ▾
+            <button id="btnExportMenu" className="btn-theme" onClick={() => setExportOpen((o) => !o)} aria-haspopup="menu" aria-expanded={exportOpen} title={t("topbar.export")} aria-label={t("topbar.export")}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
             </button>
             {exportOpen && (
               <div className="dropdown-menu" role="menu" aria-label={t("topbar.export")}>
@@ -322,8 +326,8 @@ export default function App({
           </div>
           <button id="btnStatusImport" hidden aria-hidden="true" tabIndex={-1}>{t("topbar.importStatus")}</button>
           <div className="topbar-group dropdown" ref={importRef}>
-            <button id="btnImportMenu" className="btn btn-ghost btn-sm" onClick={() => setImportOpen((o) => !o)} aria-haspopup="menu" aria-expanded={importOpen}>
-              {t("topbar.import")} ▾
+            <button id="btnImportMenu" className="btn-theme" onClick={() => setImportOpen((o) => !o)} aria-haspopup="menu" aria-expanded={importOpen} title={t("topbar.import")} aria-label={t("topbar.import")}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 8l5-5 5 5M12 3v12"/></svg>
             </button>
             {importOpen && (
               <div className="dropdown-menu" role="menu" aria-label={t("topbar.import")}>

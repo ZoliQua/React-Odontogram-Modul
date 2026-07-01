@@ -20,6 +20,8 @@ vi.mock('../odontogram', () => ({
   getReadOnly: vi.fn().mockReturnValue(false),
   setNotesEnabled: vi.fn(),
   getNotesEnabled: vi.fn().mockReturnValue(false),
+  setIcdasEnabled: vi.fn(),
+  getIcdasEnabled: vi.fn().mockReturnValue(false),
 }));
 
 describe('App.tsx', () => {
@@ -78,8 +80,8 @@ describe('App.tsx', () => {
       const onLangChange = vi.fn();
       render(<App language="en" onLanguageChange={onLangChange} />);
 
-      // Open language dropdown
-      const langButton = screen.getByText(/Language/);
+      // Open language dropdown (now an icon button identified by its aria-label)
+      const langButton = screen.getByRole('button', { name: /Language/i });
       fireEvent.click(langButton);
 
       // Click on Hungarian option (text includes flag emoji)
@@ -96,16 +98,19 @@ describe('App.tsx', () => {
     it('uses the provided numbering system', () => {
       const onNumberingChange = vi.fn();
       render(<App language="en" numberingSystem="UNIVERSAL" onNumberingChange={onNumberingChange} />);
-      expect(screen.getByText(/Universal/)).toBeInTheDocument();
+      // Numbering options live inside the Settings gear dropdown; open it first
+      const settingsButton = screen.getByRole('button', { name: /Settings/i });
+      fireEvent.click(settingsButton);
+      expect(screen.getByRole('menuitemradio', { name: /Universal/i })).toBeInTheDocument();
     });
 
     it('calls onNumberingChange when numbering is selected', async () => {
       const onNumberingChange = vi.fn();
       render(<App language="en" numberingSystem="FDI" onNumberingChange={onNumberingChange} />);
 
-      // Open numbering dropdown
-      const numButton = screen.getByText(/Numbering/);
-      fireEvent.click(numButton);
+      // Numbering now lives inside the Settings gear dropdown; open it first
+      const settingsButton = screen.getByRole('button', { name: /Settings/i });
+      fireEvent.click(settingsButton);
 
       await waitFor(() => {
         const palmerOption = screen.getByRole('menuitemradio', { name: /Palmer/i });
@@ -119,7 +124,9 @@ describe('App.tsx', () => {
   describe('dark mode', () => {
     it('toggles dark mode when theme button is clicked (standalone)', () => {
       render(<App />);
-      const themeBtn = document.querySelector('.btn-theme') as HTMLElement;
+      // Multiple icon buttons share .btn-theme now; target the dark-mode toggle
+      // by its accessible label (light mode shows the "Dark mode" label).
+      const themeBtn = screen.getByRole('button', { name: /Dark mode/i }) as HTMLElement;
       expect(themeBtn).toBeInTheDocument();
 
       // Initially light mode
@@ -136,7 +143,7 @@ describe('App.tsx', () => {
       const onDarkChange = vi.fn();
       render(<App darkMode={false} onDarkModeChange={onDarkChange} />);
 
-      const themeBtn = document.querySelector('.btn-theme') as HTMLElement;
+      const themeBtn = screen.getByRole('button', { name: /Dark mode/i }) as HTMLElement;
       fireEvent.click(themeBtn);
 
       expect(onDarkChange).toHaveBeenCalledWith(true);

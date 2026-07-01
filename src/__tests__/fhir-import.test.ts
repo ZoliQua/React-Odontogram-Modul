@@ -14,6 +14,7 @@ describe("parseFhirBundle (FHIR import)", () => {
         "46": { mobility: "m2", extractionPlan: true },
         "16": { mods: ["inflammation"], periapicalType: "cyst" },
         "26": { calculus: true, rootResorption: true },
+        "37": { caries: ["caries-mesial"], cariesDepths: { mesial: 5 } },
       },
     };
     const bundle = buildFhirBundle(payload as never);
@@ -28,6 +29,7 @@ describe("parseFhirBundle (FHIR import)", () => {
     expect(out.teeth["16"].periapicalType).toBe("cyst");
     expect(out.teeth["26"].calculus).toBe(true);
     expect(out.teeth["26"].rootResorption).toBe(true);
+    expect(out.teeth["37"].cariesDepths).toEqual({ mesial: 5 });
   });
 
   it("reads chart-level edentulous", () => {

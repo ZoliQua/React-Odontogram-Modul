@@ -18,6 +18,9 @@ import {
 } from "./codesystems";
 import { FIELD_MAPPINGS } from "./fieldMappings";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Any = any;
+
 const PLACEHOLDER_PATIENT_ID = "odontogram-subject";
 const PLACEHOLDER_PATIENT_FULLURL = "urn:uuid:odontogram-subject";
 
@@ -89,7 +92,22 @@ function emitForField(
       const arr = Array.isArray(raw) ? (raw as unknown[]).filter((v): v is string => typeof v === "string") : [];
       if (arr.length === 0) return [];
       const obs = baseObservation(subjectRef, tooth, findingConcept(mapping.findingCode, mapping.findingDisplay));
-      obs.component = arr.map((v) => ({ code: valueConcept(mapping.valueGroup, v), valueBoolean: true }));
+      const depths =
+        mapping.field === "caries"
+          ? ((rec as Record<string, unknown>).cariesDepths as Record<string, number> | undefined)
+          : undefined;
+      obs.component = arr.map((v) => {
+        const comp: Any = { code: valueConcept(mapping.valueGroup, v), valueBoolean: true };
+        if (depths) {
+          const surface = String(v).replace("caries-", "");
+          const code = depths[surface];
+          if (typeof code === "number") {
+            comp.valueInteger = code;
+            delete comp.valueBoolean;
+          }
+        }
+        return comp;
+      });
       return [obs];
     }
     case "restoration": {

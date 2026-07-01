@@ -17,6 +17,13 @@ export const FDI_SYSTEM = "urn:iso:std:iso:3950";
 /** SNOMED CT system URL. */
 export const SNOMED_SYSTEM = "http://snomed.info/sct";
 
+/**
+ * ICDAS II (International Caries Detection and Assessment System) reference URL.
+ * Documentation constant: per-surface caries codes (1–6) are emitted as the
+ * caries component's `valueInteger`; this URL identifies the scoring system.
+ */
+export const ICDAS_SYSTEM = "https://www.icdas.org";
+
 /** A single coded value: required local code, optional verified SNOMED code. */
 export interface CodeEntry {
   code: string;

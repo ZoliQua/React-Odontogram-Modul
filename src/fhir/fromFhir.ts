@@ -37,7 +37,7 @@ export function parseFhirBundle(bundle: unknown): OdontogramExportPayload {
         valueBoolean?: unknown;
         valueString?: unknown;
         valueQuantity?: { value?: unknown };
-        component?: Array<{ code?: unknown; valueCodeableConcept?: unknown; valueBoolean?: unknown }>;
+        component?: Array<{ code?: unknown; valueCodeableConcept?: unknown; valueBoolean?: unknown; valueInteger?: unknown }>;
         note?: Array<{ text?: unknown }>;
       } | undefined;
       if (!res || res.resourceType !== "Observation") continue;
@@ -78,6 +78,16 @@ export function parseFhirBundle(bundle: unknown): OdontogramExportPayload {
       } else if (mapping.kind === "set") {
         const vals = (res.component ?? []).map((c) => localCode(c.code)).filter((x): x is string => !!x);
         if (vals.length) (rec as Record<string, unknown>)[mapping.field] = vals;
+        if (mapping.field === "caries") {
+          const depths: Record<string, number> = {};
+          for (const c of res.component ?? []) {
+            const code = localCode(c.code);
+            if (!code) continue;
+            const vi = c.valueInteger;
+            if (typeof vi === "number") depths[String(code).replace("caries-", "")] = vi;
+          }
+          if (Object.keys(depths).length) rec.cariesDepths = depths;
+        }
       } else if (mapping.kind === "restoration") {
         const fsm: Record<string, string> = {};
         for (const c of res.component ?? []) {
