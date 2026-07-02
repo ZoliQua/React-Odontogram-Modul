@@ -394,13 +394,9 @@ select:focus{
 .card-title{font-weight:800; margin-bottom:8px}
 .card-title-row{display:flex; align-items:center; justify-content:space-between; gap:8px}
 .card.collapsed .card-title{margin-bottom:0}
-.card.collapsed .card-body,
-.card.collapsed #statusCardBody,
-.card.collapsed .status-extra-row,
-.card.collapsed .hint,
-.card.collapsed .row,
-.card.collapsed .check-grid,
-.card.collapsed label{display:none}
+/* Hide every direct child except the title row, so collapse works regardless of
+   the content element's class (e.g. the class-less #cariesChecks cross div). */
+.card.collapsed > :not(.card-title-row){display:none}
 .icon-btn{
   border:1px solid var(--line);
   background: rgba(255,255,255,.7);
@@ -433,6 +429,9 @@ select:focus{
 .bridge-pillar-row{margin-top:10px}
 .inline-checks{padding:0}
 .inline-checks + .inline-checks{margin-top:8px}
+/* Calculus row always needs a gap above it (its preceding sibling is the
+   periapical-type .row, not an .inline-checks, so the rule above never matches). */
+#calculusRow{margin-top:8px}
 .inline-checks label{display:flex; gap:10px; align-items:center; font-size:13px; padding:6px 10px; border-radius:12px; border:1px solid var(--line); background: rgba(0,0,0,.02); cursor:pointer}
 .inline-checks label:hover{background: rgba(59,123,255,.06)}
 .inline-checks input[type="checkbox"]{display:none}

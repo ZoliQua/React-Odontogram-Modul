@@ -456,6 +456,41 @@ function applyToggleA11y(btn: Any, labelKey: Any, collapsed: Any){
   btn.setAttribute("aria-label", text);
 }
 
+// Maps each collapse-toggle button id to the i18n key used for its a11y label.
+const CARD_TOGGLE_LABELS: Record<string, string> = {
+  btnToggleStatusCard: "status.title",
+  btnToggleCariesCard: "caries.title",
+  btnToggleFillingCard: "filling.title",
+  btnToggleEndoCard: "endo.title",
+  btnToggleInflammationCard: "inflammation.title",
+};
+
+// Delegated handler for all card collapse toggles. Attached once to `document`
+// so it survives React StrictMode double-mount and async init timing — per-button
+// listeners wired in wireControls() proved unreliable under those conditions.
+function onCardToggleClick(e: Any){
+  const target = e.target as Any;
+  const btn = target?.closest?.(".icon-btn");
+  if(!btn) return;
+  const icon = btn.querySelector(".toggle-icon");
+  // Controls card collapses its actions container (uses `.hidden`), not the card.
+  if(btn.id === "btnToggleControlsCard"){
+    const actions = document.querySelector("#controlsActions");
+    if(!actions) return;
+    const hidden = actions.classList.toggle("hidden");
+    applyToggleA11y(btn, "panel.controls", hidden);
+    if(icon) icon.textContent = hidden ? "+" : "−";
+    return;
+  }
+  const labelKey = CARD_TOGGLE_LABELS[btn.id];
+  if(!labelKey) return; // not a card collapse toggle
+  const card = btn.closest(".card");
+  if(!card) return;
+  const collapsed = card.classList.toggle("collapsed");
+  applyToggleA11y(btn, labelKey, collapsed);
+  if(icon) icon.textContent = collapsed ? "+" : "−";
+}
+
 function isToothPresent(sel: Any){
   return sel !== "none" && sel !== "implant";
 }
@@ -744,7 +779,8 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
   }else if(isToothPresent(state.toothSelection)){
     if(state.toothSelection === "tooth-base"){
       setActive(svgGetById(svg, "tooth-base"), true);
-      setActive(svgGetById(svg, "tooth-base-beauty"), true);
+      // Gloss only on a natural crown — not on broken/radix/prosthetic crowns.
+      setActive(svgGetById(svg, "tooth-base-beauty"), state.crownMaterial === "natural");
     }else{
       setActive(svgGetById(svg, state.toothSelection), true);
     }
@@ -3027,8 +3063,21 @@ export function setImportFormat(format: "status" | "fhir"){
 
 // ---- Controls wiring ----
 function wireControls(){
+  // Collapse toggles use a delegated listener with a stable function reference,
+  // so addEventListener de-duplicates it. Register it on every init because
+  // destroyOdontogram removes it; the DOM guarantees only one live listener.
+  document.addEventListener("click", onCardToggleClick);
   if(controlsWired) return;
+  // React StrictMode (dev) re-invokes the mount effect on the SAME DOM nodes
+  // after a cleanup that reset controlsWired. The per-button listeners below use
+  // fresh anonymous closures, which addEventListener cannot de-duplicate, so a
+  // second wiring pass attaches them twice and every toggle fires twice and
+  // cancels itself out. Guard on a per-node flag so they attach exactly once per
+  // DOM instance; a real remount creates new nodes (no flag) and re-wires them.
+  const wiredSentinel = $("#btnWisdomVisible") as HTMLElement | null;
+  if(wiredSentinel && wiredSentinel.dataset.odonWired === "1") return;
   controlsWired = true;
+  if(wiredSentinel) wiredSentinel.dataset.odonWired = "1";
   const iconButtons = ["btnOcclView","btnWisdomVisible","btnBoneVisible","btnPulpVisible"];
   iconButtons.forEach((id)=>{
     const btn = $(`#${id}`);
@@ -3489,47 +3538,29 @@ function wireControls(){
     setHealthyPulpVisible(!showHealthyPulp);
   });
 
+  // Card collapse toggles use a single delegated listener on `document` (see
+  // onCardToggleClick). Here we only set the initial a11y labels to match each
+  // card's current collapsed state; the click handling is delegation-based.
   const statusCard = $("#statusCard");
   const statusToggle = $("#btnToggleStatusCard");
   if(statusCard && statusToggle){
     applyToggleA11y(statusToggle, "status.title", statusCard.classList.contains("collapsed"));
-    statusToggle.addEventListener("click", ()=>{
-      const collapsed = statusCard.classList.toggle("collapsed");
-      applyToggleA11y(statusToggle, "status.title", collapsed);
-      const icon = $(".toggle-icon", statusToggle);
-      if(icon) icon.textContent = collapsed ? "+" : "−";
-    });
   }
-
   const controlsToggle = $("#btnToggleControlsCard");
   const controlsActions = $("#controlsActions");
   if(controlsToggle && controlsActions){
     applyToggleA11y(controlsToggle, "panel.controls", controlsActions.classList.contains("hidden"));
-    controlsToggle.addEventListener("click", ()=>{
-      const collapsed = controlsActions.classList.toggle("hidden");
-      applyToggleA11y(controlsToggle, "panel.controls", collapsed);
-      const icon = $(".toggle-icon", controlsToggle);
-      if(icon) icon.textContent = collapsed ? "+" : "−";
-    });
   }
-
-  const toggleCards = [
+  [
     { card: "#cariesSection", btn: "#btnToggleCariesCard", labelKey: "caries.title" },
     { card: "#fillingSection", btn: "#btnToggleFillingCard", labelKey: "filling.title" },
     { card: "#endoSection", btn: "#btnToggleEndoCard", labelKey: "endo.title" },
     { card: "#inflammationSection", btn: "#btnToggleInflammationCard", labelKey: "inflammation.title" },
-  ];
-  toggleCards.forEach(({card, btn, labelKey})=>{
+  ].forEach(({card, btn, labelKey})=>{
     const cardEl = $(card);
     const btnEl = $(btn);
     if(!cardEl || !btnEl) return;
     applyToggleA11y(btnEl, labelKey, cardEl.classList.contains("collapsed"));
-    btnEl.addEventListener("click", ()=>{
-      const collapsed = cardEl.classList.toggle("collapsed");
-      applyToggleA11y(btnEl, labelKey, collapsed);
-      const icon = $(".toggle-icon", btnEl);
-      if(icon) icon.textContent = collapsed ? "+" : "−";
-    });
   });
 
   const exportBtn = $("#btnStatusExport") as HTMLButtonElement | null;
@@ -3627,6 +3658,7 @@ export function destroyOdontogram(){
   initialized = false;
   initToken++;
   controlsWired = false;
+  document.removeEventListener("click", onCardToggleClick);
   if(i18nUnsubscribe){
     i18nUnsubscribe();
     i18nUnsubscribe = null;
