@@ -5,6 +5,88 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-07-03
+
+Tooth-information panel, dynamic subtitle, crown-prep type, SVG/z-order fixes, and a multilingual README overhaul.
+
+### Added
+- **Tooth information panel** — live textual summary of the whole chart: tooth counts, present/missing lists, and Caries (incl. secondary) / Fillings / Root canals / Prosthetics / Implants (only when present) / periodontal status. Shown by default; toggleable in the Settings menu. Plural-aware phrasing per language; refreshes live.
+- New public API: `getOdontogramSummary()` (structured, localized summary) and `onStateChange(callback)` (subscribe to state changes; returns an unsubscribe function).
+- Dynamic topbar subtitle reflecting the current language, numbering system, and light/dark mode.
+- `crownprep` ("Prepared for crown") as a permanent-tooth crown material — moved from the Base dropdown into the Crown dropdown; mirrors the "broken" crown behavior and renders the crown-prep layer. Crown list reordered with `radix` first; default stays `natural` (Full crown).
+- Standalone per-language README files under `lang/` (de, hu, it, sk, pl, ru); `README.md` keeps English + Spanish with a language switcher.
+- ~40 new i18n keys × 8 languages (tooth-info panel, dynamic subtitle, implants, crown-prep label reuse).
+
+### Changed
+- Renamed the app to **React Odontogram Modul** (from "…Editor Modul") across all languages.
+- Re-normalized the tooth 14 SVG to the current layer format (typed periapical glyphs, calculus, subcaries, resorption, fissure sealing).
+- Refined the Hungarian endodontic wording to precise clinical terms.
+- CHANGELOG brought up to date (1.5.0–1.10.0); README rigorously reviewed to match current behavior.
+- `package.json` — version 1.9.0 → 1.10.0.
+
+### Fixed
+- Global visibility toggles (wisdom/occlusal/bone/pulp/edentulous) and card collapse now use delegated listeners, so they survive React StrictMode's double mount instead of cancelling themselves out — this also restored the periodontal/periapical inflammation buttons.
+- Inflammation glyph z-order: when `endo-resection` and/or `endo-resorption` is active together with an inflammation glyph, the inflammation group is lifted above the tooth group (keeping the lower-tooth mirror transform) so the glyph stays visible.
+- Calculus row spacing in its default state; no tooth-base gloss on broken/radix crowns.
+
+## [1.9.0] - 2026-07-01
+
+Unified topbar icon row and optional ICDAS II caries scoring.
+
+### Added
+- Unified topbar icon row with a Settings menu (numbering, notes, ICDAS, tooth information).
+- Optional **ICDAS II** per-surface caries scoring (0–6) via the `enableIcdas` prop / Settings toggle, with a numeric badge on scored surfaces; included in FHIR export.
+
+### Changed
+- Consolidated the topbar controls (intro, language, dark mode, settings, export, import) into a single icon row.
+
+## [1.8.0] - 2026-06-30
+
+Clinical marking layers, native SVG export, and per-surface caries depth.
+
+### Added
+- Clinical marking layers (v2.1.4 tooth SVGs): calculus, root resorption, secondary (recurrent) caries, and typed periapical lesions (granuloma / cyst / abscess).
+- Per-surface caries depth (superficial / dentin / deep) with a depth selector and popup.
+- Native SVG export of the chart; PNG/JPG now rasterize from the vector SVG.
+
+### Fixed
+- Lesion type options and filling cross size; clearer note icon; persistent note icon after tooth-number refresh; calculus toggle id collision.
+
+## [1.7.0] - 2026-06-23
+
+Export/Import dropdowns, FHIR import, progress overlay, intro tour, and periapical lesion types.
+
+### Added
+- Consolidated Export dropdown (Status JSON / FHIR / PNG / JPG) and an Import dropdown with status/FHIR routing.
+- HL7 FHIR R4 import — parse self-produced FHIR Bundles back into chart state (round-trip).
+- Phased progress overlay during image export.
+- 12-step interactive intro tour.
+- Periapical lesion entity type (granuloma / cyst / abscess).
+
+## [1.6.0] - 2026-06-20
+
+Cross-surface selection UI, mixed fillings, and PNG/JPG export.
+
+### Added
+- Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings.
+- Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite); JSON schema 1.4 + FHIR support.
+- Engine PNG/JPG export of the odontogram.
+
+### Fixed
+- Molar filters now include all molars; hide `tooth-base-beauty` gloss on implants.
+
+## [1.5.0] - 2026-06-14
+
+HL7 FHIR R4 export, MIT license, and English default language.
+
+### Added
+- **HL7 FHIR R4 export** — a collection Bundle of per-tooth Observations, ISO 3950 tooth coding, and hybrid local + SNOMED codings.
+- MIT LICENSE file (resolves #7).
+
+### Changed
+- Default UI language set to English.
+- README completed with FHIR export documentation.
+
 ## [1.4.2] - 2026-03-22
 
 Per-tooth notes with double-click editor, label icons, and JSON export/import.
@@ -221,6 +303,12 @@ First stable release of the React Odontogram Module — an interactive, SVG-base
 - Odontogram init lifecycle and import handling
 - Topbar toggle buttons duplicate click bindings
 
+[1.10.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.9.0...v1.10.0
+[1.9.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.8.0...v1.9.0
+[1.8.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.7.0...v1.8.0
+[1.7.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.6.0...v1.7.0
+[1.6.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.5.0...v1.6.0
+[1.5.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.2...v1.5.0
 [1.4.2]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.3.0...v1.4.0

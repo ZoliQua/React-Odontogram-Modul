@@ -54,6 +54,18 @@ Each tooth has:
 - Read-only mode is supported via `readOnly` prop
 - Keyboard accessibility (WCAG) is implemented for tooth navigation
 
+## Documentation (mandatory)
+- Updating the documentation is **mandatory** for every user-facing change (new
+  feature, changed behavior, new/renamed public API, new state field or enum value).
+- Keep `CHANGELOG.md` current — add an entry (Keep a Changelog format) and bump the
+  version in `package.json` and the README version badge for each release.
+- **English is the source of truth** for the README; translate the others from it.
+- Maintain a README for **every UI language the program supports** (currently
+  HU, EN, DE, ES, IT, SK, PL, RU — see `Language` in `src/i18n/translations.ts`).
+  `README.md` holds English + Spanish; the rest live in `lang/README-<code>.md`
+  (e.g. `lang/README-de.md`, `lang/README-pl.md`, `lang/README-ru.md`). When a new
+  UI language is added, add its README too and update every language switcher.
+
 ## Scope Control
 - Do not add dependencies on external dental systems or APIs
 - Do not add routing — this is a single component, not an app
