@@ -932,3 +932,14 @@ select:focus{
 .surf-depth.icdas[data-depth="dentin"]{background:#d9663d}
 .surf-depth.icdas[data-depth="deep"]{background:#b3261e}
 .surf-depth.icdas i{display:none}
+
+/* Left column: chart card + the separate tooth-information card stacked below it */
+.chart-column{display:flex; flex-direction:column; gap:14px; min-width:0}
+
+/* Tooth information panel — its own card below (outside) the dental chart box */
+.tooth-info{margin-top:0}
+.tooth-info-overview{margin:0 0 10px; font-weight:600}
+.tooth-info-list{margin:0 0 6px; font-size:13px; color:var(--muted)}
+.tooth-info-line{margin:6px 0 0; font-size:13px; line-height:1.5}
+.tooth-info-heading{font-weight:700}
+.tooth-info-empty{color:var(--muted); font-style:italic}

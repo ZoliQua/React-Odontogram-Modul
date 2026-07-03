@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, exportFhir, exportImage, exportSvg, setImportFormat };
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, exportFhir, exportImage, exportSvg, setImportFormat };
+import type { OdontogramSummary } from "./odontogram";
+export type { OdontogramSummary, OdontogramSummarySection } from "./odontogram";
 export type { FhirExportOptions } from "./fhir/types";
 import { startIntroTour } from "./tour";
 export { startIntroTour } from "./tour";
@@ -128,6 +130,8 @@ export default function App({
   const settingsRef = useRef<HTMLDivElement | null>(null);
   const [notesOn, setNotesOn] = useState<boolean>(enableNotes ?? false);
   const [icdasOn, setIcdasOn] = useState<boolean>(enableIcdas ?? false);
+  const [toothInfoOn, setToothInfoOn] = useState<boolean>(true);
+  const [summary, setSummary] = useState<OdontogramSummary | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const exportRef = useRef<HTMLDivElement | null>(null);
   const [importOpen, setImportOpen] = useState(false);
@@ -205,6 +209,15 @@ export default function App({
     setIcdasOn(enableIcdas ?? false);
   }, [enableIcdas]);
 
+  // Refresh the tooth-information summary while its panel is open. Recomputes on
+  // every state change, and when language/numbering change (which affect labels).
+  useEffect(() => {
+    if(!toothInfoOn) return;
+    const refresh = () => setSummary(getOdontogramSummary());
+    refresh();
+    return onStateChange(refresh);
+  }, [toothInfoOn, lang, currentNumbering]);
+
   useEffect(() => {
     const handler = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -232,7 +245,7 @@ export default function App({
           <div className="dot"></div>
           <div>
             <div className="title">{t("app.title")}</div>
-            <div className="subtitle">{t("app.subtitle")}</div>
+            <div className="subtitle">{`${t("app.subtitleLang")} ${t("app.subtitleNumbering." + currentNumbering)} ${t(isDark ? "app.subtitleMode.dark" : "app.subtitleMode.light")}`}</div>
           </div>
         </div>
         <div className="topbar-actions">
@@ -301,6 +314,10 @@ export default function App({
                   onClick={() => { const v = !icdasOn; setIcdasOn(v); setIcdasEnabled(v); }}>
                   {t("icdas.enable")}{icdasOn ? " ✓" : ""}
                 </button>
+                <button className="dropdown-item" role="menuitemcheckbox" aria-checked={toothInfoOn}
+                  onClick={() => { setToothInfoOn((v) => !v); }}>
+                  {t("settings.toothInfo")}{toothInfoOn ? " ✓" : ""}
+                </button>
               </div>
             )}
           </div>
@@ -341,6 +358,7 @@ export default function App({
       </header>
 
       <main className="layout">
+        <div className="chart-column">
         <section className="chart">
           <div className="chart-header">
             <div>
@@ -359,6 +377,33 @@ export default function App({
           </div>
           <div id="toothGrid" className="tooth-grid" aria-label={t("chart.aria.toothGrid")}></div>
         </section>
+        {toothInfoOn && summary && (
+          <section className="tooth-info card" aria-label={t("toothInfo.title")}>
+            <div className="card-title">{t("toothInfo.title")}</div>
+            <p className="tooth-info-overview">{summary.overview}</p>
+            {summary.permanentList && <p className="tooth-info-list">{summary.permanentList}</p>}
+            {summary.missingList && <p className="tooth-info-list">{summary.missingList}</p>}
+            {summary.sections.map((sec) => (
+              <p key={sec.key} className="tooth-info-line">
+                <span className="tooth-info-heading">{sec.heading}:</span>{" "}
+                {sec.items.length
+                  ? sec.items.join(", ")
+                  : <span className="tooth-info-empty">{sec.emptyText}</span>}
+              </p>
+            ))}
+            {summary.implants && (
+              <p className="tooth-info-line">
+                <span className="tooth-info-heading">{summary.implants.heading}:</span>{" "}
+                {summary.implants.text}
+              </p>
+            )}
+            <p className="tooth-info-line">
+              <span className="tooth-info-heading">{summary.periodontalTitle}:</span>{" "}
+              {summary.periodontalText}
+            </p>
+          </section>
+        )}
+        </div>
         <aside className="panel">
           <div className="panel-header">
             <div>

@@ -22,6 +22,15 @@ vi.mock('../odontogram', () => ({
   getNotesEnabled: vi.fn().mockReturnValue(false),
   setIcdasEnabled: vi.fn(),
   getIcdasEnabled: vi.fn().mockReturnValue(false),
+  getOdontogramSummary: vi.fn().mockReturnValue({
+    overview: '', permanentList: null, missingList: null,
+    sections: [], implants: null, periodontalTitle: '', periodontalText: '',
+  }),
+  onStateChange: vi.fn().mockReturnValue(() => {}),
+  exportFhir: vi.fn(),
+  exportImage: vi.fn(),
+  exportSvg: vi.fn(),
+  setImportFormat: vi.fn(),
 }));
 
 describe('App.tsx', () => {
@@ -72,8 +81,9 @@ describe('App.tsx', () => {
     it('uses the provided language', () => {
       const onLangChange = vi.fn();
       render(<App language="en" onLanguageChange={onLangChange} />);
-      // The English title should appear
-      expect(screen.getByText(/React Odontogram Editor Modul/i)).toBeInTheDocument();
+      // The title is a language-independent product name; verify the language via
+      // the dynamic subtitle's language clause instead.
+      expect(screen.getByText(/in english/i)).toBeInTheDocument();
     });
 
     it('calls onLanguageChange when language is selected', async () => {

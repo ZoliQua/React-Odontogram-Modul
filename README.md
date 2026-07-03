@@ -1,4 +1,4 @@
-# 🦷 React Odontogram Editor Modul
+# 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
 [![Version](https://img.shields.io/badge/version-1.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
@@ -25,8 +25,8 @@ This project is an interactive, browser-based odontogram editor that supports fa
 
 ### ✨ Key Features
 - 🖱️ Fast selection and multi-select (CMD/CTRL + click)
-- 🦷 Tooth types: permanent, primary (milk), implant, broken variants, crown prep, subgingival
-- 👑 Crown materials: natural, e.max, zircon, metal-ceramic, temporary, telescope, radix
+- 🦷 Tooth types: permanent, primary (milk), implant, subgingival, missing
+- 👑 Crown materials: natural (full crown), broken, prepared for crown, radix, e.max, zircon, metal-ceramic, temporary, telescope
 - 🔩 Implant abutments: healing abutment, locator, locator with prosthesis, bar, bar with prosthesis
 - 🌉 Bridge units: zircon, metal, temporary, removable, bar, bar with prosthesis
 - 🔍 Caries charting on 6 surfaces: mesial, distal, buccal, lingual, occlusal, subcrown
@@ -46,7 +46,8 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🦷 Secondary (recurrent) caries — auto-derived when caries overlaps a filling
 - 🪨 Calculus, root resorption, and typed periapical lesions (granuloma / cyst / abscess)
 - 📏 Per-surface caries depth (superficial / dentin / deep), or optional ICDAS II scoring (0–6) via `enableIcdas`
-- 🧰 Unified topbar icon row with a Settings menu (numbering, notes, ICDAS)
+- 🧰 Unified topbar icon row with a Settings menu (numbering, notes, ICDAS, tooth information)
+- 📋 Tooth information panel: live text summary of the whole chart (tooth counts, present/missing lists, caries incl. secondary, fillings, root canals, prosthetics, implants, periodontal status) — shown by default, toggleable in Settings
 - 🗂️ Consolidated Export dropdown (Status JSON / FHIR / PNG / JPG)
 - 📥 Import dropdown with FHIR import (round-trips exported Bundles)
 - ⏳ Progress overlay during image export
@@ -63,7 +64,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔒 Read-only mode: disable all interactions for print/report/view use cases
 - ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
 - 📝 Per-tooth notes: double-click to add/edit notes, note icon next to tooth number, hover tooltip with note text, JSON export/import
-- 🧪 163 automated tests (Vitest) across 9 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins and accessibility
+- 🧪 202 automated tests (Vitest) across 16 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins and accessibility
 - 📖 TypeDoc API documentation with JSDoc comments on all public exports (`npm run docs`)
 
 ### 📦 Modules
@@ -126,7 +127,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 | `tooth-base` | Permanent tooth |
 | `milktooth` | Primary (deciduous) tooth |
 | `implant` | Dental implant |
-| `tooth-crownprep` | Tooth prepared for crown |
+| `tooth-crownprep` | Prepared for crown (selected as a Crown material) |
 | `tooth-under-gum` | Subgingival (unerupted) tooth |
 
 **Broken tooth variants:**
@@ -259,7 +260,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testing
 ```bash
-npm run test           # Run all 163 tests
+npm run test           # Run all 202 tests
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
 ```
@@ -302,6 +303,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `setPluginState(toothNo, pluginId, value)` | Set a plugin's custom state for a tooth |
 | `getPluginState(toothNo, pluginId)` | Get a plugin's custom state for a tooth |
 | `getToothStateSummary(toothNo)` | Get localized summary of all active states |
+| `getOdontogramSummary()` | Get a structured, localized text summary of the whole chart (counts, sections) |
+| `onStateChange(callback)` | Subscribe to state changes; returns an unsubscribe function |
 | `setReadOnly(value)` | Enable/disable read-only mode |
 | `getReadOnly()` | Get current read-only state |
 | `setNotesEnabled(value)` | Enable/disable per-tooth notes |
@@ -359,7 +362,7 @@ The export creates a JSON file (version `1.3`) containing:
 - `src/status_extras.ts` - 34 predefined restoration templates (bridges, dentures, bar constructions)
 - `src/i18n/` - translations (HU/EN/DE/ES/IT/SK/PL/RU) and i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer numbering conversion
-- `src/__tests__/` - Vitest test suite (163 tests across 9 files)
+- `src/__tests__/` - Vitest test suite (202 tests across 16 files)
 - `src/assets/teeth-svgs/` - SVG tooth templates (6 files: incisors, canines, premolars, molars + occlusal views)
 - `src/assets/icon-svgs/` - toolbar icon SVGs (5 files)
 
@@ -392,8 +395,8 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 
 ### ✨ Hauptmerkmale
 - 🖱️ Schnelle Auswahl und Mehrfachauswahl (CMD/CTRL + Klick)
-- 🦷 Zahntypen: bleibend, Milch, Implantat, gebrochene Varianten, Kronenpräparation, subgingival
-- 👑 Kronenmaterialien: natürlich, E.max, Zirkon, Metallkeramik, provisorisch, Teleskop, Radix
+- 🦷 Zahntypen: bleibend, Milchzahn, Implantat, subgingival, fehlend
+- 👑 Kronenmaterialien: natürlich (Vollkrone), frakturiert, für Krone präpariert, Radix, e.max, Zirkon, Metallkeramik, provisorisch, Teleskop
 - 🔩 Implantat-Abutments: Heilabutment, Locator, Locator mit Prothese, Steg, Steg mit Prothese
 - 🌉 Brückenglieder: Zirkon, Metall, provisorisch, herausnehmbar, Steg, Steg mit Prothese
 - 🔍 Karieskartierung auf 6 Flächen: mesial, distal, bukkal, lingual, okklusal, subkronal
@@ -413,7 +416,8 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🦷 Sekundärkaries — automatisch abgeleitet, wenn Karies eine Füllung überlappt
 - 🪨 Zahnstein, Wurzelresorption und typisierte periapikale Läsionen (Granulom / Zyste / Abszess)
 - 📏 Kariestiefe pro Fläche (oberflächlich / Dentin / tief) oder optionales ICDAS-II-Scoring (0–6) via `enableIcdas`
-- 🧰 Vereinheitlichte Topbar-Icon-Leiste mit Einstellungsmenü (Nummerierung, Notizen, ICDAS)
+- 🧰 Vereinheitlichte Topbar-Icon-Leiste mit Einstellungsmenü (Nummerierung, Notizen, ICDAS, Zahninformationen)
+- 📋 Zahninformationen-Panel: textuelle Live-Zusammenfassung des gesamten Befunds (Zahnzahlen, vorhandene/fehlende Zähne, Karies inkl. Sekundärkaries, Füllungen, Wurzelbehandlungen, Zahnersatz, Implantate, Parodontalstatus) — standardmäßig sichtbar, in den Einstellungen umschaltbar
 - 🗂️ Konsolidiertes Export-Dropdown (Status JSON / FHIR / PNG / JPG)
 - 📥 Import-Dropdown mit FHIR-Import (liest exportierte Bundles zurück)
 - ⏳ Fortschrittsanzeige beim Bildexport
@@ -430,7 +434,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔒 Schreibgeschützter Modus: alle Interaktionen deaktivieren für Druck-/Berichtsansichten
 - ✨ Auswahl-Animationen: pulsierende gestrichelte Umrandung und leuchtender Schatten auf ausgewählten Zähnen
 - 📝 Per-Zahn Notizen: Doppelklick zum Hinzufügen/Bearbeiten, Notiz-Symbol neben der Zahnnummer, Hover-Tooltip mit Notiztext, JSON Export/Import
-- 🧪 163 automatisierte Tests (Vitest) für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
+- 🧪 202 automatisierte Tests (Vitest) für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
 - 📖 TypeDoc API-Dokumentation mit JSDoc-Kommentaren für alle öffentlichen Exporte (`npm run docs`)
 
 ### 📦 Module
@@ -493,7 +497,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 | `tooth-base` | Bleibender Zahn |
 | `milktooth` | Milchzahn |
 | `implant` | Zahnimplantat |
-| `tooth-crownprep` | Für Krone präparierter Zahn |
+| `tooth-crownprep` | Für Krone präpariert (als Kronenmaterial wählbar) |
 | `tooth-under-gum` | Subgingivaler (nicht durchgebrochener) Zahn |
 
 **Gebrochene Zahnvarianten:**
@@ -624,6 +628,8 @@ export default function Host(){
 | `setPluginState(toothNo, pluginId, value)` | Plugin Custom State für einen Zahn setzen |
 | `getPluginState(toothNo, pluginId)` | Plugin Custom State eines Zahns abrufen |
 | `getToothStateSummary(toothNo)` | Lokalisierte Zusammenfassung aller aktiven Zustände |
+| `getOdontogramSummary()` | Strukturierte, lokalisierte Textzusammenfassung des gesamten Befunds abrufen (Zählungen, Abschnitte) |
+| `onStateChange(callback)` | Auf Zustandsänderungen reagieren; gibt eine Abmeldefunktion zurück |
 | `setReadOnly(value)` | Schreibgeschützten Modus aktivieren/deaktivieren |
 | `getReadOnly()` | Aktuellen Schreibgeschützt-Zustand abrufen |
 | `setNotesEnabled(value)` | Per-Zahn Notizen aktivieren/deaktivieren |
@@ -643,7 +649,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
-- `src/__tests__/` - Vitest-Testsuite (163 Tests)
+- `src/__tests__/` - Vitest-Testsuite (202 Tests)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
 - `src/assets/icon-svgs/` - Toolbar-Icon-SVGs (5 Dateien)
 
@@ -671,8 +677,8 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 
 ### ✨ Características principales
 - 🖱️ Selección rápida y selección múltiple (CMD/CTRL + clic)
-- 🦷 Tipos de diente: permanente, primario (de leche), implante, variantes fracturadas, preparación para corona, subgingival
-- 👑 Materiales de corona: natural, e.max, circonio, metalcerámica, provisional, telescópica, radix
+- 🦷 Tipos de dientes: permanente, primario (de leche), implante, subgingival, ausente
+- 👑 Materiales de corona: natural (corona completa), fracturada, preparado para corona, radix, e.max, circonio, metal-cerámica, temporal, telescópica
 - 🔩 Pilares de implante: pilar de cicatrización, localizador, localizador con prótesis, barra, barra con prótesis
 - 🌉 Pónticos: circonio, metal, provisional, removible, barra, barra con prótesis
 - 🔍 Registro de caries en 6 superficies: mesial, distal, bucal, lingual, oclusal, subcoronal
@@ -692,7 +698,8 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🦷 Caries secundaria — derivada automáticamente cuando la caries coincide con una obturación
 - 🪨 Cálculo, reabsorción radicular y lesiones periapicales tipificadas (granuloma / quiste / absceso)
 - 📏 Profundidad de caries por superficie (superficial / dentina / profunda), o puntuación ICDAS II opcional (0–6) con `enableIcdas`
-- 🧰 Barra superior unificada de iconos con menú de Ajustes (numeración, notas, ICDAS)
+- 🧰 Barra superior unificada de iconos con menú de Ajustes (numeración, notas, ICDAS, información dental)
+- 📋 Panel de información dental: resumen de texto en vivo de todo el odontograma (recuentos de dientes, listas presentes/ausentes, caries incl. secundaria, obturaciones, endodoncias, prótesis, implantes, estado periodontal) — visible por defecto, conmutable en Ajustes
 - 🗂️ Menú de exportación unificado (Estado JSON / FHIR / PNG / JPG)
 - 📥 Menú de importación con importación FHIR (recupera Bundles exportados)
 - ⏳ Superposición de progreso durante la exportación de imagen
@@ -709,7 +716,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
 - ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados
 - 📝 Notas por diente: doble clic para añadir/editar notas, icono de nota junto al número de diente, tooltip con texto de nota, exportación/importación JSON
-- 🧪 163 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins y accesibilidad
+- 🧪 202 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins y accesibilidad
 - 📖 Documentación API TypeDoc con comentarios JSDoc en todas las exportaciones públicas (`npm run docs`)
 
 ### 📦 Módulos
@@ -772,7 +779,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 | `tooth-base` | Diente permanente |
 | `milktooth` | Diente primario (deciduo) |
 | `implant` | Implante dental |
-| `tooth-crownprep` | Diente preparado para corona |
+| `tooth-crownprep` | Preparado para corona (se selecciona como material de corona) |
 | `tooth-under-gum` | Diente subgingival (no erupcionado) |
 
 **Variantes de diente fracturado:**
@@ -903,6 +910,8 @@ export default function Host(){
 | `setPluginState(toothNo, pluginId, value)` | Establecer estado personalizado del plugin para un diente |
 | `getPluginState(toothNo, pluginId)` | Obtener estado personalizado del plugin de un diente |
 | `getToothStateSummary(toothNo)` | Obtener resumen localizado de todos los estados activos |
+| `getOdontogramSummary()` | Obtener un resumen de texto estructurado y localizado de todo el odontograma (recuentos, secciones) |
+| `onStateChange(callback)` | Suscribirse a los cambios de estado; devuelve una función para cancelar la suscripción |
 | `setReadOnly(value)` | Activar/desactivar modo solo lectura |
 | `getReadOnly()` | Obtener estado actual de solo lectura |
 | `setNotesEnabled(value)` | Activar/desactivar notas por diente |
@@ -922,7 +931,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 plantillas de restauración predefinidas (puentes, prótesis, construcciones con barra)
 - `src/i18n/` - traducciones (HU/EN/DE/ES/IT/SK/PL/RU) y hook i18n
 - `src/utils/numbering.ts` - conversión de numeración FDI, Universal, Palmer
-- `src/__tests__/` - suite de pruebas Vitest (163 pruebas)
+- `src/__tests__/` - suite de pruebas Vitest (202 pruebas)
 - `src/assets/teeth-svgs/` - plantillas SVG dentales (6 archivos: incisivos, caninos, premolares, molares + vistas oclusales)
 - `src/assets/icon-svgs/` - SVGs de iconos de barra de herramientas (5 archivos)
 
@@ -949,8 +958,8 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 
 ### ✨ Főbb funkciók
 - 🖱️ Gyors fogkijelölés és többfogos kiválasztás (CMD/CTRL + kattintás)
-- 🦷 Fogtípusok: maradó, tej, implantátum, tört változatok, koronaelőkészítés, íny alatti
-- 👑 Korona anyagok: természetes, e.max, cirkón, fém-kerámia, ideiglenes, teleszkóp, radix
+- 🦷 Fogtípusok: maradó, tejfog, implantátum, ínyalatti, hiányzó
+- 👑 Koronaanyagok: természetes (teljes korona), törött, koronaelőkészített, radix, e.max, cirkon, fémkerámia, ideiglenes, teleszkópos
 - 🔩 Implantátum felépítmények: gyógyuló csavar, lokátor, lokátor protézissel, bár, bár protézissel
 - 🌉 Hídtagok: cirkón, fém, ideiglenes, kivehető, bár, bár protézissel
 - 🔍 Kariesz kartografálás 6 felületen: meziális, disztális, bukkális, linguális, okkluzális, korona alatti
@@ -970,7 +979,8 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 🦷 Szekunder (másodlagos) caries — automatikusan, ha a caries tömésre esik
 - 🪨 Fogkő, gyökérreszorpció és típusos periapikális léziók (granuloma / ciszta / tályog)
 - 📏 Felületenkénti caries-mélység (felületes / dentin / mély), vagy opcionális ICDAS II pontozás (0–6) az `enableIcdas` proppal
-- 🧰 Egységes ikon-fejléc Beállítások menüvel (számozás, jegyzetek, ICDAS)
+- 🧰 Egységes ikon-fejléc Beállítások menüvel (számozás, jegyzetek, ICDAS, fogadatok)
+- 📋 Fogadatok panel: élő szöveges összegzés a teljes státuszról (fogszámok, meglévő/hiányzó listák, szuvasodás beleértve a szekundert, tömések, gyökérkezelések, fogpótlások, implantátumok, fogágy állapota) — alaphelyzetben látszik, a Beállításokban kapcsolható
 - 🗂️ Egységes Export menü (Státusz JSON / FHIR / PNG / JPG)
 - 📥 Import menü FHIR importtal (visszatölti az exportált Bundle-öket)
 - ⏳ Folyamatjelző overlay a képexport alatt
@@ -987,7 +997,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 - 🔒 Csak olvasható mód: összes interakció letiltása nyomtatási/jelentés nézetekhez
 - ✨ Kijelölési animációk: pulzáló szaggatott keret és ragyogó árnyék a kijelölt fogakon
 - 📝 Fogankénti megjegyzések: dupla kattintás megjegyzés hozzáadásához/szerkesztéséhez, megjegyzés ikon a fogszám mellett, hover tooltip a megjegyzés szövegével, JSON export/import
-- 🧪 163 automatizált teszt (Vitest) a számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés lefedésére
+- 🧪 202 automatizált teszt (Vitest) a számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés lefedésére
 - 📖 TypeDoc API dokumentáció JSDoc kommentekkel minden publikus exporton (`npm run docs`)
 
 ### 📦 Modulok
@@ -1050,7 +1060,7 @@ A projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely a 
 | `tooth-base` | Maradó fog |
 | `milktooth` | Tejfog |
 | `implant` | Fogimplantátum |
-| `tooth-crownprep` | Koronaelőkészített fog |
+| `tooth-crownprep` | Koronaelőkészített (koronaanyagként választható) |
 | `tooth-under-gum` | Íny alatti (előbújatlan) fog |
 
 **Tört fog változatok:**
@@ -1181,6 +1191,8 @@ export default function Host(){
 | `setPluginState(toothNo, pluginId, value)` | Plugin egyedi állapot beállítása egy foghoz |
 | `getPluginState(toothNo, pluginId)` | Plugin egyedi állapot lekérdezése egy foghoz |
 | `getToothStateSummary(toothNo)` | Lokalizált összesítés az összes aktív állapotról |
+| `getOdontogramSummary()` | Strukturált, lokalizált szöveges összegzés a teljes státuszról (számok, szekciók) |
+| `onStateChange(callback)` | Feliratkozás állapotváltozásra; leiratkozó függvényt ad vissza |
 | `setReadOnly(value)` | Csak olvasható mód be/kikapcsolása |
 | `getReadOnly()` | Aktuális csak olvasható állapot lekérdezése |
 | `setNotesEnabled(value)` | Fogankénti megjegyzések be/kikapcsolása |
@@ -1200,7 +1212,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, stég konstrukciók)
 - `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU) és i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
-- `src/__tests__/` - Vitest tesztcsomag (163 teszt)
+- `src/__tests__/` - Vitest tesztcsomag (202 teszt)
 - `src/assets/teeth-svgs/` - SVG fogsablonok (6 fájl: metszők, szemfogak, kis őrlők, nagy őrlők + okkluzális nézetek)
 - `src/assets/icon-svgs/` - eszköztár ikon SVG-k (5 fájl)
 

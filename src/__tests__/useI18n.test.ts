@@ -15,8 +15,10 @@ describe('useI18n.ts – standalone functions', () => {
 
     it('uses explicit language override', () => {
       setI18nLanguage('hu');
-      const en = t('app.title', 'en');
-      const hu = t('app.title', 'hu');
+      // app.title is a language-independent product name, so use a key that
+      // legitimately differs per language to test the override.
+      const en = t('app.subtitle', 'en');
+      const hu = t('app.subtitle', 'hu');
       expect(en).not.toBe(hu);
     });
 

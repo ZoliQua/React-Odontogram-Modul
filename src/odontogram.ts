@@ -273,6 +273,10 @@ function clearAllInGroup(root: Any, ids: Any){
 const toothState = new Map(); // toothNo -> state
 const toothSvgRoot = new Map(); // toothNo -> [svg elements]
 const toothTile = new Map(); // toothNo -> [tile elements]
+// Original DOM position of each SVG's "inflammation" group, so it can be
+// restored after being temporarily lifted above the tooth (see z-order fix
+// in applyStateToSvgSingle). Keyed by the group node itself.
+const inflammationHome: Any = new WeakMap();
 const toothLabelUpper = new Map(); // toothNo -> label element
 const toothLabelLower = new Map(); // toothNo -> label element
 let activeTooth = null;
@@ -290,6 +294,30 @@ let icdasEnabled = false;
 export function setIcdasEnabled(value: boolean){ icdasEnabled = !!value; if(activeTooth) syncControlsFromState(toothState.get(activeTooth)); }
 export function getIcdasEnabled(): boolean { return icdasEnabled; }
 let i18nUnsubscribe: (() => void) | null = null;
+
+// ---- State-change subscription ----
+// Listeners are notified after any change to tooth state (edits, edentulous
+// toggle, import), so consumers like the "tooth information" panel can refresh.
+const stateChangeListeners = new Set<() => void>();
+
+/**
+ * Subscribe to odontogram state changes. The callback runs after any tooth
+ * state edit, the edentulous toggle, or an import.
+ *
+ * @param cb - Callback invoked on each change.
+ * @returns An unsubscribe function.
+ */
+export function onStateChange(cb: () => void): () => void {
+  stateChangeListeners.add(cb);
+  return () => { stateChangeListeners.delete(cb); };
+}
+
+function notifyStateChange(){
+  for(const cb of stateChangeListeners){
+    try{ cb(); }
+    catch(e){ console.error("odontogram state-change listener failed", e); }
+  }
+}
 
 // ---- Plugin state ----
 let registeredPlugins: OdontogramPlugin[] = [];
@@ -491,6 +519,20 @@ function onCardToggleClick(e: Any){
   if(icon) icon.textContent = collapsed ? "+" : "−";
 }
 
+// Delegated handler for the global `setX(!current)` visibility toggles. A stable
+// reference so addEventListener de-duplicates it — see onCardToggleClick.
+function onGlobalToggleClick(e: Any){
+  const btn = (e.target as Any)?.closest?.("button");
+  if(!btn) return;
+  switch(btn.id){
+    case "btnWisdomVisible": setWisdomVisible(!wisdomVisible); break;
+    case "btnOcclView": setOcclusalVisible(!occlusalVisible); break;
+    case "btnBoneVisible": setShowBase(!showBase); break;
+    case "btnPulpVisible": setHealthyPulpVisible(!showHealthyPulp); break;
+    case "btnEdentulous": setEdentulous(!edentulous); break;
+  }
+}
+
 function isToothPresent(sel: Any){
   return sel !== "none" && sel !== "implant";
 }
@@ -596,9 +638,10 @@ function getCrownOptions(isImplant: Any){
     ];
   }
   return [
+    {value:"radix", label:t("crown.option.radix")},
     {value:"natural", label:t("crown.option.full")},
     {value:"broken", label:t("crown.option.broken")},
-    {value:"radix", label:t("crown.option.radix")},
+    {value:"crownprep", label:t("toothSelect.crownPrep")},
     {value:"emax", label:t("crown.option.emax")},
     {value:"zircon", label:t("crown.option.zircon")},
     {value:"metal", label:t("crown.option.metal")},
@@ -639,7 +682,6 @@ function getToothSelectOptions(){
     {value:"tooth-base", label:t("toothSelect.permanent")},
     {value:"milktooth", label:t("toothSelect.milk")},
     {value:"implant", label:t("toothSelect.implant")},
-    {value:"tooth-crownprep", label:t("toothSelect.crownPrep")},
     {value:"tooth-under-gum", label:t("toothSelect.underGum")},
   ];
 }
@@ -801,6 +843,12 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
     setActive(svgGetById(svg, "tooth-base"), false);
     setActive(svgGetById(svg, "tooth-radix"), true);
   }
+  // "Prepared for crown" is a crown type on a permanent tooth: hide the natural
+  // crown and show the crown-prep layer. Its state properties mirror "broken".
+  if(state.crownMaterial === "crownprep" && state.toothSelection === "tooth-base"){
+    setActive(svgGetById(svg, "tooth-base"), false);
+    setActive(svgGetById(svg, "tooth-crownprep"), true);
+  }
   if(state.toothSelection === "none" && state.extractionWound){
     setActive(svgGetById(svg, "no-tooth-after-extraction"), true);
   }
@@ -825,8 +873,8 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
   if(state.crownReplace && state.toothSelection === "tooth-base" && ["emax","zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
     setActive(svgGetById(svg, "crown-replace"), true);
   }
-  // crown-needed: permanent tooth with natural (full) or broken crown
-  if(state.crownNeeded && state.toothSelection === "tooth-base" && ["natural","broken"].includes(state.crownMaterial)){
+  // crown-needed: permanent tooth with natural (full), broken, or crown-prep crown
+  if(state.crownNeeded && state.toothSelection === "tooth-base" && ["natural","broken","crownprep"].includes(state.crownMaterial)){
     setActive(svgGetById(svg, "crown-needed"), true);
   }
   // missing-closed: foghiány
@@ -1022,24 +1070,37 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any){
     setActive(svgGetById(svg, "tooth-bruxism-neck-wear"), true);
   }
 
-  // Ensure inflammation sits directly before endo-resection when resection is active.
+  // Periapical inflammation lives in the `mods` group, which paints beneath the
+  // `tooth` group — so an active endo-resection or endo-resorption layer (both
+  // inside `tooth`) would cover the glyph. ONLY when inflammation coincides with
+  // one of those two layers, lift the inflammation group to the end of the SVG
+  // so the glyph stays on top; in every other case keep its original position.
   const inflammation = svgGetById(svg, "inflammation");
-  const endoResection = svgGetById(svg, "endo-resection");
-  if(inflammation && endoResection){
-    const parent = inflammation.parentElement;
-    if(parent){
-      if(!inflammation.dataset.originalIndex){
-        inflammation.dataset.originalIndex = String(Array.from(parent.children).indexOf(inflammation));
+  if(inflammation){
+    if(!inflammationHome.has(inflammation) && inflammation.parentElement){
+      inflammationHome.set(inflammation, { parent: inflammation.parentElement, next: inflammation.nextSibling });
+    }
+    const resectionActive = state.endoResection && isToothPresent(state.toothSelection) && !underGum && !extraction;
+    const resorptionActive = state.rootResorption && isToothPresent(state.toothSelection);
+    const lift = (resectionActive || resorptionActive) && state.mods.has("inflammation");
+    if(lift){
+      // Move inflammation to the END of the `tooth` group's own parent, so it
+      // paints in front of the whole tooth group (including the endo-resection /
+      // endo-resorption layers, and the `endos` root-filling group that usually
+      // accompanies a resection). Using tooth's parent — not the svg root —
+      // keeps the glyph inside the lower-tooth mirroring <g transform> wrapper,
+      // so it stays correctly positioned.
+      const toothGroup = svgGetById(svg, "tooth");
+      const container = (toothGroup && toothGroup.parentElement) || svg;
+      if(container.lastElementChild !== inflammation){
+        container.appendChild(inflammation);
       }
-      if(state.endoResection){
-        if(endoResection.parentElement === parent){
-          parent.insertBefore(inflammation, endoResection);
-        }
-      }else{
-        const idx = Number(inflammation.dataset.originalIndex);
-        if(Number.isFinite(idx) && idx >= 0){
-          const ref = parent.children[idx] || null;
-          parent.insertBefore(inflammation, ref);
+    }else{
+      const home = inflammationHome.get(inflammation);
+      if(home && home.parent){
+        const ref = home.next && home.next.parentElement === home.parent ? home.next : null;
+        if(inflammation.parentElement !== home.parent || inflammation.nextSibling !== ref){
+          home.parent.insertBefore(inflammation, ref);
         }
       }
     }
@@ -1142,7 +1203,8 @@ function getStateSummary(toothNo: number): string[]{
   // Crown
   if(state.crownMaterial !== "natural"){
     const crownKey = {
-      broken: "crown.option.broken", radix: "crown.option.radix", emax: "crown.option.emax",
+      broken: "crown.option.broken", crownprep: "toothSelect.crownPrep",
+      radix: "crown.option.radix", emax: "crown.option.emax",
       zircon: "crown.option.zircon", metal: "crown.option.metal", temporary: "crown.option.temporary",
       telescope: "crown.option.telescope", "healing-abutment": "crown.option.healingAbutment",
       locator: "crown.option.locator", "locator-prosthesis": "crown.option.locatorProsthesis",
@@ -1461,7 +1523,7 @@ function syncControlsFromState(state: Any){
   // crown-needed: visible when permanent tooth + natural or broken crown
   const crownNeededAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
-    return s && s.toothSelection === "tooth-base" && ["natural","broken"].includes(s.crownMaterial);
+    return s && s.toothSelection === "tooth-base" && ["natural","broken","crownprep"].includes(s.crownMaterial);
   });
   $("#crownNeededRow").classList.toggle("hidden", !crownNeededAllowed);
   // missing-closed: visible when foghiány
@@ -1557,6 +1619,7 @@ function applyToSelected(fn: Any){
     setEdentulous(false);
   }
   updateSelectionFilterButtons();
+  notifyStateChange();
 }
 
 function updateActiveLabel(){
@@ -2285,6 +2348,7 @@ function setEdentulous(on: Any){
     suppressEdentulousSync = false;
     if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
   }
+  notifyStateChange();
 }
 
 /** Toggle visibility of wisdom teeth (18, 28, 38, 48). */
@@ -2366,7 +2430,7 @@ const VALID_ENDO = new Set(["none","endo-medical-filling","endo-filling","endo-f
 const VALID_FILLING_MATERIAL = new Set(["none","amalgam","composite","gic","temporary"]);
 const VALID_BRIDGE_UNIT = new Set(["none","removable","zircon","metal","temporary","bar","bar-prosthesis"]);
 const VALID_MOBILITY = new Set(["none","m1","m2","m3"]);
-const VALID_CROWN_MATERIAL = new Set(["natural","broken","radix","emax","zircon","metal","temporary","telescope","healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"]);
+const VALID_CROWN_MATERIAL = new Set(["natural","broken","crownprep","radix","emax","zircon","metal","temporary","telescope","healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"]);
 const VALID_MODS = new Set(["inflammation","parodontal","mobility"]);
 const VALID_PERIAPICAL_TYPE = new Set(["none","granuloma","cyst","abscess"]);
 const VALID_CARIES = new Set(["caries-subcrown","caries-buccal","caries-lingual","caries-mesial","caries-distal","caries-occlusal"]);
@@ -2758,6 +2822,7 @@ function importStatus(data: Any){
   }
   updateSelectionFilterButtons();
   updateSelectionUI();
+  notifyStateChange();
 }
 
 /** Import a FHIR R4 Bundle (object or JSON string) produced by this module. */
@@ -3063,21 +3128,19 @@ export function setImportFormat(format: "status" | "fhir"){
 
 // ---- Controls wiring ----
 function wireControls(){
-  // Collapse toggles use a delegated listener with a stable function reference,
-  // so addEventListener de-duplicates it. Register it on every init because
-  // destroyOdontogram removes it; the DOM guarantees only one live listener.
+  // Collapse toggles and the global visibility toggles use delegated listeners
+  // with stable function references, so addEventListener de-duplicates them.
+  // Register on every init because destroyOdontogram removes them; the DOM
+  // guarantees only one live listener each. These handle the `setX(!current)`
+  // toggles that would otherwise cancel themselves out under React StrictMode's
+  // double mount-effect (which re-wires anonymous listeners onto the same nodes).
   document.addEventListener("click", onCardToggleClick);
+  document.addEventListener("click", onGlobalToggleClick);
+  // Note: buildChecks/buildSurfaceCross/buildSelect below self-clear and create
+  // fresh nodes, so re-running wireControls per init is safe; destroyOdontogram
+  // empties those containers and they are rebuilt here.
   if(controlsWired) return;
-  // React StrictMode (dev) re-invokes the mount effect on the SAME DOM nodes
-  // after a cleanup that reset controlsWired. The per-button listeners below use
-  // fresh anonymous closures, which addEventListener cannot de-duplicate, so a
-  // second wiring pass attaches them twice and every toggle fires twice and
-  // cancels itself out. Guard on a per-node flag so they attach exactly once per
-  // DOM instance; a real remount creates new nodes (no flag) and re-wires them.
-  const wiredSentinel = $("#btnWisdomVisible") as HTMLElement | null;
-  if(wiredSentinel && wiredSentinel.dataset.odonWired === "1") return;
   controlsWired = true;
-  if(wiredSentinel) wiredSentinel.dataset.odonWired = "1";
   const iconButtons = ["btnOcclView","btnWisdomVisible","btnBoneVisible","btnPulpVisible"];
   iconButtons.forEach((id)=>{
     const btn = $(`#${id}`);
@@ -3126,7 +3189,7 @@ function wireControls(){
       if(!["emax","zircon","metal","temporary","telescope"].includes(value)){
         s.crownReplace = false;
       }
-      if(!["natural","broken"].includes(value)){
+      if(!["natural","broken","crownprep"].includes(value)){
         s.crownNeeded = false;
       }
     });
@@ -3522,21 +3585,8 @@ function wireControls(){
     updateSelectionUI();
   });
 
-  $("#btnEdentulous").addEventListener("click", ()=>{
-    setEdentulous(!edentulous);
-  });
-  $("#btnWisdomVisible").addEventListener("click", ()=>{
-    setWisdomVisible(!wisdomVisible);
-  });
-  $("#btnOcclView").addEventListener("click", ()=>{
-    setOcclusalVisible(!occlusalVisible);
-  });
-  $("#btnBoneVisible").addEventListener("click", ()=>{
-    setShowBase(!showBase);
-  });
-  $("#btnPulpVisible").addEventListener("click", ()=>{
-    setHealthyPulpVisible(!showHealthyPulp);
-  });
+  // The global visibility toggles (edentulous / wisdom / occlusal / bone / pulp)
+  // are handled by the delegated onGlobalToggleClick listener registered above.
 
   // Card collapse toggles use a single delegated listener on `document` (see
   // onCardToggleClick). Here we only set the initial a11y labels to match each
@@ -3646,6 +3696,7 @@ export async function initOdontogram(){
       syncControlsFromState(state);
     }
   }
+  notifyStateChange();
 }
 
 /**
@@ -3659,6 +3710,7 @@ export function destroyOdontogram(){
   initToken++;
   controlsWired = false;
   document.removeEventListener("click", onCardToggleClick);
+  document.removeEventListener("click", onGlobalToggleClick);
   if(i18nUnsubscribe){
     i18nUnsubscribe();
     i18nUnsubscribe = null;
@@ -3768,6 +3820,180 @@ export function getPluginState(toothNo: number, pluginId: string): unknown{
  */
 export function getToothStateSummary(toothNo: number): string[]{
   return getStateSummary(toothNo);
+}
+
+/** One heading + its per-tooth entries in the tooth-information summary. */
+export type OdontogramSummarySection = {
+  key: "caries" | "fillings" | "endo" | "prosthetics";
+  heading: string;
+  items: string[];
+  /** Localized "no such tooth" sentence, shown when `items` is empty. */
+  emptyText: string;
+};
+
+/** Structured, already-localized textual summary of the whole odontogram. */
+export type OdontogramSummary = {
+  overview: string;
+  permanentList: string | null;
+  missingList: string | null;
+  sections: OdontogramSummarySection[];
+  /** Implants heading + list — only present when at least one implant exists. */
+  implants: { heading: string; text: string } | null;
+  periodontalTitle: string;
+  periodontalText: string;
+};
+
+const SUMMARY_SURFACE_ORDER = ["buccal", "mesial", "occlusal", "distal", "lingual", "subcrown"];
+const SUMMARY_SURFACE_LETTER: Record<string, string> = {
+  buccal: "B", mesial: "M", occlusal: "O", distal: "D", lingual: "L", subcrown: "SC",
+};
+const SUMMARY_ENDO_KEY: Record<string, string> = {
+  "endo-medical-filling": "endo.option.medicalFilling",
+  "endo-filling": "endo.option.filling",
+  "endo-filling-incomplete": "endo.option.incompleteFilling",
+  "endo-glass-pin": "endo.option.glassPin",
+  "endo-metal-pin": "endo.option.metalPin",
+};
+const SUMMARY_PROSTHETIC_CROWNS = new Set(["emax", "zircon", "metal", "temporary", "telescope"]);
+const SUMMARY_CROWN_KEY: Record<string, string> = {
+  emax: "crown.option.emax", zircon: "crown.option.zircon", metal: "crown.option.metal",
+  temporary: "crown.option.temporary", telescope: "crown.option.telescope",
+};
+const SUMMARY_BRIDGE_KEY: Record<string, string> = {
+  removable: "bridge.option.removable", zircon: "bridge.option.zircon", metal: "bridge.option.metal",
+  temporary: "bridge.option.temporary", bar: "bridge.option.bar", "bar-prosthesis": "bridge.option.barProsthesis",
+};
+
+/**
+ * Build a human-readable, localized summary of the current odontogram state:
+ * tooth counts, present/missing lists, and caries / fillings / endo /
+ * prosthetics / periodontal sections. Numbers respect the active numbering
+ * system. Intended for the optional "tooth information" panel; call
+ * {@link onStateChange} to refresh it on edits.
+ */
+export function getOdontogramSummary(): OdontogramSummary {
+  const lbl = (toothNo: number) => toLabel(getDisplayedToothNumber(toothNo), numberingSystem);
+
+  const permanent: number[] = [];
+  const missing: number[] = [];
+  const implants: number[] = [];
+  let milkCount = 0;
+  const caries: string[] = [];
+  const fillings: string[] = [];
+  const endo: string[] = [];
+  const prosthetics: string[] = [];
+  const inflamed: string[] = [];
+
+  for(const toothNo of ALL_TEETH){
+    const s = toothState.get(toothNo);
+    if(!s) continue;
+    const sel = s.toothSelection;
+    const isMissing = sel === "none";
+    const isImplant = sel === "implant";
+    const isMilk = sel === "milktooth";
+    if(isMissing) missing.push(toothNo);
+    else if(isImplant) implants.push(toothNo);
+    else if(isMilk) milkCount++;
+    else permanent.push(toothNo);
+
+    // Caries (primary vs. derived secondary = caries on a filled surface)
+    if(s.caries && s.caries.size > 0){
+      const primary: string[] = [];
+      const secondary: string[] = [];
+      for(const surface of SUMMARY_SURFACE_ORDER){
+        if(!s.caries.has("caries-" + surface)) continue;
+        const letter = SUMMARY_SURFACE_LETTER[surface] || surface;
+        if(s.fillingSurfaceMaterials && s.fillingSurfaceMaterials.has(surface)) secondary.push(letter);
+        else primary.push(letter);
+      }
+      const parts: string[] = [];
+      if(primary.length) parts.push(primary.join(", "));
+      if(secondary.length) parts.push(secondary.join(", ") + " - " + t("toothInfo.secondary"));
+      if(parts.length) caries.push(`${lbl(toothNo)} (${parts.join("; ")})`);
+    }
+
+    // Fillings (surfaces)
+    if(s.fillingSurfaceMaterials && s.fillingSurfaceMaterials.size > 0){
+      const letters = SUMMARY_SURFACE_ORDER
+        .filter((surface) => s.fillingSurfaceMaterials.has(surface))
+        .map((surface) => SUMMARY_SURFACE_LETTER[surface] || surface);
+      if(letters.length) fillings.push(`${lbl(toothNo)} (${letters.join(", ")})`);
+    }
+
+    // Endo
+    if((s.endo && s.endo !== "none") || s.endoResection){
+      let name = SUMMARY_ENDO_KEY[s.endo] ? t(SUMMARY_ENDO_KEY[s.endo]) : "";
+      if(s.endo === "endo-resection") name = t("toothInfo.resected");
+      else if(s.endoResection) name = name ? `${name}, ${t("toothInfo.resected")}` : t("toothInfo.resected");
+      endo.push(`${lbl(toothNo)} (${name})`);
+    }
+
+    // Prosthetics (prosthetic crowns + bridge units)
+    if(SUMMARY_PROSTHETIC_CROWNS.has(s.crownMaterial)){
+      prosthetics.push(`${lbl(toothNo)}: ${t(SUMMARY_CROWN_KEY[s.crownMaterial])}`);
+    }
+    if(s.bridgeUnit && s.bridgeUnit !== "none"){
+      prosthetics.push(`${lbl(toothNo)}: ${t(SUMMARY_BRIDGE_KEY[s.bridgeUnit] || s.bridgeUnit)}`);
+    }
+
+    // Periodontal / periapical inflammation
+    const hasInflam = s.mods && (s.mods.has("inflammation") || s.mods.has("parodontal"));
+    if(hasInflam){
+      let type: string;
+      if(s.periapicalType && s.periapicalType !== "none") type = t("periapical.type." + s.periapicalType);
+      else if(s.mods.has("parodontal")) type = t("mods.parodontal");
+      else type = t("mods.periapicalInflammation");
+      inflamed.push(`${lbl(toothNo)} (${type})`);
+    }
+  }
+
+  // Overview sentence — plural-aware phrases keep grammar correct per language
+  // (e.g. "1 tooth is missing" vs "3 teeth are missing").
+  const plural = (base: string, n: number) => t(`${base}${n === 1 ? "One" : "Other"}`, { n });
+  const milkPhrase = plural("toothInfo.milk", milkCount);
+  const milkStr = milkCount > 0 ? t("toothInfo.milkFragment", { milk: milkPhrase }) : "";
+  const presentPhrase = plural("toothInfo.present", permanent.length);
+  const missingPhrase = plural("toothInfo.missing", missing.length);
+  let overview: string;
+  if(permanent.length === 0 && implants.length === 0 && milkCount > 0){
+    overview = t("toothInfo.overviewMilkOnly", { milk: milkPhrase });
+  }else if(implants.length > 0){
+    overview = t("toothInfo.overviewImplant", { present: presentPhrase, milk: milkStr, missing: missingPhrase, implant: plural("toothInfo.implant", implants.length) });
+  }else{
+    overview = t("toothInfo.overview", { present: presentPhrase, milk: milkStr, missing: missingPhrase });
+  }
+
+  const permanentList = permanent.length
+    ? t("toothInfo.permanentList", { count: permanent.length, list: permanent.map(lbl).join(", ") })
+    : null;
+  const missingList = missing.length
+    ? t("toothInfo.missingList", { count: missing.length, list: missing.map(lbl).join(", ") })
+    : null;
+
+  const sections: OdontogramSummarySection[] = [
+    { key: "caries", heading: t("toothInfo.caries"), items: caries, emptyText: t("toothInfo.cariesEmpty") },
+    { key: "fillings", heading: t("toothInfo.fillings"), items: fillings, emptyText: t("toothInfo.fillingsEmpty") },
+    { key: "endo", heading: t("toothInfo.endo"), items: endo, emptyText: t("toothInfo.endoEmpty") },
+    { key: "prosthetics", heading: t("toothInfo.prosthetics"), items: prosthetics, emptyText: t("toothInfo.prostheticsEmpty") },
+  ];
+
+  const periodontalText = inflamed.length
+    ? t("toothInfo.periodontalInflamed", { list: inflamed.join(", ") })
+    : t("toothInfo.periodontalHealthy");
+
+  const implantInfo = implants.length
+    ? { heading: t("toothInfo.implants"), text: implants.map(lbl).join(", ") }
+    : null;
+
+  return {
+    overview,
+    permanentList,
+    missingList,
+    sections,
+    implants: implantInfo,
+    periodontalTitle: t("toothInfo.periodontalTitle"),
+    periodontalText,
+  };
 }
 
 /**
