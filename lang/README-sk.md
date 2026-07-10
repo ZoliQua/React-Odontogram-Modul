@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.10.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.11.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -10,7 +10,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md)
+> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md)
 
 ---
 
@@ -56,7 +56,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - ⏳ Prekrytie priebehom počas exportu obrázka
 - 🎓 12-krokový interaktívny úvodný sprievodca
 - 🔢 Tri systémy číslovania (FDI, Universal, Palmer)
-- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) s prepínačom jazyka (190+ prekladových kľúčov na jazyk)
+- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) s prepínačom jazyka (190+ prekladových kľúčov na jazyk)
 - 🌗 Podpora tmavého režimu s prepínacím tlačidlom (samostatný alebo riadený nadradenou aplikáciou)
 - 🎨 Vlastná konfigurácia témy (prop `themeConfig`) s CSS vlastnými vlastnosťami (`--odon-*`)
 - 📱 Mobilné dotykové UX: vyskakovacie okno pre priblíženie kliknutím, kontextová ponuka dlhým stlačením, priblíženie štipnutím, WCAG 44px dotykové ciele, navigácia prepínania oblúka
@@ -75,7 +75,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🎛️ Ovládacie prvky a stavový panel
 - 🎨 SVG vrstevnací modul a šablóny
 - 🔢 Číslovanie zubov a mapovanie popiskov (FDI/Universal/Palmer)
-- 🌐 Lokalizácia (HU/EN/DE/ES/IT/SK/PL/RU)
+- 🌐 Lokalizácia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
 - 💾 Export/import stavu
 - 📋 Doplnky stavu: preddefinované šablóny reštaurácií
 - 🎨 Konfigurácia témy: prispôsobiteľná farebná paleta cez CSS vlastnosti `--odon-*`
@@ -91,7 +91,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 ### 🛠️ Ovládacie prvky rozhrania
 
 **🔝 Horná lišta:**
-- Prepínač jazyka (rozbaľovací zoznam HU/EN/DE/ES/IT/SK/PL/RU)
+- Prepínač jazyka (rozbaľovací zoznam HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
 - Prepínacie tlačidlo tmavého režimu (ikona slnka/mesiaca, prepína medzi svetlou a tmavou témou)
 - Prepínač systému číslovania (rozbaľovací zoznam FDI/Universal/Palmer)
 - Tlačidlá Exportovať stav / Importovať stav
@@ -283,7 +283,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 
 | Prop | Typ | Predvolené | Popis |
 |---|---|---|---|
-| `language` | `string` | `'hu'` | Jazyk rozhrania (hu/en/de/es/it/sk/pl/ru) |
+| `language` | `string` | `'hu'` | Jazyk rozhrania (hu/en/de/es/it/sk/pl/ru/pt-br) |
 | `onLanguageChange` | `(lang) => void` | — | Spätné volanie pri zmene jazyka |
 | `numberingSystem` | `string` | `'FDI'` | Systém číslovania (FDI/Universal/Palmer) |
 | `onNumberingChange` | `(system) => void` | — | Spätné volanie pri zmene číslovania |
@@ -367,7 +367,7 @@ Export vytvorí súbor JSON (verzia `1.3`) obsahujúci:
 - `src/plugin.ts` - typ `OdontogramPlugin`, `PluginLayer`, `getQuadrant()`, priority z-indexu `LAYER_Z`
 - `src/theme.ts` - typ `OdontogramThemeConfig` a pomocná funkcia `applyThemeConfig()`
 - `src/status_extras.ts` - 34 preddefinovaných šablón reštaurácií (mostíky, protézy, stegové konštrukcie)
-- `src/i18n/` - preklady (HU/EN/DE/ES/IT/SK/PL/RU) a i18n hook
+- `src/i18n/` - preklady (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) a i18n hook
 - `src/utils/numbering.ts` - konverzia číslovania FDI, Universal, Palmer
 - `src/__tests__/` - testovacia sada Vitest (202 testov v 16 súboroch)
 - `src/assets/teeth-svgs/` - SVG šablóny zubov (6 súborov: rezáky, špičáky, premoláre, moláre + oklúzne pohľady)

@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.10.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.11.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -10,7 +10,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md)
+> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md)
 
 ---
 
@@ -56,7 +56,7 @@
 - ⏳ Индикатор прогресса при экспорте изображения
 - 🎓 Интерактивное обучение из 12 шагов
 - 🔢 Три системы нумерации (FDI, Universal, Palmer)
-- 🌐 Интернационализация (HU/EN/DE/ES/IT/SK/PL/RU) с переключателем языков (190+ ключей перевода на язык)
+- 🌐 Интернационализация (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) с переключателем языков (190+ ключей перевода на язык)
 - 🌗 Поддержка тёмного режима с кнопкой переключения (автономный или управляемый родительским приложением)
 - 🎨 Настраиваемая тема (`themeConfig` prop) с CSS-переменными (`--odon-*`)
 - 📱 Мобильный сенсорный интерфейс: всплывающее окно по касанию для масштабирования, контекстное меню по долгому нажатию, масштабирование жестом «щипок», сенсорные цели WCAG 44 пикселя, переключение зубной дуги
@@ -75,7 +75,7 @@
 - 🎛️ Панель управления и статуса
 - 🎨 Движок слоёв SVG и шаблоны
 - 🔢 Нумерация зубов и сопоставление меток (FDI/Universal/Palmer)
-- 🌐 Локализация (HU/EN/DE/ES/IT/SK/PL/RU)
+- 🌐 Локализация (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
 - 💾 Экспорт/импорт статуса
 - 📋 Дополнительные статусы: предустановленные шаблоны реставраций
 - 🎨 Настройка темы: настраиваемая цветовая палитра через CSS-свойства `--odon-*`
@@ -91,7 +91,7 @@
 ### 🛠️ Элементы управления интерфейса
 
 **🔝 Верхняя панель:**
-- Переключатель языков (выпадающий список HU/EN/DE/ES/IT/SK/PL/RU)
+- Переключатель языков (выпадающий список HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
 - Кнопка переключения тёмного режима (иконка солнца/луны, переключает между светлой и тёмной темой)
 - Переключатель системы нумерации (выпадающий список FDI/Universal/Palmer)
 - Кнопки «Экспорт статуса» / «Импорт статуса»
@@ -283,7 +283,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 
 | Prop | Тип | По умолчанию | Описание |
 |---|---|---|---|
-| `language` | `string` | `'hu'` | Язык интерфейса (hu/en/de/es/it/sk/pl/ru) |
+| `language` | `string` | `'hu'` | Язык интерфейса (hu/en/de/es/it/sk/pl/ru/pt-br) |
 | `onLanguageChange` | `(lang) => void` | — | Обратный вызов при смене языка |
 | `numberingSystem` | `string` | `'FDI'` | Система нумерации (FDI/Universal/Palmer) |
 | `onNumberingChange` | `(system) => void` | — | Обратный вызов при смене нумерации |
@@ -367,7 +367,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 - `src/plugin.ts` — тип `OdontogramPlugin`, `PluginLayer`, `getQuadrant()`, z-index приоритеты `LAYER_Z`
 - `src/theme.ts` — тип `OdontogramThemeConfig` и утилита `applyThemeConfig()`
 - `src/status_extras.ts` — 34 предустановленных шаблона реставраций (мосты, протезы, балочные конструкции)
-- `src/i18n/` — переводы (HU/EN/DE/ES/IT/SK/PL/RU) и хук i18n
+- `src/i18n/` — переводы (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) и хук i18n
 - `src/utils/numbering.ts` — преобразование нумерации FDI, Universal, Palmer
 - `src/__tests__/` — набор тестов Vitest (202 теста в 16 файлах)
 - `src/assets/teeth-svgs/` — SVG-шаблоны зубов (6 файлов: резцы, клыки, премоляры, моляры + окклюзионные виды)

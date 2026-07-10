@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.10.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.11.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -10,7 +10,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md)
+> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md)
 
 ---
 
@@ -56,7 +56,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - ⏳ Fortschrittsanzeige beim Bildexport
 - 🎓 12-stufige interaktive Einführungstour
 - 🔢 Drei Nummerierungssysteme (FDI, Universal, Palmer)
-- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) mit Sprachumschalter (190+ Übersetzungsschlüssel pro Sprache)
+- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) mit Sprachumschalter (190+ Übersetzungsschlüssel pro Sprache)
 - 🌗 Dunkler Modus mit Umschalt-Button (eigenständig oder von der übergeordneten App gesteuert)
 - 🎨 Benutzerdefinierte Theme-Konfiguration (`themeConfig`-Prop) mit CSS Custom Properties (`--odon-*`)
 - 📱 Mobile Touch-UX: Tap-to-Zoom-Popover, Langes-Drücken-Kontextmenü, Pinch-to-Zoom, WCAG 44px Berührungsziele, Kieferbogen-Umschalter
@@ -75,7 +75,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🎛️ Steuerung und Statuspanel
 - 🎨 SVG-Schichtungsmotor und Vorlagen
 - 🔢 Zahnnummerierung und Beschriftung (FDI/Universal/Palmer)
-- 🌐 Lokalisierung (HU/EN/DE/ES/IT/SK/PL/RU)
+- 🌐 Lokalisierung (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
 - 💾 Status-Export/Import
 - 📋 Status-Extras: vordefinierte Restaurationsvorlagen
 - 🎨 Theme-Konfiguration: anpassbare Farbpalette über `--odon-*` CSS-Eigenschaften
@@ -91,7 +91,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 ### 🛠️ UI-Steuerung
 
 **🔝 Kopfleiste:**
-- Sprachumschalter (HU/EN/DE/ES/IT/SK/PL/RU Dropdown)
+- Sprachumschalter (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR Dropdown)
 - Dunkelmodus-Umschalter (Sonnen-/Mond-Symbol, wechselt zwischen hellem und dunklem Thema)
 - Nummerierungssystem-Umschalter (FDI/Universal/Palmer Dropdown)
 - Status exportieren / Status importieren Buttons
@@ -283,7 +283,7 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 
 | Prop | Typ | Standard | Beschreibung |
 |---|---|---|---|
-| `language` | `string` | `'hu'` | UI-Sprache (hu/en/de/es/it/sk/pl/ru) |
+| `language` | `string` | `'hu'` | UI-Sprache (hu/en/de/es/it/sk/pl/ru/pt-br) |
 | `onLanguageChange` | `(lang) => void` | — | Callback bei Sprachänderung |
 | `numberingSystem` | `string` | `'FDI'` | Nummerierungssystem (FDI/Universal/Palmer) |
 | `onNumberingChange` | `(system) => void` | — | Callback bei Nummerierungsänderung |
@@ -367,7 +367,7 @@ Der Export erzeugt eine JSON-Datei (Version `1.3`) mit folgenden Feldern:
 - `src/plugin.ts` - `OdontogramPlugin`-Typ, `PluginLayer`, `getQuadrant()`, `LAYER_Z` Z-Index-Prioritäten
 - `src/theme.ts` - `OdontogramThemeConfig`-Typ und `applyThemeConfig()`-Hilfsfunktion
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
-- `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU) und i18n-Hook
+- `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
 - `src/__tests__/` - Vitest-Testsuite (202 Tests in 16 Dateien)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
