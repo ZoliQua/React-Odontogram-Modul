@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.10.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.11.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -10,7 +10,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md)
+> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md)
 
 ---
 
@@ -56,7 +56,7 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 - ⏳ Folyamatjelző overlay a képexport alatt
 - 🎓 12 lépéses interaktív bemutató túra
 - 🔢 Három számozási rendszer (FDI, Universal, Palmer)
-- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) választható nyelvvel (190+ fordítási kulcs nyelvenként)
+- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) választható nyelvvel (190+ fordítási kulcs nyelvenként)
 - 🌗 Sötét mód támogatás váltógombbal (önálló vagy szülő alkalmazás által vezérelt)
 - 🎨 Egyedi téma konfiguráció (`themeConfig` prop) CSS custom property-kkel (`--odon-*`)
 - 📱 Mobil érintéses UX: koppintásos nagyítós felugró, hosszú nyomás helyi menü, csípéses zoom, WCAG 44px érintési célpontok, fogív navigáció
@@ -75,7 +75,7 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 - 🎛️ Vezérlők és státusz panel
 - 🎨 SVG rétegelő motor és fogsablonok
 - 🔢 Fogszámozás és címke generálás (FDI/Universal/Palmer)
-- 🌐 Lokalizáció (HU/EN/DE/ES/IT/SK/PL/RU)
+- 🌐 Lokalizáció (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
 - 💾 Státusz export/import
 - 📋 Státusz extrák: előre definiált restaurációs sablonok
 - 🎨 Téma konfiguráció: testreszabható színpaletta `--odon-*` CSS property-kkel
@@ -91,7 +91,7 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 ### 🛠️ UI vezérlők
 
 **🔝 Fejléc sáv:**
-- Nyelvválasztó (HU/EN/DE/ES/IT/SK/PL/RU legördülő)
+- Nyelvválasztó (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR legördülő)
 - Sötét mód váltógomb (nap/hold ikon, világos és sötét téma között vált)
 - Számozási rendszer választó (FDI/Universal/Palmer legördülő)
 - Státusz exportálás / Státusz importálás gombok
@@ -283,7 +283,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 
 | Prop | Típus | Alapértelmezett | Leírás |
 |---|---|---|---|
-| `language` | `string` | `'hu'` | UI nyelv (hu/en/de/es/it/sk/pl/ru) |
+| `language` | `string` | `'hu'` | UI nyelv (hu/en/de/es/it/sk/pl/ru/pt-br) |
 | `onLanguageChange` | `(lang) => void` | — | Callback nyelvváltáskor |
 | `numberingSystem` | `string` | `'FDI'` | Számozási rendszer (FDI/Universal/Palmer) |
 | `onNumberingChange` | `(system) => void` | — | Callback számozásváltáskor |
@@ -367,7 +367,7 @@ Az export egy JSON fájlt hoz létre (`1.3` verziójú), amely tartalmazza:
 - `src/plugin.ts` - `OdontogramPlugin` típus, `PluginLayer`, `getQuadrant()`, `LAYER_Z` z-index prioritások
 - `src/theme.ts` - `OdontogramThemeConfig` típus és `applyThemeConfig()` segédfüggvény
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, bár konstrukciók)
-- `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU) és i18n hook
+- `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) és i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
 - `src/__tests__/` - Vitest tesztcsomag (202 teszt, 16 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés)
 - `src/assets/teeth-svgs/` - SVG fogsablonok (6 fájl: metszők, szemfogak, kis őrlők, nagy őrlők + okkluzális nézetek)

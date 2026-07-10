@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-07-10
+
+Brazilian Portuguese (pt-BR) UI language.
+
+### Added
+- **Brazilian Portuguese (`pt-br`)** as a 9th UI language: full translation of every i18n key in `src/i18n/translations.ts`, added to the topbar language switcher (`LANGUAGE_OPTIONS` in `src/App.tsx`) and to the `Language` type. Localized `language.pt-br` display name added to all existing languages.
+- New `lang/README-pt-br.md` (translated from the English README); the 🇧🇷 Português (BR) entry added to every README language switcher.
+
+### Changed
+- `package.json` — version 1.10.0 → 1.11.0.
+- README language lists and API docs updated from `HU/EN/DE/ES/IT/SK/PL/RU` to include `PT-BR` across all languages.
+
 ## [1.10.0] - 2026-07-03
 
 Tooth-information panel, dynamic subtitle, crown-prep type, SVG/z-order fixes, and a multilingual README overhaul.

@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.10.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.11.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -10,7 +10,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md)
+> 🌐 **Languages:**  🇬🇧 [English](../README.md#-english) | 🇪🇸 [Español](../README.md#-español) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md)
 
 ---
 
@@ -56,7 +56,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - ⏳ Nakładka postępu podczas eksportu obrazu
 - 🎓 12-krokowy interaktywny samouczek wprowadzający
 - 🔢 Trzy systemy numeracji (FDI, Universal, Palmer)
-- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU) z przełącznikiem języka (190+ kluczy tłumaczeń na język)
+- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) z przełącznikiem języka (190+ kluczy tłumaczeń na język)
 - 🌗 Obsługa trybu ciemnego z przyciskiem przełączania (samodzielny lub kontrolowany przez aplikację nadrzędną)
 - 🎨 Konfiguracja niestandardowego motywu (właściwość `themeConfig`) z właściwościami niestandardowymi CSS (`--odon-*`)
 - 📱 Mobilny interfejs dotykowy: wyskakujące okno powiększenia przy dotknięciu, menu kontekstowe przy długim przytrzymaniu, powiększanie szczypnięciem, cele dotykowe WCAG 44px, nawigacja po łukach
@@ -75,7 +75,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🎛️ Panel sterowania i statusu
 - 🎨 Silnik warstwowania SVG i szablony
 - 🔢 Numeracja zębów i mapowanie etykiet (FDI/Universal/Palmer)
-- 🌐 Lokalizacja (HU/EN/DE/ES/IT/SK/PL/RU)
+- 🌐 Lokalizacja (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
 - 💾 Eksport/import statusu
 - 📋 Dodatki statusu: predefiniowane szablony uzupełnień
 - 🎨 Konfiguracja motywu: konfigurowalna paleta kolorów za pomocą właściwości CSS `--odon-*`
@@ -91,7 +91,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 ### 🛠️ Kontrolki interfejsu
 
 **🔝 Pasek górny:**
-- Przełącznik języka (lista rozwijana HU/EN/DE/ES/IT/SK/PL/RU)
+- Przełącznik języka (lista rozwijana HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
 - Przycisk przełączania trybu ciemnego (ikona słońca/księżyca, przełącza między jasnym i ciemnym motywem)
 - Przełącznik systemu numeracji (lista rozwijana FDI/Universal/Palmer)
 - Przyciski Eksportuj status / Importuj status
@@ -283,7 +283,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 
 | Właściwość | Typ | Domyślna | Opis |
 |---|---|---|---|
-| `language` | `string` | `'hu'` | Język interfejsu (hu/en/de/es/it/sk/pl/ru) |
+| `language` | `string` | `'hu'` | Język interfejsu (hu/en/de/es/it/sk/pl/ru/pt-br) |
 | `onLanguageChange` | `(lang) => void` | — | Wywołanie zwrotne przy zmianie języka |
 | `numberingSystem` | `string` | `'FDI'` | System numeracji (FDI/Universal/Palmer) |
 | `onNumberingChange` | `(system) => void` | — | Wywołanie zwrotne przy zmianie numeracji |
@@ -367,7 +367,7 @@ Eksport tworzy plik JSON (wersja `1.3`) zawierający:
 - `src/plugin.ts` - typ `OdontogramPlugin`, `PluginLayer`, `getQuadrant()`, priorytety z-index `LAYER_Z`
 - `src/theme.ts` - typ `OdontogramThemeConfig` i narzędzie `applyThemeConfig()`
 - `src/status_extras.ts` - 34 predefiniowane szablony uzupełnień (mosty, protezy, konstrukcje belkowe)
-- `src/i18n/` - tłumaczenia (HU/EN/DE/ES/IT/SK/PL/RU) i hook i18n
+- `src/i18n/` - tłumaczenia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) i hook i18n
 - `src/utils/numbering.ts` - konwersja numeracji FDI, Universal, Palmer
 - `src/__tests__/` - zestaw testów Vitest (202 testy w 16 plikach)
 - `src/assets/teeth-svgs/` - szablony SVG zębów (6 plików: siekacze, kły, zęby przedtrzonowe, trzonowce + widoki okluzyjne)

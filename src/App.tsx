@@ -82,6 +82,7 @@ const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
   { value: "sk", labelKey: "language.sk" },
   { value: "pl", labelKey: "language.pl" },
   { value: "ru", labelKey: "language.ru" },
+  { value: "pt-br", labelKey: "language.pt-br" },
 ];
 
 /**
