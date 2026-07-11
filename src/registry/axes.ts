@@ -43,7 +43,7 @@ export const AXES: ClinicalAxis[] = [
     values: valuesFrom("periapicalType") },
 
   { id: "fillingMaterial", field: "fillingMaterial", kind: "restoration", valueGroup: "fillingMaterial",
-    skipValue: "none", finding: { local: "restoration", display: "Dental restoration" },
+    skipValue: "none", surfacesField: "fillingSurfaces", finding: { local: "restoration", display: "Dental restoration" },
     values: valuesFrom("fillingMaterial") },
 
   { id: "pulpInflam", field: "pulpInflam", kind: "boolean",

@@ -26,6 +26,7 @@ export interface ClinicalAxis {
   valueGroup?: string;           // LOCAL_VALUE_MAPS group for enum/set/restoration values
   values?: AxisValue[];          // allowed values (enum/set/surfaceSet/restoration)
   skipValue?: string;            // value that emits nothing (enum/restoration)
+  surfacesField?: string;        // restoration axis: the ToothRecord field holding the surface list
   flag?: string;                 // feature-flag gate (e.g. "icdasEnabled")
 }
 

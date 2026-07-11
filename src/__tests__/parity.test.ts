@@ -54,6 +54,7 @@ describe("registry catalog matches today's tables", () => {
       expect(ax!.kind).toBe(m.kind);
       if ("valueGroup" in m) expect(ax!.valueGroup).toBe((m as any).valueGroup);
       if ("skipValue" in m) expect(ax!.skipValue).toBe((m as any).skipValue);
+      if ("surfacesField" in m) expect(ax!.surfacesField).toBe((m as any).surfacesField);
     }
   });
   it("enum/set/restoration axis values equal their LOCAL_VALUE_MAPS group exactly", () => {
