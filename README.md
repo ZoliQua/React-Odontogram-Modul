@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.20.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.21.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -72,6 +72,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔌 Custom SVG plugin system: inject visual overlays, per-tooth custom state, JSON export/import support
 - ⚠️ State validation warnings for incompatible tooth state combinations
 - 🏷️ Automatic state tooltip on tooth tiles (shows all active states)
+- 🩺 Modernized per-tooth tooltip and whole-mouth summary panel: both surface the full set of clinical findings (pulp/apical diagnosis + lesion subtype, root resorption, peri-implant status, graded root caries, calculus, crown marginal leakage, fracture, contact loss, bruxism wear), with a dedicated "Diagnoses" section in the panel and a coarse caries-severity qualifier (superficial/moderate/deep)
 - ♿ Keyboard accessibility (WCAG): ARIA listbox/option roles, Enter/Space selection, arrow key navigation, focus-visible outlines
 - 🔒 Read-only mode: disable all interactions for print/report/view use cases
 - ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
@@ -510,6 +511,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔌 Sistema de plugins SVG personalizados: superposiciones visuales, estado personalizado por diente, soporte de exportación/importación JSON
 - ⚠️ Validación de estado con advertencias para combinaciones incompatibles
 - 🏷️ Tooltip automático de estado en las losetas dentales (muestra todos los estados activos)
+- 🩺 Tooltip por diente y panel de resumen de toda la boca modernizados: ambos muestran el conjunto completo de hallazgos clínicos (diagnóstico pulpar/apical + subtipo de lesión, reabsorción radicular, estado periimplantario, caries radicular graduada, cálculo, filtración marginal de corona, fractura, pérdida de contacto, desgaste por bruxismo), con una sección "Diagnósticos" dedicada en el panel y un calificador de gravedad de caries de grano grueso (superficial/moderada/profunda)
 - ♿ Accesibilidad por teclado (WCAG): roles ARIA listbox/option, selección con Enter/Espacio, navegación con flechas, contornos focus-visible
 - 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
 - ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados

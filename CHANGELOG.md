@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.21.0] - 2026-07-11
+### Added
+- The per-tooth tooltip and the whole-mouth summary panel now surface the full set of clinical findings added since v1.16: pulp diagnosis, apical diagnosis (+ lesion subtype), root resorption, peri-implant status, graded root caries, calculus, crown marginal leakage, fracture, contact loss, and bruxism wear. A new "Diagnoses" section groups the pulp/apical/resorption/peri-implant findings; caries carries a coarse severity qualifier (superficial/moderate/deep).
+
 ## [1.20.0] - 2026-07-11
 ### Added
 - Peri-implant status axis for implants: peri-implant health / mucositis / peri-implantitis with graded (mild/moderate/severe) crestal bone loss, shown as a dedicated selector on implants.

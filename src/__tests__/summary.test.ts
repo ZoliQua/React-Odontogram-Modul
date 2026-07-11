@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getOdontogramSummary } from '../odontogram';
+import { getOdontogramSummary, __setToothStateForTest } from '../odontogram';
 import { setI18nLanguage, t } from '../i18n/useI18n';
 
 // getOdontogramSummary reads module-level tooth state. Without initOdontogram the
@@ -10,7 +10,7 @@ describe('getOdontogramSummary', () => {
   it('returns the expected structure with the four always-present sections', () => {
     setI18nLanguage('en');
     const s = getOdontogramSummary();
-    expect(s.sections.map((sec) => sec.key)).toEqual(['caries', 'fillings', 'endo', 'prosthetics']);
+    expect(s.sections.map((sec) => sec.key)).toEqual(['caries', 'fillings', 'endo', 'diagnoses', 'prosthetics']);
     expect(typeof s.overview).toBe('string');
     expect(s.overview.length).toBeGreaterThan(0);
     expect(s.periodontalTitle.length).toBeGreaterThan(0);
@@ -40,5 +40,42 @@ describe('getOdontogramSummary', () => {
         expect(txt).not.toMatch(/toothInfo\./);
       }
     }
+  });
+});
+
+describe('SP9: whole-mouth surfaces clinical axes', () => {
+  it('lists pulp/apical/resorption in a diagnoses section, and peri-implant in periodontalText (not diagnoses)', () => {
+    setI18nLanguage('en');
+    __setToothStateForTest(36, { toothSelection: 'tooth-base', pulpDx: 'necrosis', apicalDx: 'acute-apical-abscess', resorptionType: 'external-cervical' });
+    __setToothStateForTest(14, { toothSelection: 'implant', periImplant: 'peri-implantitis-severe' });
+    const s = getOdontogramSummary();
+    const dx = s.sections.find((sec) => sec.key === 'diagnoses')!;
+    expect(dx.items.join(' | ')).toContain(t('pulpDx.necrosis'));
+    expect(dx.items.join(' | ')).toContain(t('apicalDx.acuteApicalAbscess'));
+    expect(dx.items.join(' | ')).toContain(t('resorption.type.externalCervical'));
+    // FIX 1: peri-implant status is routed into the periodontal grouping, not
+    // the diagnoses section — an implant should never say "healthy" while a
+    // peri-implant finding is buried in "Diagnoses" elsewhere.
+    expect(dx.items.join(' | ')).not.toContain(t('periImplant.periImplantitisSevere'));
+    expect(s.periodontalText).toContain(t('periImplant.periImplantitisSevere'));
+  });
+  it('caries line carries the coarse severity qualifier', () => {
+    setI18nLanguage('en');
+    __setToothStateForTest(16, { toothSelection: 'tooth-base', caries: ['caries-occlusal'], cariesSeverity: { occlusal: 3 } });
+    const c = getOdontogramSummary().sections.find((sec) => sec.key === 'caries')!;
+    expect(c.items.join(' | ')).toContain(t('summary.severity.moderate'));
+  });
+  it('periodontal text includes calculus and mobility', () => {
+    setI18nLanguage('en');
+    __setToothStateForTest(26, { toothSelection: 'tooth-base', calculus: true, mobility: 'm2' });
+    const p = getOdontogramSummary().periodontalText;
+    expect(p).toContain(t('calculus.label'));
+    expect(p).toContain(t('mobility.m2'));
+  });
+  it('crownLeakage appears in the prosthetics section', () => {
+    setI18nLanguage('en');
+    __setToothStateForTest(21, { toothSelection: 'tooth-base', restorationType: 'crown', restorationMaterial: 'zircon', crownLeakage: true });
+    const pr = getOdontogramSummary().sections.find((sec) => sec.key === 'prosthetics')!;
+    expect(pr.items.join(' | ')).toContain(t('crownLeakage.label'));
   });
 });

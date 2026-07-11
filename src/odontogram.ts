@@ -873,6 +873,78 @@ function restorationSummaryLabel(type: Any, material: Any): string {
   return `${t(`restoration.type.${type}`)} – ${t(materialKey)}`;
 }
 
+// SP9: shared clinical-axis summary labels, reused by the tooltip (getStateSummary)
+// and the whole-mouth panel (getOdontogramSummary). Each returns null at the axis's
+// skip value. Reuse the existing per-value i18n label families.
+function pulpDiagnosisLabel(state: Any): string | null {
+  if(getPulpDetailLevel() === "latin"){
+    if(state.pulpLatin && state.pulpLatin !== "none"){
+      return t("pulpLatin." + kebabToCamel(state.pulpLatin));
+    }
+    // FIX 2: latin mode but pulpLatin is unset ("none") — resolve the Latin
+    // representative for the stored pulpDx (mirrors pulpDisplayValue's latin
+    // branch) instead of falling through to the AAE label, so the tooltip/panel
+    // never mix nomenclatures within the same detail level.
+    if(state.pulpDx && state.pulpDx !== "normal"){
+      const latinRepresentative = PULP_DX_TO_LATIN[state.pulpDx];
+      if(latinRepresentative) return t("pulpLatin." + kebabToCamel(latinRepresentative));
+    }
+  }
+  if(state.pulpDx && state.pulpDx !== "normal") return t("pulpDx." + kebabToCamel(state.pulpDx));
+  return null;
+}
+function apicalDiagnosisLabel(state: Any): string | null {
+  if(!state.apicalDx || state.apicalDx === "normal") return null;
+  let label = t("apicalDx." + kebabToCamel(state.apicalDx));
+  if(state.periapicalType && state.periapicalType !== "none"){
+    label += " (" + t("periapical.type." + kebabToCamel(state.periapicalType)) + ")";
+  }
+  return label;
+}
+function resorptionDiagnosisLabel(state: Any): string | null {
+  if(!state.resorptionType || state.resorptionType === "none") return null;
+  return t("resorption.type." + kebabToCamel(state.resorptionType));
+}
+// FIX 3: peri-implant status only applies to implants — a stray `periImplant`
+// value on a non-implant tooth must render nothing, matching the SVG render
+// (which gates the peri-implant-bone-loss layer on isImplant).
+function periImplantSummaryLabel(state: Any): string | null {
+  if(state.toothSelection !== "implant") return null;
+  if(!state.periImplant || state.periImplant === "none") return null;
+  return t("periImplant." + kebabToCamel(state.periImplant));
+}
+/** All non-empty clinical diagnosis labels for a tooth, in a stable order.
+ *  FIX 1: peri-implant status is deliberately NOT included here — it belongs to
+ *  the periodontal grouping (see getOdontogramSummary's `inflamed` list and
+ *  getStateSummary's dedicated push), not the pulp/apical/resorption diagnoses
+ *  section, so an implant's periodontal state is reported consistently in one
+ *  place instead of contradicting it elsewhere. */
+function diagnosisSummaryLabels(state: Any): string[] {
+  return [
+    pulpDiagnosisLabel(state),
+    apicalDiagnosisLabel(state),
+    resorptionDiagnosisLabel(state),
+  ].filter((x): x is string => !!x);
+}
+/** Coarse 3-tier caries-severity qualifier (max across caried surfaces), or null. */
+function cariesSeverityTierLabel(state: Any): string | null {
+  if(!state.caries || state.caries.size === 0 || !state.cariesSeverity) return null;
+  let max = 0;
+  for(const c of state.caries){
+    const surface = String(c).replace(/^caries-/, "");
+    const sev = state.cariesSeverity.get(surface);
+    if(typeof sev === "number" && sev > max) max = sev;
+  }
+  if(max <= 0) return null;
+  const tier = max <= 2 ? "superficial" : max <= 4 ? "moderate" : "deep";
+  return t("summary.severity." + tier);
+}
+/** Fracture presence label, or null. */
+function fractureSummaryLabel(state: Any): string | null {
+  if(!(state.brokenMesial || state.brokenIncisal || state.brokenDistal)) return null;
+  return t("summary.fracture");
+}
+
 function getBrokenCrownVariant(state: Any){
   const m = !!state.brokenMesial;
   const i = !!state.brokenIncisal;
@@ -1856,11 +1928,17 @@ function getStateSummary(toothNo: number): string[]{
     if(fillKey) summary.push(t(fillKey));
   }
 
-  // Caries
-  if(state.caries.size > 0) summary.push(t("caries.title"));
-  // Root caries (FIX 3) — surfaced independently so a root-caries-only tooth
-  // isn't summary-invisible in the per-tooth text summary.
-  if(state.rootCaries && state.rootCaries !== "none") summary.push(t("caries.rootLabel"));
+  // Caries (+ SP9 coarse severity qualifier)
+  if(state.caries.size > 0){
+    const sev = cariesSeverityTierLabel(state);
+    summary.push(sev ? `${t("caries.title")} (${sev})` : t("caries.title"));
+  }
+  // Root caries — SP9: show the value (active/arrested/active-cavitated), not just the generic label.
+  if(state.rootCaries && state.rootCaries !== "none"){
+    summary.push(`${t("caries.rootLabel")} (${t("rootCaries." + kebabToCamel(state.rootCaries))})`);
+  }
+  // SP9: clinical diagnoses (pulp / apical / resorption / peri-implant).
+  for(const dx of diagnosisSummaryLabels(state)) summary.push(dx);
 
   // Mods
   if(state.mods.size > 0){
@@ -1870,6 +1948,22 @@ function getStateSummary(toothNo: number): string[]{
     }
   }
   if(state.mobility !== "none") summary.push(t("inflammation.mobilityLabel") + " " + t(`mobility.${state.mobility}`));
+
+  // SP9: previously-invisible findings.
+  if(state.calculus) summary.push(t("calculus.label"));
+  // FIX 1(d): peri-implant status is no longer in diagnosisSummaryLabels (it now
+  // groups with periodontal findings), so push it here explicitly to keep the
+  // tooltip showing it, alongside the other periodontal presence lines.
+  { const pi = periImplantSummaryLabel(state); if(pi) summary.push(pi); }
+  if(state.crownLeakage) summary.push(t("crownLeakage.label"));
+  if(state.endoResection) summary.push(t("endo.resection"));
+  if(state.fissureSealing) summary.push(t("filling.fissureSealing"));
+  if(state.parapulpalPin) summary.push(t("endo.parapulpalPin"));
+  { const fx = fractureSummaryLabel(state); if(fx) summary.push(fx); }
+  if(state.contactMesial) summary.push(t("tooth.contact.mesialMissing"));
+  if(state.contactDistal) summary.push(t("tooth.contact.distalMissing"));
+  if(state.bruxismWear) summary.push(t("tooth.bruxism.edgeWear"));
+  if(state.bruxismNeckWear) summary.push(t("tooth.bruxism.neckWear"));
 
   // Flags
   if(state.extractionPlan) summary.push(t("tooth.extractionPlan"));
@@ -5209,7 +5303,7 @@ export function getToothStateSummary(toothNo: number): string[]{
 
 /** One heading + its per-tooth entries in the tooth-information summary. */
 export type OdontogramSummarySection = {
-  key: "caries" | "fillings" | "endo" | "prosthetics";
+  key: "caries" | "fillings" | "endo" | "diagnoses" | "prosthetics";
   heading: string;
   items: string[];
   /** Localized "no such tooth" sentence, shown when `items` is empty. */
@@ -5275,6 +5369,7 @@ export function getOdontogramSummary(): OdontogramSummary {
   const endo: string[] = [];
   const prosthetics: string[] = [];
   const inflamed: string[] = [];
+  const diagnoses: string[] = [];
 
   for(const toothNo of ALL_TEETH){
     const s = toothState.get(toothNo);
@@ -5305,7 +5400,10 @@ export function getOdontogramSummary(): OdontogramSummary {
       const parts: string[] = [];
       if(primary.length) parts.push(primary.join(", "));
       if(secondary.length) parts.push(secondary.join(", ") + " - " + t("toothInfo.secondary"));
-      if(parts.length) caries.push(`${lbl(toothNo)} (${parts.join("; ")})`);
+      if(parts.length){
+        const sev = cariesSeverityTierLabel(s);
+        caries.push(`${lbl(toothNo)} (${parts.join("; ")})${sev ? " – " + sev : ""}`);
+      }
     }
 
     // Root caries (FIX 3) — a present-tooth finding independent of surface
@@ -5350,6 +5448,7 @@ export function getOdontogramSummary(): OdontogramSummary {
     if(s.prosthesis && s.prosthesis !== "none"){
       prosthetics.push(`${lbl(toothNo)}: ${t(PROSTHESIS_SUMMARY_KEY[s.prosthesis] || s.prosthesis)}`);
     }
+    if(s.crownLeakage) prosthetics.push(`${lbl(toothNo)} (${t("crownLeakage.label")})`);
 
     // Periodontal / periapical inflammation
     const hasInflam = s.mods && (s.mods.has("inflammation") || s.mods.has("parodontal"));
@@ -5360,6 +5459,17 @@ export function getOdontogramSummary(): OdontogramSummary {
       else type = t("mods.periapicalInflammation");
       inflamed.push(`${lbl(toothNo)} (${type})`);
     }
+
+    // SP9: clinical diagnoses (pulp / apical / resorption / peri-implant).
+    const dxs = diagnosisSummaryLabels(s);
+    if(dxs.length) diagnoses.push(`${lbl(toothNo)} (${dxs.join("; ")})`);
+    // SP9: calculus + mobility join the periodontal findings.
+    if(s.calculus) inflamed.push(`${lbl(toothNo)} (${t("calculus.label")})`);
+    if(s.mobility && s.mobility !== "none") inflamed.push(`${lbl(toothNo)} (${t("inflammation.mobilityLabel")} ${t("mobility." + s.mobility)})`);
+    // FIX 1(c): peri-implant status is a periodontal finding, not a diagnosis —
+    // route it into `inflamed` (periodontalText) instead of `diagnoses`, so an
+    // implant with peri-implantitis is no longer reported "healthy" there.
+    { const pi = periImplantSummaryLabel(s); if(pi) inflamed.push(`${lbl(toothNo)} (${pi})`); }
   }
 
   // Overview sentence — plural-aware phrases keep grammar correct per language
@@ -5389,6 +5499,7 @@ export function getOdontogramSummary(): OdontogramSummary {
     { key: "caries", heading: t("toothInfo.caries"), items: caries, emptyText: t("toothInfo.cariesEmpty") },
     { key: "fillings", heading: t("toothInfo.fillings"), items: fillings, emptyText: t("toothInfo.fillingsEmpty") },
     { key: "endo", heading: t("toothInfo.endo"), items: endo, emptyText: t("toothInfo.endoEmpty") },
+    { key: "diagnoses", heading: t("toothInfo.diagnoses"), items: diagnoses, emptyText: t("toothInfo.diagnosesEmpty") },
     { key: "prosthetics", heading: t("toothInfo.prosthetics"), items: prosthetics, emptyText: t("toothInfo.prostheticsEmpty") },
   ];
 
