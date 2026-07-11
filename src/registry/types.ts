@@ -2,6 +2,9 @@
 
 export type AxisKind = "enum" | "boolean" | "set" | "surfaceSet" | "restoration" | "derived" | "global";
 
+/** Context for filtering curated UI option lists (`uiOptions` / `optionsFor`). */
+export interface UiOptCtx { isMilktooth?: boolean }
+
 /** A coded concept: local code always present; SNOMED/ICD optional and additive. */
 export interface ConceptRef {
   local: string;                 // LOCAL_SYSTEM code — always present, round-trip key
@@ -39,6 +42,7 @@ export interface ClinicalAxis {
   flag?: string;                 // feature-flag gate (e.g. "icdasEnabled")
   svgLayer?: string;                                    // boolean axis: the layer it toggles
   appliesWhen?: (ctx: FlagCtx, state: any) => boolean;  // boolean axis: gating predicate
+  uiOptions?: { value: string; labelKey: string; when?: (ctx: UiOptCtx) => boolean }[]; // curated UI option list (added incrementally per axis)
 }
 
 /** Per-tooth rendering context (static tables; populated in later stages). */

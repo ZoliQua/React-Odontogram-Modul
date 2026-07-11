@@ -8,6 +8,7 @@ import type { FhirExportOptions } from "./fhir/types";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
+import { optionsFor } from "./registry/uiOptions";
 import tooth11Url from "./assets/teeth-svgs/11.svg";
 import tooth13Url from "./assets/teeth-svgs/13.svg";
 import tooth14Url from "./assets/teeth-svgs/14.svg";
@@ -96,18 +97,10 @@ const MIXED_PERMANENT = new Set([11,12,16,21,22,26,31,32,36,41,42,46]);
 const MIXED_MILK = new Set([13,14,15,23,24,25,33,34,35,43,44,45]);
 const MIXED_NONE = new Set([17,18,27,28,37,38,47,48]);
 
-const MOD_OPTIONS = [
-  { value: "parodontal", labelKey: "mods.parodontal" },
-  { value: "inflammation", labelKey: "mods.periapicalInflammation" },
-];
+const MOD_OPTIONS = optionsFor("mods");
 
 function getPeriapicalTypeOptions(){
-  return [
-    {value:"none", label:t("periapical.type.none")},
-    {value:"granuloma", label:t("periapical.type.granuloma")},
-    {value:"cyst", label:t("periapical.type.cyst")},
-    {value:"abscess", label:t("periapical.type.abscess")},
-  ];
+  return optionsFor("periapicalType").map(o => ({ value: o.value, label: t(o.labelKey) }));
 }
 
 const CARIES_OPTIONS = [
@@ -592,20 +585,7 @@ function setSelectOptions(selectEl: Any, options: Any, value: Any){
 }
 
 function getEndoOptions(isMilktooth: Any){
-  if(isMilktooth){
-    return [
-      {value:"none", label:t("endo.option.none")},
-      {value:"endo-medical-filling", label:t("endo.option.medicalFilling")},
-    ];
-  }
-  return [
-    {value:"none", label:t("endo.option.none")},
-    {value:"endo-medical-filling", label:t("endo.option.medicalFilling")},
-    {value:"endo-filling", label:t("endo.option.filling")},
-    {value:"endo-filling-incomplete", label:t("endo.option.incompleteFilling")},
-    {value:"endo-glass-pin", label:t("endo.option.glassPin")},
-    {value:"endo-metal-pin", label:t("endo.option.metalPin")},
-  ];
+  return optionsFor("endo", { isMilktooth: !!isMilktooth }).map(o => ({ value: o.value, label: t(o.labelKey) }));
 }
 
 function getFillingOptions(isMilktooth: Any){
@@ -680,13 +660,7 @@ function getBridgeUnitOptions(){
 }
 
 function getToothSelectOptions(){
-  return [
-    {value:"none", label:t("toothSelect.none")},
-    {value:"tooth-base", label:t("toothSelect.permanent")},
-    {value:"milktooth", label:t("toothSelect.milk")},
-    {value:"implant", label:t("toothSelect.implant")},
-    {value:"tooth-under-gum", label:t("toothSelect.underGum")},
-  ];
+  return optionsFor("toothSelection").map(o => ({ value: o.value, label: t(o.labelKey) }));
 }
 
 function getStatusExtras(){
@@ -702,12 +676,7 @@ function getStatusExtrasMeta(){
 }
 
 function getMobilityOptions(){
-  return [
-    {value:"none", label:t("mobility.none")},
-    {value:"m1", label:t("mobility.m1")},
-    {value:"m2", label:t("mobility.m2")},
-    {value:"m3", label:t("mobility.m3")},
-  ];
+  return optionsFor("mobility").map(o => ({ value: o.value, label: t(o.labelKey) }));
 }
 
 const VALID_ICDAS = new Set([1,2,3,4,5,6]);
