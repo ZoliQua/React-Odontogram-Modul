@@ -193,4 +193,15 @@ export const AXES: ClinicalAxis[] = [
     // applyStateToSvgSingle (odontogram.ts), byte-identical to the retired
     // `rootResorption:true` boolean render (SP4 Task 2).
     svgLayer: "endo-resorption", appliesWhen: (c) => c.toothPresent },
+
+  // SP5 Task 1: caries fields foundation (additive scaffolding — registry/FHIR/i18n
+  // only; render + migration land in later SP5 tasks). `rootCaries` is a normal enum
+  // axis. `secondaryCaries` (per-surface CARS 0-6) and `radiographicDepth`
+  // (per-surface none/E1/E2/D1/D2/D3) are scalar-map fields handled the same way
+  // `cariesDepths` is — special-cased outside AXES/FIELD_MAPPINGS entirely (see
+  // registry/fhir.ts + registry/fromFhir.ts) — so they deliberately have no row here.
+  { id: "rootCaries", field: "rootCaries", kind: "enum", valueGroup: "rootCaries",
+    skipValue: "none", finding: { local: "root-caries", display: "Root caries" },
+    values: valuesFrom("rootCaries"),
+    svgLayer: "caries-root", appliesWhen: (c) => c.toothPresent },
 ];

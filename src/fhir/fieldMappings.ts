@@ -67,4 +67,9 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "pulpLatin", kind: "enum", valueGroup: "pulpLatin", skipValue: "none", findingCode: "pulp-diagnosis-latin", findingDisplay: "Pulp diagnosis (Latin, practical)" },
   { field: "apicalDx", kind: "enum", valueGroup: "apicalDx", skipValue: "normal", findingCode: "apical-diagnosis", findingDisplay: "Apical diagnosis (AAE)" },
   { field: "resorptionType", kind: "enum", valueGroup: "resorptionType", skipValue: "none", findingCode: "root-resorption-type", findingDisplay: "Root resorption type" },
+
+  // SP5 Task 1: caries fields foundation (additive; see axes.ts). `secondaryCaries`/
+  // `radiographicDepth` are per-surface scalar maps, special-cased outside this table
+  // exactly like `cariesDepths` — no row here for them by design.
+  { field: "rootCaries", kind: "enum", valueGroup: "rootCaries", skipValue: "none", findingCode: "root-caries", findingDisplay: "Root caries" },
 ];

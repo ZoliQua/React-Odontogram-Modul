@@ -46,6 +46,29 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
         if (val !== undefined) { (rec.customStates ??= {})[id] = val; }
         continue;
       }
+      // SP5 Task 1: `secondaryCaries`/`radiographicDepth` are per-surface
+      // scalar maps special-cased outside AXES (mirrors `cariesDepths`), each
+      // with its own finding code — see registry/fhir.ts for the emit side.
+      if (findingCode === "secondary-caries") {
+        const vals: Record<string, number> = {};
+        for (const c of res.component ?? []) {
+          const surf = localCode(c.code);
+          const vi = c.valueInteger;
+          if (surf && typeof vi === "number") vals[surf] = vi;
+        }
+        if (Object.keys(vals).length) rec.secondaryCaries = vals;
+        continue;
+      }
+      if (findingCode === "radiographic-caries-depth") {
+        const vals: Record<string, string> = {};
+        for (const c of res.component ?? []) {
+          const surf = localCode(c.code);
+          const val = localCode(c.valueCodeableConcept);
+          if (surf && val) vals[surf] = val;
+        }
+        if (Object.keys(vals).length) rec.radiographicDepth = vals;
+        continue;
+      }
 
       const axis = BY_FINDING[findingCode];
       if (!axis) continue;
@@ -79,5 +102,5 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
       }
     }
   }
-  return { version: "2.2", globals, teeth };
+  return { version: "2.3", globals, teeth };
 }

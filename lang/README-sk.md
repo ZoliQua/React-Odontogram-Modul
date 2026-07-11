@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.16.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.17.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -44,16 +44,19 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🔢 12 filtrov výberu (všetky, prítomné, trvalé, mliečne, implantáty, chýbajúce, horné/dolné, predné/moláre)
 - 📊 Preddefinované stavové predvoľby (obnoviť, mliečny chrup, zmiešaný chrup, bezzubý)
 - 📦 34 preddefinovaných šablón reštaurácií (mostíky, snímateľné protézy, stegové protézy s implantátmi)
-- 💾 Export/import stavu v JSON (verzia 2.2; import stále akceptuje verzie 1.4, 2.0 a 2.1 a automaticky ich migruje, s vlastnými stavmi pluginov a poznámkami ku každému zubu)
+- 💾 Export/import stavu v JSON (verzia 2.3; import stále akceptuje staršie verzie 1.4, 2.0, 2.1 a 2.2 a automaticky ich migruje, s vlastnými stavmi pluginov a poznámkami ku každému zubu)
 - 🔗 Export HL7 FHIR R4 (kolekcia Bundle s Observations pre každý zub, kódovanie zubov ISO 3950 pre trvalý chrup, lokálny systém kódov — mapovanie SNOMED CT plánované)
 - ✚ Krížový výber plôch (B/M/O/D/L) pre kaz a výplne
 - 🧱 Materiály reštaurácie pre každú plochu (zmiešané výplne, napr. bukálny amalgám + distálny kompozit)
 - 🖼️ Export obrázka odontogramu vo formáte PNG/JPG/SVG (na stiahnutie; PNG/JPG rastrovaný z vektorového SVG)
-- 🦷 Sekundárny (rekurentný) kaz — automaticky odvodený, keď sa kaz prekrýva s výplňou
+- 🦷 Sekundárny (rekurentný) kaz: uložené skóre CARS na každú plochu (0–6, `secondaryCaries`), zobrazené ako priehľadnosť vrstvy kazu — nahrádza pôvodné odvodenie z prekrytia kazu a výplne (migrovaný starší stav sa povýši na kanonické skóre „stredný")
+- 🌱 Kaz koreňa (`rootCaries`: none / active / arrested / active-cavitated), aktivujúci vyhradenú vrstvu ilustrácie kazu koreňa
+- 📡 Rádiografická hĺbka kazu (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 na plochu), nezávislá od vizuálnej škály hĺbky ICDAS, zobrazená ako odznak a obojsmerne prenášaná cez vlastný FHIR Observation
+- 🎚️ Tri nastavenia podrobnosti kazu (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) a prepínač `cariesDepthEnabled`, ktoré zbaľujú každú škálu do jednoduchšieho výberu bez straty uloženej hodnoty
 - 🪨 Zubný kameň a resorpcia koreňa typizovaná ako interná alebo externá cervikálna (`resorptionType`)
 - 📏 Hĺbka kazu na každú plochu (povrchový / dentín / hlboký), alebo voliteľné skórovanie ICDAS II (0–6) cez `enableIcdas`
 - 🩹 Prepínač okrajovej netesnosti korunky, zobrazený len pri korunkovej alebo mostíkovej náhrade
-- 🧰 Zjednotená lišta ikon v hornej časti s ponukou Nastavenia (číslovanie, poznámky, ICDAS, informácie o zuboch)
+- 🧰 Zjednotená lišta ikon v hornej časti so záložkovým modálnym oknom Nastavenia (Všeobecné / Kaz / Sekundárny kaz / Dreň / Poznámky — číslovanie, poznámky, ICDAS, prepínač hĺbky kazu, podrobnosť kazu koreňa/rádiografického kazu, úroveň podrobnosti drene, informácie o zuboch)
 - 📋 Panel informácií o zuboch: živý textový súhrn celého odontogramu (počty zubov, zoznamy prítomných/chýbajúcich, kaz vrátane sekundárneho, výplne, koreňové kanáliky, protetika, implantáty, stav parodontu) — zobrazený predvolene, prepínateľný v Nastaveniach
 - 🗂️ Konsolidovaný rozbaľovací zoznam Exportu (Stav JSON / FHIR / PNG / JPG)
 - 📥 Rozbaľovací zoznam Importu s importom FHIR (spätne načítava exportované Bundles)
@@ -71,7 +74,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🔒 Režim iba na čítanie: zakázanie všetkých interakcií pre prípady tlače/správ/prezerania
 - ✨ Animácie výberu: pulzujúci prerušovaný okraj a žiariaci tieň na vybraných zuboch (s podporou prefers-reduced-motion)
 - 📝 Poznámky ku každému zubu: dvojklik pre pridanie/úpravu poznámok, ikona poznámky vedľa čísla zuba, tooltip pri najetí s textom poznámky, export/import JSON
-- 🧪 421 automatizovaných testov (Vitest) v 43 testovacích súboroch pokrývajúcich číslovanie, preklady, predvoľby, i18n, komponent App, tému, dotyk, pluginy, prístupnosť a paritu klinických/diagnostických osí
+- 🧪 506 automatizovaných testov (Vitest) v 50 testovacích súboroch pokrývajúcich číslovanie, preklady, predvoľby, i18n, komponent App, tému, dotyk, pluginy, prístupnosť a paritu klinických/diagnostických osí
 - 📖 Dokumentácia API TypeDoc s komentármi JSDoc pre všetky verejné exporty (`npm run docs`)
 
 ### 📦 Moduly
@@ -191,6 +194,17 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 
 **Hĺbka kazu** (na plochu): `superficial` / `dentin` / `deep`, alebo voliteľné kódy ICDAS II `0–6` pri nastavení `enableIcdas`
 
+**Kaz koreňa** (`rootCaries`; aktivuje vrstvu ilustrácie `caries-root` na prítomnom zube):
+`none`, `active`, `arrested`, `active-cavitated`
+
+**Skóre sekundárneho (rekurentného) kazu** (`secondaryCaries`; uložené na každú plochu, CARS `0` (zdravý) – `6` (kavitovaný), zobrazené ako priehľadnosť vrstvy kazu):
+`0`, `1`, `2`, `3`, `4`, `5`, `6`
+
+**Rádiografická hĺbka kazu** (`radiographicDepth`; na plochu, nezávislá od vizuálnej škály ICDAS/`cariesDepths`):
+`none`, `E1`, `E2`, `D1`, `D2`, `D3`
+
+**Nastavenia podrobnosti kazu** (globálne): `secondaryCariesMode` (`simple`/`standard`/`full`, predvolené `standard`), `rootCariesMode` (`simple`/`severity`, predvolené `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, predvolené `off`), `cariesDepthEnabled` (boolean, predvolené `true`) — každé zbaľuje svoju škálu do jednoduchšieho výberu bez zmeny uloženej hodnoty
+
 **Špeciálne indikátory:**
 `crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
@@ -291,7 +305,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testovanie
 ```bash
-npm run test           # Spustiť všetkých 421 testov
+npm run test           # Spustiť všetkých 506 testov
 npm run test:watch     # Sledovací režim
 npm run test:coverage  # Správa pokrytia
 ```
@@ -350,7 +364,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `startIntroTour()` | Spustiť 12-krokový interaktívny úvodný sprievodca |
 
 ### 💾 Formát exportu/importu stavu
-Export vytvorí súbor JSON (verzia `2.2`; import tiež akceptuje staršie verzie `1.4`, `2.0` a `2.1` a automaticky ich migruje) obsahujúci:
+Export vytvorí súbor JSON (verzia `2.3`; import tiež akceptuje staršie verzie `1.4`, `2.0`, `2.1` a `2.2` a automaticky ich migruje) obsahujúci:
 
 **Globálne polia:**
 - `wisdomVisible` - zuby múdrosti viditeľné
@@ -366,6 +380,9 @@ Export vytvorí súbor JSON (verzia `2.2`; import tiež akceptuje staršie verzi
 - `endo` - endodontický stav
 - `mods` - pole modifikácií (zápal, parodontálny)
 - `caries` - aktívne plochy kazu
+- `rootCaries` - závažnosť kazu koreňa (none/active/arrested/active-cavitated)
+- `secondaryCaries` - skóre CARS sekundárneho kazu na každú plochu (0-6)
+- `radiographicDepth` - rádiografická hĺbka kazu na každú plochu (none/E1/E2/D1/D2/D3), nezávislá od vizuálnej škály ICDAS
 - `fillingMaterial` - materiál výplne
 - `fillingSurfaces` - plombované plochy
 - `pulpDx` - AAE diagnóza drene (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
@@ -398,7 +415,7 @@ Export vytvorí súbor JSON (verzia `2.2`; import tiež akceptuje staršie verzi
 - `src/status_extras.ts` - 34 preddefinovaných šablón reštaurácií (mostíky, protézy, stegové konštrukcie)
 - `src/i18n/` - preklady (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) a i18n hook
 - `src/utils/numbering.ts` - konverzia číslovania FDI, Universal, Palmer
-- `src/__tests__/` - testovacia sada Vitest (421 testov v 43 súboroch)
+- `src/__tests__/` - testovacia sada Vitest (506 testov v 50 súboroch)
 - `src/assets/teeth-svgs/` - SVG šablóny zubov (6 súborov: rezáky, špičáky, premoláre, moláre + oklúzne pohľady)
 - `src/assets/icon-svgs/` - SVG ikony panela nástrojov (5 súborov)
 

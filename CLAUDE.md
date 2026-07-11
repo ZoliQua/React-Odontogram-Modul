@@ -38,6 +38,9 @@ Each tooth has:
 - `resorptionType`: none | internal | external-cervical — replaced the retired `rootResorption` boolean
 - `caries`: array of surface identifiers (mesial, occlusal, distal, buccal, lingual)
 - `fillingSurfaces`: array of filled surfaces
+- `rootCaries`: none | active | arrested | active-cavitated — wires the `caries-root` artwork layer on a present tooth
+- `secondaryCaries`: per-surface CARS score (0-6) — stored, scored finding rendered as the `subcaries-{surface}` layer's opacity; no longer derived from `caries` ∩ `fillingSurfaceMaterials`
+- `radiographicDepth`: per-surface none | E1 | E2 | D1 | D2 | D3 — radiographic caries depth, independent of the visual ICDAS depth scale (`cariesDepths`); surfaced as a `data-radio` badge attribute
 - `extractionPlan`, `crownNeeded`, `crownReplace`: boolean flags
 
 ## Integration with DentalQuoteCreator

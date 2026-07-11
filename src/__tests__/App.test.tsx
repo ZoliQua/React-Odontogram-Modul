@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, cleanup, within } from '@testing-library/react';
 import App from '../App';
+import {
+  setSecondaryCariesMode,
+  setIcdasEnabled,
+  setPulpDetailLevel,
+  setNotesEnabled,
+} from '../odontogram';
 
 // Mock odontogram.ts since it manipulates real DOM and SVGs
 vi.mock('../odontogram', () => ({
@@ -24,6 +30,14 @@ vi.mock('../odontogram', () => ({
   getIcdasEnabled: vi.fn().mockReturnValue(false),
   setPulpDetailLevel: vi.fn(),
   getPulpDetailLevel: vi.fn().mockReturnValue('aae'),
+  setSecondaryCariesMode: vi.fn(),
+  getSecondaryCariesMode: vi.fn().mockReturnValue('standard'),
+  setRootCariesMode: vi.fn(),
+  getRootCariesMode: vi.fn().mockReturnValue('simple'),
+  setRadiographicDepthMode: vi.fn(),
+  getRadiographicDepthMode: vi.fn().mockReturnValue('off'),
+  setCariesDepthEnabled: vi.fn(),
+  getCariesDepthEnabled: vi.fn().mockReturnValue(true),
   getOdontogramSummary: vi.fn().mockReturnValue({
     overview: '', permanentList: null, missingList: null,
     sections: [], implants: null, periodontalTitle: '', periodontalText: '',
@@ -38,6 +52,7 @@ vi.mock('../odontogram', () => ({
 describe('App.tsx', () => {
   beforeEach(() => {
     cleanup();
+    vi.clearAllMocks();
     document.documentElement.classList.remove('dark');
   });
 
@@ -84,6 +99,18 @@ describe('App.tsx', () => {
       expect(row).toHaveClass('hidden');
     });
 
+    // SP5 Task 5: the per-tooth root-caries picker lives in the caries card.
+    // (initOdontogram is mocked, so the <select> renders empty; this pins the
+    // row + select markup, mirroring the crown-leakage row test above.)
+    it('renders the root-caries picker row inside the caries card', () => {
+      render(<App />);
+      const row = document.getElementById('rootCariesRow');
+      const select = document.getElementById('rootCariesSelect');
+      expect(row).toBeInTheDocument();
+      expect(select).toBeInTheDocument();
+      expect(select?.tagName).toBe('SELECT');
+    });
+
     it('renders chart action buttons', () => {
       render(<App />);
       expect(document.getElementById('btnOcclView')).toBeInTheDocument();
@@ -125,26 +152,119 @@ describe('App.tsx', () => {
     it('uses the provided numbering system', () => {
       const onNumberingChange = vi.fn();
       render(<App language="en" numberingSystem="UNIVERSAL" onNumberingChange={onNumberingChange} />);
-      // Numbering options live inside the Settings gear dropdown; open it first
-      const settingsButton = screen.getByRole('button', { name: /Settings/i });
-      fireEvent.click(settingsButton);
-      expect(screen.getByRole('menuitemradio', { name: /Universal/i })).toBeInTheDocument();
+      // Numbering now lives inside the Settings modal (General tab); open it first
+      fireEvent.click(screen.getByRole('button', { name: /Settings/i }));
+      const select = screen.getByLabelText('Numbering') as HTMLSelectElement;
+      expect(select.value).toBe('UNIVERSAL');
     });
 
-    it('calls onNumberingChange when numbering is selected', async () => {
+    it('calls onNumberingChange when numbering is selected', () => {
       const onNumberingChange = vi.fn();
       render(<App language="en" numberingSystem="FDI" onNumberingChange={onNumberingChange} />);
 
-      // Numbering now lives inside the Settings gear dropdown; open it first
-      const settingsButton = screen.getByRole('button', { name: /Settings/i });
-      fireEvent.click(settingsButton);
-
-      await waitFor(() => {
-        const palmerOption = screen.getByRole('menuitemradio', { name: /Palmer/i });
-        fireEvent.click(palmerOption);
-      });
+      // Numbering now lives inside the Settings modal (General tab); open it first
+      fireEvent.click(screen.getByRole('button', { name: /Settings/i }));
+      const select = screen.getByLabelText('Numbering') as HTMLSelectElement;
+      fireEvent.change(select, { target: { value: 'PALMER' } });
 
       expect(onNumberingChange).toHaveBeenCalledWith('PALMER');
+    });
+  });
+
+  describe('settings modal', () => {
+    const openModal = () => {
+      fireEvent.click(screen.getByRole('button', { name: /Settings/i }));
+      return screen.getByRole('dialog');
+    };
+
+    it('is closed by default and opens from the gear button', () => {
+      render(<App language="en" />);
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      const dialog = openModal();
+      expect(dialog).toBeInTheDocument();
+      expect(dialog).toHaveAttribute('aria-modal', 'true');
+    });
+
+    it('moves focus into the dialog when opened (focus trap)', () => {
+      render(<App language="en" />);
+      const dialog = openModal();
+      expect(dialog.contains(document.activeElement)).toBe(true);
+    });
+
+    it('closes on Escape', () => {
+      render(<App language="en" />);
+      const dialog = openModal();
+      fireEvent.keyDown(dialog, { key: 'Escape' });
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    it('closes on backdrop click', () => {
+      render(<App language="en" />);
+      openModal();
+      const backdrop = document.querySelector('.odon-settings-backdrop') as HTMLElement;
+      fireEvent.mouseDown(backdrop);
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    it('renders every tab and switches between them', () => {
+      render(<App language="en" />);
+      openModal();
+      const tabNames = ['General', 'Secondary caries', 'Caries', 'Pulp', 'Notes'];
+      for (const name of tabNames) {
+        const tab = screen.getByRole('tab', { name });
+        fireEvent.click(tab);
+        expect(tab).toHaveAttribute('aria-selected', 'true');
+        // The active panel has content
+        expect(screen.getByRole('tabpanel')).toBeInTheDocument();
+      }
+    });
+
+    it('General tab exposes numbering, language and theme controls', () => {
+      render(<App language="en" />);
+      const dialog = openModal();
+      // Scope to the dialog: the topbar keeps its own separate Language button.
+      expect(within(dialog).getByLabelText('Numbering')).toBeInTheDocument();
+      expect(within(dialog).getByLabelText('Language')).toBeInTheDocument();
+      expect(within(dialog).getByLabelText('Appearance')).toBeInTheDocument();
+    });
+
+    it('changing the secondary-caries mode calls setSecondaryCariesMode', () => {
+      render(<App language="en" />);
+      openModal();
+      fireEvent.click(screen.getByRole('tab', { name: 'Secondary caries' }));
+      const panel = screen.getByRole('tabpanel');
+      const select = within(panel).getByLabelText(/Secondary caries/i) as HTMLSelectElement;
+      fireEvent.change(select, { target: { value: 'full' } });
+      expect(setSecondaryCariesMode).toHaveBeenCalledWith('full');
+    });
+
+    it('toggling ICDAS on the Caries tab calls setIcdasEnabled', () => {
+      render(<App language="en" />);
+      openModal();
+      fireEvent.click(screen.getByRole('tab', { name: 'Caries' }));
+      const panel = screen.getByRole('tabpanel');
+      const toggle = within(panel).getByLabelText('ICDAS') as HTMLInputElement;
+      fireEvent.click(toggle);
+      expect(setIcdasEnabled).toHaveBeenCalledWith(true);
+    });
+
+    it('changing pulp detail level calls setPulpDetailLevel', () => {
+      render(<App language="en" />);
+      openModal();
+      fireEvent.click(screen.getByRole('tab', { name: 'Pulp' }));
+      const select = screen.getByLabelText(/Pulp detail/i) as HTMLSelectElement;
+      fireEvent.change(select, { target: { value: 'latin' } });
+      expect(setPulpDetailLevel).toHaveBeenCalledWith('latin');
+    });
+
+    it('toggling notes on the Notes tab calls setNotesEnabled', () => {
+      render(<App language="en" />);
+      openModal();
+      fireEvent.click(screen.getByRole('tab', { name: 'Notes' }));
+      const panel = screen.getByRole('tabpanel');
+      const toggle = within(panel).getByLabelText('Notes') as HTMLInputElement;
+      fireEvent.click(toggle);
+      expect(setNotesEnabled).toHaveBeenCalledWith(true);
     });
   });
 

@@ -485,10 +485,21 @@ select:focus{
 .surf-depth[data-depth="dentin"] i:nth-child(-n+2){background:#b3261e}
 .surf-depth[data-depth="deep"] i{background:#b3261e}
 
+/* SP5 Task 4: radiographic-depth badge hook (`data-radio`, set on the same
+   `.surf-depth` indicator, independent of the ICDAS `data-icdas` badge above —
+   no crosswalk between the two scales). `.radio-badge` is the future display
+   gate Task 5 wires up behind the `radiographicDepthMode` setting; it is never
+   toggled yet, so this rule is INERT today — no visual change. */
+.surf-depth.radio-badge[data-radio]{display:flex}
+
 /* Caries depth popup */
 .odon-depth-popup{position:fixed; z-index:130; background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:0 12px 24px rgba(30,42,58,.18); padding:6px; display:flex; flex-direction:column; gap:4px; min-width:150px}
 .odon-depth-option{border:1px solid var(--line); background:rgba(0,0,0,.04); color:var(--text); padding:8px 10px; border-radius:10px; font-weight:600; cursor:pointer; text-align:left; font-size:13px}
 .odon-depth-option:hover{background:rgba(59,123,255,.12)}
+.odon-depth-option.is-active{border-color:var(--accent,#3b7bff); background:rgba(59,123,255,.16)}
+.odon-depth-group-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted,#7b8794); padding:6px 4px 2px}
+.odon-depth-group-label:first-child{padding-top:2px}
+.odon-depth-title{font-size:12px; font-weight:800; color:var(--text); padding:2px 4px 6px; border-bottom:1px solid var(--line); margin-bottom:2px}
 .row input[type="checkbox"]{display:none}
 .row:has(input[type="checkbox"]){
   border-radius:12px;
@@ -953,3 +964,145 @@ select:focus{
 .tooth-info-line{margin:6px 0 0; font-size:13px; line-height:1.5}
 .tooth-info-heading{font-weight:700}
 .tooth-info-empty{color:var(--muted); font-style:italic}
+
+/* ── Settings modal ──────────────────────────── */
+.odon-settings-backdrop{
+  position: fixed; inset: 0; z-index: 150;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(20,28,40,.55);
+  backdrop-filter: blur(4px);
+  animation: odon-fade-in .12s ease;
+}
+.odon-settings-modal{
+  position: relative;
+  display: flex; flex-direction: column;
+  width: min(640px, 96vw);
+  max-height: min(84vh, 720px);
+  background: var(--panel, #fff);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(20,28,40,.30);
+  overflow: hidden;
+  animation: odon-ctx-pop .12s ease;
+}
+.odon-settings-header{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.odon-settings-title{
+  margin: 0; font-size: 16px; font-weight: 700; color: var(--text);
+}
+.odon-settings-close{
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border: 1px solid var(--line); border-radius: 10px;
+  background: rgba(0,0,0,.04); color: var(--text);
+  cursor: pointer;
+}
+.odon-settings-close:hover{ background: rgba(0,0,0,.08); }
+.odon-settings-close:focus-visible{
+  outline: none; box-shadow: 0 0 0 3px rgba(59,123,255,.35);
+}
+.odon-settings-body{
+  display: flex; min-height: 0; flex: 1;
+}
+.odon-settings-tabs{
+  display: flex; flex-direction: column; gap: 2px;
+  width: 168px; flex-shrink: 0;
+  padding: 12px 10px;
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+}
+.odon-settings-tab{
+  text-align: left;
+  padding: 8px 12px;
+  border: 1px solid transparent; border-radius: 10px;
+  background: transparent; color: var(--muted);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.odon-settings-tab:hover{ background: rgba(0,0,0,.04); color: var(--text); }
+.odon-settings-tab.is-active{
+  background: rgba(59,123,255,.14);
+  border-color: rgba(59,123,255,.35);
+  color: var(--text);
+}
+.odon-settings-tab:focus-visible{
+  outline: none; box-shadow: 0 0 0 3px rgba(59,123,255,.30);
+}
+.odon-settings-panel{
+  flex: 1; min-width: 0;
+  padding: 16px 18px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.odon-settings-row{
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px;
+}
+.odon-settings-row-disabled{ opacity: .6; }
+.odon-settings-row-text{ min-width: 0; flex: 1; }
+.odon-settings-row-label{
+  font-size: 13px; font-weight: 700; color: var(--text);
+}
+.odon-settings-row-desc{
+  margin-top: 3px; font-size: 12px; line-height: 1.45; color: var(--muted);
+}
+.odon-settings-row-control{ flex-shrink: 0; }
+.odon-settings-badge{
+  display: inline-block; margin-left: 6px;
+  padding: 1px 7px; border-radius: 999px;
+  background: rgba(59,123,255,.14); color: var(--accent, #3b7bff);
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+  vertical-align: middle;
+}
+.odon-settings-select{
+  min-width: 150px;
+  padding: 6px 10px;
+  border: 1px solid var(--line); border-radius: 10px;
+  background: var(--panel, #fff); color: var(--text);
+  font-size: 13px; font-family: inherit;
+}
+.odon-settings-select:focus-visible{
+  outline: none; box-shadow: 0 0 0 3px rgba(59,123,255,.30); border-color: rgba(59,123,255,.5);
+}
+.odon-settings-switch{
+  position: relative; display: inline-flex; align-items: center;
+  width: 42px; height: 24px; cursor: pointer;
+}
+.odon-settings-switch input{
+  position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer;
+}
+.odon-settings-switch-track{
+  position: absolute; inset: 0;
+  border-radius: 999px; background: rgba(120,130,145,.35);
+  transition: background .15s ease;
+}
+.odon-settings-switch-track::after{
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+  transition: transform .15s ease;
+}
+.odon-settings-switch input:checked + .odon-settings-switch-track{
+  background: var(--accent, #3b7bff);
+}
+.odon-settings-switch input:checked + .odon-settings-switch-track::after{
+  transform: translateX(18px);
+}
+.odon-settings-switch input:focus-visible + .odon-settings-switch-track{
+  box-shadow: 0 0 0 3px rgba(59,123,255,.30);
+}
+.dark .odon-settings-close{ background: rgba(255,255,255,.06); }
+.dark .odon-settings-close:hover{ background: rgba(255,255,255,.12); }
+.dark .odon-settings-tab:hover{ background: rgba(255,255,255,.06); }
+.dark .odon-settings-select{ background: #1e293b; }
+@media (max-width: 520px){
+  .odon-settings-body{ flex-direction: column; }
+  .odon-settings-tabs{
+    flex-direction: row; width: auto;
+    border-right: none; border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+  }
+}

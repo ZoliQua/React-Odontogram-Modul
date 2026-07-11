@@ -162,8 +162,10 @@ describe("stored pulpLatin + apicalDx round-trip through migration + serializati
 // `rootResorption` booleans with the legacy periapical encoding
 // ({mods:["inflammation"], periapicalType}) on a PRESENT tooth must migrate
 // to all three modern diagnosis axes at once, and the re-export must be
-// payload version 2.2 with neither legacy key present anywhere in the payload.
-describe("SP4 Task 6: combined legacy migration (pulpInflam + rootResorption + inflammation mod) -> payload 2.2 export", () => {
+// payload version 2.3 with neither legacy key present anywhere in the payload
+// (the export version was bumped 2.2 -> 2.3 by SP5 Task 7; this test's
+// migration assertions are otherwise unchanged since SP4).
+describe("SP4 Task 6: combined legacy migration (pulpInflam + rootResorption + inflammation mod) -> payload 2.3 export", () => {
   it("migrates to pulpDx/resorptionType/apicalDx and drops both legacy booleans on export", () => {
     __setToothStateForTest(14, {
       toothSelection: "tooth-base",
@@ -182,7 +184,7 @@ describe("SP4 Task 6: combined legacy migration (pulpInflam + rootResorption + i
     expect(s).not.toHaveProperty("rootResorption");
 
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.2");
+    expect(payload.version).toBe("2.3");
     const tooth14 = payload.teeth[14];
     expect(tooth14).not.toHaveProperty("pulpInflam");
     expect(tooth14).not.toHaveProperty("rootResorption");

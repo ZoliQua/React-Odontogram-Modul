@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.17.0] - 2026-07-11
+
+### Added
+- **Root caries** clinical axis (`rootCaries`): none / active / arrested / active-cavitated — wires the previously dormant `caries-root` artwork layer on a present tooth's main-view templates.
+- **Stored secondary (recurrent) caries score** (`secondaryCaries`): a per-surface CARS 0–6 score, rendered as the `subcaries-{surface}` layer's opacity (`0.30 + (score-1)/5 × 0.70`) — replaces the old render-time derivation from `caries ∩ fillingSurfaceMaterials`.
+- **Radiographic caries depth** (`radiographicDepth`): a per-surface none / E1 / E2 / D1 / D2 / D3 finding, independent of the visual ICDAS depth scale — surfaced as a `data-radio` badge attribute on the surface indicator, and round-trips through FHIR via its own `radiographic-caries-depth` Observation.
+- **Three caries granularity settings** (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) plus `cariesDepthEnabled`, letting the picker UI collapse each scale to a simpler view without losing the underlying stored value.
+- **Tabbed Settings modal** (General / Caries / Secondary caries / Pulpa / Notes), replacing the previous flat settings dropdown.
+
+### Changed
+- JSON export payload bumped to **version 2.3**; imports still accept legacy 1.4, 2.0, 2.1, and 2.2 payloads and migrate them automatically (a migrated `caries ∩ fillingSurfaceMaterials` surface is promoted to the canonical "moderate" `secondaryCaries` score of 3, unless a stored score is already present).
+- Secondary (recurrent) caries is now a **stored, scored** clinical finding (`secondaryCaries`), not derived at render/summary time from `caries ∩ fillingSurfaceMaterials`.
+
 ## [1.16.0] - 2026-07-11
 
 ### Added

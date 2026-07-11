@@ -25,6 +25,12 @@ export const FIXED_CLEAR_LAYERS: string[] = [
   "endo-medical-filling","endo-filling","endo-filling-incomplete","endo-glass-pin","endo-metal-pin","endo-resection","parapulpal-pin","endo-resorption",
   // caries ids
   "caries-subcrown","caries-buccal","caries-lingual","caries-distal","caries-mesial","caries-occlusal",
+  // SP5 Task 2: root-caries toggle — activates the dormant `caries-root` artwork
+  // layer (present since v2.5.0 in the 4 main-view templates only, absent from
+  // the 2 occlusal templates — same main-view-only shape as "caries-subcrown"
+  // above, which every AXES/svg-layers test already tolerates being absent from
+  // an individual template as long as it exists in at least one installed SVG).
+  "caries-root",
   // subcaries per surface
   "subcaries-buccal","subcaries-lingual","subcaries-mesial","subcaries-distal","subcaries-occlusal",
   "calculus",

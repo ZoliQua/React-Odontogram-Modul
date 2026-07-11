@@ -45,6 +45,14 @@ export interface ToothRecord {
   pulpLatin?: string;
   apicalDx?: string;
   resorptionType?: string;
+  // SP5 Task 1: caries fields foundation (additive-only scaffolding; not yet
+  // rendered). `rootCaries` is a normal enum axis. `secondaryCaries`
+  // (per-surface CARS 0-6) and `radiographicDepth` (per-surface
+  // none/E1/E2/D1/D2/D3) are per-surface scalar maps, serialized the same
+  // way `cariesDepths` is.
+  rootCaries?: string;
+  secondaryCaries?: Record<string, number>;
+  radiographicDepth?: Record<string, string>;
   customStates?: Record<string, unknown>;
   note?: string;
 }

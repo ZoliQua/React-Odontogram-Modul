@@ -186,6 +186,13 @@ function defaultState(){
     pulpLatin: "none", // none | pulpa-sana | hyperaemia-pulpae | pulpitis-acuta-serosa | pulpitis-acuta-purulenta | pulpitis-chronica-clausa | pulpitis-chronica-ulcerosa | pulpitis-chronica-hyperplastica | necrosis-pulpae | gangraena-pulpae
     apicalDx: "normal", // normal | symptomatic-apical-periodontitis | asymptomatic-apical-periodontitis | acute-apical-abscess | chronic-apical-abscess | condensing-osteitis
     resorptionType: "none", // none | internal | external-cervical (replaces the legacy `rootResorption` boolean)
+    // SP5 Task 1: caries fields foundation — additive scaffolding, not yet
+    // rendered/wired to UI or migration; see later SP5 tasks. `rootCaries` is
+    // a normal enum axis. `secondaryCaries`/`radiographicDepth` are
+    // per-surface scalar maps handled exactly like `cariesDepths`.
+    rootCaries: "none", // none | active | arrested | active-cavitated
+    secondaryCaries: new Map(), // surface -> CARS code 0..6
+    radiographicDepth: new Map(), // surface -> none | E1 | E2 | D1 | D2 | D3
     customStates: {} as Record<string, unknown>,
     note: "",
   };
@@ -314,6 +321,47 @@ export function setPulpDetailLevel(value: PulpDetailLevel){
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
 }
 export function getPulpDetailLevel(): PulpDetailLevel { return pulpDetailLevel; }
+
+// SP5 Task 5: caries-granularity settings (modes). Each mode governs ONLY the
+// option list its authoring control offers; it never mutates stored state.
+// Non-collapsing: a stored value outside the current mode's list is preserved
+// and re-displayed when the mode widens again (the SP4 pulpLatin pattern).
+// `cariesDepthEnabled` additionally gates the visual caries-depth tier
+// (opacity + deep contour) in the SVG render; `radiographicDepthMode !== "off"`
+// gates the per-surface `data-radio` indicator badge. Each accessor re-syncs
+// the active tooth's controls, mirroring `icdasEnabled`/`pulpDetailLevel`.
+export type SecondaryCariesMode = "simple" | "standard" | "full";
+export type RootCariesMode = "simple" | "severity";
+export type RadiographicDepthMode = "off" | "threeLevel" | "detailed";
+
+let secondaryCariesMode: SecondaryCariesMode = "standard";
+export function setSecondaryCariesMode(value: SecondaryCariesMode){
+  secondaryCariesMode = (value === "simple" || value === "full") ? value : "standard";
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+}
+export function getSecondaryCariesMode(): SecondaryCariesMode { return secondaryCariesMode; }
+
+let rootCariesMode: RootCariesMode = "simple";
+export function setRootCariesMode(value: RootCariesMode){
+  rootCariesMode = (value === "severity") ? value : "simple";
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+}
+export function getRootCariesMode(): RootCariesMode { return rootCariesMode; }
+
+let radiographicDepthMode: RadiographicDepthMode = "off";
+export function setRadiographicDepthMode(value: RadiographicDepthMode){
+  radiographicDepthMode = (value === "threeLevel" || value === "detailed") ? value : "off";
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+}
+export function getRadiographicDepthMode(): RadiographicDepthMode { return radiographicDepthMode; }
+
+let cariesDepthEnabled = true;
+export function setCariesDepthEnabled(value: boolean){
+  cariesDepthEnabled = value !== false;
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+}
+export function getCariesDepthEnabled(): boolean { return cariesDepthEnabled; }
+
 let i18nUnsubscribe: (() => void) | null = null;
 
 // ---- State-change subscription ----
@@ -813,6 +861,81 @@ function getCariesDepthOptions(): Array<{ value: number; label: string; title?: 
   ];
 }
 
+// ---- SP5 Task 5: caries-granularity option builders + surface-write helpers ----
+// (kebabToCamel / VALID_ROOT_CARIES are declared below; both are resolved at
+// call time, so the forward reference is safe.)
+const SECONDARY_CARS_LABEL_KEY: Record<number, string> = {
+  0: "secondaryCaries.sound",
+  1: "secondaryCaries.initial",
+  2: "secondaryCaries.score.2",
+  3: "secondaryCaries.moderate",
+  4: "secondaryCaries.score.4",
+  5: "secondaryCaries.score.5",
+  6: "secondaryCaries.cavitated",
+};
+
+/** CARS-score options for the per-surface secondary-caries picker at a given
+ *  granularity mode (defaults to the module setting). simple -> [0,3];
+ *  standard -> [0,1,3,6]; full -> [0..6]. Score 0 clears the surface. Pure. */
+export function secondaryCariesOptions(mode: SecondaryCariesMode = secondaryCariesMode): { value: number; label: string }[]{
+  const values = mode === "simple" ? [0, 3] : mode === "full" ? [0, 1, 2, 3, 4, 5, 6] : [0, 1, 3, 6];
+  return values.map((v) => ({ value: v, label: t(SECONDARY_CARS_LABEL_KEY[v]) }));
+}
+
+/** Root-caries options at a given mode (defaults to the module setting).
+ *  simple -> none / present (present writes the canonical "active" enum);
+ *  severity -> the full rootCaries enum. Pure. */
+export function rootCariesOptions(mode: RootCariesMode = rootCariesMode): { value: string; label: string }[]{
+  if(mode === "severity"){
+    return Array.from(VALID_ROOT_CARIES).map((v) => ({ value: v, label: t("rootCaries." + kebabToCamel(v)) }));
+  }
+  return [
+    { value: "none", label: t("rootCaries.none") },
+    { value: "active", label: t("rootCaries.present") },
+  ];
+}
+
+/** The rootCaries option value to SHOW for a stored value at a given mode
+ *  (display-only collapse; never mutates state). simple buckets every non-none
+ *  severity into the single "present" (=active) option; severity shows it
+ *  verbatim. Mirrors pulpDisplayValue. */
+export function rootCariesDisplayValue(mode: RootCariesMode, stored: string): string {
+  if(mode === "simple") return stored && stored !== "none" ? "active" : "none";
+  return stored || "none";
+}
+
+/** Radiographic-depth options at a given mode (defaults to the module setting).
+ *  off -> [] (the control is hidden); threeLevel -> none + superficial/middle/
+ *  deep buckets (writing the representative E1/D1/D3 codes); detailed -> the
+ *  full none/E1/E2/D1/D2/D3 scale. "none" clears the surface. Pure. */
+export function radiographicDepthOptions(mode: RadiographicDepthMode = radiographicDepthMode): { value: string; label: string }[]{
+  if(mode === "off") return [];
+  if(mode === "threeLevel"){
+    return [
+      { value: "none", label: t("radiographicDepth.none") },
+      { value: "E1", label: t("radiographicDepth.superficial") },
+      { value: "D1", label: t("radiographicDepth.middle") },
+      { value: "D3", label: t("radiographicDepth.deep") },
+    ];
+  }
+  return ["none", "E1", "E2", "D1", "D2", "D3"].map((v) => ({ value: v, label: t("radiographicDepth." + v) }));
+}
+
+/** Set/clear a per-surface CARS secondary-caries score on `map` (score 0
+ *  clears). Extracted so the surface-write path is unit-testable without the
+ *  DOM. */
+export function applySecondaryCariesScore(map: Map<string, number>, surface: string, score: number): void {
+  if(score > 0) map.set(surface, score);
+  else map.delete(surface);
+}
+
+/** Set/clear a per-surface radiographic-depth value on `map` ("none"/empty
+ *  clears). Extracted for unit-testing the surface-write path. */
+export function applyRadiographicDepth(map: Map<string, string>, surface: string, value: string): void {
+  if(value && value !== "none") map.set(surface, value);
+  else map.delete(surface);
+}
+
 // ---- SP4 Task 5: pulp/apical/resorption diagnosis authoring ----
 export type PulpDetailLevel = "simple" | "aae" | "latin";
 
@@ -958,6 +1081,22 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   // the retired rootResorption:true render (same appliesWhen: toothPresent).
   if(state.resorptionType !== "none" && isToothPresent(state.toothSelection)){
     setActive(svgGetById(svg, "endo-resorption"), true);
+  }
+
+  // SP5 Task 2: rootCaries (enum) wires the previously-dormant `caries-root`
+  // artwork layer (present since v2.5.0, but only in the 4 main-view templates
+  // — 11/13/14/16 — never in the 2 occlusal templates, and never toggled by
+  // any code until now). Same enum-explicit-activation pattern as
+  // resorptionType above: applyFlagLayers only auto-activates boolean-kind
+  // axes, so this enum axis (appliesWhen: toothPresent, mirrored from
+  // src/registry/axes.ts) needs an explicit setActive here. Additionally
+  // gated on restorationView === "front" (the same occlusal-vs-main-view
+  // detection composeRestorationLayers uses, see :952) since the occlusal
+  // templates carry no caries-root artwork at all — svgGetById would return
+  // null there and setActive is a no-op on null, but the explicit gate keeps
+  // intent clear and matches the brief.
+  if(state.rootCaries !== "none" && isToothPresent(state.toothSelection) && restorationView === "front"){
+    setActive(svgGetById(svg, "caries-root"), true);
   }
 
   // SP4 Task 3: pulpDx (enum) replaces the retired pulpInflam boolean. Any
@@ -1163,18 +1302,38 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
         continue;
       }
       if(hasRestoration || hasCrown) continue;
-      // Derive secondary caries: if this surface also has a filling, show the
-      // subcaries layer at that surface instead of the normal caries layer.
+      // Secondary/recurrent caries is now a STORED, SCORED axis (SP5): a surface
+      // carries an explicit CARS 0..6 score in `state.secondaryCaries` rather
+      // than being derived at render time from `caries ∩ fillingSurfaceMaterials`.
+      // A surface is primary OR secondary (as before): score > 0 shows the
+      // `subcaries-{surface}` layer, otherwise the plain `caries-{surface}` layer.
       const surface = id.replace("caries-", ""); // e.g. caries-mesial -> mesial
-      const targetId = state.fillingSurfaceMaterials.has(surface) ? `subcaries-${surface}` : id;
-      const surfEl = svgGetById(svg, targetId) as SVGElement | null;
-      setActive(surfEl, true);
-      // Per-surface caries depth: opacity encodes depth; "deep" recolors the contour.
-      if(surfEl){
-        const code = state.cariesDepths.get(surface) || 2;
-        const tier = icdasTier(code);
-        surfEl.style.opacity = tier === 3 ? "1" : tier === 2 ? "0.7" : "0.45";
-        surfEl.classList.toggle("caries-deep", tier === 3);
+      const carsScore = state.secondaryCaries.get(surface) ?? 0;
+      if(carsScore > 0){
+        // Secondary path: opacity encodes the CARS score
+        // (score 1 -> 0.30 … score 6 -> 1.0). The primary caries-depth (ICDAS)
+        // opacity path deliberately does NOT apply here — the subcaries layer's
+        // opacity is the CARS score, independent of any per-surface `cariesDepths`
+        // (which only drives the primary caries-depth visual).
+        const subEl = svgGetById(svg, `subcaries-${surface}`) as SVGElement | null;
+        setActive(subEl, true);
+        if(subEl){
+          const carsOpacity = 0.30 + ((carsScore - 1) / 5) * 0.70;
+          subEl.style.opacity = String(Math.round(carsOpacity * 100) / 100);
+        }
+      }else{
+        const surfEl = svgGetById(svg, id) as SVGElement | null;
+        setActive(surfEl, true);
+        // Per-surface caries depth: opacity encodes depth; "deep" recolors the
+        // contour. SP5 Task 5: the whole depth-tier encoding is gated by the
+        // `cariesDepthEnabled` setting — with it OFF, caried surfaces render at
+        // the SVG default (no opacity/contour tier). Default ON = unchanged.
+        if(surfEl && cariesDepthEnabled){
+          const code = state.cariesDepths.get(surface) || 2;
+          const tier = icdasTier(code);
+          surfEl.style.opacity = tier === 3 ? "1" : tier === 2 ? "0.7" : "0.45";
+          surfEl.classList.toggle("caries-deep", tier === 3);
+        }
       }
     }
 
@@ -1283,8 +1442,11 @@ export function __renderActiveLayers(rawSvgText: string, toothNo: number, serial
  *  module-level state map, bypassing all DOM/UI wiring (no initOdontogram()
  *  required). Lets summary/warning getters be exercised without a live SVG grid.
  *  Not part of the public API. */
-export function __setToothStateForTest(toothNo: number, raw: Record<string, unknown>): void {
-  toothState.set(toothNo, hydrateState(raw));
+export function __setToothStateForTest(toothNo: number, raw: Record<string, unknown>, version?: string): void {
+  // `version` drives FIX 1's legacy secondary-caries gate exactly as importStatus
+  // does (per-tooth call of the same decision). Omitting it → legacy (infer),
+  // preserving every existing caller's default-true behavior.
+  toothState.set(toothNo, hydrateState(raw, isLegacyPayloadVersion(version)));
 }
 
 /** TEST-ONLY: read back a tooth's current state as a plain object (Sets/Maps
@@ -1432,6 +1594,9 @@ function getStateSummary(toothNo: number): string[]{
 
   // Caries
   if(state.caries.size > 0) summary.push(t("caries.title"));
+  // Root caries (FIX 3) — surfaced independently so a root-caries-only tooth
+  // isn't summary-invisible in the per-tooth text summary.
+  if(state.rootCaries && state.rootCaries !== "none") summary.push(t("caries.rootLabel"));
 
   // Mods
   if(state.mods.size > 0){
@@ -1558,6 +1723,47 @@ function updateWarningsFromState(state: Any){
 }
 
 // ---- Control sync ----
+
+/** Apply the per-surface caries-depth indicator attributes to one
+ *  `.surface-cell` (the ICDAS/3-bar `data-depth`/`data-icdas` badge, plus the
+ *  SP5 Task 4 `data-radio` radiographic-depth attribute) for `cell`'s surface,
+ *  read off `state`. `radiographicDepth` is a SEPARATE, independent per-surface
+ *  scale from the visual ICDAS `cariesDepths` — no crosswalk between them
+ *  (constitution); `data-radio` never touches `data-depth`/`data-icdas`/opacity
+ *  or the SVG-fingerprint render (it lives outside `__renderActiveLayers`).
+ *  Extracted out of `syncControlsFromState` so it can be exercised without the
+ *  full DOM/asset-fetch wiring `initOdontogram()` needs (see
+ *  `__syncSurfaceDepthIndicatorForTest`). */
+function syncSurfaceDepthIndicator(cell: Element, state: Any): void {
+  const c = cell.querySelector("input[type=checkbox]") as HTMLInputElement | null;
+  const ind = cell.querySelector(".surf-depth") as HTMLElement | null;
+  if(c && ind){
+    const surface = String(c.value).replace("caries-", "");
+    const code = state.cariesDepths.get(surface) || 2;
+    ind.setAttribute("data-depth", icdasToThreeLevel(code)); // drives 3-bar CSS
+    ind.setAttribute("data-icdas", String(code));            // drives the badge
+    ind.classList.toggle("icdas", icdasEnabled);
+    ind.textContent = ""; // clear
+    if(icdasEnabled){ ind.textContent = String(code); }      // badge number
+    else { ind.innerHTML = "<i></i><i></i><i></i>"; }        // 3 bars
+    // SP5 Task 5: `data-radio` reflects the surface's `radiographicDepth` value
+    // (when set and not "none"), but ONLY when the radiographic-depth mode is on
+    // (`!== "off"`). With the mode off (default) the badge is never emitted.
+    const radio = state.radiographicDepth?.get(surface);
+    if(radiographicDepthMode !== "off" && radio && radio !== "none"){ ind.setAttribute("data-radio", radio); }
+    else { ind.removeAttribute("data-radio"); }
+  }
+}
+
+/** TEST-ONLY: apply `syncSurfaceDepthIndicator`'s per-surface indicator-attribute
+ *  logic (ICDAS `data-depth`/`data-icdas` badge + SP5 Task 4 `data-radio`) to a
+ *  single hand-built `.surface-cell` element, without requiring a live grid /
+ *  `initOdontogram()` (which needs real SVG-asset fetches). Not part of the
+ *  public API. */
+export function __syncSurfaceDepthIndicatorForTest(cell: Element, state: Record<string, unknown>): void {
+  syncSurfaceDepthIndicator(cell, state as Any);
+}
+
 function syncControlsFromState(state: Any){
   // SP4 Task 5: pulp diagnosis is authored via #pulpSelect, presented at the
   // active pulp-detail level. The displayed option is the stored value collapsed
@@ -1680,27 +1886,25 @@ function syncControlsFromState(state: Any){
   }
 
   // caries (cross surfaces + the separate subcrown row) + per-surface depth indicator
+  // (ICDAS `data-depth`/`data-icdas` badge + SP5 Task 4 `data-radio` — see
+  // syncSurfaceDepthIndicator())
   $$("#cariesChecks input[type=checkbox], #cariesSubcrownRow input[type=checkbox]").forEach(c => c.checked = state.caries.has(c.value));
-  $$("#cariesChecks .surface-cell").forEach(cell => {
-    const c = cell.querySelector("input[type=checkbox]") as HTMLInputElement | null;
-    const ind = cell.querySelector(".surf-depth") as HTMLElement | null;
-    if(c && ind){
-      const surface = String(c.value).replace("caries-", "");
-      const code = state.cariesDepths.get(surface) || 2;
-      ind.setAttribute("data-depth", icdasToThreeLevel(code)); // drives 3-bar CSS
-      ind.setAttribute("data-icdas", String(code));            // drives the badge
-      ind.classList.toggle("icdas", icdasEnabled);
-      ind.textContent = ""; // clear
-      if(icdasEnabled){ ind.textContent = String(code); }      // badge number
-      else { ind.innerHTML = "<i></i><i></i><i></i>"; }        // 3 bars
-    }
-  });
+  $$("#cariesChecks .surface-cell").forEach(cell => syncSurfaceDepthIndicator(cell, state));
 
   // Depth selector at the top sets the DEFAULT depth for newly tapped surfaces.
+  // SP5 Task 5: the whole visual caries-depth UI is gated by `cariesDepthEnabled`.
+  $("#cariesDepthRow").classList.toggle("hidden", !cariesDepthEnabled);
   setSelectOptions($("#cariesDepthSelect"), getCariesDepthOptions(), state.cariesActiveDepth);
   if($("#cariesDepthSelect").value !== String(state.cariesActiveDepth)){
     state.cariesActiveDepth = Number($("#cariesDepthSelect").value);
   }
+
+  // SP5 Task 5: per-tooth root-caries picker. Options come from the current
+  // `rootCariesMode`; the stored value is displayed collapsed to that list but
+  // NEVER written back (non-collapsing — widening the mode reveals it again).
+  // Shown only on a present tooth (mirrors the endo/pulp per-tooth controls).
+  setSelectOptions($("#rootCariesSelect"), rootCariesOptions(), rootCariesDisplayValue(rootCariesMode, state.rootCaries));
+  $("#rootCariesRow").classList.toggle("hidden", !isToothPresent(state.toothSelection));
 
   // filling surfaces
   $$("#fillingSurfaceChecks input[type=checkbox]").forEach(c => {
@@ -2316,23 +2520,73 @@ function hideCariesDepthPopup(){
   if(p) p.remove();
 }
 
-/** Popup to change the caries depth of a single surface on the selected teeth. */
+/** Popup to author a single caries surface on the selected teeth. Beyond the
+ *  original visual caries-depth (ICDAS/3-level) picker it now offers, in the
+ *  SAME anchored popup (SP5 Task 5): a per-surface secondary-caries CARS-score
+ *  picker and — only when `radiographicDepthMode !== "off"` — a per-surface
+ *  radiographic-depth picker. Each group's option list follows its granularity
+ *  mode; the depth group itself is hidden when `cariesDepthEnabled` is off. */
+/** Maps a caries surface identifier to its existing i18n surface-label key,
+ *  so the popup header can read e.g. "Caries details – Buccal". Falls back to
+ *  the raw surface string for any (unexpected) unmapped value. */
+function surfaceLabelKey(surface: string): string {
+  const map: Record<string, string> = {
+    buccal: "surface.buccal",
+    lingual: "surface.lingualPalatal",
+    mesial: "surface.mesial",
+    distal: "surface.distal",
+    occlusal: "surface.occlusal",
+  };
+  return map[surface] || surface;
+}
+
 function showCariesDepthPopup(surface: string, anchor: HTMLElement){
   hideCariesDepthPopup();
   const rect = anchor.getBoundingClientRect();
   const popup = el("div", { class: "odon-depth-popup" });
-  for(const opt of getCariesDepthOptions()){
-    const btn = el("button", { class: "odon-depth-option", text: opt.label }) as HTMLButtonElement;
-    btn.title = opt.title || "";
-    btn.addEventListener("click", (e: Any)=>{
-      e.stopPropagation();
-      applyToSelected((s)=>{
-        if(s.caries.has(`caries-${surface}`)) s.cariesDepths.set(surface, Number(opt.value));
+  popup.appendChild(el("div", { class: "odon-depth-title", text: `${t("caries.details")} – ${t(surfaceLabelKey(surface))}` }));
+  const active = activeTooth != null ? toothState.get(activeTooth) : null;
+  const addGroup = (
+    labelKey: string,
+    options: Array<{ value: Any; label: string; title?: string }>,
+    current: Any,
+    onPick: (value: Any) => void,
+  ) => {
+    if(!options || options.length === 0) return;
+    popup.appendChild(el("div", { class: "odon-depth-group-label", text: t(labelKey) }));
+    for(const opt of options){
+      const btn = el("button", { class: "odon-depth-option", text: opt.label }) as HTMLButtonElement;
+      btn.title = opt.title || "";
+      if(current != null && String(opt.value) === String(current)) btn.classList.add("is-active");
+      btn.addEventListener("click", (e: Any)=>{
+        e.stopPropagation();
+        onPick(opt.value);
+        hideCariesDepthPopup();
       });
-      hideCariesDepthPopup();
+      popup.appendChild(btn);
+    }
+  };
+
+  // 1) Visual caries depth (ICDAS / 3-level) — gated by `cariesDepthEnabled`.
+  if(cariesDepthEnabled){
+    addGroup("caries.depthLabel", getCariesDepthOptions(), active?.cariesDepths?.get(surface), (value)=>{
+      applyToSelected((s)=>{
+        if(s.caries.has(`caries-${surface}`)) s.cariesDepths.set(surface, Number(value));
+      });
     });
-    popup.appendChild(btn);
   }
+  // 2) Secondary caries (CARS 0..6) — options follow `secondaryCariesMode`.
+  addGroup("caries.secondaryLabel", secondaryCariesOptions(), active?.secondaryCaries?.get(surface) ?? 0, (value)=>{
+    // FIX 4: a CARS score is only meaningful on a caried surface. Guard the
+    // write the same way the visual-depth picker above does, so a score never
+    // lands on a non-caried surface as an invisible orphan.
+    applyToSelected((s)=>{ if(s.caries.has(`caries-${surface}`)) applySecondaryCariesScore(s.secondaryCaries, surface, Number(value)); });
+  });
+  // 3) Radiographic depth — only when the mode is on (else options is []).
+  addGroup("caries.radiographicLabel", radiographicDepthOptions(), active?.radiographicDepth?.get(surface) ?? "none", (value)=>{
+    applyToSelected((s)=>{ applyRadiographicDepth(s.radiographicDepth, surface, String(value)); });
+  });
+
   document.body.appendChild(popup);
   // Position below-right of the indicator, clamped to the viewport.
   const pw = popup.offsetWidth || 140;
@@ -2711,6 +2965,9 @@ function serializeState(s: Any){
     restorationType: s.restorationType,
     restorationMaterial: s.restorationMaterial,
     crownLeakage: !!s.crownLeakage,
+    rootCaries: s.rootCaries,
+    secondaryCaries: Object.fromEntries(s.secondaryCaries || new Map()),
+    radiographicDepth: Object.fromEntries(s.radiographicDepth || new Map()),
     ...(Object.keys(s.customStates || {}).length > 0 ? { customStates: s.customStates } : {}),
     ...(s.note ? { note: s.note } : {}),
   };
@@ -2736,6 +2993,15 @@ export const VALID_APICAL_DX = validValues("apicalDx");
 export const VALID_RESORPTION_TYPE = validValues("resorptionType");
 const VALID_CARIES_DEPTH = new Set(["surface","dentin","deep"]);
 export const VALID_FILLING_SURFACES = validSurfaces();
+// SP5 Task 1: caries fields foundation (additive; unused until later SP5
+// tasks wire up render/migration/validate). `rootCaries` is a registered
+// axis, so it reads from AXES like every other enum. `secondaryCaries`
+// (CARS score) and `radiographicDepth` are scalar-map fields (like
+// `cariesDepths`/`VALID_ICDAS` above) with no axis of their own, so their
+// valid sets are literal here.
+export const VALID_ROOT_CARIES = validValues("rootCaries");
+export const VALID_CARS = new Set([0, 1, 2, 3, 4, 5, 6]);
+export const VALID_RADIOGRAPHIC_DEPTH = new Set(["none", "E1", "E2", "D1", "D2", "D3"]);
 
 function filterSet(arr: Any, allowed: Set<string>): Set<string>{
   if(!Array.isArray(arr)) return new Set();
@@ -2746,7 +3012,42 @@ function validateEnum(value: Any, allowed: Set<string>, fallback: string): strin
   return typeof value === "string" && allowed.has(value) ? value : fallback;
 }
 
-function hydrateState(raw: Any){
+/**
+ * SP5 final review (FIX 1): is a payload version older than 2.3?
+ *
+ * Payloads before 2.3 never stored an explicit per-surface `secondaryCaries`
+ * CARS score — recurrent/secondary caries was DERIVED at render/summary time
+ * from `caries ∩ fillingSurfaceMaterials`. So for a legacy payload we must
+ * re-infer that intersection into an explicit score 3 on hydrate. A native 2.3+
+ * payload, by contrast, stores the score deliberately: a caried surface with a
+ * filling and NO recurrent score means the clinician left it primary, and we
+ * must NOT flip it to recurrent on export→reimport.
+ *
+ * A missing/blank/non-string version is treated as legacy (pre-versioned or
+ * pre-2.3 payloads had no version tag). Comparison is dotted-numeric so 1.4 <
+ * 2.2 < 2.3 < 2.10 order correctly (not string-lexicographic).
+ */
+function isLegacyPayloadVersion(version: unknown): boolean {
+  if(typeof version !== "string" || version.trim() === "") return true;
+  const parse = (v: string) => v.split(".").map((p) => { const n = parseInt(p, 10); return Number.isFinite(n) ? n : 0; });
+  const a = parse(version);
+  const b = [2, 3, 0]; // threshold: 2.3.0
+  for(let i = 0; i < Math.max(a.length, b.length); i++){
+    const x = a[i] ?? 0, y = b[i] ?? 0;
+    if(x !== y) return x < y;
+  }
+  return false; // exactly 2.3.0 → not legacy
+}
+
+/**
+ * @param inferLegacySecondaryCaries When true (the DEFAULT — preserves every
+ *   internal seam/preset/version-less caller and the existing SVG goldens), a
+ *   surface present in BOTH `caries` and `fillingSurfaceMaterials` with no
+ *   stored `secondaryCaries` score is promoted to the canonical recurrent score
+ *   3. The JSON/FHIR import path passes `false` for native ≥2.3 payloads so a
+ *   deliberately-primary caried+filled surface is not silently made recurrent.
+ */
+function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
   const s = defaultState();
   if(!raw || typeof raw !== "object") return s;
   // Legacy migration (payload < 2.0): the flat `crownMaterial` enum and the
@@ -2890,6 +3191,24 @@ function hydrateState(raw: Any){
       if(VALID_FILLING_SURFACES.has(surf) && code !== null) s.cariesDepths.set(surf, code);
     }
   }
+  // SP5 Task 1: caries fields foundation. `rootCaries` is a normal enum
+  // (validated like every other enum). `secondaryCaries` (CARS 0..6) and
+  // `radiographicDepth` (none/E1/E2/D1/D2/D3) are per-surface scalar maps,
+  // hydrated exactly like `cariesDepths` above.
+  s.rootCaries = validateEnum(raw.rootCaries, VALID_ROOT_CARIES, "none");
+  s.secondaryCaries = new Map();
+  if(raw.secondaryCaries && typeof raw.secondaryCaries === "object"){
+    for(const [surf, val] of Object.entries(raw.secondaryCaries)){
+      const num = typeof val === "number" ? val : (typeof val === "string" ? Number(val) : NaN);
+      if(VALID_FILLING_SURFACES.has(surf) && VALID_CARS.has(num)) s.secondaryCaries.set(surf, num);
+    }
+  }
+  s.radiographicDepth = new Map();
+  if(raw.radiographicDepth && typeof raw.radiographicDepth === "object"){
+    for(const [surf, val] of Object.entries(raw.radiographicDepth)){
+      if(VALID_FILLING_SURFACES.has(surf) && typeof val === "string" && VALID_RADIOGRAPHIC_DEPTH.has(val)) s.radiographicDepth.set(surf, val);
+    }
+  }
   s.fillingMaterial = validateEnum(raw.fillingMaterial, VALID_FILLING_MATERIAL, s.fillingMaterial);
   s.fillingSurfaces = filterSet(raw.fillingSurfaces, VALID_FILLING_SURFACES);
   s.fillingSurfaceMaterials = new Map();
@@ -2909,6 +3228,28 @@ function hydrateState(raw: Any){
   }
   // keep fillingSurfaces in sync with the map keys
   s.fillingSurfaces = new Set(s.fillingSurfaceMaterials.keys());
+  // SP5 Task 3 migration: secondary/recurrent caries used to be DERIVED at
+  // render/summary time from `caries ∩ fillingSurfaceMaterials`. It is now a
+  // stored CARS score. For any surface present in BOTH the old intersection
+  // (caries + a filling on the same surface), promote it to an explicit
+  // canonical "moderate" score of 3 — UNLESS a stored `secondaryCaries` value
+  // (parsed above from `raw.secondaryCaries`) already exists for that surface,
+  // in which case the stored score wins. This must run after both `s.caries`
+  // and `s.fillingSurfaceMaterials` are finalized.
+  //
+  // FIX 1 (data integrity): fire the intersection→score-3 inference ONLY for
+  // legacy (<2.3) payloads. `hydrateState` gets no version, so callers decide:
+  // the default is `true` (internal seams/presets/version-less callers keep
+  // inferring — this preserves the T3 goldens and byte-compat), while the JSON/
+  // FHIR import path passes `false` for native ≥2.3 payloads where a caried +
+  // filled surface with no recurrent score is a deliberate primary lesion.
+  if(inferLegacySecondaryCaries){
+    for(const surf of s.fillingSurfaceMaterials.keys()){
+      if(s.caries.has("caries-" + surf) && !s.secondaryCaries.has(surf)){
+        s.secondaryCaries.set(surf, 3);
+      }
+    }
+  }
   s.fissureSealing = !!raw.fissureSealing;
   s.calculus = !!raw.calculus;
   s.contactMesial = !!raw.contactMesial;
@@ -2984,7 +3325,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.2",
+    version: "2.3",
     globals: {
       wisdomVisible,
       showBase,
@@ -3272,10 +3613,15 @@ export function exportFhir(options?: FhirExportOptions){
 
 function importStatus(data: Any){
   if(!data || typeof data !== "object") return;
+  // FIX 1: only re-infer the legacy caries∩filling recurrent-caries intersection
+  // for pre-2.3 payloads. A native ≥2.3 payload (including any FHIR bundle, which
+  // parseFhirBundle tags "2.3") carries explicit `secondaryCaries` scores, so an
+  // unscored caried+filled surface stays PRIMARY. A missing version → legacy.
+  const inferLegacySecondaryCaries = isLegacyPayloadVersion(data.version);
   const teeth = data.teeth || {};
   for(const toothNo of ALL_TEETH){
     const raw = teeth[toothNo];
-    toothState.set(toothNo, hydrateState(raw));
+    toothState.set(toothNo, hydrateState(raw, inferLegacySecondaryCaries));
     applyStateToSvg(toothNo);
     updateToothTileNumber(toothNo);
     updateToothLabelNoteIcon(toothNo);
@@ -3823,7 +4169,7 @@ function wireControls(){
     const input = cell.querySelector("input") as HTMLInputElement | null;
     if(!input) return;
     const surface = String(input.value).replace("caries-", "");
-    const ind = el("span", { class: "surf-depth", title: t("caries.depthLabel") }, [ el("i"), el("i"), el("i") ]);
+    const ind = el("span", { class: "surf-depth", title: t("caries.detailsHint") }, [ el("i"), el("i"), el("i") ]);
     ind.addEventListener("click", (e: Any)=>{
       e.preventDefault();
       e.stopPropagation();
@@ -3837,6 +4183,12 @@ function wireControls(){
   ], cariesOnToggle);
   buildSelect($("#cariesDepthSelect"), getCariesDepthOptions(), (val)=>{
     applyToSelected((s)=>{ s.cariesActiveDepth = Number(val); });
+  });
+  // SP5 Task 5: per-tooth root-caries picker. On change the selected value is
+  // the canonical rootCaries enum (simple mode's "present" already maps to
+  // "active"), so it writes straight to state.
+  buildSelect($("#rootCariesSelect"), rootCariesOptions(), (value)=>{
+    applyToSelected((s)=>{ s.rootCaries = value; });
   });
 
   // Filling material dropdown
@@ -4364,6 +4716,13 @@ const SUMMARY_ENDO_KEY: Record<string, string> = {
   "endo-glass-pin": "endo.option.glassPin",
   "endo-metal-pin": "endo.option.metalPin",
 };
+// FIX 3: map the `rootCaries` enum value ("active-cavitated") to its i18n key
+// ("rootCaries.activeCavitated") so a root-caries-only tooth isn't summary-invisible.
+const SUMMARY_ROOT_CARIES_KEY: Record<string, string> = {
+  active: "rootCaries.active",
+  arrested: "rootCaries.arrested",
+  "active-cavitated": "rootCaries.activeCavitated",
+};
 /**
  * Build a human-readable, localized summary of the current odontogram state:
  * tooth counts, present/missing lists, and caries / fillings / endo /
@@ -4396,20 +4755,41 @@ export function getOdontogramSummary(): OdontogramSummary {
     else if(isMilk) milkCount++;
     else permanent.push(toothNo);
 
-    // Caries (primary vs. derived secondary = caries on a filled surface)
+    // Caries (primary vs. secondary). Secondary/recurrent caries is now a
+    // STORED, SCORED axis (SP5): a surface is secondary when it carries an
+    // explicit CARS score (`secondaryCaries > 0`), not by re-deriving the old
+    // `caries ∩ fillingSurfaceMaterials` intersection at summary time.
     if(s.caries && s.caries.size > 0){
       const primary: string[] = [];
       const secondary: string[] = [];
       for(const surface of SUMMARY_SURFACE_ORDER){
         if(!s.caries.has("caries-" + surface)) continue;
         const letter = SUMMARY_SURFACE_LETTER[surface] || surface;
-        if(s.fillingSurfaceMaterials && s.fillingSurfaceMaterials.has(surface)) secondary.push(letter);
+        if(s.secondaryCaries && (s.secondaryCaries.get(surface) ?? 0) > 0) secondary.push(letter);
         else primary.push(letter);
       }
       const parts: string[] = [];
       if(primary.length) parts.push(primary.join(", "));
       if(secondary.length) parts.push(secondary.join(", ") + " - " + t("toothInfo.secondary"));
       if(parts.length) caries.push(`${lbl(toothNo)} (${parts.join("; ")})`);
+    }
+
+    // Root caries (FIX 3) — a present-tooth finding independent of surface
+    // caries, so a tooth with ONLY root caries would otherwise never appear in
+    // the caries section. Follows the surface-caries "label (detail)" style.
+    if(s.rootCaries && s.rootCaries !== "none"){
+      const rootKey = SUMMARY_ROOT_CARIES_KEY[s.rootCaries];
+      if(rootKey) caries.push(`${lbl(toothNo)} (${t(rootKey)})`);
+    }
+
+    // Radiographic caries depth (FIX 3) — per-surface, independent of the
+    // visual caries layer; surface any recorded depth so it isn't summary-
+    // invisible. Style: "16 (M: Dentin, outer third (D1))".
+    if(s.radiographicDepth && s.radiographicDepth.size > 0){
+      const depths = SUMMARY_SURFACE_ORDER
+        .filter((surface) => s.radiographicDepth.has(surface))
+        .map((surface) => `${SUMMARY_SURFACE_LETTER[surface] || surface}: ${t("radiographicDepth." + s.radiographicDepth.get(surface))}`);
+      if(depths.length) caries.push(`${lbl(toothNo)} (${depths.join(", ")})`);
     }
 
     // Fillings (surfaces)

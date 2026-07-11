@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, exportFhir, exportImage, exportSvg, setImportFormat };
-import type { OdontogramSummary, PulpDetailLevel } from "./odontogram";
-export type { PulpDetailLevel } from "./odontogram";
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, exportFhir, exportImage, exportSvg, setImportFormat };
+import type { OdontogramSummary, PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode } from "./odontogram";
+export type { PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode } from "./odontogram";
 export type { OdontogramSummary, OdontogramSummarySection } from "./odontogram";
 export type { FhirExportOptions } from "./fhir/types";
 import { startIntroTour } from "./tour";
 export { startIntroTour } from "./tour";
 import { useI18n } from "./i18n/useI18n";
+import SettingsModal, { type SettingsState } from "./SettingsModal";
 import type { Language } from "./i18n/translations";
 import type { NumberingSystem } from "./utils/numbering";
 import { applyThemeConfig, type OdontogramThemeConfig } from "./theme";
@@ -73,19 +74,33 @@ type AppProps = {
    * level; the level only governs how the pulp control presents it.
    */
   pulpDetailLevel?: PulpDetailLevel;
+  /**
+   * Secondary-caries (CARS) granularity for the per-surface score picker:
+   * `"simple"` ([0,3]), `"standard"` ([0,1,3,6], default) or `"full"` ([0..6]).
+   * A stored score round-trips at every mode; the mode only governs the offered
+   * option list. (The mode UI lives in the Settings modal; this prop is the
+   * controlled entry point.)
+   */
+  secondaryCariesMode?: SecondaryCariesMode;
+  /**
+   * Root-caries granularity for the per-tooth picker: `"simple"` (none /
+   * present, default) or `"severity"` (the full none/active/arrested/
+   * active-cavitated enum). Non-collapsing across modes.
+   */
+  rootCariesMode?: RootCariesMode;
+  /**
+   * Radiographic-depth granularity for the per-surface picker: `"off"`
+   * (hidden, default), `"threeLevel"` (superficial/middle/deep) or `"detailed"`
+   * (E1..D3). When off, the per-surface radiographic badge is not shown.
+   */
+  radiographicDepthMode?: RadiographicDepthMode;
+  /**
+   * Whether the visual caries-depth encoding (per-surface depth picker + the
+   * opacity/contour depth tier in the render) is active. Default `true`; set
+   * `false` to render caried surfaces at the SVG default with no depth tier.
+   */
+  cariesDepthEnabled?: boolean;
 };
-
-const PULP_LEVEL_OPTIONS: { value: PulpDetailLevel; labelKey: string }[] = [
-  { value: "simple", labelKey: "pulp.level.simple" },
-  { value: "aae", labelKey: "pulp.level.aae" },
-  { value: "latin", labelKey: "pulp.level.latin" },
-];
-
-const NUMBERING_OPTIONS: { value: NumberingSystem; labelKey: string }[] = [
-  { value: "FDI", labelKey: "numbering.fdi" },
-  { value: "UNIVERSAL", labelKey: "numbering.universal" },
-  { value: "PALMER", labelKey: "numbering.palmer" },
-];
 
 const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
   { value: "hu", labelKey: "language.hu" },
@@ -135,6 +150,10 @@ export default function App({
   enableNotes,
   enableIcdas,
   pulpDetailLevel,
+  secondaryCariesMode,
+  rootCariesMode,
+  radiographicDepthMode,
+  cariesDepthEnabled,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
@@ -143,10 +162,13 @@ export default function App({
   const [languageOpen, setLanguageOpen] = useState(false);
   const languageRef = useRef<HTMLDivElement | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const settingsRef = useRef<HTMLDivElement | null>(null);
   const [notesOn, setNotesOn] = useState<boolean>(enableNotes ?? false);
   const [icdasOn, setIcdasOn] = useState<boolean>(enableIcdas ?? false);
   const [pulpLevel, setPulpLevel] = useState<PulpDetailLevel>(pulpDetailLevel ?? "aae");
+  const [secondaryMode, setSecondaryMode] = useState<SecondaryCariesMode>(secondaryCariesMode ?? "standard");
+  const [rootMode, setRootMode] = useState<RootCariesMode>(rootCariesMode ?? "simple");
+  const [radiographicMode, setRadiographicMode] = useState<RadiographicDepthMode>(radiographicDepthMode ?? "off");
+  const [cariesDepthOn, setCariesDepthOn] = useState<boolean>(cariesDepthEnabled ?? true);
   const [toothInfoOn, setToothInfoOn] = useState<boolean>(true);
   const [summary, setSummary] = useState<OdontogramSummary | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
@@ -232,6 +254,30 @@ export default function App({
     setPulpLevel(pulpDetailLevel ?? "aae");
   }, [pulpDetailLevel]);
 
+  // SP5 Task 5: sync the caries-granularity settings (controlled props -> engine).
+  // The mode-picker UI itself lives in the Settings modal (Task 6); these props
+  // are the controlled entry point so hosts (and tests) can drive the modes.
+  useEffect(() => {
+    const v = secondaryCariesMode ?? "standard";
+    setSecondaryCariesMode(v);
+    setSecondaryMode(v);
+  }, [secondaryCariesMode]);
+  useEffect(() => {
+    const v = rootCariesMode ?? "simple";
+    setRootCariesMode(v);
+    setRootMode(v);
+  }, [rootCariesMode]);
+  useEffect(() => {
+    const v = radiographicDepthMode ?? "off";
+    setRadiographicDepthMode(v);
+    setRadiographicMode(v);
+  }, [radiographicDepthMode]);
+  useEffect(() => {
+    const v = cariesDepthEnabled ?? true;
+    setCariesDepthEnabled(v);
+    setCariesDepthOn(v);
+  }, [cariesDepthEnabled]);
+
   // Refresh the tooth-information summary while its panel is open. Recomputes on
   // every state change, and when language/numbering change (which affect labels).
   useEffect(() => {
@@ -247,9 +293,6 @@ export default function App({
       if(!languageRef.current?.contains(target)){
         setLanguageOpen(false);
       }
-      if(!settingsRef.current?.contains(target)){
-        setSettingsOpen(false);
-      }
       if(!exportRef.current?.contains(target)){
         setExportOpen(false);
       }
@@ -260,6 +303,34 @@ export default function App({
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
   }, []);
+
+  // Live settings surface for the tabbed Settings modal. Each handler updates
+  // local React state AND calls the same module accessor the old dropdown did —
+  // so the setting still does exactly what it did, only from a new location.
+  const settingsState: SettingsState = {
+    numbering: currentNumbering,
+    onNumbering: setNumbering,
+    language: lang,
+    onLanguage: setLang,
+    isDark,
+    onToggleDark: toggleDark,
+    toothInfo: toothInfoOn,
+    onToothInfo: (v) => setToothInfoOn(v),
+    secondaryCariesMode: secondaryMode,
+    onSecondaryCariesMode: (v) => { setSecondaryMode(v); setSecondaryCariesMode(v); },
+    icdas: icdasOn,
+    onIcdas: (v) => { setIcdasOn(v); setIcdasEnabled(v); },
+    cariesDepth: cariesDepthOn,
+    onCariesDepth: (v) => { setCariesDepthOn(v); setCariesDepthEnabled(v); },
+    rootCariesMode: rootMode,
+    onRootCariesMode: (v) => { setRootMode(v); setRootCariesMode(v); },
+    radiographicDepthMode: radiographicMode,
+    onRadiographicDepthMode: (v) => { setRadiographicMode(v); setRadiographicDepthMode(v); },
+    pulpLevel,
+    onPulpLevel: (v) => { setPulpLevel(v); setPulpDetailLevel(v); },
+    notes: notesOn,
+    onNotes: (v) => { setNotesOn(v); setNotesEnabled(v); },
+  };
 
   return (
     <div ref={themeRootRef} className="odontogram-root">
@@ -315,42 +386,10 @@ export default function App({
               </svg>
             )}
           </button>
-          <div className="topbar-group dropdown" ref={settingsRef}>
-            <button className="btn-theme" onClick={() => setSettingsOpen((o) => !o)} aria-haspopup="menu" aria-expanded={settingsOpen} title={t("settings.title")} aria-label={t("settings.title")}>
+          <div className="topbar-group">
+            <button className="btn-theme" onClick={() => setSettingsOpen(true)} aria-haspopup="dialog" aria-expanded={settingsOpen} title={t("settings.title")} aria-label={t("settings.title")}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
-            {settingsOpen && (
-              <div className="dropdown-menu settings-menu" role="menu" aria-label={t("settings.title")}>
-                <div className="settings-group-label">{t("numbering.label")}</div>
-                {NUMBERING_OPTIONS.map((opt) => (
-                  <button key={opt.value} className="dropdown-item" role="menuitemradio" aria-checked={currentNumbering === opt.value}
-                    onClick={() => { setNumbering(opt.value); }}>
-                    {t(opt.labelKey)}
-                  </button>
-                ))}
-                <div className="settings-sep" />
-                <button className="dropdown-item" role="menuitemcheckbox" aria-checked={notesOn}
-                  onClick={() => { const v = !notesOn; setNotesOn(v); setNotesEnabled(v); }}>
-                  {t("settings.notes")}{notesOn ? " ✓" : ""}
-                </button>
-                <button className="dropdown-item" role="menuitemcheckbox" aria-checked={icdasOn}
-                  onClick={() => { const v = !icdasOn; setIcdasOn(v); setIcdasEnabled(v); }}>
-                  {t("icdas.enable")}{icdasOn ? " ✓" : ""}
-                </button>
-                <div className="settings-sep" />
-                <div className="settings-group-label">{t("pulp.level.label")}</div>
-                {PULP_LEVEL_OPTIONS.map((opt) => (
-                  <button key={opt.value} className="dropdown-item" role="menuitemradio" aria-checked={pulpLevel === opt.value}
-                    onClick={() => { setPulpLevel(opt.value); setPulpDetailLevel(opt.value); }}>
-                    {t(opt.labelKey)}{pulpLevel === opt.value ? " ✓" : ""}
-                  </button>
-                ))}
-                <button className="dropdown-item" role="menuitemcheckbox" aria-checked={toothInfoOn}
-                  onClick={() => { setToothInfoOn((v) => !v); }}>
-                  {t("settings.toothInfo")}{toothInfoOn ? " ✓" : ""}
-                </button>
-              </div>
-            )}
           </div>
           {/* Hidden export buttons kept for host capture + wireControls wiring */}
           <button id="btnStatusExport" hidden aria-hidden="true" tabIndex={-1}>{t("topbar.exportStatus")}</button>
@@ -588,6 +627,10 @@ export default function App({
               </div>
               <div id="cariesChecks"></div>
               <div id="cariesSubcrownRow" className="check-grid subcrown-row"></div>
+              <div id="rootCariesRow" className="row">
+                <span>{t("caries.rootLabel")}</span>
+                <select id="rootCariesSelect"></select>
+              </div>
             </section>
 
             <section id="fillingSection" className="card">
@@ -667,6 +710,13 @@ export default function App({
           </div>
         </aside>
       </main>
+
+      <SettingsModal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        t={t}
+        settings={settingsState}
+      />
     </div>
   );
 }

@@ -14029,7 +14029,7 @@
       },
       {
         "id": "subcaries-occlusal",
-        "opacity": "0.45",
+        "opacity": "0.58",
         "cls": ""
       },
       {
@@ -32152,7 +32152,7 @@
       },
       {
         "id": "subcaries-occlusal",
-        "opacity": "0.45",
+        "opacity": "0.58",
         "cls": ""
       },
       {
@@ -52020,7 +52020,7 @@
       },
       {
         "id": "subcaries-occlusal",
-        "opacity": "0.45",
+        "opacity": "0.58",
         "cls": ""
       },
       {
@@ -72128,7 +72128,7 @@
       },
       {
         "id": "subcaries-occlusal",
-        "opacity": "0.45",
+        "opacity": "0.58",
         "cls": ""
       },
       {
@@ -90246,7 +90246,7 @@
       },
       {
         "id": "subcaries-occlusal",
-        "opacity": "0.45",
+        "opacity": "0.58",
         "cls": ""
       },
       {
@@ -108189,7 +108189,7 @@
       },
       {
         "id": "subcaries-occlusal",
-        "opacity": "0.45",
+        "opacity": "0.58",
         "cls": ""
       },
       {
@@ -114815,6 +114815,432 @@
       },
       {
         "id": "granuloma-inside",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 779,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "rootCaries": "active"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries-root",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 780,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "rootCaries": "arrested"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries-root",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 781,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "rootCaries": "active-cavitated"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries-root",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
         "opacity": "",
         "cls": ""
       }

@@ -98,6 +98,35 @@ export function buildFhirBundleFromRegistry(payload: OdontogramExportPayload, op
   for (const [tooth, recRaw] of Object.entries(teeth)) {
     const rec = (recRaw && typeof recRaw === "object" ? recRaw : {}) as ToothRecord;
     for (const axis of AXES) for (const obs of emitForAxis(subjectRef, tooth, rec, axis)) entries.push({ resource: obs });
+    // SP5 Task 1: `secondaryCaries` (CARS 0-6) and `radiographicDepth`
+    // (none/E1/E2/D1/D2/D3) are per-surface scalar maps special-cased outside
+    // AXES — same shape as `cariesDepths`, but with their own independent
+    // finding codes (not piggybacked on the `caries` set's components), so
+    // each gets its own Observation with one component per surface.
+    const secondaryCaries = rec.secondaryCaries;
+    if (secondaryCaries && typeof secondaryCaries === "object") {
+      const comps = Object.entries(secondaryCaries).filter((e): e is [string, number] => typeof e[1] === "number");
+      if (comps.length) {
+        const obs = baseObservation(subjectRef, tooth, findingConcept("secondary-caries", "Secondary/recurrent caries (CARS)"));
+        obs.component = comps.map(([surf, val]) => ({
+          code: valueConcept("fillingSurfaces", surf),
+          valueInteger: val,
+        }));
+        entries.push({ resource: obs });
+      }
+    }
+    const radiographicDepth = rec.radiographicDepth;
+    if (radiographicDepth && typeof radiographicDepth === "object") {
+      const comps = Object.entries(radiographicDepth).filter((e): e is [string, string] => typeof e[1] === "string");
+      if (comps.length) {
+        const obs = baseObservation(subjectRef, tooth, findingConcept("radiographic-caries-depth", "Radiographic caries depth"));
+        obs.component = comps.map(([surf, val]) => ({
+          code: valueConcept("fillingSurfaces", surf),
+          valueCodeableConcept: valueConcept("radiographicDepth", val),
+        }));
+        entries.push({ resource: obs });
+      }
+    }
     if (typeof rec.note === "string" && rec.note.trim().length > 0) {
       const noteObs = baseObservation(subjectRef, tooth, findingConcept("tooth-note", "Tooth note"));
       noteObs.note = [{ text: rec.note }];

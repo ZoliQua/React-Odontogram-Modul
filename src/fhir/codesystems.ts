@@ -164,6 +164,25 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "internal": { code: "internal", display: "Internal root resorption" },
     "external-cervical": { code: "external-cervical", display: "External cervical root resorption" },
   },
+  // SP5 Task 1: caries fields foundation (additive; not yet rendered). `rootCaries`
+  // is a normal enum axis (registered in axes.ts/fieldMappings.ts). `secondaryCaries`
+  // (CARS 0-6) and `radiographicDepth` are per-surface scalar maps handled the same
+  // way `cariesDepths` is (special-cased outside AXES) — `secondaryCaries` has no
+  // value-map group (a raw integer score, like ICDAS), `radiographicDepth` does.
+  rootCaries: {
+    "none": { code: "none", display: "No root caries" },
+    "active": { code: "active", display: "Active root caries" },
+    "arrested": { code: "arrested", display: "Arrested root caries" },
+    "active-cavitated": { code: "active-cavitated", display: "Active cavitated root caries" },
+  },
+  radiographicDepth: {
+    "none": { code: "none", display: "No radiographic caries depth recorded" },
+    "E1": { code: "E1", display: "Enamel, outer half (E1)" },
+    "E2": { code: "E2", display: "Enamel, inner half (E2)" },
+    "D1": { code: "D1", display: "Dentin, outer third (D1)" },
+    "D2": { code: "D2", display: "Dentin, middle third (D2)" },
+    "D3": { code: "D3", display: "Dentin, inner third (D3)" },
+  },
 };
 
 /**

@@ -193,6 +193,23 @@ function apicalDxParityCases(): { label: string; state: Record<string, unknown> 
   ];
 }
 
+// SP5 Task 2 parity proof: `rootCaries` (enum, new-model — this finding was
+// NEVER modeled/rendered before, so there is no legacy boolean/field to be
+// byte-identical with) wires the previously-dormant `caries-root` artwork
+// layer. Appended at the very end of svgCases() (outside the per-template
+// loop, one template only) so it cannot shift any existing case's
+// index/golden entry — see resorptionTypeParityCases() doc. The
+// occlusal-template non-activation (no caries-root artwork there at all) and
+// missing/implant-tooth non-activation are covered directly (not against a
+// frozen snapshot) in the dedicated root-caries-parity.test.ts unit test.
+function rootCariesParityCases(): { label: string; state: Record<string, unknown> }[] {
+  return [
+    { label: "rootCaries-active-new", state: { toothSelection:"tooth-base", rootCaries:"active" } },
+    { label: "rootCaries-arrested-new", state: { toothSelection:"tooth-base", rootCaries:"arrested" } },
+    { label: "rootCaries-active-cavitated-new", state: { toothSelection:"tooth-base", rootCaries:"active-cavitated" } },
+  ];
+}
+
 export function svgCases() {
   const cases: { toothNo:number; view:"front"|"occlusal"; template:string; state:Record<string,unknown> }[] = [];
   for (const t of TEMPLATES) {
@@ -228,6 +245,10 @@ export function svgCases() {
   // Appended AFTER pulpDxParityCases() — see apicalDxParityCases() doc.
   for (const ac of apicalDxParityCases()) {
     cases.push({ toothNo: 11, view: "front", template: "11", state: ac.state });
+  }
+  // Appended AFTER apicalDxParityCases() — see rootCariesParityCases() doc.
+  for (const rtc of rootCariesParityCases()) {
+    cases.push({ toothNo: 11, view: "front", template: "11", state: rtc.state });
   }
   return cases;
 }

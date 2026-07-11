@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.16.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.17.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -44,16 +44,19 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🔢 12 filtrów wyboru (wszystkie, obecne, stałe, mleczne, implanty, brakujące, górne/dolne, przednie/trzonowe)
 - 📊 Predefiniowane presety statusu (reset, uzębienie mleczne, uzębienie mieszane, bezzębny)
 - 📦 34 predefiniowane szablony uzupełnień (mosty, protezy ruchome, protezy na belce z implantami)
-- 💾 Eksport/import statusu w formacie JSON (wersja 2.2; import nadal akceptuje wersje 1.4, 2.0 i 2.1 i migruje je automatycznie, z niestandardowymi stanami wtyczek i notatkami do zębów)
+- 💾 Eksport/import statusu w formacie JSON (wersja 2.3; import nadal akceptuje wersje 1.4, 2.0, 2.1 i 2.2 i migruje je automatycznie, z niestandardowymi stanami wtyczek i notatkami do zębów)
 - 🔗 Eksport HL7 FHIR R4 (kolekcja Bundle z obserwacjami na ząb, kodowanie zębów wg ISO 3950 dla uzębienia stałego, lokalny system kodów — mapowanie SNOMED CT planowane)
 - ✚ Interfejs wyboru powierzchni w układzie krzyżowym (B/M/O/D/L) dla próchnicy i wypełnień
 - 🧱 Materiały wypełnień na powierzchnię (mieszane wypełnienia, np. policzkowe amalgamat + dystalne kompozyt)
 - 🖼️ Eksport obrazu PNG/JPG/SVG wykresu (do pobrania; PNG/JPG rastrowane z wektorowego SVG)
-- 🦷 Próchnica wtórna (nawracająca) — automatycznie wyznaczana, gdy próchnica nakłada się na wypełnienie
+- 🦷 Próchnica wtórna (nawracająca): przechowywany wynik CARS na powierzchnię (0–6, `secondaryCaries`), renderowany jako nieprzezroczystość warstwy próchnicy — zastępuje dawne wyznaczanie na podstawie nakładania się próchnicy na wypełnienie (zmigrowany starszy stan otrzymuje kanoniczny wynik „umiarkowany”)
+- 🌱 Próchnica korzenia (`rootCaries`: brak / aktywna / zatrzymana / aktywna-jamista), uruchamiająca dedykowaną warstwę grafiki próchnicy korzenia
+- 📡 Radiologiczna głębokość próchnicy (`radiographicDepth`: brak / E1 / E2 / D1 / D2 / D3 na powierzchnię), niezależna od wizualnej skali głębokości ICDAS, prezentowana jako odznaka i zwrotnie zapisywana we własnej obserwacji FHIR
+- 🎚️ Trzy ustawienia szczegółowości próchnicy (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) oraz przełącznik `cariesDepthEnabled`, zwijające każdą skalę do prostszego widoku wyboru bez utraty zapisanej wartości
 - 🪨 Kamień nazębny oraz resorpcja korzenia typowana jako wewnętrzna lub zewnętrzna szyjkowa (`resorptionType`)
 - 📏 Głębokość próchnicy na powierzchnię (powierzchowna / zębina / głęboka), lub opcjonalne punktowanie ICDAS II (0–6) za pomocą `enableIcdas`
 - 🩹 Przełącznik nieszczelności brzeżnej korony, widoczny tylko przy odbudowie koronowej lub mostowej
-- 🧰 Ujednolicony wiersz ikon paska górnego z menu Ustawień (numeracja, notatki, ICDAS, informacje o zębach)
+- 🧰 Ujednolicony wiersz ikon paska górnego z zakładkowym oknem modalnym Ustawień (Ogólne / Próchnica / Próchnica wtórna / Miazga / Notatki — numeracja, notatki, ICDAS, przełącznik głębokości próchnicy, szczegółowość próchnicy korzenia/radiologicznej, poziom szczegółowości miazgi, informacje o zębach)
 - 📋 Panel informacji o zębach: na żywo tekstowe podsumowanie całego wykresu (liczba zębów, listy obecnych/brakujących, próchnica w tym wtórna, wypełnienia, kanały korzeniowe, protetyka, implanty, stan przyzębia) — wyświetlany domyślnie, przełączany w Ustawieniach
 - 🗂️ Skonsolidowane menu Eksportu (Status JSON / FHIR / PNG / JPG)
 - 📥 Menu Importu z importem FHIR (zwrotne wczytywanie wyeksportowanych Bundli)
@@ -71,7 +74,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🔒 Tryb tylko do odczytu: wyłączenie wszystkich interakcji do drukowania/raportowania/przeglądania
 - ✨ Animacje zaznaczenia: pulsująca przerywana ramka i świecący cień na zaznaczonych zębach (z obsługą prefers-reduced-motion)
 - 📝 Notatki do zębów: dwuklik, aby dodać/edytować notatki, ikona notatki obok numeru zęba, etykietka po najechaniu z tekstem notatki, eksport/import JSON
-- 🧪 421 testów automatycznych (Vitest) w 43 plikach testowych obejmujące numerację, tłumaczenia, presety, i18n, komponent App, motyw, dotyk, wtyczki, dostępność oraz parytet osi klinicznych/diagnostycznych
+- 🧪 506 testów automatycznych (Vitest) w 50 plikach testowych obejmujące numerację, tłumaczenia, presety, i18n, komponent App, motyw, dotyk, wtyczki, dostępność oraz parytet osi klinicznych/diagnostycznych
 - 📖 Dokumentacja API TypeDoc z komentarzami JSDoc dla wszystkich publicznych eksportów (`npm run docs`)
 
 ### 📦 Moduły
@@ -191,6 +194,17 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 
 **Głębokość próchnicy** (na powierzchnię): `superficial` / `dentin` / `deep`, lub opcjonalne kody ICDAS II `0–6` gdy ustawiono `enableIcdas`
 
+**Próchnica korzenia** (`rootCaries`; uruchamia warstwę grafiki `caries-root` na obecnym zębie):
+`none`, `active`, `arrested`, `active-cavitated`
+
+**Wynik próchnicy wtórnej (nawracającej)** (`secondaryCaries`; przechowywany na powierzchnię, CARS `0` (zdrowa) – `6` (jamista), renderowany jako nieprzezroczystość warstwy próchnicy):
+`0`, `1`, `2`, `3`, `4`, `5`, `6`
+
+**Radiologiczna głębokość próchnicy** (`radiographicDepth`; na powierzchnię, niezależna od wizualnej skali ICDAS/`cariesDepths`):
+`none`, `E1`, `E2`, `D1`, `D2`, `D3`
+
+**Ustawienia szczegółowości próchnicy** (globalne): `secondaryCariesMode` (`simple`/`standard`/`full`, domyślnie `standard`), `rootCariesMode` (`simple`/`severity`, domyślnie `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, domyślnie `off`), `cariesDepthEnabled` (wartość logiczna, domyślnie `true`) — każde z nich zwija odpowiednią skalę do prostszego widoku wyboru bez zmiany zapisanej wartości
+
 **Wskaźniki specjalne:**
 `crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
@@ -291,7 +305,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testowanie
 ```bash
-npm run test           # Uruchom wszystkie 421 testów
+npm run test           # Uruchom wszystkie 506 testów
 npm run test:watch     # Tryb obserwowania
 npm run test:coverage  # Raport pokrycia
 ```
@@ -350,7 +364,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `startIntroTour()` | Uruchom 12-krokowy interaktywny samouczek wprowadzający |
 
 ### 💾 Format eksportu/importu statusu
-Eksport tworzy plik JSON (wersja `2.2`; import akceptuje też starsze wersje `1.4`, `2.0` i `2.1` i migruje je automatycznie) zawierający:
+Eksport tworzy plik JSON (wersja `2.3`; import akceptuje też starsze wersje `1.4`, `2.0`, `2.1` i `2.2` i migruje je automatycznie) zawierający:
 
 **Pola globalne:**
 - `wisdomVisible` - widoczność zębów mądrości
@@ -366,6 +380,9 @@ Eksport tworzy plik JSON (wersja `2.2`; import akceptuje też starsze wersje `1.
 - `endo` - stan endodontyczny
 - `mods` - tablica modyfikacji (zapalenie, przyzębie)
 - `caries` - aktywne powierzchnie z próchnicą
+- `rootCaries` - stopień zaawansowania próchnicy korzenia (none/active/arrested/active-cavitated)
+- `secondaryCaries` - wynik CARS próchnicy wtórnej na powierzchnię (0-6)
+- `radiographicDepth` - radiologiczna głębokość próchnicy na powierzchnię (none/E1/E2/D1/D2/D3), niezależna od wizualnej skali ICDAS
 - `fillingMaterial` - materiał wypełnienia
 - `fillingSurfaces` - powierzchnie wypełnione
 - `pulpDx` - diagnoza miazgi wg AAE (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
@@ -398,7 +415,7 @@ Eksport tworzy plik JSON (wersja `2.2`; import akceptuje też starsze wersje `1.
 - `src/status_extras.ts` - 34 predefiniowane szablony uzupełnień (mosty, protezy, konstrukcje belkowe)
 - `src/i18n/` - tłumaczenia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) i hook i18n
 - `src/utils/numbering.ts` - konwersja numeracji FDI, Universal, Palmer
-- `src/__tests__/` - zestaw testów Vitest (421 testów w 43 plikach)
+- `src/__tests__/` - zestaw testów Vitest (506 testów w 50 plikach)
 - `src/assets/teeth-svgs/` - szablony SVG zębów (6 plików: siekacze, kły, zęby przedtrzonowe, trzonowce + widoki okluzyjne)
 - `src/assets/icon-svgs/` - ikony SVG paska narzędzi (5 plików)
 
