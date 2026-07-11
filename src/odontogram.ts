@@ -4041,6 +4041,11 @@ function serializeState(s: Any){
     apicalDx: s.apicalDx,
     endoResection: !!s.endoResection,
     resorptionType: s.resorptionType,
+    // SP18: peri-implant status (mucositis / peri-implantitis staging) was
+    // authored, rendered, and read back by hydrateState, but omitted here —
+    // an SP8 omission that silently dropped it on export/import. Fixed by
+    // adding it alongside the other enum-axis fields.
+    periImplant: s.periImplant,
     mods: Array.from(s.mods || []),
     periapicalType: s.periapicalType,
     endo: s.endo,

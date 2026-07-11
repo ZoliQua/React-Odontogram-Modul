@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.30.0] - 2026-07-11
+### Fixed
+- Peri-implant status (mucositis / peri-implantitis mild / moderate / severe) is now written to the exported chart. It was authored, rendered, summarized, and read back on import, but was omitted from `serializeState()`, so it was silently lost on JSON and FHIR export → import. It now round-trips like every other clinical axis (no payload-version change — additive and backward-compatible within 2.10).
+### Changed
+- Comprehensive documentation refresh. The README (English + all supported UI languages) now covers every clinical axis and setting added since v1.13 — pulp / apical diagnosis (with practical-Latin subtypes), root resorption, peri-implant status, the caries state-machine (ICDAS depth, CARS secondary caries, root caries, radiographic depth), per-surface filling defects, typed tooth wear, discoloration, per-tooth orthodontics, position-aware surface notation, the two-axis restoration model with removable prosthetics and multi-tooth bridge spans, and the tabbed Settings modal. The Status Export/Import field reference and payload version (2.10) are brought current, and the generated API reference (TypeDoc) is regenerated.
+
 ## [1.29.0] - 2026-07-11
 ### Fixed
 - Changing the pulp-detail level (Settings) now live-refreshes the whole-mouth summary and per-tooth tooltips (previously stayed stale, showing the old Latin/AAE wording until the next tooth edit).

@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.18.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.30.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -15,6 +15,8 @@
 ---
 
 ## 🇩🇪 Deutsch
+
+*(Deutsche Version des README — übersetzt aus der englischen Ausgangsversion, Stand v1.30.0)*
 
 ### 📋 Übersicht
 Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der eine schnelle Zahnstatuserfassung mit einer übersichtlichen Benutzeroberfläche unterstützt. Es rendert geschichtete SVG-Zahnvorlagen zur Darstellung von Restaurationen, Karies, endodontischem Status, Mobilität und anderen klinischen Details, und bietet Mehrfachauswahl, Auswahlfilter und vordefinierte Statusvorlagen.
@@ -30,21 +32,22 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🖱️ Schnelle Auswahl und Mehrfachauswahl (CMD/CTRL + Klick)
 - 🦷 Zahntypen: bleibend, Milchzahn, Implantat, subgingival, fehlend
 - 🦷 Zahnsubstrat (unabhängig von jeder Restauration): natürlich, Radix (Wurzelrest), frakturiert, für Krone präpariert
-- 👑 Restaurationen nach Typ × Material: Krone / Inlay / Onlay / Veneer / Brücke in e.max, Gold, Gradia, Zirkon, Metall, Metallkeramik, Teleskop oder provisorisch (Onlay nur okklusale Ansicht) — Auswahl über einen einzigen kombinierten „Fix: Krone – …“-Picker mit wenigen Klicks; bestehende `metal`-Kronen werden automatisch zu `metal-ceramic` (Metallkeramik) migriert
-- 🦿 Herausnehmbare/Abutment-Prothetik auf der eigenen `prosthesis`-Achse („Kivehető:“-Einträge im kombinierten Picker): Implantat-Heilabutment, Locator, Locator mit Suprakonstruktion, Steg, Steg mit Suprakonstruktion; zahngetragene herausnehmbare Teil- oder Vollprothese
-- 🌉 Mehrzahn-Brückenspann-Overlay: aufeinanderfolgende Brückenzähne (Glieder + Pfeiler) werden als durchgehender Verbinder über die Zahnzwischenräume gerendert, im PNG/JPG/SVG-Export enthalten
+- 👑 Restaurationen nach Typ × Material: Krone / Inlay / Onlay / Veneer / Brücke in e.max, Gold, Gradia, Zirkon, Metall, Metallkeramik, Teleskop oder provisorisch (Onlay nur okklusale Ansicht) — Auswahl über einen einzigen kombinierten „Fix: Krone – …"-Picker mit wenigen Klicks; bestehende `metal`-Kronen migrieren zu `metal-ceramic` (Metallkeramik); Implantate verwenden dasselbe Typ-×-Material-Modell, kombiniert mit einer Implantat-Verbinder-Ebene. Der Picker ist nach Zahnart gestaffelt: ein Implantat bietet nur Krone/Brücke (plus die fünf Attachment-Optionen weiter unten); ein fehlender/Lücken-Zahn bietet nur ein Brückenglied (plus herausnehmbare Teil-/Vollprothese); ein `radix`-Substrat blendet die Restaurationssteuerung vollständig aus (an einem Wurzelrest kann keine Restauration angelegt werden)
+- 🦿 Herausnehmbare/Abutment-Prothetik auf der eigenen `prosthesis`-Achse („Kivehető:"-Einträge im kombinierten Picker): Implantat-Heilabutment, Locator, Locator mit Suprakonstruktion, Steg, Steg mit Suprakonstruktion; zahngetragene herausnehmbare Teil- oder Vollprothese
+- 🌉 Brückenzähne rendern sowohl die Kronenkappe als auch den Sattel-Verbinder; ein Mehrzahn-Brückenspann-Overlay rendert einen durchgehenden, bogenbewussten Verbinder über aufeinanderfolgende Brückenzähne (Glieder + Pfeiler) sowie die dazwischenliegenden Zahnzwischenräume (Ober- und Unterkiefer verwenden gespiegelte Sattelgeometrie, sodass der Verbinder auf beiden Bögen ausgerichtet bleibt), im PNG/JPG/SVG-Export enthalten; das Anwenden einer Brücke über eine Statusvorlage berechnet das Overlay sofort neu
 - 🔍 Karieskartierung auf 6 Flächen: mesial, distal, bukkal, lingual, okklusal, subkronal
 - 🪥 Füllungsmaterialien pro Fläche: Amalgam, Komposit, GIZ, provisorisch
-- 🏥 Endodontische Zustände: medikamentöse Füllung, Wurzelfüllung, inkomplette Wurzelfüllung, Glasfaserstift, Metallstift, Resektion, parapulpaler Stift
-- 🩺 AAE-Pulpadiagnose (`pulpDx`: normal / reversible / irreversible Pulpitis / Nekrose), mit einer optionalen 3-stufigen Pulpa-Detailstufe (`pulpDetailLevel`: simple / AAE / praktisches Latein), die über `pulpLatin` 9 praktische lateinische Pulpa-Subtypen anzeigt (pulpa sana … gangraena pulpae)
-- 🦴 Apikale Diagnose (`apicalDx`: symptomatische/asymptomatische apikale Parodontitis, akuter/chronischer apikaler Abszess, kondensierende Osteitis) steuert direkt den periapikalen Glyphen, mit einem optionalen Granulom-/Zysten-/Abszess-Subtyp
-- ⚕️ Modifikationen: periapikale Entzündung (innen/außen), Parodontalerkrankung, Mobilitätsgrade (M1/M2/M3)
-- 🏷️ Spezielle Indikatoren: Krone erforderlich, Kronenwechsel erforderlich, geschlossene Lücke, Extraktionsplan, Bruxismus-Abrieb/Zervikaler Abrieb, Fissurenversiegelung, Kontaktpunktverlust
+- 🏥 Ein zusammengeführter „Pulpa-/Endo-Status"-Auswähler (gruppiert: vitale Pulpa vs. behandelt/endodontisch): endodontische Zustände (medikamentöse Füllung, Wurzelfüllung, inkomplette Wurzelfüllung, Glasfaserstift, Metallstift) und die AAE-Pulpadiagnose (`pulpDx`: normal / reversible / irreversible Pulpitis / Nekrose) schließen sich gegenseitig aus — ein wurzelbehandelter Zahn (`endo` gesetzt) kann nicht gleichzeitig eine vitale Pulpadiagnose tragen; bei einer Behandlung wird `pulpDx` auf `normal` normalisiert und das Glyph für die erkrankte Pulpa unterdrückt. Reversible Pulpitis rendert ein reduziertes Pulpa-Glyph. Eine optionale 3-stufige Pulpa-Detailstufe (`pulpDetailLevel`: simple / AAE / praktisches Latein) zeigt über `pulpLatin` 9 praktische lateinische Pulpa-Subtypen an (pulpa sana … gangraena pulpae); Resektion und parapulpaler Stift bleiben eigenständige Sonderindikatoren
+- 🦴 Apikale Diagnose (`apicalDx`: symptomatische/asymptomatische apikale Parodontitis, akuter/chronischer apikaler Abszess, kondensierende Osteitis) steuert direkt den periapikalen Glyphen; ein Granulom-/Zysten-Läsionssubtyp-Qualifikator wird nur unter symptomatischer/asymptomatischer apikaler Parodontitis angezeigt (der redundante „Abszess"-Subtyp wurde entfernt — er ist bereits durch die apikale Diagnose abgedeckt)
+- 🩹 Zusammengeführte Karte „Wurzel und Parodontium" (ein einzelner ausklappbarer Abschnitt für Wurzel-/periapikale und parodontale Befunde)
+- ⚕️ Modifikationen: periapikale Entzündung (nur bei fehlenden/Extraktionsalveolen-Zähnen angezeigt; bei vorhandenen Zähnen ausgeblendet, wo `apicalDx` allein den periapikalen Glyphen steuert, sowie bei Implantaten, wo `periImplant` dies übernimmt), Parodontalerkrankung, Mobilitätsgrade (M1/M2/M3, bei Implantaten ausgeblendet)
+- 🦷🔩 Periimplantärer Status (`periImplant`: `none` / `mucositis` / `peri-implantitis-mild` / `peri-implantitis-moderate` / `peri-implantitis-severe`) — Staging nach dem World Workshop 2018, angezeigt als eigener Auswähler bei Implantaten; Mukositis verwendet das parodontale Zahnfleisch-Glyph weiter, Periimplantitis fügt eine abgestufte `peri-implant-bone-loss`-Ebene hinzu (Deckkraft 0,4/0,7/1,0). Implantate rendern das periapikale Läsions-Glyph nicht mehr — ihre Entzündung wird stattdessen über diese Achse ausgedrückt — und die parodontalen Modifikator-Checkboxen sind bei Implantaten ausgeblendet (die behelfsmäßige Umbenennung der „Periimplantitis"-Checkbox entfällt)
+- 🏷️ Spezielle Indikatoren: Krone erforderlich, Kronenwechsel erforderlich, geschlossene Lücke nach Extraktion, Extraktionsplan, Fissurenversiegelung, Kontaktpunktverlust
 - 👁️ Okklusionsansicht, Weisheitszähne, Knochen- und Pulpa-Sichtbarkeit umschaltbar
 - 🔢 12 Auswahlfilter (alle, vorhandene, bleibende, Milch, Implantate, fehlende, Ober-/Unterkiefer, Front/Molaren)
 - 📊 Vordefinierte Statusvorlagen (Zurücksetzen, Milchgebiss, Wechselgebiss, zahnlos)
 - 📦 34 vordefinierte Restaurationsvorlagen (Brücken, herausnehmbare Prothesen, Stegprothesen mit Implantaten)
-- 💾 Status-Export/Import in JSON (Version 2.4; Importe akzeptieren weiterhin die Versionen 1.4, 2.0, 2.1, 2.2 und 2.3 und werden automatisch migriert, mit Plugin Custom States und per-Zahn Notizen)
+- 💾 Status-Export/Import in JSON (Version 2.10; Importe akzeptieren weiterhin die Legacy-Versionen 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8 und 2.9 und werden automatisch migriert, mit Plugin Custom States und per-Zahn Notizen)
 - 🔗 HL7 FHIR R4 Export (Collection-Bundle aus Observations pro Zahn, ISO 3950 Zahnkodierung für das bleibende Gebiss, lokales Codesystem — SNOMED-CT-Mapping geplant)
 - ✚ Kreuz-/Plus-Oberflächenauswahl (B/M/O/D/L) für Karies und Füllungen
 - 🧱 Füllungsmaterialien pro Fläche (gemischte Füllungen, z. B. bukkal Amalgam + distal Komposit)
@@ -55,11 +58,19 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 📡 Radiologische Kariestiefe (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 pro Fläche), unabhängig von der visuellen ICDAS-/CARS-Schweregradskala, dargestellt als Badge und über eine eigene FHIR-Observation rückführbar
 - 🎚️ Drei Karies-Granularitätseinstellungen (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) sowie ein `cariesDepthEnabled`-Umschalter, die jede Skala auf eine einfachere Auswahlansicht reduzieren, ohne den gespeicherten Wert zu verlieren
 - 🩹 Sekundärkaries-Zusammenfassung im Füllungspanel: eine Zeile unterhalb der Füllungssteuerung listet jeden ausgewählten Zahn mit Sekundärkaries samt Flächen auf (z. B. „36 (O) hat Sekundärkaries an der Füllung.")
+- 🪛 Füllungsdefekte pro Fläche (`fillingDefect`: none / marginal / fracture / wear) an direkten Restaurationen, unabhängig von Sekundärkaries — erfasst über einen Flächenindikator auf der Füllungskarte (analog zum Kariestiefe-Indikator, die Optionsliste vertikal gestapelt), auf dem Befund dargestellt und im Tooltip sowie in der Ganzmund-Füllungszusammenfassung mit einer expliziten Beschriftung angezeigt (z. B. „36 (O) – Füllungsdefekt: O: marginal"), auf dieselbe Weise, wie Sekundärkaries in der Kariologie-Zeile beschriftet wird; die Füllungskarte zeigt außerdem einen Hinweis für jeden ausgewählten Zahn mit erfasstem Füllungsdefekt (z. B. „36 hat einen erfassten Füllungsdefekt."), parallel zum bestehenden Sekundärkaries-Hinweis
+- 🦷💥 Zahnabrieb typisiert nach klinischer Ursache und Lokalisation (`wearEdge`: none / attrition / erosion, inzisal/okklusal; `wearCervical`: none / abrasion / abfraction / erosion, zervikal) — ersetzt die beiden Ein-/Aus-Bruxismus-Abrieb-Flags; erfasst über zwei Dropdowns in der Abrieb-Zeile, verwendet die bestehende Abrieb-Grafik weiter und wird im Tooltip sowie in einem neuen Ganzmund-Zusammenfassungsabschnitt „Abrieb" angezeigt
+- 🎨 Zahnverfärbung nach Ursache (`discoloration`: none / tetracycline / fluorosis / nonvital / extrinsic / other) bei bleibenden und Milchzähnen — färbt die dargestellte natürliche Zahnkrone in einer repräsentativen Farbe ein, wenn der Zahn keine Restauration und natürliches Substrat hat; wird im Tooltip und in einem neuen Ganzmund-Zusammenfassungsabschnitt „Verfärbung" angezeigt; vervollständigt zusammen mit Füllungsdefekten und Abrieb den Satz an Oberflächen- und Strukturbefunden
 - ✏️ Frontzähne (Schneide- und Eckzähne) beschriften ihre Kaufläche in der gesamten Oberfläche (Auswahl, Popup, Zusammenfassungen) als „inzisal"; der gespeicherte Flächenschlüssel bleibt `occlusal`
+- 🔤 Positionsbewusste Flächenbezeichnung (Einstellungen → Zahndetails → „Flächenbezeichnung", einfach/vollständig, Standard vollständig): im vollständigen Modus folgen der Kariologie-/Füllungs-Flächenbuchstabe und die -bezeichnung der Zahnanatomie — okklusal → I/inzisal bei Frontzähnen, bukkal → L/labial bei Frontzähnen, lingual → P/palatinal bei Oberkieferzähnen und L/lingual bei Unterkieferzähnen (mesial/distal/subkronal sind nicht betroffen); der einfache Modus verwendet immer den generischen B/M/O/D/L/SC-Satz unabhängig von der Zahnposition. Gilt für die Ganzmund-Zusammenfassung sowie für die Kariologie- und Füllungsdefekt-Flächenauswähler (Buchstabe + Beschriftung); der gespeicherte Flächenschlüssel bleibt unverändert
+- 🦷↕️ Kieferorthopädische Erfassung pro Zahn (`orthoAppliance`: none / bracket / band; `orthoDrift`: none / mesial / distal; `orthoVertical`: none / extrusion / intrusion; `orthoRotation`: boolean) an einem vorhandenen natürlichen Zahn (bleibend oder Milchzahn) — verwendet die seit v2.5.0 ungenutzte KFO-Grafik weiter (keine neue SVG); wird auf dem Befund, im Tooltip und in einem neuen Ganzmund-Zusammenfassungsabschnitt „Kieferorthopädie" angezeigt
 - 🪨 Zahnstein sowie Wurzelresorption, typisiert als intern oder extern-zervikal (`resorptionType`)
-- 📏 Kariestiefe pro Fläche (oberflächlich / Dentin / tief) oder optionales ICDAS-II-Scoring (0–6) via `enableIcdas`
+- 📏 Kariestiefe pro Fläche (oberflächlich / Dentin / tief), oder optionales ICDAS-II-Scoring (0–6) via `enableIcdas`
 - 🩹 Kronenrand-Undichtigkeits-Umschalter, nur sichtbar bei Kronen- oder Brückenrestauration
-- 🧰 Vereinheitlichte Topbar-Icon-Leiste mit einem tabbasierten Einstellungsdialog (Allgemein / Karies / Sekundärkaries / Pulpa / Notizen — Nummerierung, Notizen, ICDAS, Kariestiefe-Umschalter, Wurzel-/Radiologische-Karies-Granularität, Pulpa-Detailstufe, Zahninformationen)
+- 🧰 Vereinheitlichte Topbar-Icon-Leiste mit einem tabbasierten Einstellungsdialog (Allgemein / Panels / Zahndetails / Karies / Pulpa / Notizen — Nummerierung, Notizen, Panel-Sichtbarkeit, ICDAS, Kariestiefe-Umschalter, Wurzel-/Radiologische-Karies-Granularität, Pulpa-Detailstufe, Zahnabrieb-/Verfärbungs-Detailstufe, Zahninformationen)
+- 🗂️ Einstellungen → Tab „Panels": Ganzmund-Zusammenfassungspanels für Status und Kieferorthopädie unabhängig ein-/ausblenden
+- 🩹 Die Sekundärkaries-(CARS-)Einstellungen wurden in den Karies-Tab der Einstellungen zusammengeführt, oberhalb der radiologischen Tiefe positioniert (der separate „Sekundärkaries"-Tab entfällt)
+- 🎚️ Zahndetails-Detailstufe (Einstellungen → Zahndetails): eine einfache/komplexe Einstellung für Zahnabrieb und für Verfärbung. Der einfache Modus zeigt pro Befund einen Ja/Nein-Umschalter (Abrieb an → Attrition/Abrasion, Verfärbung an → Sonstige); der komplexe Modus (Standard) behält die Typ-/Ursache-Dropdowns bei, und der gespeicherte Wert bleibt beim Wechsel der Stufe erhalten
 - 📋 Zahninformationen-Panel: textuelle Live-Zusammenfassung des gesamten Befunds (Zahnzahlen, vorhandene/fehlende Zähne, Karies inkl. Sekundärkaries, Füllungen, Wurzelbehandlungen, Zahnersatz, Implantate, Parodontalstatus) — standardmäßig sichtbar, in den Einstellungen umschaltbar
 - 🗂️ Konsolidiertes Export-Dropdown (Status JSON / FHIR / PNG / JPG)
 - 📥 Import-Dropdown mit FHIR-Import (liest exportierte Bundles zurück)
@@ -73,11 +84,12 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔌 Benutzerdefiniertes SVG-Plugin-System: visuelle Overlays, per-Zahn Custom State, JSON Export/Import-Unterstützung
 - ⚠️ Statusvalidierung mit Warnungen bei inkompatiblen Zahnzustandskombinationen
 - 🏷️ Automatische Status-Tooltips auf Zahnkacheln (zeigt alle aktiven Zustände)
+- 🩺 Modernisierter Tooltip pro Zahn und Ganzmund-Zusammenfassungspanel: beide zeigen den vollständigen Satz klinischer Befunde (Pulpa-/apikale Diagnose + Läsionssubtyp, Wurzelresorption, periimplantärer Status, abgestufte Wurzelkaries, Zahnstein, Kronenrand-Undichtigkeit, Fraktur, Kontaktverlust, typisierter Kanten-/Zervikalabrieb), mit einem eigenen Abschnitt „Diagnosen" im Panel, einem eigenen Abschnitt „Abrieb" und einem groben Kariesschweregrad-Qualifikator (oberflächlich/mäßig/tief)
 - ♿ Tastaturzugänglichkeit (WCAG): ARIA listbox/option Rollen, Enter/Leertaste Auswahl, Pfeiltasten-Navigation, focus-visible Umrisse
 - 🔒 Schreibgeschützter Modus: alle Interaktionen deaktivieren für Druck-/Berichtsansichten
 - ✨ Auswahl-Animationen: pulsierende gestrichelte Umrandung und leuchtender Schatten auf ausgewählten Zähnen (mit Unterstützung für prefers-reduced-motion)
 - 📝 Per-Zahn Notizen: Doppelklick zum Hinzufügen/Bearbeiten, Notiz-Symbol neben der Zahnnummer, Hover-Tooltip mit Notiztext, JSON Export/Import
-- 🧪 563 automatisierte Tests (Vitest) in 55 Testdateien für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins, Barrierefreiheit sowie Parität der klinischen Diagnose-Achsen
+- 🧪 864 automatisierte Tests bestanden (1 zusätzlicher Test übersprungen) (Vitest) in 94 Testdateien für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins, Barrierefreiheit sowie Parität der klinischen Diagnose-Achsen
 - 📖 TypeDoc API-Dokumentation mit JSDoc-Kommentaren für alle öffentlichen Exporte (`npm run docs`)
 
 ### 📦 Module
@@ -131,6 +143,16 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - Obere/Untere Totalprothesen
 - Obere/Untere Stegprothesen mit Implantaten
 
+**🦷 Zahn-Editor-Panel** (für den/die ausgewählten Zahn/Zähne, in ausklappbare Karten gruppiert):
+- **Basis-Zeile:** Zahnauswahl (Basistyp inkl. Varianten mit gebrochener Krone) und Zahnsubstrat (natürlich/Radix/frakturiert/crownprep)
+- **Restaurations-Zeile:** das kombinierte „Fix: …"/„Kivehető: …"-Restaurations-Dropdown (feste `restorationType`×`restorationMaterial`-Optionen plus die `prosthesis`-Attachment-/Herausnehmbar-Optionen, gestaffelt nach Zahnart); Kronenrand-Undichtigkeits-Checkbox (nur Krone/Brücke); Checkboxen für die Lage der gebrochenen Krone; Umschalter „Krone erforderlich"/„Kronenwechsel erforderlich"
+- **Abrieb- und Verfärbungs-Zeile:** Dropdown für inzisalen/okklusalen Abriebtyp, Dropdown für zervikalen Abriebtyp, Dropdown für Verfärbungsursache (jedes wechselt unter Einstellungen → Zahndetails → einfacher Modus zu einem einfachen Ja/Nein-Umschalter)
+- **Kieferorthopädie-Karte:** Apparatur, mesiale/distale Drift, vertikale Bewegung (Extrusion/Intrusion), Rotations-Umschalter — angezeigt bei einem vorhandenen natürlichen Zahn
+- **Karies-Karte:** Dropdown für den Kariestiefe-Modus, Subkronal-Karies-Checkbox, Dropdown für den Wurzelkaries-Schweregrad sowie der B/M/O/D/L-Flächenauswähler für Karies mit einem kontextabhängigen ICDAS-Tiefe-/CARS-Popup und einem Badge für die radiologische Tiefe
+- **Füllungen-Karte:** Dropdown für das Füllungsmaterial, Flächenauswähler für Füllungen (mit Material pro Fläche), Flächenindikator für Füllungsdefekte (marginal/Fraktur/Abrieb), Hinweise zu Sekundärkaries und Füllungsdefekten
+- **Wurzel-und-Parodontium-Karte:** zusammengeführter „Pulpa-/Endo-Status"-Auswähler, Auswähler für apikale Diagnose, Auswähler für periapikalen Läsionssubtyp (nur symptomatische/asymptomatische apikale Parodontitis), Auswähler für den Wurzelresorptionstyp, Auswähler für den Mobilitätsgrad, Auswähler für den periimplantären Status (nur Implantate)
+- **Spezielle Indikatoren:** Extraktionsplan/-wunde, Lücke geschlossen, Fissurenversiegelung, Kontaktpunktverlust, Zahnstein, parapulpaler Stift, Endo-Resektion, Brückenpfeiler
+
 ### 🦷 Zahntypen und Zustände
 
 **Zahnauswahl (Basistyp):**
@@ -154,17 +176,20 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 **Restaurationsmaterial (bleibende Zähne):**
 `none`, `emax`, `gold`, `gradia`, `zircon`, `metal`, `metal-ceramic` (bestehende `metal`-Kronen migrieren hierher), `telescope`, `temporary`
 
-**Kronenmaterialien (Implantate):**
-`natural` (keine), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
+**Restaurationsoptionen sind nach Zahnart gestaffelt** (`restorationOptions()` in `src/registry/restorations.ts`): ein Implantat bietet nur die Restaurationstypen `crown`/`bridge` (kombiniert mit einer Implantat-Verbinder-Ebene) plus die fünf `prosthesis`-Attachment-Einträge unten; ein fehlender/Lücken-Zahn bietet nur ein `bridge`-Brückenglied plus die zwei herausnehmbaren `prosthesis`-Prothesen-Einträge; ein `radix`-Substrat blendet die Restaurationssteuerung vollständig aus. Die alten flachen Felder `crownMaterial`/`bridgeUnit` (Implantat-/Brücken-Attachment-Werte vor v1.14) sind aus dem aktiven Modell entfernt — sie werden nur noch als schreibgeschützter Migrationspfad für alte Payloads akzeptiert.
 
-**Brückenglieder:**
-`none`, `removable`, `zircon`, `metal`, `temporary`, `bar`, `bar-prosthesis`
+**Prothetik** (`prosthesis`; eigenständige herausnehmbare/Attachment-Achse, als „Kivehető:"-Einträge im kombinierten Restaurations-Dropdown dargestellt):
+`none`, `healing-abutment`, `locator`, `locator-denture`, `bar`, `bar-denture` (Implantat-Attachments, mit oder ohne Suprakonstruktion), `removable-partial`, `removable-full` (zahngetragene Prothesen an einem fehlenden/Lücken-Zahn). Ein Zahn hat entweder eine feste Restauration oder eine Prothetik, nie beides — das Setzen des einen löscht das andere.
+
+**Kronenrand-Undichtigkeit** (`crownLeakage`; boolean): nur sichtbar, wenn `restorationType` gleich `crown` oder `bridge` ist; aktiviert die `crown-leakage`-Bildebene.
 
 **Endodontische Optionen (bleibende Zähne):**
 `none`, `endo-medical-filling`, `endo-filling`, `endo-filling-incomplete`, `endo-glass-pin`, `endo-metal-pin`
 
 **Endodontische Optionen (Milchzähne):**
 `none`, `endo-medical-filling`
+
+`endo` und `pulpDx` werden über ein zusammengeführtes „Pulpa-/Endo-Status"-`<select>` dargestellt (gruppiert: vitale Pulpa vs. behandelt/endodontisch) und schließen sich gegenseitig aus — die Wahl einer behandelten Option (`endo != none`) setzt `pulpDx` auf `normal` zurück, und die Wahl einer Pulpadiagnose setzt `endo` auf `none` zurück.
 
 **Füllungsmaterialien (bleibende Zähne):**
 `amalgam`, `composite`, `gic`, `temporary`
@@ -178,11 +203,11 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 **Modifikationen:**
 `inflammation` (periapikale), `parodontal` (parodontale), `mobility` (M1/M2/M3)
 
-**Periapikaler Läsionstyp** (`periapicalType`; qualifiziert den periapikalen Glyphen, jetzt gesteuert von `apicalDx`):
-`none`, `granuloma`, `cyst`, `abscess`
+**Periapikaler Läsionstyp** (`periapicalType`; qualifiziert den periapikalen Glyphen, nur unter symptomatischer/asymptomatischer apikaler Parodontitis angezeigt):
+`none`, `granuloma`, `cyst` — Erfassungsoptionen; der alte Wert `abscess` wird weiterhin akzeptiert/gespeichert, aber im Auswähler nicht mehr angeboten, da er die apikale Diagnose dupliziert. Beim Import wird er verworfen: bei einem Zahn mit dem Entzündungs-Modifikator in `apicalDx` eingefaltet, andernfalls auf `none` zurückgesetzt
 
 **Pulpadiagnose** (AAE-Terminologie; `pulpDx`):
-`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+`normal`, `reversible-pulpitis` (rendert ein reduziertes Pulpa-Glyph), `irreversible-pulpitis`, `necrosis` — schließt sich gegenseitig mit `endo` aus; wird bei einem wurzelbehandelten Zahn auf `normal` normalisiert
 
 **Pulpadiagnose, praktisches Latein** (`pulpLatin`; wird vom Pulpa-Auswähler nur angezeigt, wenn `pulpDetailLevel` gleich `latin` ist):
 `none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
@@ -195,9 +220,10 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 **Wurzelresorptionstyp** (`resorptionType`):
 `none`, `internal`, `external-cervical`
 
-**Kariestiefe** (pro Fläche): `superficial` / `dentin` / `deep`, oder optionale ICDAS-II-Codes `0–6` bei aktiviertem `enableIcdas`
+**Periimplantärer Status** (`periImplant`; nur Implantate, Staging nach dem World Workshop 2018): `mucositis` verwendet das parodontale Zahnfleisch-Glyph weiter; `peri-implantitis-*` fügt die `peri-implant-bone-loss`-Ebene mit schweregradabhängiger Deckkraft hinzu (leicht 0,4 / mäßig 0,7 / schwer 1,0). Implantate rendern das periapikale Läsions-Glyph nicht mehr (ihre Entzündung wird stattdessen über diese Achse ausgedrückt), und die `mods`-Checkboxen für Entzündung/parodontal sind bei Implantaten ausgeblendet:
+`none`, `mucositis`, `peri-implantitis-mild`, `peri-implantitis-moderate`, `peri-implantitis-severe`
 
-**Kariesschweregrad** (`cariesSeverity`; vereinheitlichtes Feld pro Fläche, `0`–`6`): auf einer Fläche ohne Füllung wird er als ICDAS-Tiefenskala gelesen (`superficial` / `dentin` / `deep`, oder die rohen ICDAS-II-Codes `0–6` bei aktiviertem `enableIcdas`) und steuert die primäre `caries-{surface}`-Ebene; auf einer Fläche mit Füllung wird er als benannter CARS-Score gelesen (`0` gesund … `6` ausgedehnte Kavität) und steuert stattdessen die `subcaries-{surface}`-Ebene (Sekundärkaries) — eine Fläche ist nie gleichzeitig primär und rezidivierend
+**Kariesschweregrad** (`cariesSeverity`; vereinheitlichtes Feld pro Fläche, `0`–`6`): auf einer Fläche ohne Füllung wird er als ICDAS-Kariestiefenskala gelesen (`superficial` / `dentin` / `deep`, oder die rohen ICDAS-II-Codes `0–6` bei aktiviertem `enableIcdas`) und steuert die primäre `caries-{surface}`-Ebene; auf einer Fläche mit Füllung wird er als benannter CARS-Score gelesen (`0` gesund … `6` ausgedehnte Kavität) und steuert stattdessen die `subcaries-{surface}`-Ebene (Sekundärkaries) — eine Fläche ist nie gleichzeitig primär und rezidivierend
 
 **Wurzelkaries** (`rootCaries`; steuert die `caries-root`-Bildebene bei einem vorhandenen Zahn, Deckkraft abhängig vom Schweregrad — `active` 0,5 / `arrested` 0,7 / `active-cavitated` volle Deckkraft):
 `none`, `active`, `arrested`, `active-cavitated`
@@ -208,7 +234,31 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 **Karies-Granularitätseinstellungen** (global): `secondaryCariesMode` (`simple`/`standard`/`full`, Standard `standard`), `rootCariesMode` (`simple`/`severity`, Standard `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, Standard `off`), `cariesDepthEnabled` (boolean, Standard `true`) — jede reduziert ihre Skala auf eine einfachere Auswahlansicht, ohne den gespeicherten Wert zu verändern
 
 **Spezielle Indikatoren:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `endoResection`, `calculus`, `parapulpalPin`
+
+**Zahnabrieb** (`wearEdge`, `wearCervical`; klinischer Typ je Lokalisation, gestaffelt auf Zahnbasis + keine Restauration + natürliches Substrat; rendert die bestehenden `tooth-bruxism-wear`/`tooth-bruxism-neck-wear`-Ebenen):
+`wearEdge`: `none`, `attrition`, `erosion` — `wearCervical`: `none`, `abrasion`, `abfraction`, `erosion`
+
+**Verfärbung** (`discoloration`; Ursache pro Zahn, gestaffelt auf einen natürlichen Zahn (bleibend) oder Milchzahn + keine Restauration + natürliches Substrat; färbt die Füllfarbe der dargestellten natürlichen Zahnkrone ein — keine neue SVG):
+`none`, `tetracycline`, `fluorosis`, `nonvital`, `extrinsic`, `other`
+
+**Füllungsdefekt** (`fillingDefect`; pro Fläche, Befund an direkten Restaurationen unabhängig von Sekundärkaries — gestaffelt auf die in `fillingSurfaceMaterials` vorhandenen Flächen; rendert die `defect-{surface}`-Bildebene):
+`none`, `marginal`, `fracture`, `wear`
+
+**Kieferorthopädie** (`orthoAppliance`, `orthoDrift`, `orthoVertical`, `orthoRotation`; pro Zahn, gestaffelt auf einen vorhandenen natürlichen Zahn — bleibend oder Milchzahn):
+`orthoAppliance`: `none`, `bracket`, `band` — `orthoDrift`: `none`, `mesial`, `distal` — `orthoVertical`: `none`, `extrusion` (Pfeil-nach-oben-Glyph), `intrusion` (Pfeil-nach-unten-Glyph) — `orthoRotation`: boolean
+
+**Zahndetail-/Notationseinstellungen** (globale Sitzungseinstellungen, Einstellungen → Zahndetails): `wearDetailLevel` und `discolorationDetailLevel` (`ToothDetailLevel`: `simple`/`complex`, Standard `complex` — der einfache Modus zeigt statt des vollständigen Typ-/Ursache-Dropdowns einen Ja/Nein-Umschalter, ohne den gespeicherten Wert zu verändern) sowie `surfaceNotation` (`simple`/`full`, Standard `full` — steuert, ob Kariologie-/Füllungs-Flächenbuchstaben/-bezeichnungen positionsbewusst sind; siehe „Positionsbewusste Flächenbezeichnung" oben)
+
+### ⚙️ Einstellungen
+Wird über das Zahnrad-Symbol in der Kopfleiste geöffnet; ein fokus-gefangener, ARIA-`dialog` mit tabbasiertem Layout (Esc/Klick auf den Hintergrund zum Schließen, Pfeiltasten zum Wechseln der Tabs). Alle Einstellungen sind, sofern nicht anders angegeben, reiner Sitzungs-UI-Zustand — keine davon verändert Pro-Zahn-Daten oder den Export-Payload.
+
+- **Allgemein:** Nummerierungssystem (FDI/Universal/Palmer), Sprache, dunkles/helles Theme, Sichtbarkeit des Zahninformationen-Panels
+- **Panels:** Ganzmund-Statuskarte und Kieferorthopädie-Karte unabhängig ein-/ausblenden (beide standardmäßig sichtbar)
+- **Zahndetails:** Abrieb-Detailstufe und Verfärbungs-Detailstufe (einfach/komplex, jeweils Standard komplex), Flächenbezeichnung (einfach/vollständig, Standard vollständig)
+- **Karies:** ICDAS-II-Scoring-Umschalter (`enableIcdas`), Kariestiefe-Umschalter (`cariesDepthEnabled`), Wurzelkaries-Granularität (`rootCariesMode`: simple/severity), Sekundärkaries-/CARS-Granularität (`secondaryCariesMode`: simple/standard/full), Granularität der radiologischen Tiefe (`radiographicDepthMode`: off/threeLevel/detailed) — der frühere separate „Sekundärkaries"-Tab ist in diesen zusammengeführt, wobei die CARS-Steuerung direkt oberhalb der radiologischen Tiefe positioniert ist
+- **Pulpa:** Pulpa-Detailstufe (`pulpDetailLevel`: simple/AAE/praktisches Latein, Standard AAE) — steuert, welches Vokabular der „Pulpa-/Endo-Status"-Auswähler anbietet; eine Änderung aktualisiert die Ganzmund-Zusammenfassung und jeden geöffneten Tooltip live
+- **Notizen:** Per-Zahn-Notizen aktivieren/deaktivieren (`enableNotes`)
 
 ### 🖼️ SVG-Vorlagensystem
 
@@ -307,7 +357,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Tests
 ```bash
-npm run test           # Alle 563 Tests ausführen
+npm run test           # Alle 864 Tests ausführen (1 zusätzlicher Test übersprungen)
 npm run test:watch     # Watch-Modus
 npm run test:coverage  # Coverage-Bericht
 ```
@@ -366,7 +416,7 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `startIntroTour()` | Die 12-stufige interaktive Einführungstour starten |
 
 ### 💾 Status Export-/Importformat
-Der Export erzeugt eine JSON-Datei (Version `2.4`; Importe akzeptieren weiterhin die Legacy-Versionen `1.4`, `2.0`, `2.1`, `2.2` und `2.3` und werden automatisch migriert) mit folgenden Feldern:
+Der Export erzeugt eine JSON-Datei (Version `2.10`; Importe akzeptieren weiterhin die Legacy-Versionen `1.4`, `2.0`, `2.1`, `2.2`, `2.3`, `2.4`, `2.5`, `2.6`, `2.7`, `2.8` und `2.9` und werden automatisch migriert) mit folgenden Feldern:
 
 **Globale Felder:**
 - `wisdomVisible` - Weisheitszähne sichtbar
@@ -377,37 +427,51 @@ Der Export erzeugt eine JSON-Datei (Version `2.4`; Importe akzeptieren weiterhin
 
 **Pro-Zahn-Felder (32 Zähne):**
 - `toothSelection` - Basiszahntyp
-- `crownMaterial` - Kronen-/Abutment-Material
-- `bridgeUnit` - Brückenverbinder-Typ
-- `endo` - Endodontischer Zustand
-- `mods` - Modifikations-Array (Entzündung, parodontal)
-- `caries` - Aktive Kariesflächen
+- `toothSubstrate` - Zahnsubstrat (natural/radix/broken/crownprep), unabhängig von jeder Restauration
+- `restorationType` - Restaurationstyp (none/crown/inlay/onlay/veneer/bridge)
+- `restorationMaterial` - Restaurationsmaterial (emax/gold/gradia/zircon/metal/metal-ceramic/telescope/temporary), gekoppelt an `restorationType`
+- `prosthesis` - herausnehmbare/Attachment-Achse (none/healing-abutment/locator/locator-denture/bar/bar-denture/removable-partial/removable-full), schließt sich mit einer festen `restorationType` von Krone/Brücke gegenseitig aus
+- `crownLeakage` - Kronenrand-Undichtigkeits-Flag, nur relevant, wenn `restorationType` gleich Krone oder Brücke ist
+- `endo` - endodontischer Zustand; schließt sich mit `pulpDx` gegenseitig aus (über einen zusammengeführten „Pulpa-/Endo-Status"-Auswähler gemeinsam dargestellt — das Behandeln eines Zahns normalisiert `pulpDx` auf `normal`)
+- `mods` - Modifikations-Array (Entzündung, parodontal); `inflammation` ist bei vorhandenen Zähnen aus der UI entfernt (dort steuert `apicalDx` den Glyphen), gilt aber weiterhin für fehlende/Extraktionsalveolen-Zähne
+- `caries` - aktive Kariesflächen
+- `cariesActiveDepth` - der vom Kariestiefe-Auswähler vorgehaltene ICDAS-Tiefenwert beim Anwenden einer neuen Fläche (kein gespeicherter Wert pro Fläche; siehe `cariesSeverity` für das gespeicherte Feld pro Fläche)
 - `rootCaries` - Wurzelkaries-Schweregrad (none/active/arrested/active-cavitated)
 - `cariesSeverity` - vereinheitlichter Schweregrad pro Fläche (0-6): ICDAS-Tiefe auf einer primären (ungefüllten) Fläche, CARS-Score auf einer rezidivierenden (gefüllten) Fläche
-- `radiographicDepth` - Radiologische Kariestiefe pro Fläche (none/E1/E2/D1/D2/D3), unabhängig von der visuellen ICDAS-/CARS-Skala
+- `radiographicDepth` - radiologische Kariestiefe pro Fläche (none/E1/E2/D1/D2/D3), unabhängig von der visuellen ICDAS-/CARS-Skala
 - `fillingMaterial` - Füllungsmaterial
-- `fillingSurfaces` - Gefüllte Flächen
-- `pulpDx` - AAE-Pulpadiagnose (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
-- `pulpLatin` - Praktischer lateinischer Pulpa-Subtyp (wird vom Pulpa-Auswähler nur angezeigt, wenn `pulpDetailLevel` gleich `latin` ist)
-- `apicalDx` - Apikale Diagnose, steuert den periapikalen Glyphen
+- `fillingSurfaces` - gefüllte Flächen
+- `fillingSurfaceMaterials` - Füllungsmaterial pro Fläche (gemischte Füllungen, z. B. bukkal Amalgam + distal Komposit)
+- `fillingDefect` - Füllungsdefekt pro Fläche (none/marginal/fracture/wear), an gefüllte Flächen gebunden, unabhängig von Sekundärkaries
+- `pulpDx` - AAE-Pulpadiagnose (normal/reversible-pulpitis/irreversible-pulpitis/necrosis); reversible-pulpitis rendert ein reduziertes Glyph
+- `pulpLatin` - praktischer lateinischer Pulpa-Subtyp (wird vom Pulpa-Auswähler nur angezeigt, wenn `pulpDetailLevel` gleich `latin` ist)
+- `apicalDx` - apikale Diagnose, steuert den periapikalen Glyphen
+- `periapicalType` - periapikaler Läsionssubtyp (none/granuloma/cyst), nur unter symptomatischer/asymptomatischer apikaler Parodontitis angezeigt; der alte Wert `abscess` wird beim Import weiterhin akzeptiert
 - `resorptionType` - Wurzelresorptionstyp (none/internal/external-cervical)
+- `periImplant` - periimplantärer Status nur bei Implantaten (none/mucositis/peri-implantitis-mild/-moderate/-severe), Staging nach dem World Workshop 2018
 - `endoResection` - Wurzelspitzenresektions-Flag
 - `fissureSealing` - Fissurenversiegelungs-Flag
-- `contactMesial` - Messialer Kontaktpunktverlust
-- `contactDistal` - Distaler Kontaktpunktverlust
-- `bruxismWear` - Okklusaler Bruxismus-Abrieb
-- `bruxismNeckWear` - Zervikaler Bruxismus-Abrieb
+- `calculus` - Zahnstein-Flag
+- `contactMesial` - mesialer Kontaktpunktverlust
+- `contactDistal` - distaler Kontaktpunktverlust
+- `wearEdge` - inzisaler/okklusaler Abriebtyp (none/attrition/erosion)
+- `wearCervical` - zervikaler Abriebtyp (none/abrasion/abfraction/erosion)
+- `discoloration` - Verfärbungsursache pro Zahn (none/tetracycline/fluorosis/nonvital/extrinsic/other), färbt die Füllfarbe der natürlichen Zahnkrone bei einem natürlichen Zahn (bleibend/Milchzahn) ohne Restauration
+- `orthoAppliance` - kieferorthopädische Apparatur (none/bracket/band)
+- `orthoDrift` - kieferorthopädische Drift (none/mesial/distal)
+- `orthoVertical` - kieferorthopädische vertikale Bewegung (none/extrusion/intrusion)
+- `orthoRotation` - kieferorthopädisches Rotations-Flag
 - `brokenMesial`, `brokenIncisal`, `brokenDistal` - Fraktur-Lokalisierungen
 - `extractionWound` - Post-Extraktionswunde
-- `extractionPlan` - Geplante Extraktion
-- `parapulpalPin` - Parapulpaler Stift-Flag
-- `bridgePillar` - Brückenpfeiferzahn
+- `extractionPlan` - geplante Extraktion
+- `parapulpalPin` - parapulpaler Stift-Flag
+- `bridgePillar` - Brückenpfeilerzahn
 - `mobility` - Mobilitätsgrad (none/m1/m2/m3)
-- `crownNeeded` - Krone erforderlich Indikator
-- `crownReplace` - Kronenwechsel erforderlich Indikator
-- `missingClosed` - Lücke geschlossen nach Extraktion
-- `customStates` - Plugin Custom States (Objekt, nach Plugin-ID sortiert)
-- `note` - Per-Zahn Textnotiz (String, optional — nur vorhanden wenn nicht leer)
+- `crownNeeded` - Indikator „Krone erforderlich"
+- `crownReplace` - Indikator „Kronenwechsel erforderlich"
+- `missingClosed` - Lücke nach Extraktion geschlossen
+- `customStates` - Plugin Custom States (Objekt, nach Plugin-ID indiziert)
+- `note` - Textnotiz pro Zahn (String, optional — nur vorhanden, wenn nicht leer)
 
 ### 📁 Ordnerstruktur
 - `src/App.tsx` - UI-Hülle, Kopfleisten-Steuerung, Sprach-/Nummerierungs-/Dunkelmodus-/Theme-/Plugin-Umschalter
@@ -417,7 +481,11 @@ Der Export erzeugt eine JSON-Datei (Version `2.4`; Importe akzeptieren weiterhin
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
-- `src/__tests__/` - Vitest-Testsuite (563 Tests in 55 Dateien)
+- `src/registry/` - deklaratives Register der klinischen Achsen: FHIR-Feldzuordnungen, SVG-Clear-Set/Boolean-Flag-Aktivierung, Restaurationstyp×Material-Matrix, UI-Optionslisten (eine einzige Quelle der Wahrheit, die Export/Import, FHIR und die Auswähler-UI erzeugt)
+- `src/fhir/` - HL7-FHIR-R4-Export/Import: `toFhir.ts`/`fromFhir.ts`, Codesysteme, Feldzuordnungen, Primitive
+- `src/bridgeOverlay.ts` - Mehrzahn-Brückenspann-Verbinder-Overlay (bogenbewusste Sattelgeometrie)
+- `src/SettingsModal.tsx` - tabbasierter Einstellungsdialog (Allgemein/Panels/Zahndetails/Karies/Pulpa/Notizen)
+- `src/__tests__/` + `src/registry/__tests__/` - Vitest-Testsuite (864 bestandene Tests, 1 übersprungen, in 94 Dateien)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
 - `src/assets/icon-svgs/` - Toolbar-Icon-SVGs (5 Dateien)
 
