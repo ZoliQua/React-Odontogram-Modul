@@ -44,14 +44,20 @@ describe("SP9: tooltip surfaces the clinical axes", () => {
     __setToothStateForTest(46, { toothSelection: "tooth-base", rootCaries: "arrested" });
     expect(getToothStateSummary(46).join(" · ")).toContain(t("rootCaries.arrested"));
   });
-  it("surfaces calculus, crownLeakage, fracture, contact, wear presence", () => {
-    __setToothStateForTest(26, { toothSelection: "tooth-base", calculus: true, crownLeakage: true, brokenDistal: true, contactMesial: true, wearEdge: "attrition" });
+  it("surfaces calculus, fracture, contact, wear presence", () => {
+    // wearRowAllowed requires restorationType === "none" (a crowned tooth
+    // hides the wear control/render), so this stays a restoration-free tooth.
+    __setToothStateForTest(26, { toothSelection: "tooth-base", calculus: true, brokenDistal: true, contactMesial: true, wearEdge: "attrition" });
     const j = getToothStateSummary(26).join(" · ");
     expect(j).toContain(t("calculus.label"));
-    expect(j).toContain(t("crownLeakage.label"));
     expect(j).toContain(t("summary.fracture"));
     expect(j).toContain(t("tooth.contact.mesialMissing"));
     expect(j).toContain(t("tooth.bruxism.edgeWear"));
     expect(j).toContain(t("wearType.attrition"));
+  });
+  it("surfaces crownLeakage on a crown restoration (SP17 Task 1 Fix #2: gated on restorationType crown/bridge, mirroring the #crownLeakageRow control's own gate)", () => {
+    __setToothStateForTest(27, { toothSelection: "tooth-base", restorationType: "crown", restorationMaterial: "zircon", crownLeakage: true });
+    const j = getToothStateSummary(27).join(" · ");
+    expect(j).toContain(t("crownLeakage.label"));
   });
 });

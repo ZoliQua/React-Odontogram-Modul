@@ -352,6 +352,14 @@ let pulpDetailLevel: PulpDetailLevel = "aae";
 export function setPulpDetailLevel(value: PulpDetailLevel){
   pulpDetailLevel = (value === "simple" || value === "latin") ? value : "aae";
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  // SP17 Task 1 Fix #1: pulpDiagnosisLabel() reads getPulpDetailLevel() live to
+  // pick Latin vs AAE wording — the whole-mouth summary panel and every
+  // per-tooth tooltip must refresh too, not just the active tooth's picker.
+  // Mirrors setSurfaceNotation() below exactly (same bug class, SP16 fix).
+  notifyStateChange();
+  for(const toothNo of ALL_TEETH){
+    updateToothTooltip(toothNo);
+  }
 }
 export function getPulpDetailLevel(): PulpDetailLevel { return pulpDetailLevel; }
 
@@ -2248,7 +2256,14 @@ function getStateSummary(toothNo: number): string[]{
   // groups with periodontal findings), so push it here explicitly to keep the
   // tooltip showing it, alongside the other periodontal presence lines.
   { const pi = periImplantSummaryLabel(state); if(pi) summary.push(pi); }
-  if(state.crownLeakage) summary.push(t("crownLeakage.label"));
+  // SP17 Task 1 Fix #2 (gate-parity follow-up): gate on the SAME FULL predicate
+  // the #crownLeakageRow control uses (crownLeakageAllowed, ~line 2974) —
+  // !restorationRowHidden(state) AND crown/bridge. Checking crown/bridge alone
+  // is not enough: a tooth reachable via import/hydrate with a stale
+  // restorationType of "crown"/"bridge" but a hidden restoration row (e.g.
+  // milktooth, under-gum, extraction socket, or radix substrate) must not
+  // show this line either. The stored crownLeakage value is left untouched.
+  if(state.crownLeakage && !restorationRowHidden(state) && (state.restorationType === "crown" || state.restorationType === "bridge")) summary.push(t("crownLeakage.label"));
   if(state.endoResection) summary.push(t("endo.resection"));
   if(state.fissureSealing) summary.push(t("filling.fissureSealing"));
   if(state.parapulpalPin) summary.push(t("endo.parapulpalPin"));
@@ -6160,7 +6175,11 @@ export function getOdontogramSummary(): OdontogramSummary {
     if(s.prosthesis && s.prosthesis !== "none"){
       prosthetics.push(`${lbl(toothNo)}: ${t(PROSTHESIS_SUMMARY_KEY[s.prosthesis] || s.prosthesis)}`);
     }
-    if(s.crownLeakage) prosthetics.push(`${lbl(toothNo)} (${t("crownLeakage.label")})`);
+    // SP17 Task 1 Fix #2 (gate-parity follow-up): same FULL gate as
+    // getStateSummary above — mirrors the #crownLeakageRow control's own
+    // visibility gate in full (!restorationRowHidden(s) AND crown/bridge),
+    // not just the crown/bridge half.
+    if(s.crownLeakage && !restorationRowHidden(s) && (s.restorationType === "crown" || s.restorationType === "bridge")) prosthetics.push(`${lbl(toothNo)} (${t("crownLeakage.label")})`);
 
     // Periodontal / periapical inflammation
     const hasInflam = s.mods && (s.mods.has("inflammation") || s.mods.has("parodontal"));

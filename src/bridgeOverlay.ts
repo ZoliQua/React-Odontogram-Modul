@@ -49,12 +49,13 @@ const ARCHES: readonly (readonly number[])[] = [UPPER_ARCH, LOWER_ARCH];
 export const SADDLE_Y_FRACTION = 0.72;
 /**
  * Vertical center of the saddle bar for a LOWER-arch tile. Lower-arch tiles
- * are rendered rotated 180°, so the true connector position mirrors the
- * upper-arch fraction around the tile's vertical center (starting point:
- * `1 - SADDLE_Y_FRACTION`). May need further visual tuning against the
- * connector artwork (recon estimated true lower ≈ 0.19).
+ * are rendered rotated 180°, so the naive mirror (`1 - SADDLE_Y_FRACTION` =
+ * 0.28) did not match the connector artwork. Recon measured the connector art
+ * at ~0.81 from the tile top in the un-rotated template, which lands at
+ * ~0.19 after the 180° lower-arch rotation. This is a visual estimate and may
+ * need one more nudge.
  */
-export const SADDLE_Y_FRACTION_LOWER = 1 - SADDLE_Y_FRACTION;
+export const SADDLE_Y_FRACTION_LOWER = 0.19;
 /** Thickness of the saddle bar, as a fraction of tile height. */
 export const SADDLE_THICKNESS = 0.09;
 /** How far the bar overlaps into each adjacent tile, as a fraction of tile width. */

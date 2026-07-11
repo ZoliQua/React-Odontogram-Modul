@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.29.0] - 2026-07-11
+### Fixed
+- Changing the pulp-detail level (Settings) now live-refreshes the whole-mouth summary and per-tooth tooltips (previously stayed stale, showing the old Latin/AAE wording until the next tooth edit).
+- Crown-leakage ("Marginal leakage") no longer shows in the tooltip or whole-mouth summary once a tooth's restoration control is hidden (radix/milktooth/extraction/under-gum) or its restoration is cleared — the summary gate now matches the `#crownLeakageRow` control's own visibility gate (`!restorationRowHidden(state)` AND `restorationType` crown/bridge) exactly, including for stale crown/bridge payloads reached via import/hydrate.
+- Lower-arch bridge connector saddle bar position corrected (`SADDLE_Y_FRACTION_LOWER` 0.28 → 0.19).
+
 ## [1.28.0] - 2026-07-11
 ### Added
 - Position-aware surface notation: caries/filling surface letters and labels now read incisal/labial/palatal on the relevant tooth positions (occlusal → incisal on anteriors; buccal → labial on anteriors; lingual → palatal on upper teeth, lingual on lower teeth), controlled by a new Settings → Tooth details "Surface notation" setting (simple / full, default full). Applies to the whole-mouth summary and to both the caries and filling-defect surface pickers (letter + caption).
