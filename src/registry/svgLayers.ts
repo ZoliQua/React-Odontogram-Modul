@@ -47,6 +47,10 @@ export const FIXED_CLEAR_LAYERS: string[] = [
   "filling-composite-buccal","filling-composite-lingual","filling-composite-mesial","filling-composite-distal","filling-composite-occlusal",
   "filling-gic-buccal","filling-gic-lingual","filling-gic-mesial","filling-gic-distal","filling-gic-occlusal",
   "filling-temporary-buccal","filling-temporary-lingual","filling-temporary-mesial","filling-temporary-distal","filling-temporary-occlusal",
+  // SP10: per-surface filling-defect markers (reuse the pre-existing dormant
+  // defect-{surface} artwork inside <g id="fillings">). Cleared each render so a
+  // reused per-tooth SVG node never keeps a stale marker (SP7/SP8 lesson).
+  "defect-buccal","defect-lingual","defect-mesial","defect-distal","defect-occlusal",
   // restoration clear list (odontogram.ts:780)
   "implant-base","implant-connector","implant-healing-abutment","implant-locator-screw","implant-bar","prosthesis",
   "prosthesis-implant","prosthesis-implant-crown","prosthesis-implant-gum","telescope","zircon","metal","emax-crown",

@@ -78,6 +78,16 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
         if (Object.keys(vals).length) rec.radiographicDepth = vals;
         continue;
       }
+      if (findingCode === "filling-defect") {
+        const vals: Record<string, string> = {};
+        for (const c of res.component ?? []) {
+          const surf = localCode(c.code);
+          const val = localCode(c.valueCodeableConcept);
+          if (surf && val) vals[surf] = val;
+        }
+        if (Object.keys(vals).length) rec.fillingDefect = vals;
+        continue;
+      }
 
       const axis = BY_FINDING[findingCode];
       if (!axis) continue;
@@ -130,5 +140,5 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
     for (const surf of Object.keys(rec.secondaryCaries)) delete rec.cariesSeverity[surf];
     if (Object.keys(rec.cariesSeverity).length === 0) delete rec.cariesSeverity;
   }
-  return { version: "2.6", globals, teeth };
+  return { version: "2.7", globals, teeth };
 }

@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.21.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.22.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -43,7 +43,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 2.6; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, and 2.5 and migrate automatically, with plugin custom states and per-tooth notes)
+- 💾 Status export/import in JSON (version 2.7; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, and 2.6 and migrate automatically, with plugin custom states and per-tooth notes)
 - 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition, local code system — SNOMED CT mapping planned)
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
@@ -54,6 +54,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 📡 Radiographic caries depth (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 per surface), independent of the visual ICDAS/CARS severity scale, surfaced as a badge and round-tripped through its own FHIR Observation
 - 🎚️ Three caries granularity settings (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) plus a `cariesDepthEnabled` toggle, collapsing each scale to a simpler picker view without losing the stored value
 - 🩹 Fillings-panel subcaries summary line: lists any selected tooth with recurrent caries and its surfaces below the filling controls (e.g. "36 (O) has subcaries set on its filling.")
+- 🪛 Per-surface filling defects (`fillingDefect`: none / marginal / fracture / wear) on direct restorations, independent of recurrent caries — authored via a per-surface indicator on the Fillings card (mirroring the caries-depth indicator), rendered on the chart, and shown in the tooltip and whole-mouth fillings summary
 - ✏️ Anterior teeth (incisors/canines) label their occlusal surface "incisal" throughout the UI (picker, popup, summaries); the stored surface key stays `occlusal`
 - 🪨 Calculus, and root resorption typed as internal or external-cervical (`resorptionType`)
 - 📏 Per-surface caries depth (superficial / dentin / deep), or optional ICDAS II scoring (0–6) via `enableIcdas`
@@ -390,6 +391,7 @@ The export creates a JSON file (version `2.4`; imports also accept legacy `1.4`,
 - `radiographicDepth` - per-surface radiographic caries depth (none/E1/E2/D1/D2/D3), independent of the visual ICDAS/CARS scale
 - `fillingMaterial` - filling material
 - `fillingSurfaces` - filled surfaces
+- `fillingDefect` - per-surface filling defect (none/marginal/fracture/wear), filled-surface-gated, independent of recurrent caries
 - `pulpDx` - AAE pulp diagnosis (normal/reversible-pulpitis/irreversible-pulpitis/necrosis); reversible-pulpitis renders a reduced glyph
 - `pulpLatin` - practical-Latin pulp subtype (shown by the pulp picker only when `pulpDetailLevel` is `latin`)
 - `apicalDx` - apical diagnosis driving the periapical glyph
@@ -482,7 +484,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 2.6; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3, 2.4 y 2.5 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
+- 💾 Exportación/importación de estado en JSON (versión 2.7; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5 y 2.6 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
 - 🔗 Exportación HL7 FHIR R4 (Bundle de colección con Observations por diente, codificación dental ISO 3950 para dentición permanente, sistema de códigos local — mapeo SNOMED CT planificado)
 - ✚ Selección de superficies en cruz (B/M/O/D/L) para caries y obturaciones
 - 🧱 Materiales de obturación por superficie (obturaciones mixtas, p. ej. bucal amalgama + distal composite)
@@ -493,6 +495,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 📡 Profundidad radiográfica de caries (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 por superficie), independiente de la escala visual ICDAS/CARS, mostrada como una insignia y recuperable mediante su propia Observation FHIR
 - 🎚️ Tres ajustes de granularidad de caries (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) más un interruptor `cariesDepthEnabled`, que reducen cada escala a una vista de selector más simple sin perder el valor almacenado
 - 🩹 Línea de resumen de subcaries en el panel de obturaciones: lista, debajo de los controles de obturación, cualquier diente seleccionado con caries recurrente y sus superficies (p. ej. "36 (O) tiene subcaries junto a su obturación.")
+- 🪛 Defectos de obturación por superficie (`fillingDefect`: none / marginal / fracture / wear) en restauraciones directas, independientes de la caries recurrente — se registran mediante un indicador por superficie en la tarjeta de Obturaciones (espejo del indicador de profundidad de caries), se renderizan en el odontograma y se muestran en el tooltip y en el resumen de obturaciones de toda la boca
 - ✏️ Los dientes anteriores (incisivos/caninos) rotulan su superficie oclusal como "incisal" en toda la interfaz (selector, popup, resúmenes); la clave de superficie almacenada sigue siendo `occlusal`
 - 🪨 Cálculo, y reabsorción radicular tipificada como interna o cervical externa (`resorptionType`)
 - 📏 Profundidad de caries por superficie (superficial / dentina / profunda), o puntuación ICDAS II opcional (0–6) con `enableIcdas`

@@ -190,6 +190,12 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "D2": { code: "D2", display: "Dentin, middle third (D2)" },
     "D3": { code: "D3", display: "Dentin, inner third (D3)" },
   },
+  fillingDefect: {
+    "none": { code: "none", display: "No filling defect" },
+    "marginal": { code: "marginal", display: "Marginal defect (overhang / deficient margin)" },
+    "fracture": { code: "fracture", display: "Fractured / chipped filling" },
+    "wear": { code: "wear", display: "Worn / deficient filling material" },
+  },
 };
 
 /**

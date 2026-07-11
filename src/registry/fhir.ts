@@ -118,6 +118,18 @@ export function buildFhirBundleFromRegistry(payload: OdontogramExportPayload, op
         entries.push({ resource: obs });
       }
     }
+    const fillingDefect = rec.fillingDefect;
+    if (fillingDefect && typeof fillingDefect === "object") {
+      const comps = Object.entries(fillingDefect).filter((e): e is [string, string] => typeof e[1] === "string");
+      if (comps.length) {
+        const obs = baseObservation(subjectRef, tooth, findingConcept("filling-defect", "Filling defect"));
+        obs.component = comps.map(([surf, val]) => ({
+          code: valueConcept("fillingSurfaces", surf),
+          valueCodeableConcept: valueConcept("fillingDefect", val),
+        }));
+        entries.push({ resource: obs });
+      }
+    }
     if (typeof rec.note === "string" && rec.note.trim().length > 0) {
       const noteObs = baseObservation(subjectRef, tooth, findingConcept("tooth-note", "Tooth note"));
       noteObs.note = [{ text: rec.note }];

@@ -500,6 +500,19 @@ select:focus{
    toggled yet, so this rule is INERT today — no visual change. */
 .surf-depth.radio-badge[data-radio]{display:flex}
 
+/* SP10 Task 3: LEFT-side structural filling-defect indicator on a
+   FILLING-surface cell, mirroring the RIGHT-side `.surf-depth` indicator
+   above but positioned opposite it and shown only while the filling
+   checkbox is checked. `.has-defect` (dark border, distinct defect palette)
+   toggles in syncFillingDefectIndicator when the surface actually carries a
+   defect (`none` renders as a neutral affordance). */
+.surf-defect{position:absolute; top:5px; left:5px; display:none; align-items:center; justify-content:center; padding:2px; cursor:pointer; border-radius:4px}
+.surface-cross .surface-cell:has(input[type="checkbox"]:checked) .surf-defect{display:flex}
+.surf-defect:hover{background:rgba(0,0,0,.06)}
+.surf-defect i{display:block; width:9px; height:9px; border-radius:50%; background:rgba(46,49,146,.25)}
+.surf-defect.has-defect{border:2px solid #2e3192; padding:1px}
+.surf-defect.has-defect i{background:#f5ff15; box-shadow:0 0 0 1px #2e3192}
+
 /* Caries depth popup */
 .odon-depth-popup{position:fixed; z-index:130; background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:0 12px 24px rgba(30,42,58,.18); padding:6px; display:flex; flex-direction:column; gap:4px; min-width:150px}
 .odon-depth-option{border:1px solid var(--line); background:rgba(0,0,0,.04); color:var(--text); padding:8px 10px; border-radius:10px; font-weight:600; cursor:pointer; text-align:left; font-size:13px}

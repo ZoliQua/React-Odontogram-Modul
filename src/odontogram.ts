@@ -207,6 +207,7 @@ function defaultState(){
     // `cariesSeverity` above; still read from the raw payload on migration).
     rootCaries: "none", // none | active | arrested | active-cavitated
     radiographicDepth: new Map(), // surface -> none | E1 | E2 | D1 | D2 | D3
+    fillingDefect: new Map(), // surface -> none | marginal | fracture | wear (on a filled surface)
     // SP8 Task 1 foundation, wired up (render + migration) in Task 3: implant-only
     // peri-implant disease axis. none | mucositis | peri-implantitis-mild |
     // peri-implantitis-moderate | peri-implantitis-severe.
@@ -1104,6 +1105,13 @@ export function applyRadiographicDepth(map: Map<string, string>, surface: string
   else map.delete(surface);
 }
 
+/** Set/clear a per-surface filling-defect value on `map` ("none"/empty clears).
+ *  Extracted for unit-testing the surface-write path. */
+export function applyFillingDefect(map: Map<string, string>, surface: string, value: string): void {
+  if(value && value !== "none") map.set(surface, value);
+  else map.delete(surface);
+}
+
 // ---- SP4 Task 5: pulp/apical/resorption diagnosis authoring ----
 export type PulpDetailLevel = "simple" | "aae" | "latin";
 
@@ -1653,6 +1661,18 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
       }
     }
 
+    // SP10: per-surface filling defect — activate the (already-present, dormant)
+    // defect-{surface} marker on a filled surface with a recorded defect. Generic
+    // marker (type lives in the data / summary), no opacity. Independent of
+    // secondary caries (both may be active on the same surface).
+    if(state.fillingDefect && state.fillingDefect.size > 0 && !hasCrown){
+      for(const [s, val] of state.fillingDefect){
+        if(val && val !== "none" && state.fillingSurfaceMaterials.has(s)){
+          setActive(svgGetById(svg, `defect-${s}`), true);
+        }
+      }
+    }
+
   }
 
   // Periapical inflammation lives in the `mods` group, which paints beneath the
@@ -1796,6 +1816,7 @@ export function __getToothStateForTest(toothNo: number): Record<string, unknown>
     fillingSurfaces: Array.from(s.fillingSurfaces ?? []),
     fillingSurfaceMaterials: Object.fromEntries(s.fillingSurfaceMaterials ?? []),
     cariesSeverity: Object.fromEntries(s.cariesSeverity ?? []),
+    fillingDefect: Object.fromEntries(s.fillingDefect ?? []),
     mods: Array.from(s.mods ?? []),
   };
 }
@@ -1926,6 +1947,18 @@ function getStateSummary(toothNo: number): string[]{
       gic: "filling.option.gic", temporary: "filling.option.temporary",
     }[state.fillingMaterial];
     if(fillKey) summary.push(t(fillKey));
+  }
+
+  // SP10: filling defects (per filled surface). Gated on !hasCrown to match
+  // the render (applyStateToSvgSingle), which suppresses fillings/defects
+  // entirely under a crown/bridge — a crowned tooth's stored filling defect
+  // must not be surfaced here when the chart shows nothing for it.
+  if(state.fillingDefect && state.fillingDefect.size > 0 && state.restorationType === "none"){
+    for(const [surf, val] of state.fillingDefect){
+      if(val && val !== "none" && state.fillingSurfaceMaterials.has(surf)){
+        summary.push(`${t("fillingDefect.label")} (${summarySurfaceLetter(surf, toothNo)}: ${t("fillingDefect." + val)})`);
+      }
+    }
   }
 
   // Caries (+ SP9 coarse severity qualifier)
@@ -2160,6 +2193,31 @@ export function __syncFillingSubcariesIndicatorForTest(cell: Element, state: Rec
   syncFillingSubcariesIndicator(cell, state as Any);
 }
 
+/** SP10 Task 3: sync the LEFT-side structural filling-defect indicator on ONE
+ *  filling-surface `.surface-cell` (`.surf-defect`, mirroring the RIGHT-side
+ *  `.surf-depth` / {@link syncFillingSubcariesIndicator}). A surface carries a
+ *  defect only when it BOTH has a filling (`fillingSurfaceMaterials`) AND a
+ *  non-"none" `fillingDefect` value — a defect value on an un-filled surface
+ *  (stale/orphaned state) is defensively ignored. Extracted for DOM-free unit
+ *  testing. */
+function syncFillingDefectIndicator(cell: Element, state: Any): void {
+  const c = cell.querySelector("input[type=checkbox]") as HTMLInputElement | null;
+  const ind = cell.querySelector(".surf-defect") as HTMLElement | null;
+  if(!c || !ind) return;
+  const surface = String(c.value);
+  const val = state.fillingDefect?.get(surface);
+  const hasDefect = !!state.fillingSurfaceMaterials?.has(surface) && !!val && val !== "none";
+  ind.classList.toggle("has-defect", hasDefect);
+  if(hasDefect) ind.setAttribute("data-defect", String(val));
+  else ind.removeAttribute("data-defect");
+}
+
+/** TEST-ONLY sibling of {@link __syncFillingSubcariesIndicatorForTest} for the
+ *  filling-defect indicator. Not part of the public API. */
+export function __syncFillingDefectIndicatorForTest(cell: Element, state: Record<string, unknown>): void {
+  syncFillingDefectIndicator(cell, state as Any);
+}
+
 /** A minimal shape covering what {@link subcariesLettersForTooth} and
  *  {@link computeFillingSubcariesSummaryLine} read from a tooth state. */
 type SubcariesStateLike = { caries?: Set<string>; fillingSurfaceMaterials?: Map<string, string> } | undefined | null;
@@ -2383,6 +2441,8 @@ function syncControlsFromState(state: Any){
   });
   // SP6 Task 2 (step 2): recurrent-caries dark-border indicator on filled surfaces.
   $$("#fillingSurfaceChecks .surface-cell").forEach(cell => syncFillingSubcariesIndicator(cell, state));
+  // SP10 Task 3: structural filling-defect dark-border indicator (LEFT side).
+  $$("#fillingSurfaceChecks .surface-cell").forEach(cell => syncFillingDefectIndicator(cell, state));
 
   // disable logic in UI
   const hasCrown = state.restorationType !== "none";
@@ -3113,6 +3173,52 @@ function showCariesDepthPopup(surface: string, anchor: HTMLElement, toothNo?: nu
   }, 0);
 }
 
+/** SP10 Task 3: small dedicated anchored popup to author the structural
+ *  filling-defect (`none` | `marginal` | `fracture` | `wear`) on ONE filled
+ *  surface, opened from the LEFT-side `.surf-defect` indicator. Reuses
+ *  {@link hideCariesDepthPopup}'s shared close/teardown, and the SAME
+ *  positioning + outside-click/Escape close registration as
+ *  {@link showCariesDepthPopup} — only the option set differs. */
+function showFillingDefectPopup(surface: string, anchor: HTMLElement, toothNo?: number | null){
+  hideCariesDepthPopup(); // reuse the shared close/teardown
+  const active = activeTooth != null ? toothState.get(activeTooth) : null;
+  if(!active?.fillingSurfaceMaterials?.has(surface)) return;
+  const rect = anchor.getBoundingClientRect();
+  const popup = el("div", { class: "odon-depth-popup" });
+  popup.appendChild(el("div", { class: "odon-depth-title", text: `${t("fillingDefect.label")} – ${t(surfaceLabelKey(surface, toothNo))}` }));
+  const current = active?.fillingDefect?.get(surface) ?? "none";
+  const group = el("div", { class: "odon-depth-group" });
+  for(const value of ["none", "marginal", "fracture", "wear"]){
+    const btn = el("button", { class: "odon-depth-option" + (value === current ? " is-active" : ""), text: t("fillingDefect." + value) }) as HTMLButtonElement;
+    btn.addEventListener("click", (e: Any)=>{
+      e.stopPropagation();
+      applyToSelected((s)=>{ applyFillingDefect(s.fillingDefect, surface, value); });
+      hideCariesDepthPopup();
+    });
+    group.appendChild(btn);
+  }
+  popup.appendChild(group);
+  document.body.appendChild(popup);
+  // Position below-right of the indicator, clamped to the viewport — same as showCariesDepthPopup.
+  const pw = popup.offsetWidth || 140;
+  const left = Math.min(rect.left, window.innerWidth - pw - 8);
+  const top = Math.min(rect.bottom + 4, window.innerHeight - popup.offsetHeight - 8);
+  popup.style.left = `${Math.max(8, left)}px`;
+  popup.style.top = `${Math.max(8, top)}px`;
+  // Close on outside click / Escape — same registration as showCariesDepthPopup.
+  const onDoc = (e: Any)=>{ if(!popup.contains(e.target)){ cleanup(); } };
+  const onKey = (e: Any)=>{ if(e.key === "Escape") cleanup(); };
+  function cleanup(){
+    hideCariesDepthPopup();
+    document.removeEventListener("mousedown", onDoc, true);
+    document.removeEventListener("keydown", onKey, true);
+  }
+  setTimeout(()=>{
+    document.addEventListener("mousedown", onDoc, true);
+    document.addEventListener("keydown", onKey, true);
+  }, 0);
+}
+
 // ---- Touch: Pinch-to-zoom ----
 function getTouchDist(t1: Touch, t2: Touch){
   const dx = t1.clientX - t2.clientX;
@@ -3475,6 +3581,7 @@ function serializeState(s: Any){
     crownLeakage: !!s.crownLeakage,
     rootCaries: s.rootCaries,
     radiographicDepth: Object.fromEntries(s.radiographicDepth || new Map()),
+    fillingDefect: Object.fromEntries(s.fillingDefect || new Map()),
     ...(Object.keys(s.customStates || {}).length > 0 ? { customStates: s.customStates } : {}),
     ...(s.note ? { note: s.note } : {}),
   };
@@ -3513,6 +3620,8 @@ export const VALID_PERI_IMPLANT = validValues("periImplant");
 export const VALID_CARS = new Set([0, 1, 2, 3, 4, 5, 6]);
 export const VALID_CARIES_SEVERITY = new Set([0, 1, 2, 3, 4, 5, 6]);
 export const VALID_RADIOGRAPHIC_DEPTH = new Set(["none", "E1", "E2", "D1", "D2", "D3"]);
+export const VALID_FILLING_DEFECT = new Set(["none", "marginal", "fracture", "wear"]);
+export const VALID_FILLING_DEFECT_SET = new Set(["marginal", "fracture", "wear"]); // non-none, valid stored values
 
 function filterSet(arr: Any, allowed: Set<string>): Set<string>{
   if(!Array.isArray(arr)) return new Set();
@@ -3769,6 +3878,13 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
       if(VALID_FILLING_SURFACES.has(surf) && typeof val === "string" && VALID_RADIOGRAPHIC_DEPTH.has(val)) s.radiographicDepth.set(surf, val);
     }
   }
+  // SP10: per-surface filling defect (additive; legacy payloads have none).
+  s.fillingDefect = new Map();
+  if(raw.fillingDefect && typeof raw.fillingDefect === "object"){
+    for(const [surf, val] of Object.entries(raw.fillingDefect)){
+      if(VALID_FILLING_SURFACES.has(surf) && typeof val === "string" && VALID_FILLING_DEFECT_SET.has(val)) s.fillingDefect.set(surf, val);
+    }
+  }
   s.fillingMaterial = validateEnum(raw.fillingMaterial, VALID_FILLING_MATERIAL, s.fillingMaterial);
   s.fillingSurfaces = filterSet(raw.fillingSurfaces, VALID_FILLING_SURFACES);
   s.fillingSurfaceMaterials = new Map();
@@ -3920,7 +4036,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.6",
+    version: "2.7",
     globals: {
       wisdomVisible,
       showBase,
@@ -4841,6 +4957,22 @@ function wireControls(){
     });
     cell.appendChild(ind);
   });
+  // SP10: LEFT-side per-surface filling-defect indicator (the RIGHT-side .surf-depth
+  // authors recurrent caries; this authors the structural defect). Shown by CSS only
+  // when the filling checkbox is checked; the dark border (.has-defect) is toggled in
+  // syncFillingDefectIndicator when the surface actually carries a defect.
+  $$("#fillingSurfaceChecks .surface-cell").forEach((cell) => {
+    const input = cell.querySelector("input") as HTMLInputElement | null;
+    if(!input) return;
+    const surface = String(input.value);
+    const ind = el("span", { class: "surf-defect", title: t("fillingDefect.label") }, [ el("i") ]);
+    ind.addEventListener("click", (e: Any)=>{
+      e.preventDefault(); e.stopPropagation();
+      if(!input.checked || readOnly) return;
+      showFillingDefectPopup(surface, ind, activeTooth);
+    });
+    cell.insertBefore(ind, cell.firstChild); // LEFT side
+  });
 
   // Fissure sealing
   $("#fissureSealing").addEventListener("change", (e)=>{
@@ -5429,7 +5561,19 @@ export function getOdontogramSummary(): OdontogramSummary {
       const letters = SUMMARY_SURFACE_ORDER
         .filter((surface) => s.fillingSurfaceMaterials.has(surface))
         .map((surface) => summarySurfaceLetter(surface, toothNo));
-      if(letters.length) fillings.push(`${lbl(toothNo)} (${letters.join(", ")})`);
+      if(letters.length){
+        // SP10: defect suffix gated on !hasCrown to match the render
+        // (applyStateToSvgSingle), which suppresses fillings/defects entirely
+        // under a crown/bridge; the base filling-presence line above stays
+        // unchanged (pre-existing behavior, out of scope for this fix).
+        const defects = s.restorationType === "none"
+          ? SUMMARY_SURFACE_ORDER
+              .filter((surface) => s.fillingDefect?.has(surface) && s.fillingSurfaceMaterials.has(surface))
+              .map((surface) => `${summarySurfaceLetter(surface, toothNo)}: ${t("fillingDefect." + s.fillingDefect.get(surface))}`)
+          : [];
+        const suffix = defects.length ? ` – ${defects.join(", ")}` : "";
+        fillings.push(`${lbl(toothNo)} (${letters.join(", ")})${suffix}`);
+      }
     }
 
     // Endo

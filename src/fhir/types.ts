@@ -57,6 +57,9 @@ export interface ToothRecord {
   rootCaries?: string;
   secondaryCaries?: Record<string, number>;
   radiographicDepth?: Record<string, string>;
+  // SP10 Task 1: per-surface filling-defect scalar map (none/marginal/fracture/wear),
+  // modeled the same way as `radiographicDepth` above.
+  fillingDefect?: Record<string, string>;
   customStates?: Record<string, unknown>;
   note?: string;
 }

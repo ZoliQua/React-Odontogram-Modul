@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.22.0] - 2026-07-11
+### Added
+- Per-surface filling defects for direct restorations: mark a filled surface as having a marginal defect, fracture/chip, or wear (independent of recurrent caries). Authored via a per-surface indicator on the Fillings card; shown in the tooltip and the whole-mouth summary; rendered on the chart.
+### Migration
+- Payload version 2.7 (imports 1.4–2.6 accepted). Additive — legacy charts carry no filling defects.
+
 ## [1.21.0] - 2026-07-11
 ### Added
 - The per-tooth tooltip and the whole-mouth summary panel now surface the full set of clinical findings added since v1.16: pulp diagnosis, apical diagnosis (+ lesion subtype), root resorption, peri-implant status, graded root caries, calculus, crown marginal leakage, fracture, contact loss, and bruxism wear. A new "Diagnoses" section groups the pulp/apical/resorption/peri-implant findings; caries carries a coarse severity qualifier (superficial/moderate/deep).
