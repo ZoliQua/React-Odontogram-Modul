@@ -434,6 +434,8 @@ select:focus{
 .row{display:flex; gap:10px; align-items:center; font-size:13px; padding:6px 2px}
 .contact-row{margin-bottom:6px}
 .bruxism-row{margin-top:6px; gap:8px}
+.wear-stack{ display:flex; flex-direction:column; gap:6px; }
+.wear-stack .row{ margin-top:0; }
 .fissure-row{margin-top:10px; justify-content:center; text-align:center}
 #crownReplaceRow,#crownNeededRow,#missingClosedRow{margin-top:8px}
 .bridge-pillar-row{margin-top:10px}
@@ -541,6 +543,19 @@ select:focus{
 .inline-checks:has(input[type="checkbox"]:checked){
   background:none;
   border:0;
+}
+/* SP13: each wear-stack sub-row wraps a (usually hidden) toggle checkbox beside
+   its select, so the generic .row:has(checkbox) pill box must not style the row
+   itself — the visible simple-mode toggle-label keeps its own pill via
+   .inline-checks label. Higher-specificity/later so it wins in light and dark. */
+.wear-stack .row:has(input[type="checkbox"]),
+.wear-stack .row:has(input[type="checkbox"]:checked),
+.dark .wear-stack .row:has(input[type="checkbox"]){
+  border:0;
+  background:none;
+  padding:6px 2px;
+  border-radius:0;
+  cursor:default;
 }
 .radio-list{display:flex; flex-direction:column; gap:8px}
 .radio-list label{display:flex; gap:10px; align-items:center; font-size:13px; padding:6px 8px; border-radius:12px; border:1px solid var(--line); background: rgba(0,0,0,.02)}

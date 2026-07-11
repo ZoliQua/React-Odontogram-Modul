@@ -50,6 +50,10 @@ vi.mock("../odontogram", async () => {
     getRadiographicDepthMode: vi.fn().mockReturnValue("off"),
     setCariesDepthEnabled: vi.fn(),
     getCariesDepthEnabled: vi.fn().mockReturnValue(true),
+    setWearDetailLevel: vi.fn(),
+    getWearDetailLevel: vi.fn().mockReturnValue("complex"),
+    setDiscolorationDetailLevel: vi.fn(),
+    getDiscolorationDetailLevel: vi.fn().mockReturnValue("complex"),
     getOdontogramSummary: vi.fn().mockReturnValue({
       overview: "", permanentList: null, missingList: null,
       sections: [], implants: null, periodontalTitle: "", periodontalText: "",

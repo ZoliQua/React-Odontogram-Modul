@@ -31,6 +31,10 @@ const settings: SettingsState = {
   onRadiographicDepthMode: vi.fn(),
   pulpLevel: "aae",
   onPulpLevel: vi.fn(),
+  wearDetailLevel: "complex",
+  onWearDetailLevel: vi.fn(),
+  discolorationDetailLevel: "complex",
+  onDiscolorationDetailLevel: vi.fn(),
   notes: false,
   onNotes: vi.fn(),
 };

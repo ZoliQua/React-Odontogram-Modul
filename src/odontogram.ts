@@ -342,6 +342,26 @@ export function setPulpDetailLevel(value: PulpDetailLevel){
 }
 export function getPulpDetailLevel(): PulpDetailLevel { return pulpDetailLevel; }
 
+// SP13 Task 2: wear/discoloration detail-level settings — each switches its
+// control between the full-option <select> ("complex", default) and a
+// yes/no checkbox ("simple"). wearDetailLevel drives BOTH wearEdge and
+// wearCervical (one shared setting); discolorationDetailLevel is independent.
+// Mirrors the pulpDetailLevel accessor pattern above: sanitize to the literal
+// set, re-sync the active tooth's controls, never mutate stored state.
+export type ToothDetailLevel = "simple" | "complex";
+let wearDetailLevel: ToothDetailLevel = "complex";
+export function setWearDetailLevel(value: ToothDetailLevel){
+  wearDetailLevel = value === "simple" ? "simple" : "complex";
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+}
+export function getWearDetailLevel(): ToothDetailLevel { return wearDetailLevel; }
+let discolorationDetailLevel: ToothDetailLevel = "complex";
+export function setDiscolorationDetailLevel(value: ToothDetailLevel){
+  discolorationDetailLevel = value === "simple" ? "simple" : "complex";
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+}
+export function getDiscolorationDetailLevel(): ToothDetailLevel { return discolorationDetailLevel; }
+
 // SP5 Task 5: caries-granularity settings (modes). Each mode governs ONLY the
 // option list its authoring control offers; it never mutates stored state.
 // Non-collapsing: a stored value outside the current mode's list is preserved
@@ -2369,6 +2389,38 @@ function updateFillingSubcariesSummary(): void {
   lineEl.classList.toggle("hidden", !line);
 }
 
+/** SP13 Task 2: toggle the wear (edge + cervical, shared wearDetailLevel) and
+ *  discoloration (own discolorationDetailLevel) controls between their
+ *  "complex" <select> and "simple" checkbox presentation, and derive each
+ *  checkbox's `.checked` from the stored value. Non-collapsing: this ONLY
+ *  flips `.hidden`/`.checked` — it never mutates `state`, so switching levels
+ *  back and forth cannot lose/rewrite a stored value. Mirrors
+ *  syncInflammationModVisibility / syncPeriImplantVisibility (small
+ *  standalone syncs called from syncControlsFromState, independently
+ *  testable since no full-DOM initOdontogram() mount harness exists for the
+ *  tooth panel — see __syncInflammationModVisibilityForTest). */
+function syncToothDetailControls(state: Any): void {
+  const wearSimple = getWearDetailLevel() === "simple";
+  $("#wearEdgeSelectLabel").classList.toggle("hidden", wearSimple);
+  $("#wearEdgeToggleLabel").classList.toggle("hidden", !wearSimple);
+  $("#wearCervicalSelectLabel").classList.toggle("hidden", wearSimple);
+  $("#wearCervicalToggleLabel").classList.toggle("hidden", !wearSimple);
+  ($("#wearEdgeToggle") as HTMLInputElement).checked = state.wearEdge !== "none";
+  ($("#wearCervicalToggle") as HTMLInputElement).checked = state.wearCervical !== "none";
+  const discoSimple = getDiscolorationDetailLevel() === "simple";
+  $("#discolorationSelectLabel").classList.toggle("hidden", discoSimple);
+  $("#discolorationToggleLabel").classList.toggle("hidden", !discoSimple);
+  ($("#discolorationToggle") as HTMLInputElement).checked = state.discoloration !== "none";
+}
+
+/** TEST-ONLY: apply {@link syncToothDetailControls} to a hand-built DOM
+ *  fragment (the wear/discoloration select+toggle labels and checkboxes),
+ *  without requiring a live initOdontogram(). Mirrors
+ *  __syncInflammationModVisibilityForTest. Not part of the public API. */
+export function __syncToothDetailControlsForTest(state: Record<string, unknown>): void {
+  syncToothDetailControls(state);
+}
+
 function syncControlsFromState(state: Any){
   // SP4 Task 5: apical (AAE) diagnosis picker.
   setSelectOptions($("#apicalDxSelect"), getApicalDxOptions(), state.apicalDx);
@@ -2385,6 +2437,7 @@ function syncControlsFromState(state: Any){
   if($("#wearCervicalSelect").value !== state.wearCervical) state.wearCervical = $("#wearCervicalSelect").value;
   setSelectOptions($("#discolorationSelect"), getDiscolorationOptions(), state.discoloration);
   if($("#discolorationSelect").value !== state.discoloration) state.discoloration = $("#discolorationSelect").value;
+  syncToothDetailControls(state);
   $("#brokenMesial").checked = !!state.brokenMesial;
   $("#brokenIncisal").checked = !!state.brokenIncisal;
   $("#brokenDistal").checked = !!state.brokenDistal;
@@ -5119,10 +5172,29 @@ function wireControls(){
     applyToSelected((s)=>{ s.wearCervical = value; });
   });
 
+  // Wear simple-mode toggles (SP13 Task 2: yes/no checkboxes shown instead of
+  // the selects above when wearDetailLevel === "simple"; write the canonical
+  // simple value on check, "none" on uncheck).
+  $("#wearEdgeToggle").addEventListener("change", (e)=>{
+    const on = (e.target as HTMLInputElement).checked;
+    applyToSelected((s)=>{ s.wearEdge = on ? "attrition" : "none"; });
+  });
+  $("#wearCervicalToggle").addEventListener("change", (e)=>{
+    const on = (e.target as HTMLInputElement).checked;
+    applyToSelected((s)=>{ s.wearCervical = on ? "abrasion" : "none"; });
+  });
+
   // Discoloration (SP12 Task 3: discoloration enum picker — mirrors the
   // wearEdge/wearCervical buildSelect wiring above).
   buildSelect($("#discolorationSelect"), getDiscolorationOptions(), (value)=>{
     applyToSelected((s)=>{ s.discoloration = value; });
+  });
+
+  // Discoloration simple-mode toggle (SP13 Task 2: mirrors the wear toggles
+  // above; independent discolorationDetailLevel setting).
+  $("#discolorationToggle").addEventListener("change", (e)=>{
+    const on = (e.target as HTMLInputElement).checked;
+    applyToSelected((s)=>{ s.discoloration = on ? "other" : "none"; });
   });
 
   // Bridge pillar

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, exportFhir, exportImage, exportSvg, setImportFormat };
-import type { OdontogramSummary, PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode } from "./odontogram";
-export type { PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode } from "./odontogram";
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, exportFhir, exportImage, exportSvg, setImportFormat };
+import type { OdontogramSummary, PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode, ToothDetailLevel } from "./odontogram";
+export type { PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode, ToothDetailLevel } from "./odontogram";
 export type { OdontogramSummary, OdontogramSummarySection } from "./odontogram";
 export type { FhirExportOptions } from "./fhir/types";
 import { startIntroTour } from "./tour";
@@ -100,6 +100,16 @@ type AppProps = {
    * `false` to render caried surfaces at the SVG default with no depth tier.
    */
   cariesDepthEnabled?: boolean;
+  /**
+   * Detail level for the per-tooth wear control: `"simple"` (yes/no toggle for
+   * attrition) or `"complex"` (wear type per edge and cervix, default).
+   */
+  wearDetailLevel?: ToothDetailLevel;
+  /**
+   * Detail level for the per-tooth discoloration control: `"simple"` (yes/no
+   * toggle) or `"complex"` (choose the discoloration cause, default).
+   */
+  discolorationDetailLevel?: ToothDetailLevel;
 };
 
 const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
@@ -154,6 +164,8 @@ export default function App({
   rootCariesMode,
   radiographicDepthMode,
   cariesDepthEnabled,
+  wearDetailLevel,
+  discolorationDetailLevel,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
@@ -169,6 +181,8 @@ export default function App({
   const [rootMode, setRootMode] = useState<RootCariesMode>(rootCariesMode ?? "simple");
   const [radiographicMode, setRadiographicMode] = useState<RadiographicDepthMode>(radiographicDepthMode ?? "off");
   const [cariesDepthOn, setCariesDepthOn] = useState<boolean>(cariesDepthEnabled ?? true);
+  const [wearLevel, setWearLevel] = useState<ToothDetailLevel>(wearDetailLevel ?? "complex");
+  const [discoLevel, setDiscoLevel] = useState<ToothDetailLevel>(discolorationDetailLevel ?? "complex");
   const [toothInfoOn, setToothInfoOn] = useState<boolean>(true);
   const [summary, setSummary] = useState<OdontogramSummary | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
@@ -277,6 +291,8 @@ export default function App({
     setCariesDepthEnabled(v);
     setCariesDepthOn(v);
   }, [cariesDepthEnabled]);
+  useEffect(() => { const v = wearDetailLevel ?? "complex"; setWearDetailLevel(v); setWearLevel(v); }, [wearDetailLevel]);
+  useEffect(() => { const v = discolorationDetailLevel ?? "complex"; setDiscolorationDetailLevel(v); setDiscoLevel(v); }, [discolorationDetailLevel]);
 
   // Refresh the tooth-information summary while its panel is open. Recomputes on
   // every state change, and when language/numbering change (which affect labels).
@@ -328,6 +344,10 @@ export default function App({
     onRadiographicDepthMode: (v) => { setRadiographicMode(v); setRadiographicDepthMode(v); },
     pulpLevel,
     onPulpLevel: (v) => { setPulpLevel(v); setPulpDetailLevel(v); },
+    wearDetailLevel: wearLevel,
+    onWearDetailLevel: (v) => { setWearLevel(v); setWearDetailLevel(v); },
+    discolorationDetailLevel: discoLevel,
+    onDiscolorationDetailLevel: (v) => { setDiscoLevel(v); setDiscolorationDetailLevel(v); },
     notes: notesOn,
     onNotes: (v) => { setNotesOn(v); setNotesEnabled(v); },
   };
@@ -583,12 +603,19 @@ export default function App({
                   <span>{t("tooth.contact.distalMissing")}</span>
                 </label>
               </div>
-              <div id="bruxismRow" className="row inline-checks bruxism-row">
-                <label><span>{t("tooth.bruxism.edgeWear")}</span><select id="wearEdgeSelect"></select></label>
-                <label><span>{t("tooth.bruxism.neckWear")}</span><select id="wearCervicalSelect"></select></label>
+              <div id="bruxismRow" className="inline-checks bruxism-row wear-stack">
+                <div id="wearEdgeRow" className="row">
+                  <label id="wearEdgeSelectLabel"><span>{t("tooth.bruxism.edgeWear")}</span><select id="wearEdgeSelect"></select></label>
+                  <label id="wearEdgeToggleLabel" className="inline-check hidden"><input type="checkbox" id="wearEdgeToggle" /><span>{t("tooth.bruxism.edgeWear")}</span></label>
+                </div>
+                <div id="wearCervicalRow" className="row">
+                  <label id="wearCervicalSelectLabel"><span>{t("tooth.bruxism.neckWear")}</span><select id="wearCervicalSelect"></select></label>
+                  <label id="wearCervicalToggleLabel" className="inline-check hidden"><input type="checkbox" id="wearCervicalToggle" /><span>{t("tooth.bruxism.neckWear")}</span></label>
+                </div>
               </div>
               <div id="discolorationRow" className="row inline-checks">
-                <label><span>{t("discoloration.label")}</span><select id="discolorationSelect"></select></label>
+                <label id="discolorationSelectLabel"><span>{t("discoloration.label")}</span><select id="discolorationSelect"></select></label>
+                <label id="discolorationToggleLabel" className="inline-check hidden"><input type="checkbox" id="discolorationToggle" /><span>{t("discoloration.label")}</span></label>
               </div>
               <div id="crownActionsRow" className="row inline-checks bridge-actions-row">
                 <label id="bridgePillarRow" className="inline-check">

@@ -6,6 +6,7 @@ import type {
   SecondaryCariesMode,
   RootCariesMode,
   RadiographicDepthMode,
+  ToothDetailLevel,
 } from "./odontogram";
 
 /** Translation function signature (subset of `useI18n`'s `t`). */
@@ -39,6 +40,10 @@ export type SettingsState = {
   onRadiographicDepthMode: (value: RadiographicDepthMode) => void;
   pulpLevel: PulpDetailLevel;
   onPulpLevel: (value: PulpDetailLevel) => void;
+  wearDetailLevel: ToothDetailLevel;
+  onWearDetailLevel: (value: ToothDetailLevel) => void;
+  discolorationDetailLevel: ToothDetailLevel;
+  onDiscolorationDetailLevel: (value: ToothDetailLevel) => void;
   notes: boolean;
   onNotes: (value: boolean) => void;
 };
@@ -96,6 +101,11 @@ const PULP_OPTIONS: { value: PulpDetailLevel; labelKey: string }[] = [
   { value: "simple", labelKey: "pulp.level.simple" },
   { value: "aae", labelKey: "pulp.level.aae" },
   { value: "latin", labelKey: "pulp.level.latin" },
+];
+
+const TOOTH_DETAIL_OPTIONS: { value: ToothDetailLevel; labelKey: string }[] = [
+  { value: "complex", labelKey: "settings.toothDetail.complex" },
+  { value: "simple", labelKey: "settings.toothDetail.simple" },
 ];
 
 /** A single settings row: label + description + a control on the right. */
@@ -189,7 +199,7 @@ function ToggleRow({
   );
 }
 
-const SETTINGS_TABS: SettingsTab[] = [
+export const SETTINGS_TABS: SettingsTab[] = [
   {
     id: "general",
     titleKey: "settings.tab.general",
@@ -234,6 +244,30 @@ const SETTINGS_TABS: SettingsTab[] = [
             <div className="odon-settings-row-desc">{t("settings.exportImport.desc")}</div>
           </div>
         </div>
+      </>
+    ),
+  },
+  {
+    id: "toothDetails",
+    titleKey: "settings.tab.toothDetails",
+    render: ({ t, s }) => (
+      <>
+        <SelectRow<ToothDetailLevel>
+          t={t}
+          label={t("settings.wearDetail.label")}
+          descKey="settings.wearDetail.desc"
+          value={s.wearDetailLevel}
+          options={TOOTH_DETAIL_OPTIONS}
+          onChange={s.onWearDetailLevel}
+        />
+        <SelectRow<ToothDetailLevel>
+          t={t}
+          label={t("settings.discolorationDetail.label")}
+          descKey="settings.discolorationDetail.desc"
+          value={s.discolorationDetailLevel}
+          options={TOOTH_DETAIL_OPTIONS}
+          onChange={s.onDiscolorationDetailLevel}
+        />
       </>
     ),
   },
