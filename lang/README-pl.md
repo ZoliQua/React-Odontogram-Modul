@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.12.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -41,7 +41,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🔢 12 filtrów wyboru (wszystkie, obecne, stałe, mleczne, implanty, brakujące, górne/dolne, przednie/trzonowe)
 - 📊 Predefiniowane presety statusu (reset, uzębienie mleczne, uzębienie mieszane, bezzębny)
 - 📦 34 predefiniowane szablony uzupełnień (mosty, protezy ruchome, protezy na belce z implantami)
-- 💾 Eksport/import statusu w formacie JSON (wersja 1.3, z niestandardowymi stanami wtyczek i notatkami do zębów)
+- 💾 Eksport/import statusu w formacie JSON (wersja 1.4, z niestandardowymi stanami wtyczek i notatkami do zębów)
 - 🔗 Eksport HL7 FHIR R4 (kolekcja Bundle z obserwacjami na ząb, kodowanie zębów wg ISO 3950 dla uzębienia stałego, lokalny system kodów — mapowanie SNOMED CT planowane)
 - ✚ Interfejs wyboru powierzchni w układzie krzyżowym (B/M/O/D/L) dla próchnicy i wypełnień
 - 🧱 Materiały wypełnień na powierzchnię (mieszane wypełnienia, np. policzkowe amalgamat + dystalne kompozyt)
@@ -324,7 +324,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `startIntroTour()` | Uruchom 12-krokowy interaktywny samouczek wprowadzający |
 
 ### 💾 Format eksportu/importu statusu
-Eksport tworzy plik JSON (wersja `1.3`) zawierający:
+Eksport tworzy plik JSON (wersja `1.4`) zawierający:
 
 **Pola globalne:**
 - `wisdomVisible` - widoczność zębów mądrości

@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.12.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -41,7 +41,7 @@ Este projeto é um editor de odontograma interativo, executado no navegador, que
 - 🔢 12 filtros de seleção (todos, presentes, permanentes, decíduos, implantes, ausentes, superiores/inferiores, anteriores/molares)
 - 📊 Predefinições de estado prontas (redefinir, dentição decídua, dentição mista, edêntulo)
 - 📦 34 modelos de restauração predefinidos (pontes, próteses removíveis, próteses sobre barra com implantes)
-- 💾 Exportação/importação de estado em JSON (versão 1.3, com estados personalizados de plugins e anotações por dente)
+- 💾 Exportação/importação de estado em JSON (versão 1.4, com estados personalizados de plugins e anotações por dente)
 - 🔗 Exportação HL7 FHIR R4 (Bundle de coleção com Observations por dente, codificação de dente ISO 3950 para dentição permanente, sistema de códigos local — mapeamento SNOMED CT planejado)
 - ✚ Interface de seleção de faces em cruz/mais (B/M/O/D/L) para cáries e restaurações
 - 🧱 Materiais de restauração por face (restaurações mistas, por exemplo amálgama vestibular + resina distal)
@@ -324,7 +324,7 @@ npm run docs           # Gera a documentação TypeDoc em docs/
 | `startIntroTour()` | Inicia o tour interativo de introdução em 12 etapas |
 
 ### 💾 Formato de exportação/importação de estado
-A exportação cria um arquivo JSON (versão `1.3`) contendo:
+A exportação cria um arquivo JSON (versão `1.4`) contendo:
 
 **Campos globais:**
 - `wisdomVisible` - sisos visíveis

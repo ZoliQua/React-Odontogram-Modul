@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.12.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -41,7 +41,7 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 - 🔢 12 kiválasztási szűrő (összes, jelenlévő, maradó, tej, implantátum, hiányzó, felső/alsó, front/molárisok)
 - 📊 Előre definiált státusz minták (alaphelyzet, tejfogazat, vegyes fogazat, fogatlan)
 - 📦 34 előre definiált restaurációs sablon (hidak, kivehető protézisek, bár protézisek implantátumokkal)
-- 💾 Állapot export/import JSON formátumban (1.3 verzió, plugin egyedi állapotokkal és fogankénti megjegyzésekkel)
+- 💾 Állapot export/import JSON formátumban (1.4 verzió, plugin egyedi állapotokkal és fogankénti megjegyzésekkel)
 - 🔗 HL7 FHIR R4 export (collection Bundle fogankénti Observation-ökkel, ISO 3950 fogkódolás a maradó fogazatra, lokális kódrendszer — SNOMED CT megfeleltetés tervezett)
 - ✚ Kereszt/plusz felület-választó (B/M/O/D/L) szuvasodáshoz és tömésekhez
 - 🧱 Felületenkénti tömőanyagok (vegyes tömések, pl. buccal amalgám + distal composite)
@@ -324,7 +324,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `startIntroTour()` | A 12 lépéses interaktív bemutató túra indítása |
 
 ### 💾 Állapot Export/Import formátum
-Az export egy JSON fájlt hoz létre (`1.3` verziójú), amely tartalmazza:
+Az export egy JSON fájlt hoz létre (`1.4` verziójú), amely tartalmazza:
 
 **Globális mezők:**
 - `wisdomVisible` - bölcsességfogak láthatók

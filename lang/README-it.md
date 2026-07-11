@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.12.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -41,7 +41,7 @@ Questo progetto è un editor di odontogramma interattivo basato su browser che s
 - 🔢 12 filtri di selezione (tutti, presenti, permanenti, decidui, impianti, mancanti, superiori/inferiori, frontali/molari)
 - 📊 Preset di stato predefiniti (ripristino, dentizione primaria, dentizione mista, edentulo)
 - 📦 34 template di restauro predefiniti (ponti, protesi rimovibili, protesi su barra con impianti)
-- 💾 Esportazione/importazione dello stato in JSON (versione 1.3, con stati personalizzati dei plugin e note per dente)
+- 💾 Esportazione/importazione dello stato in JSON (versione 1.4, con stati personalizzati dei plugin e note per dente)
 - 🔗 Esportazione HL7 FHIR R4 (Bundle di raccolta di Observation per dente, codifica dentale ISO 3950 per la dentizione permanente, sistema di codici locale — mappatura SNOMED CT pianificata)
 - ✚ Interfaccia di selezione superfici a croce (B/M/O/D/L) per carie e otturazioni
 - 🧱 Materiali di restauro per superficie (otturazioni miste, es. buccale amalgama + distale composito)
@@ -324,7 +324,7 @@ npm run docs           # Genera la documentazione TypeDoc in docs/
 | `startIntroTour()` | Avvia il tour introduttivo interattivo in 12 passi |
 
 ### 💾 Formato di esportazione/importazione dello stato
-L'esportazione crea un file JSON (versione `1.3`) contenente:
+L'esportazione crea un file JSON (versione `1.4`) contenente:
 
 **Campi globali:**
 - `wisdomVisible` - denti del giudizio visibili

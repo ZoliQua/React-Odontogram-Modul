@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-07-11
+
+### Changed
+- Internal architecture: FHIR export/import, value validation, SVG clear-set + boolean-flag layer activation, and the stable UI option lists are now generated from a single declarative clinical-axis registry (`src/registry/`) instead of scattered ad-hoc maps. Behavior-preserving — the JSON payload (version 1.4) and FHIR output are byte-identical to 1.12.0, guarded by frozen parity goldens.
+
+### Removed
+- Dead code orphaned by the registry migration (unused SVG-group helpers, duplicated dependency literals, superseded `GROUPS` layer lists).
+
 ## [1.12.0] - 2026-07-11
 
 ### Changed

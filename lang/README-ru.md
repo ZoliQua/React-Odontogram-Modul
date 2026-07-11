@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.12.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -41,7 +41,7 @@
 - 🔢 12 фильтров выбора (все, присутствующие, постоянные, молочные, имплантаты, отсутствующие, верхние/нижние, фронтальные/моляры)
 - 📊 Предустановленные статусные шаблоны (сброс, молочный прикус, сменный прикус, беззубый)
 - 📦 34 предустановленных шаблона реставраций (мосты, съёмные протезы, балочные протезы с имплантатами)
-- 💾 Экспорт/импорт статуса в JSON (версия 1.3, с пользовательскими состояниями плагинов и заметками к зубам)
+- 💾 Экспорт/импорт статуса в JSON (версия 1.4, с пользовательскими состояниями плагинов и заметками к зубам)
 - 🔗 Экспорт HL7 FHIR R4 (коллекция Bundle наблюдений по каждому зубу, кодирование зубов ISO 3950 для постоянного прикуса, локальная система кодов — сопоставление SNOMED CT запланировано)
 - ✚ Интерфейс выбора поверхностей «крест/плюс» (B/M/O/D/L) для кариеса и пломб
 - 🧱 Материалы реставраций по поверхностям (смешанные пломбы, например щёчная амальгама + дистальный композит)
@@ -324,7 +324,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `startIntroTour()` | Запустить интерактивное обучение из 12 шагов |
 
 ### 💾 Формат экспорта/импорта статуса
-При экспорте создаётся файл JSON (версия `1.3`), содержащий:
+При экспорте создаётся файл JSON (версия `1.4`), содержащий:
 
 **Глобальные поля:**
 - `wisdomVisible` — видимость зубов мудрости

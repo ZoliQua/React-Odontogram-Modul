@@ -24,7 +24,7 @@ export interface AxisValue {
 /** Precomputed render context for flag activation (mirrors the render's derived booleans). */
 export interface FlagCtx {
   toothNo: number;
-  hasCrown: boolean; isImplant: boolean; isMilktooth: boolean; underGum: boolean;
+  isImplant: boolean; isMilktooth: boolean; underGum: boolean;
   extraction: boolean; isNone: boolean; toothPresent: boolean;
   fissureAllowed: boolean; contactAllowed: boolean; bruxismAllowed: boolean; extractionPlanAllowed: boolean;
 }

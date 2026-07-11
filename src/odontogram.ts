@@ -63,24 +63,7 @@ const ALL_TEETH = [
 ];
 
 const GROUPS = {
-  variants: [
-    "tooth-broken-incisal",
-    "tooth-broken-distal-incisal",
-    "tooth-broken-distal",
-    "tooth-broken-mesial-distal-incisal",
-    "tooth-broken-mesial-distal",
-    "tooth-broken-mesial-incisal",
-    "tooth-broken-mesial",
-    "tooth-crownprep",
-    "tooth-under-gum",
-    "no-tooth-after-extraction",
-    "tooth-radix",
-  ],
-  mods: ["inflammation", "parodontal", "mobility"],
-  endo: ["endo-medical-filling", "endo-filling", "endo-filling-incomplete", "endo-glass-pin", "endo-metal-pin", "endo-resection", "parapulpal-pin"],
-  caries: ["caries-subcrown","caries-buccal","caries-lingual","caries-mesial","caries-distal","caries-occlusal"],
   fillingSurfaces: ["buccal","lingual","mesial","distal","occlusal"],
-  crownMaterial: ["zircon","metal","temporary","telescope","emax"],
 };
 
 const MILKTOOTH_BLOCKED = new Set([16,17,18,26,27,28,36,37,38,46,47,48]);
@@ -247,22 +230,6 @@ function mirrorVertical(svgRoot: Any){
 
 function svgGetById(root: Any, id: Any){
   return root.getElementById ? root.getElementById(id) : $("#"+id, root);
-}
-
-function svgGetByIdInGroup(root: Any, groupId: Any, id: Any){
-  const group = svgGetById(root, groupId);
-  if(!group) return svgGetById(root, id);
-  return group.querySelector(`[id="${id}"]`);
-}
-
-function setManyActive(root: Any, ids: Any, on: Any){
-  for(const id of ids){
-    setActive(svgGetById(root,id), on);
-  }
-}
-
-function clearAllInGroup(root: Any, ids: Any){
-  setManyActive(root, ids, false);
 }
 
 // ---- App state ----
@@ -722,18 +689,12 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   const hasRemovable = state.toothSelection === "none" && state.bridgeUnit === "removable";
   const isNone = state.toothSelection === "none";
   const hasRestoration = hasCrown || hasRemovable;
-  const fissureAllowed = state.toothSelection === "tooth-base" && FISSURE_ALLOWED.has(toothNo);
-  const contactAllowed = state.toothSelection === "tooth-base" || state.toothSelection === "milktooth" || BROKEN_VARIANTS.has(state.toothSelection);
-  const bruxismAllowed = state.toothSelection === "tooth-base" && state.crownMaterial === "natural";
-  const extractionPlanAllowed = ["tooth-base","milktooth","implant","tooth-under-gum"].includes(state.toothSelection);
 
-  applyFlagLayers(svg, state, buildFlagCtx(state, toothNo, {
+  const flagDeps = {
     setActive, svgGetById, isToothPresent, isUnderGum, isExtraction,
     fissureAllowedTeeth: FISSURE_ALLOWED, brokenVariants: BROKEN_VARIANTS,
-  }), {
-    setActive, svgGetById, isToothPresent, isUnderGum, isExtraction,
-    fissureAllowedTeeth: FISSURE_ALLOWED, brokenVariants: BROKEN_VARIANTS,
-  });
+  };
+  applyFlagLayers(svg, state, buildFlagCtx(state, toothNo, flagDeps), flagDeps);
 
   // base visibility toggle
   setActive(svgGetById(svg, "base"), showBase);
