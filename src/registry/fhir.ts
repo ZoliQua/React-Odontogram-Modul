@@ -32,14 +32,18 @@ function emitForAxis(subjectRef: string, tooth: string, rec: ToothRecord, axis: 
       const arr = Array.isArray(raw) ? (raw as unknown[]).filter((v): v is string => typeof v === "string") : [];
       if (arr.length === 0) return [];
       const obs = baseObservation(subjectRef, tooth, finding());
-      const depths = axis.field === "caries"
-        ? ((rec as Record<string, unknown>).cariesDepths as Record<string, number> | undefined)
+      // SP6 Task 1: the unified per-surface `cariesSeverity` (0..6) rides on each
+      // caries component as `valueInteger`, exactly as the retired `cariesDepths`
+      // did. Primary vs recurrent is distinguished by the filling coincidence
+      // (the separate restoration Observation), not by a distinct finding code.
+      const severity = axis.field === "caries"
+        ? ((rec as Record<string, unknown>).cariesSeverity as Record<string, number> | undefined)
         : undefined;
       obs.component = arr.map((v) => {
         const comp: Any = { code: valueConcept(axis.valueGroup as string, v), valueBoolean: true };
-        if (depths) {
+        if (severity) {
           const surface = String(v).replace("caries-", "");
-          const code = depths[surface];
+          const code = severity[surface];
           if (typeof code === "number") { comp.valueInteger = code; delete comp.valueBoolean; }
         }
         return comp;
@@ -98,23 +102,10 @@ export function buildFhirBundleFromRegistry(payload: OdontogramExportPayload, op
   for (const [tooth, recRaw] of Object.entries(teeth)) {
     const rec = (recRaw && typeof recRaw === "object" ? recRaw : {}) as ToothRecord;
     for (const axis of AXES) for (const obs of emitForAxis(subjectRef, tooth, rec, axis)) entries.push({ resource: obs });
-    // SP5 Task 1: `secondaryCaries` (CARS 0-6) and `radiographicDepth`
-    // (none/E1/E2/D1/D2/D3) are per-surface scalar maps special-cased outside
-    // AXES — same shape as `cariesDepths`, but with their own independent
-    // finding codes (not piggybacked on the `caries` set's components), so
-    // each gets its own Observation with one component per surface.
-    const secondaryCaries = rec.secondaryCaries;
-    if (secondaryCaries && typeof secondaryCaries === "object") {
-      const comps = Object.entries(secondaryCaries).filter((e): e is [string, number] => typeof e[1] === "number");
-      if (comps.length) {
-        const obs = baseObservation(subjectRef, tooth, findingConcept("secondary-caries", "Secondary/recurrent caries (CARS)"));
-        obs.component = comps.map(([surf, val]) => ({
-          code: valueConcept("fillingSurfaces", surf),
-          valueInteger: val,
-        }));
-        entries.push({ resource: obs });
-      }
-    }
+    // SP6 Task 1: the unified caries severity rides on the `caries` set's
+    // components (see emitForAxis above), so the SP5 standalone `secondary-caries`
+    // Observation is retired. `radiographicDepth` remains a separate per-surface
+    // scalar map with its own finding code (unchanged).
     const radiographicDepth = rec.radiographicDepth;
     if (radiographicDepth && typeof radiographicDepth === "object") {
       const comps = Object.entries(radiographicDepth).filter((e): e is [string, string] => typeof e[1] === "string");

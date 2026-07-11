@@ -149,9 +149,9 @@ describe("restoration behavior: new-model axes authored directly", () => {
 // Task 4: retire the legacy `crownMaterial`/`bridgeUnit` STATE fields entirely
 // (the input-side hydrateState migration above stays for backward compat with
 // 1.4/2.0 payloads). The export payload version itself was bumped to 2.1 here,
-// then 2.2 (SP4 Task 6), then 2.3 (SP5 Task 7); this test asserts the CURRENT
-// export version, not the historical one, so it tracks collectExportPayload's
-// version literal.
+// then 2.2 (SP4 Task 6), then 2.3 (SP5 Task 7), then 2.4 (SP6 Task 1); this
+// test asserts the CURRENT export version, not the historical one, so it tracks
+// collectExportPayload's version literal.
 describe("restoration behavior: Task 4 — crownMaterial/bridgeUnit retirement + current payload version", () => {
   it("a 2.0 payload with an interim implant crownMaterial + a legacy removable bridgeUnit migrates to restorationType/prosthesis, and re-exports at the current version with no legacy keys", () => {
     __setToothStateForTest(24, { toothSelection: "implant", crownMaterial: "locator" });
@@ -167,7 +167,7 @@ describe("restoration behavior: Task 4 — crownMaterial/bridgeUnit retirement +
     expect(pontic).not.toHaveProperty("bridgeUnit");
 
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.3");
+    expect(payload.version).toBe("2.4");
     for (const tooth of Object.values(payload.teeth) as Record<string, unknown>[]) {
       expect(tooth).not.toHaveProperty("crownMaterial");
       expect(tooth).not.toHaveProperty("bridgeUnit");

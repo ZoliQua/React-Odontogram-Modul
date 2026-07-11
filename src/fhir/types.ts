@@ -11,6 +11,10 @@ export interface ToothRecord {
   endo?: string;
   caries?: string[];
   cariesActiveDepth?: number;
+  // SP6 Task 1: unified per-surface caries severity (0..6), read as ICDAS on a
+  // primary surface and CARS on a recurrent one. Replaces `cariesDepths`.
+  cariesSeverity?: Record<string, number>;
+  // Retired SP5 fields, still accepted on legacy raw payloads for migration only.
   cariesDepths?: Record<string, number>;
   calculus?: boolean;
   fillingMaterial?: string;
@@ -45,11 +49,11 @@ export interface ToothRecord {
   pulpLatin?: string;
   apicalDx?: string;
   resorptionType?: string;
-  // SP5 Task 1: caries fields foundation (additive-only scaffolding; not yet
-  // rendered). `rootCaries` is a normal enum axis. `secondaryCaries`
-  // (per-surface CARS 0-6) and `radiographicDepth` (per-surface
-  // none/E1/E2/D1/D2/D3) are per-surface scalar maps, serialized the same
-  // way `cariesDepths` is.
+  // `rootCaries` is a normal enum axis. `radiographicDepth` (per-surface
+  // none/E1/E2/D1/D2/D3) is a per-surface scalar map, independent of the
+  // unified visual severity. `secondaryCaries` is a retired SP5 field, still
+  // accepted on legacy raw payloads for migration only (folded into
+  // `cariesSeverity` on hydrate).
   rootCaries?: string;
   secondaryCaries?: Record<string, number>;
   radiographicDepth?: Record<string, string>;

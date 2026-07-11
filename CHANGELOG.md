@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.18.0] - 2026-07-11
+
+### Added
+- **CARS 0–6 score names**: the secondary-caries picker now shows descriptive ICDAS-based names (Sound, First visual change in enamel, Distinct visual change in enamel, Localized enamel breakdown, Underlying dentin shadow, Distinct cavity, Extensive cavity) instead of raw numbers.
+- **Root-caries severity opacity**: the `caries-root` artwork layer now renders at an opacity driven by `rootCaries` (`active` 0.5 / `arrested` 0.7 / `active-cavitated` full), instead of a flat opacity regardless of severity.
+- **Fillings-panel subcaries summary line**: a line below the filling controls lists any selected tooth with recurrent (subcaries) caries and its surfaces, e.g. "36 (O) has subcaries set on its filling."
+- **Anterior "incisal" surface label**: incisors and canines now label their occlusal surface "incisal" throughout the UI (picker, popup, summaries/tooltips); the stored surface key is unchanged (`occlusal`).
+- **Contextual per-surface caries popup**: the surface-depth popup now shows only the severity group relevant to the surface's current state (the primary ICDAS-depth group on an unfilled surface, the CARS group on a filled one), instead of always showing both.
+
+### Changed
+- **Unified caries severity field**: the separate SP5 ICDAS-depth (`cariesDepths`) and CARS (`secondaryCaries`) fields are replaced by a single per-surface `cariesSeverity` (0–6), read as ICDAS depth on a primary (unfilled) surface and as a CARS score on a recurrent (filled) one. JSON/FHIR export payload version bumped to **2.4**; imports still accept legacy 1.4, 2.0, 2.1, 2.2, and 2.3 payloads and migrate them automatically.
+
+### Fixed
+- **Caries/subcaries is now a proper per-surface state machine**: recurrent caries renders the `subcaries-{surface}` layer at the surface's CARS severity and is no longer settable alongside primary caries on the same surface — a surface is always exactly one of primary caries, recurrent (subcaries), or sound, eliminating the previous ambiguity where both a `caries-{surface}` and a derived recurrent state could coexist.
+
 ## [1.17.0] - 2026-07-11
 
 ### Added

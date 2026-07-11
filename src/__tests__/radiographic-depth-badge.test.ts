@@ -75,7 +75,7 @@ describe("SP5 Task 4: data-radio surface-indicator badge attribute", () => {
 
   it("sets data-radio to the surface's radiographicDepth value, without touching data-depth/data-icdas", () => {
     const cell = buildSurfaceCell("occlusal");
-    const state = { cariesDepths: new Map([["occlusal", 4]]), radiographicDepth: new Map([["occlusal", "D2"]]) };
+    const state = { cariesSeverity: new Map([["occlusal", 4]]), radiographicDepth: new Map([["occlusal", "D2"]]) };
     __syncSurfaceDepthIndicatorForTest(cell, state);
     const ind = cell.querySelector(".surf-depth")!;
     expect(ind.getAttribute("data-radio")).toBe("D2");
@@ -86,7 +86,7 @@ describe("SP5 Task 4: data-radio surface-indicator badge attribute", () => {
 
   it("does not set data-radio when the surface has no radiographicDepth entry", () => {
     const cell = buildSurfaceCell("mesial");
-    const state = { cariesDepths: new Map(), radiographicDepth: new Map() };
+    const state = { cariesSeverity: new Map(), radiographicDepth: new Map() };
     __syncSurfaceDepthIndicatorForTest(cell, state);
     const ind = cell.querySelector(".surf-depth")!;
     expect(ind.hasAttribute("data-radio")).toBe(false);
@@ -94,7 +94,7 @@ describe("SP5 Task 4: data-radio surface-indicator badge attribute", () => {
 
   it("does not set data-radio when the surface's radiographicDepth is explicitly 'none'", () => {
     const cell = buildSurfaceCell("distal");
-    const state = { cariesDepths: new Map(), radiographicDepth: new Map([["distal", "none"]]) };
+    const state = { cariesSeverity: new Map(), radiographicDepth: new Map([["distal", "none"]]) };
     __syncSurfaceDepthIndicatorForTest(cell, state);
     const ind = cell.querySelector(".surf-depth")!;
     expect(ind.hasAttribute("data-radio")).toBe(false);
@@ -102,7 +102,7 @@ describe("SP5 Task 4: data-radio surface-indicator badge attribute", () => {
 
   it("tolerates a state with no radiographicDepth map at all (defensive optional-chaining)", () => {
     const cell = buildSurfaceCell("buccal");
-    const state = { cariesDepths: new Map() };
+    const state = { cariesSeverity: new Map() };
     expect(() => __syncSurfaceDepthIndicatorForTest(cell, state)).not.toThrow();
     const ind = cell.querySelector(".surf-depth")!;
     expect(ind.hasAttribute("data-radio")).toBe(false);
@@ -110,11 +110,11 @@ describe("SP5 Task 4: data-radio surface-indicator badge attribute", () => {
 
   it("clears a stale data-radio attribute on re-sync once the value is unset", () => {
     const cell = buildSurfaceCell("lingual");
-    const withValue = { cariesDepths: new Map(), radiographicDepth: new Map([["lingual", "E2"]]) };
+    const withValue = { cariesSeverity: new Map(), radiographicDepth: new Map([["lingual", "E2"]]) };
     __syncSurfaceDepthIndicatorForTest(cell, withValue);
     expect(cell.querySelector(".surf-depth")!.getAttribute("data-radio")).toBe("E2");
 
-    const cleared = { cariesDepths: new Map(), radiographicDepth: new Map() };
+    const cleared = { cariesSeverity: new Map(), radiographicDepth: new Map() };
     __syncSurfaceDepthIndicatorForTest(cell, cleared);
     expect(cell.querySelector(".surf-depth")!.hasAttribute("data-radio")).toBe(false);
   });
@@ -163,14 +163,16 @@ describe("SP5 Task 4: FHIR round-trip (registry Task 1 behavior, reconfirmed)", 
     expect(parseFhirBundle(bundle).teeth["11"]?.radiographicDepth).toBeUndefined();
   });
 
-  it("a tooth's cariesDepths (ICDAS) and radiographicDepth round-trip independently, side by side", () => {
+  it("a tooth's cariesSeverity (unified visual) and radiographicDepth round-trip independently, side by side", () => {
     const payload: OdontogramExportPayload = {
-      version: "2.2",
-      teeth: { "16": { toothSelection: "tooth-base", caries: ["caries-occlusal"], cariesDepths: { occlusal: 6 }, radiographicDepth: { occlusal: "D3" } } },
+      version: "2.4",
+      teeth: { "16": { toothSelection: "tooth-base", caries: ["caries-occlusal"], cariesSeverity: { occlusal: 6 }, radiographicDepth: { occlusal: "D3" } } },
     };
     const bundle = buildFhirBundle(payload);
     const out = parseFhirBundle(bundle);
-    expect(out.teeth["16"].cariesDepths).toEqual({ occlusal: 6 });
+    // SP6 Task 1: severity rides on the caries component; radiographic depth is
+    // its own separate finding — the two round-trip independently.
+    expect(out.teeth["16"].cariesSeverity).toEqual({ occlusal: 6 });
     expect(out.teeth["16"].radiographicDepth).toEqual({ occlusal: "D3" });
   });
 });

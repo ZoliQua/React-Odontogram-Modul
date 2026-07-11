@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.17.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.18.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -44,15 +44,18 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔢 12 Auswahlfilter (alle, vorhandene, bleibende, Milch, Implantate, fehlende, Ober-/Unterkiefer, Front/Molaren)
 - 📊 Vordefinierte Statusvorlagen (Zurücksetzen, Milchgebiss, Wechselgebiss, zahnlos)
 - 📦 34 vordefinierte Restaurationsvorlagen (Brücken, herausnehmbare Prothesen, Stegprothesen mit Implantaten)
-- 💾 Status-Export/Import in JSON (Version 2.3; Importe akzeptieren weiterhin die Versionen 1.4, 2.0, 2.1 und 2.2 und werden automatisch migriert, mit Plugin Custom States und per-Zahn Notizen)
+- 💾 Status-Export/Import in JSON (Version 2.4; Importe akzeptieren weiterhin die Versionen 1.4, 2.0, 2.1, 2.2 und 2.3 und werden automatisch migriert, mit Plugin Custom States und per-Zahn Notizen)
 - 🔗 HL7 FHIR R4 Export (Collection-Bundle aus Observations pro Zahn, ISO 3950 Zahnkodierung für das bleibende Gebiss, lokales Codesystem — SNOMED-CT-Mapping geplant)
 - ✚ Kreuz-/Plus-Oberflächenauswahl (B/M/O/D/L) für Karies und Füllungen
 - 🧱 Füllungsmaterialien pro Fläche (gemischte Füllungen, z. B. bukkal Amalgam + distal Komposit)
 - 🖼️ PNG/JPG/SVG-Bildexport des Befunds (herunterladbar; PNG/JPG aus Vektor-SVG gerastert)
-- 🦷 Sekundärkaries (rezidivierende Karies): ein gespeicherter CARS-Score pro Fläche (0–6, `secondaryCaries`), dargestellt als Deckkraft der Kariesschicht — ersetzt die alte Ableitung aus der Überlappung von Karies und Füllung (ein migrierter Legacy-Zustand wird auf den kanonischen Score „moderat" hochgestuft)
-- 🌱 Wurzelkaries (`rootCaries`: none / active / arrested / active-cavitated), steuert die dedizierte Wurzelkaries-Bildebene
-- 📡 Radiologische Kariestiefe (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 pro Fläche), unabhängig von der visuellen ICDAS-Tiefenskala, dargestellt als Badge und über eine eigene FHIR-Observation rückführbar
+- 🦷 Karies/Sekundärkaries als Zustandsautomat pro Fläche: eine kariöse Fläche ohne Füllung wird als primäre Karies dargestellt (ICDAS-gestufte Deckkraft); sobald diese Fläche eine Füllung hat, wird sie stattdessen als Sekundärkaries (rezidivierende Karies) dargestellt (`subcaries-{surface}`-Ebene, CARS-bewertet) — beide sind nie gleichzeitig auf derselben Fläche aktiv
+- 🎯 Vereinheitlichter Schweregrad pro Fläche (`cariesSeverity`, 0–6, ersetzt die früheren getrennten ICDAS-Tiefe- und CARS-Felder): wird auf einer primären Fläche als ICDAS-Tiefe gelesen, auf einer rezidivierenden Fläche als benannter CARS-Score (Gesund … Ausgedehnte Kavität), über ein kontextabhängiges Popup, das jeweils nur die zum aktuellen Zustand der Fläche passende Skala zeigt
+- 🌱 Wurzelkaries (`rootCaries`: none / active / arrested / active-cavitated), steuert die dedizierte Wurzelkaries-Bildebene mit einer vom Schweregrad abhängigen Deckkraft (active 0,5 / arrested 0,7 / active-cavitated volle Deckkraft)
+- 📡 Radiologische Kariestiefe (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 pro Fläche), unabhängig von der visuellen ICDAS-/CARS-Schweregradskala, dargestellt als Badge und über eine eigene FHIR-Observation rückführbar
 - 🎚️ Drei Karies-Granularitätseinstellungen (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) sowie ein `cariesDepthEnabled`-Umschalter, die jede Skala auf eine einfachere Auswahlansicht reduzieren, ohne den gespeicherten Wert zu verlieren
+- 🩹 Sekundärkaries-Zusammenfassung im Füllungspanel: eine Zeile unterhalb der Füllungssteuerung listet jeden ausgewählten Zahn mit Sekundärkaries samt Flächen auf (z. B. „36 (O) hat Sekundärkaries an der Füllung.")
+- ✏️ Frontzähne (Schneide- und Eckzähne) beschriften ihre Kaufläche in der gesamten Oberfläche (Auswahl, Popup, Zusammenfassungen) als „inzisal"; der gespeicherte Flächenschlüssel bleibt `occlusal`
 - 🪨 Zahnstein sowie Wurzelresorption, typisiert als intern oder extern-zervikal (`resorptionType`)
 - 📏 Kariestiefe pro Fläche (oberflächlich / Dentin / tief) oder optionales ICDAS-II-Scoring (0–6) via `enableIcdas`
 - 🩹 Kronenrand-Undichtigkeits-Umschalter, nur sichtbar bei Kronen- oder Brückenrestauration
@@ -74,7 +77,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔒 Schreibgeschützter Modus: alle Interaktionen deaktivieren für Druck-/Berichtsansichten
 - ✨ Auswahl-Animationen: pulsierende gestrichelte Umrandung und leuchtender Schatten auf ausgewählten Zähnen (mit Unterstützung für prefers-reduced-motion)
 - 📝 Per-Zahn Notizen: Doppelklick zum Hinzufügen/Bearbeiten, Notiz-Symbol neben der Zahnnummer, Hover-Tooltip mit Notiztext, JSON Export/Import
-- 🧪 506 automatisierte Tests (Vitest) in 50 Testdateien für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins, Barrierefreiheit sowie Parität der klinischen Diagnose-Achsen
+- 🧪 563 automatisierte Tests (Vitest) in 55 Testdateien für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins, Barrierefreiheit sowie Parität der klinischen Diagnose-Achsen
 - 📖 TypeDoc API-Dokumentation mit JSDoc-Kommentaren für alle öffentlichen Exporte (`npm run docs`)
 
 ### 📦 Module
@@ -194,13 +197,12 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 
 **Kariestiefe** (pro Fläche): `superficial` / `dentin` / `deep`, oder optionale ICDAS-II-Codes `0–6` bei aktiviertem `enableIcdas`
 
-**Wurzelkaries** (`rootCaries`; steuert die `caries-root`-Bildebene bei einem vorhandenen Zahn):
+**Kariesschweregrad** (`cariesSeverity`; vereinheitlichtes Feld pro Fläche, `0`–`6`): auf einer Fläche ohne Füllung wird er als ICDAS-Tiefenskala gelesen (`superficial` / `dentin` / `deep`, oder die rohen ICDAS-II-Codes `0–6` bei aktiviertem `enableIcdas`) und steuert die primäre `caries-{surface}`-Ebene; auf einer Fläche mit Füllung wird er als benannter CARS-Score gelesen (`0` gesund … `6` ausgedehnte Kavität) und steuert stattdessen die `subcaries-{surface}`-Ebene (Sekundärkaries) — eine Fläche ist nie gleichzeitig primär und rezidivierend
+
+**Wurzelkaries** (`rootCaries`; steuert die `caries-root`-Bildebene bei einem vorhandenen Zahn, Deckkraft abhängig vom Schweregrad — `active` 0,5 / `arrested` 0,7 / `active-cavitated` volle Deckkraft):
 `none`, `active`, `arrested`, `active-cavitated`
 
-**Sekundärkaries-Score (rezidivierende Karies)** (`secondaryCaries`; pro Fläche gespeichert, CARS `0` (gesund) – `6` (kavitiert), dargestellt als Deckkraft der Kariesschicht):
-`0`, `1`, `2`, `3`, `4`, `5`, `6`
-
-**Radiologische Kariestiefe** (`radiographicDepth`; pro Fläche, unabhängig von der visuellen ICDAS-/`cariesDepths`-Skala):
+**Radiologische Kariestiefe** (`radiographicDepth`; pro Fläche, unabhängig von der visuellen ICDAS-/CARS-Skala `cariesSeverity`):
 `none`, `E1`, `E2`, `D1`, `D2`, `D3`
 
 **Karies-Granularitätseinstellungen** (global): `secondaryCariesMode` (`simple`/`standard`/`full`, Standard `standard`), `rootCariesMode` (`simple`/`severity`, Standard `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, Standard `off`), `cariesDepthEnabled` (boolean, Standard `true`) — jede reduziert ihre Skala auf eine einfachere Auswahlansicht, ohne den gespeicherten Wert zu verändern
@@ -305,7 +307,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Tests
 ```bash
-npm run test           # Alle 506 Tests ausführen
+npm run test           # Alle 563 Tests ausführen
 npm run test:watch     # Watch-Modus
 npm run test:coverage  # Coverage-Bericht
 ```
@@ -364,7 +366,7 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `startIntroTour()` | Die 12-stufige interaktive Einführungstour starten |
 
 ### 💾 Status Export-/Importformat
-Der Export erzeugt eine JSON-Datei (Version `2.3`; Importe akzeptieren weiterhin die Legacy-Versionen `1.4`, `2.0`, `2.1` und `2.2` und werden automatisch migriert) mit folgenden Feldern:
+Der Export erzeugt eine JSON-Datei (Version `2.4`; Importe akzeptieren weiterhin die Legacy-Versionen `1.4`, `2.0`, `2.1`, `2.2` und `2.3` und werden automatisch migriert) mit folgenden Feldern:
 
 **Globale Felder:**
 - `wisdomVisible` - Weisheitszähne sichtbar
@@ -381,8 +383,8 @@ Der Export erzeugt eine JSON-Datei (Version `2.3`; Importe akzeptieren weiterhin
 - `mods` - Modifikations-Array (Entzündung, parodontal)
 - `caries` - Aktive Kariesflächen
 - `rootCaries` - Wurzelkaries-Schweregrad (none/active/arrested/active-cavitated)
-- `secondaryCaries` - CARS-Sekundärkaries-Score pro Fläche (0-6)
-- `radiographicDepth` - Radiologische Kariestiefe pro Fläche (none/E1/E2/D1/D2/D3), unabhängig von der visuellen ICDAS-Skala
+- `cariesSeverity` - vereinheitlichter Schweregrad pro Fläche (0-6): ICDAS-Tiefe auf einer primären (ungefüllten) Fläche, CARS-Score auf einer rezidivierenden (gefüllten) Fläche
+- `radiographicDepth` - Radiologische Kariestiefe pro Fläche (none/E1/E2/D1/D2/D3), unabhängig von der visuellen ICDAS-/CARS-Skala
 - `fillingMaterial` - Füllungsmaterial
 - `fillingSurfaces` - Gefüllte Flächen
 - `pulpDx` - AAE-Pulpadiagnose (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
@@ -415,7 +417,7 @@ Der Export erzeugt eine JSON-Datei (Version `2.3`; Importe akzeptieren weiterhin
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
-- `src/__tests__/` - Vitest-Testsuite (506 Tests in 50 Dateien)
+- `src/__tests__/` - Vitest-Testsuite (563 Tests in 55 Dateien)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
 - `src/assets/icon-svgs/` - Toolbar-Icon-SVGs (5 Dateien)
 

@@ -46,9 +46,18 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
         if (val !== undefined) { (rec.customStates ??= {})[id] = val; }
         continue;
       }
-      // SP5 Task 1: `secondaryCaries`/`radiographicDepth` are per-surface
-      // scalar maps special-cased outside AXES (mirrors `cariesDepths`), each
-      // with its own finding code — see registry/fhir.ts for the emit side.
+      // SP6 Task 1: recurrent caries severity now rides on the `caries` set's
+      // components (parsed into `cariesSeverity` below) for NATIVE (>=2.4)
+      // bundles, so the emit side (registry/fhir.ts) no longer produces a
+      // `secondary-caries` Observation. But a legacy SP5/v1.17.0-era bundle
+      // still carries it as a standalone per-surface Observation (CARS score),
+      // separate from the `caries` set's `valueInteger` (ICDAS depth) — so this
+      // reader must stay to avoid silently dropping the recurrent-caries score
+      // on import (FIX 1, final review). It's parsed into the legacy
+      // `rec.secondaryCaries` map, exactly as SP5 did; `hydrateState`'s existing
+      // migration merge (odontogram.ts) folds it into the unified
+      // `cariesSeverity`, preferring it over the `caries` component's ICDAS
+      // depth on a recurrent (caried + filled) surface.
       if (findingCode === "secondary-caries") {
         const vals: Record<string, number> = {};
         for (const c of res.component ?? []) {
@@ -82,14 +91,16 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
         const vals = (res.component ?? []).map((c) => localCode(c.code)).filter((x): x is string => !!x);
         if (vals.length) (rec as Record<string, unknown>)[axis.field] = vals;
         if (axis.field === "caries") {
-          const depths: Record<string, number> = {};
+          // SP6 Task 1: the caries components' `valueInteger` is the unified
+          // per-surface `cariesSeverity` (was `cariesDepths` in SP5).
+          const severity: Record<string, number> = {};
           for (const c of res.component ?? []) {
             const code = localCode(c.code);
             if (!code) continue;
             const vi = c.valueInteger;
-            if (typeof vi === "number") depths[String(code).replace("caries-", "")] = vi;
+            if (typeof vi === "number") severity[String(code).replace("caries-", "")] = vi;
           }
-          if (Object.keys(depths).length) rec.cariesDepths = depths;
+          if (Object.keys(severity).length) rec.cariesSeverity = severity;
         }
       } else if (axis.kind === "restoration") {
         const fsm: Record<string, string> = {};
@@ -102,5 +113,22 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
       }
     }
   }
-  return { version: "2.3", globals, teeth };
+  // FIX 1 (final review): reconcile a legacy bundle's ambiguous `cariesSeverity`
+  // guess (populated above straight off the `caries` component's `valueInteger`
+  // — correct for a NATIVE >=2.4 bundle, but actually the SP5 ICDAS depth on a
+  // legacy bundle) against an explicit `secondary-caries` CARS reading on the
+  // same surface. A native bundle never emits `secondary-caries` (see
+  // registry/fhir.ts), so `rec.secondaryCaries` is only ever populated here for
+  // a legacy import — this is a no-op for every native round-trip. Where both
+  // exist, drop the ambiguous guess for that surface so `hydrateState`'s
+  // existing raw-source priority (odontogram.ts, ~3466-3471: no explicit
+  // `cariesSeverity` -> prefer `secondaryCaries` over `cariesDepths` on a
+  // filled/recurrent surface) resolves it correctly to the CARS score, not the
+  // ICDAS depth.
+  for (const rec of Object.values(teeth)) {
+    if (!rec.secondaryCaries || !rec.cariesSeverity) continue;
+    for (const surf of Object.keys(rec.secondaryCaries)) delete rec.cariesSeverity[surf];
+    if (Object.keys(rec.cariesSeverity).length === 0) delete rec.cariesSeverity;
+  }
+  return { version: "2.4", globals, teeth };
 }

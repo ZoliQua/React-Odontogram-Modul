@@ -21,45 +21,49 @@ import {
   getOdontogramSummary,
 } from "../odontogram";
 
-const secondaryOf = (toothNo: number): Record<string, number> => {
-  const s = __getToothStateForTest(toothNo) as { secondaryCaries?: Map<string, number> } | undefined;
-  return Object.fromEntries((s?.secondaryCaries as Map<string, number>) ?? new Map());
+// SP6 Task 1: the recurrent LAYER is now always filling-derived, so the
+// version-gate no longer decides primary-vs-recurrent — it decides only whether
+// a caries∩filling surface with no stored value gets an INFERRED severity (3)
+// baked into the unified `cariesSeverity`, or is left to the render default (2).
+const severityOf = (toothNo: number): Record<string, number> => {
+  const s = __getToothStateForTest(toothNo) as { cariesSeverity?: Record<string, number> } | undefined;
+  return s?.cariesSeverity ?? {};
 };
 
-describe("FIX 1: legacy secondary-caries inference is version-gated", () => {
+describe("FIX 1: legacy caries∩filling severity inference is version-gated", () => {
   const cariedAndFilled = {
     toothSelection: "tooth-base",
     caries: ["caries-occlusal"],
     fillingSurfaceMaterials: { occlusal: "amalgam" },
   } as const;
 
-  it("native 2.3 payload: a caried+filled surface with NO stored score stays PRIMARY (secondaryCaries empty)", () => {
-    __setToothStateForTest(16, { ...cariedAndFilled }, "2.3");
-    expect(secondaryOf(16)).toEqual({});
+  it("native ≥2.3 payload: a caried+filled surface with NO stored value is NOT force-scored (cariesSeverity empty)", () => {
+    __setToothStateForTest(16, { ...cariedAndFilled }, "2.4");
+    expect(severityOf(16)).toEqual({});
   });
 
-  it("export(2.3) -> reimport(2.3) is IDEMPOTENT: no recurrent score is injected on the round-trip", () => {
-    __setToothStateForTest(16, { ...cariedAndFilled }, "2.3");
+  it("export -> reimport is IDEMPOTENT: no severity is injected on the round-trip", () => {
+    __setToothStateForTest(16, { ...cariedAndFilled }, "2.4");
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.3");
+    expect(payload.version).toBe("2.4");
     const raw16 = payload.teeth[16];
-    // Serialized empty map is {} — not a stored recurrent score.
-    expect(raw16.secondaryCaries).toEqual({});
-    // Re-import the exact exported record (as importStatus would) at 2.3.
-    __setToothStateForTest(26, raw16, "2.3");
-    expect(secondaryOf(26)).toEqual({});
+    // Serialized empty map is {} — not a stored severity.
+    expect(raw16.cariesSeverity).toEqual({});
+    // Re-import the exact exported record (as importStatus would) at 2.4.
+    __setToothStateForTest(26, raw16, "2.4");
+    expect(severityOf(26)).toEqual({});
   });
 
-  it("legacy payloads (1.4, 2.0, 2.2, no-version) DO infer the intersection as recurrent score 3", () => {
+  it("legacy payloads (1.4, 2.0, 2.2, no-version) DO infer the caries∩filling surface as recurrent severity 3", () => {
     for (const version of ["1.4", "2.0", "2.2", undefined]) {
       __setToothStateForTest(17, { ...cariedAndFilled }, version as string | undefined);
-      expect(secondaryOf(17)).toEqual({ occlusal: 3 });
+      expect(severityOf(17)).toEqual({ occlusal: 3 });
     }
   });
 
-  it("a stored ≥2.3 score always wins and is never overwritten by the (disabled) inference", () => {
-    __setToothStateForTest(18, { ...cariedAndFilled, secondaryCaries: { occlusal: 5 } }, "2.3");
-    expect(secondaryOf(18)).toEqual({ occlusal: 5 });
+  it("a stored native value always wins and is never overwritten by the (disabled) inference", () => {
+    __setToothStateForTest(18, { ...cariedAndFilled, cariesSeverity: { occlusal: 5 } }, "2.4");
+    expect(severityOf(18)).toEqual({ occlusal: 5 });
   });
 });
 

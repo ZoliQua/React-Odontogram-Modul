@@ -14,7 +14,7 @@ describe("parseFhirBundle (FHIR import)", () => {
         "46": { mobility: "m2", extractionPlan: true },
         "16": { mods: ["inflammation"], periapicalType: "cyst" },
         "26": { calculus: true, resorptionType: "external-cervical" },
-        "37": { caries: ["caries-mesial"], cariesDepths: { mesial: 5 } },
+        "37": { caries: ["caries-mesial"], cariesSeverity: { mesial: 5 } },
         "45": { pulpDx: "irreversible-pulpitis" },
       },
     };
@@ -31,7 +31,7 @@ describe("parseFhirBundle (FHIR import)", () => {
     expect(out.teeth["16"].periapicalType).toBe("cyst");
     expect(out.teeth["26"].calculus).toBe(true);
     expect(out.teeth["26"].resorptionType).toBe("external-cervical");
-    expect(out.teeth["37"].cariesDepths).toEqual({ mesial: 5 });
+    expect(out.teeth["37"].cariesSeverity).toEqual({ mesial: 5 });
     expect(out.teeth["45"].pulpDx).toBe("irreversible-pulpitis");
   });
 

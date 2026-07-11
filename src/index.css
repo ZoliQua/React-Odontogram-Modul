@@ -485,6 +485,14 @@ select:focus{
 .surf-depth[data-depth="dentin"] i:nth-child(-n+2){background:#b3261e}
 .surf-depth[data-depth="deep"] i{background:#b3261e}
 
+/* SP6 Task 2: recurrent (secondary) caries indicator on a FILLING-surface cell.
+   The dark border signposts that a filled surface also carries caries
+   (`caries ∩ fillingSurfaceMaterials` → `subcaries-{surface}`). It sits on the
+   same `.surf-depth` element, so it composes with both the 3-bar and the
+   `.icdas` circular badge variants. */
+.surf-depth.has-subcaries{border:2px solid #1f2937; padding:1px}
+.surf-depth.icdas.has-subcaries{border:2px solid #1f2937; box-shadow:0 0 0 1px #fff}
+
 /* SP5 Task 4: radiographic-depth badge hook (`data-radio`, set on the same
    `.surf-depth` indicator, independent of the ICDAS `data-icdas` badge above —
    no crosswalk between the two scales). `.radio-badge` is the future display

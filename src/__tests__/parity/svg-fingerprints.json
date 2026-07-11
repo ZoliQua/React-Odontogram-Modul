@@ -10173,7 +10173,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 2
       }
     },
@@ -10320,7 +10320,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 4
       }
     },
@@ -10467,7 +10467,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 6
       }
     },
@@ -10614,7 +10614,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 2
       }
     },
@@ -10756,7 +10756,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 4
       }
     },
@@ -10898,7 +10898,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 6
       }
     },
@@ -11040,7 +11040,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 2
       }
     },
@@ -11202,7 +11202,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 4
       }
     },
@@ -11364,7 +11364,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 6
       }
     },
@@ -11526,7 +11526,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 2
       }
     },
@@ -11688,7 +11688,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 4
       }
     },
@@ -11850,7 +11850,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 6
       }
     },
@@ -12012,7 +12012,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 2
       }
     },
@@ -12174,7 +12174,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 4
       }
     },
@@ -12336,7 +12336,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 6
       }
     },
@@ -28296,7 +28296,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 2
       }
     },
@@ -28443,7 +28443,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 4
       }
     },
@@ -28590,7 +28590,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 6
       }
     },
@@ -28737,7 +28737,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 2
       }
     },
@@ -28879,7 +28879,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 4
       }
     },
@@ -29021,7 +29021,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 6
       }
     },
@@ -29163,7 +29163,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 2
       }
     },
@@ -29325,7 +29325,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 4
       }
     },
@@ -29487,7 +29487,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 6
       }
     },
@@ -29649,7 +29649,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 2
       }
     },
@@ -29811,7 +29811,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 4
       }
     },
@@ -29973,7 +29973,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 6
       }
     },
@@ -30135,7 +30135,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 2
       }
     },
@@ -30297,7 +30297,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 4
       }
     },
@@ -30459,7 +30459,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 6
       }
     },
@@ -47664,7 +47664,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 2
       }
     },
@@ -47831,7 +47831,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 4
       }
     },
@@ -47998,7 +47998,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 6
       }
     },
@@ -48165,7 +48165,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 2
       }
     },
@@ -48327,7 +48327,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 4
       }
     },
@@ -48489,7 +48489,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 6
       }
     },
@@ -48651,7 +48651,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 2
       }
     },
@@ -48833,7 +48833,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 4
       }
     },
@@ -49015,7 +49015,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 6
       }
     },
@@ -49197,7 +49197,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 2
       }
     },
@@ -49379,7 +49379,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 4
       }
     },
@@ -49561,7 +49561,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 6
       }
     },
@@ -49743,7 +49743,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 2
       }
     },
@@ -49925,7 +49925,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 4
       }
     },
@@ -50107,7 +50107,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 6
       }
     },
@@ -67772,7 +67772,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 2
       }
     },
@@ -67939,7 +67939,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 4
       }
     },
@@ -68106,7 +68106,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 6
       }
     },
@@ -68273,7 +68273,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 2
       }
     },
@@ -68435,7 +68435,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 4
       }
     },
@@ -68597,7 +68597,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 6
       }
     },
@@ -68759,7 +68759,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 2
       }
     },
@@ -68941,7 +68941,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 4
       }
     },
@@ -69123,7 +69123,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 6
       }
     },
@@ -69305,7 +69305,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 2
       }
     },
@@ -69487,7 +69487,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 4
       }
     },
@@ -69669,7 +69669,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 6
       }
     },
@@ -69851,7 +69851,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 2
       }
     },
@@ -70033,7 +70033,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 4
       }
     },
@@ -70215,7 +70215,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 6
       }
     },
@@ -86430,7 +86430,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 2
       }
     },
@@ -86577,7 +86577,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 4
       }
     },
@@ -86724,7 +86724,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 6
       }
     },
@@ -86871,7 +86871,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 2
       }
     },
@@ -87018,7 +87018,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 4
       }
     },
@@ -87165,7 +87165,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 6
       }
     },
@@ -87312,7 +87312,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 2
       }
     },
@@ -87474,7 +87474,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 4
       }
     },
@@ -87636,7 +87636,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 6
       }
     },
@@ -87798,7 +87798,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 2
       }
     },
@@ -87960,7 +87960,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 4
       }
     },
@@ -88122,7 +88122,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 6
       }
     },
@@ -88284,7 +88284,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 2
       }
     },
@@ -88446,7 +88446,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 4
       }
     },
@@ -88608,7 +88608,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 6
       }
     },
@@ -104493,7 +104493,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 2
       }
     },
@@ -104635,7 +104635,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 4
       }
     },
@@ -104777,7 +104777,7 @@
       "caries": [
         "caries-buccal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "buccal": 6
       }
     },
@@ -104919,7 +104919,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 2
       }
     },
@@ -105061,7 +105061,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 4
       }
     },
@@ -105203,7 +105203,7 @@
       "caries": [
         "caries-lingual"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "lingual": 6
       }
     },
@@ -105345,7 +105345,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 2
       }
     },
@@ -105502,7 +105502,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 4
       }
     },
@@ -105659,7 +105659,7 @@
       "caries": [
         "caries-mesial"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "mesial": 6
       }
     },
@@ -105816,7 +105816,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 2
       }
     },
@@ -105973,7 +105973,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 4
       }
     },
@@ -106130,7 +106130,7 @@
       "caries": [
         "caries-distal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "distal": 6
       }
     },
@@ -106287,7 +106287,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 2
       }
     },
@@ -106444,7 +106444,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 4
       }
     },
@@ -106601,7 +106601,7 @@
       "caries": [
         "caries-occlusal"
       ],
-      "cariesDepths": {
+      "cariesSeverity": {
         "occlusal": 6
       }
     },
@@ -114897,7 +114897,7 @@
       },
       {
         "id": "caries-root",
-        "opacity": "",
+        "opacity": "0.5",
         "cls": ""
       },
       {
@@ -115039,7 +115039,7 @@
       },
       {
         "id": "caries-root",
-        "opacity": "",
+        "opacity": "0.7",
         "cls": ""
       },
       {
@@ -115181,7 +115181,7 @@
       },
       {
         "id": "caries-root",
-        "opacity": "",
+        "opacity": "1",
         "cls": ""
       },
       {

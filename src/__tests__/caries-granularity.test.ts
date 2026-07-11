@@ -64,23 +64,25 @@ describe("secondaryCariesOptions — CARS score list per mode", () => {
 });
 
 describe("rootCariesOptions + rootCariesDisplayValue — non-collapsing", () => {
-  it("simple -> none / present (present writes the canonical 'active' enum)", () => {
+  // SP6 Task 3: simple-mode "present" now writes the canonical "active-cavitated"
+  // enum (the most-severe value, so it renders at full opacity) rather than "active".
+  it("simple -> none / present (present writes the canonical 'active-cavitated' enum)", () => {
     const opts = rootCariesOptions("simple");
-    expect(opts.map(o => o.value)).toEqual(["none", "active"]);
+    expect(opts.map(o => o.value)).toEqual(["none", "active-cavitated"]);
   });
   it("severity -> the full rootCaries enum", () => {
     expect(rootCariesOptions("severity").map(o => o.value)).toEqual(Array.from(VALID_ROOT_CARIES));
   });
-  it("simple mode collapses every non-none severity to 'active' for display", () => {
+  it("simple mode collapses every non-none severity to 'active-cavitated' for display", () => {
     expect(rootCariesDisplayValue("simple", "none")).toBe("none");
-    expect(rootCariesDisplayValue("simple", "active")).toBe("active");
-    expect(rootCariesDisplayValue("simple", "arrested")).toBe("active");
-    expect(rootCariesDisplayValue("simple", "active-cavitated")).toBe("active");
+    expect(rootCariesDisplayValue("simple", "active")).toBe("active-cavitated");
+    expect(rootCariesDisplayValue("simple", "arrested")).toBe("active-cavitated");
+    expect(rootCariesDisplayValue("simple", "active-cavitated")).toBe("active-cavitated");
   });
   it("severity mode shows the stored value verbatim (round-trips a value simple can't show)", () => {
-    // A stored 'arrested' displays as 'active' in simple mode but is preserved,
-    // so widening to severity reveals it again — the non-collapsing guarantee.
-    expect(rootCariesDisplayValue("simple", "arrested")).toBe("active");
+    // A stored 'arrested' displays as 'active-cavitated' in simple mode but is
+    // preserved, so widening to severity reveals it again — the non-collapsing guarantee.
+    expect(rootCariesDisplayValue("simple", "arrested")).toBe("active-cavitated");
     expect(rootCariesDisplayValue("severity", "arrested")).toBe("arrested");
   });
 });
@@ -159,7 +161,7 @@ describe("mode accessors — round-trip + invalid coercion + non-collapsing stat
 });
 
 describe("Gate: cariesDepthEnabled controls the visual caries-depth render tier", () => {
-  const caried = { toothSelection: "tooth-base", caries: ["caries-occlusal"], cariesDepths: { occlusal: 4 } };
+  const caried = { toothSelection: "tooth-base", caries: ["caries-occlusal"], cariesSeverity: { occlusal: 4 } };
 
   it("default (ON) encodes the depth tier as opacity on the caries surface", () => {
     const l = layers(16, caried);
@@ -170,7 +172,7 @@ describe("Gate: cariesDepthEnabled controls the visual caries-depth render tier"
 
   it("OFF renders the caries surface at the SVG default (no opacity tier / no caries-deep)", () => {
     setCariesDepthEnabled(false);
-    const deep = { toothSelection: "tooth-base", caries: ["caries-occlusal"], cariesDepths: { occlusal: 6 } };
+    const deep = { toothSelection: "tooth-base", caries: ["caries-occlusal"], cariesSeverity: { occlusal: 6 } };
     const l = layers(16, deep);
     const surf = l.find((x) => x.id === "caries-occlusal");
     expect(surf).toBeTruthy();
@@ -202,14 +204,14 @@ function buildSurfaceCell(surface: string): HTMLElement {
 describe("Gate: radiographicDepthMode controls the data-radio surface badge", () => {
   it("mode 'off' (default) suppresses data-radio even when a value is stored", () => {
     const cell = buildSurfaceCell("mesial");
-    const state = { cariesDepths: new Map(), radiographicDepth: new Map([["mesial", "D2"]]) };
+    const state = { cariesSeverity: new Map(), radiographicDepth: new Map([["mesial", "D2"]]) };
     __syncSurfaceDepthIndicatorForTest(cell, state);
     expect(cell.querySelector(".surf-depth")!.hasAttribute("data-radio")).toBe(false);
   });
   it("a non-off mode emits data-radio for the stored value", () => {
     setRadiographicDepthMode("threeLevel");
     const cell = buildSurfaceCell("mesial");
-    const state = { cariesDepths: new Map(), radiographicDepth: new Map([["mesial", "D2"]]) };
+    const state = { cariesSeverity: new Map(), radiographicDepth: new Map([["mesial", "D2"]]) };
     __syncSurfaceDepthIndicatorForTest(cell, state);
     expect(cell.querySelector(".surf-depth")!.getAttribute("data-radio")).toBe("D2");
   });

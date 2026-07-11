@@ -218,15 +218,15 @@ export function svgCases() {
       for (const v of values) cases.push({ ...t, state: { toothSelection:"tooth-base", [field]: v } });
     for (const b of BOOLEAN_FIELDS) cases.push({ ...t, state: { toothSelection:"tooth-base", [b]: true } });
     for (const c of Array.from(VALID_CARIES)) cases.push({ ...t, state: { toothSelection:"tooth-base", caries:[c] } });
-    // Per-surface caries depth (ICDAS code -> opacity tier + "caries-deep" class):
-    // codes <=2 -> tier1 (opacity 0.45), <=4 -> tier2 (opacity 0.7), else tier3
-    // (opacity 1 + caries-deep). caries-subcrown has no depth encoding (skipped
-    // by applyStateToSvgSingle before the depth block), so exclude it here.
+    // Per-surface caries severity (SP6 unified `cariesSeverity`; on a primary/
+    // no-filling surface it is ICDAS: codes <=2 -> tier1 (opacity 0.45), <=4 ->
+    // tier2 (opacity 0.7), else tier3 (opacity 1 + caries-deep). caries-subcrown
+    // has no severity encoding (skipped before the depth block), so exclude it.
     for (const c of Array.from(VALID_CARIES)) {
       if (c === "caries-subcrown") continue;
       const surface = c.replace("caries-", "");
       for (const d of [2, 4, 6])
-        cases.push({ ...t, state: { toothSelection:"tooth-base", caries:[c], cariesDepths:{ [surface]: d } } });
+        cases.push({ ...t, state: { toothSelection:"tooth-base", caries:[c], cariesSeverity:{ [surface]: d } } });
     }
     for (const s of Array.from(VALID_FILLING_SURFACES)) cases.push({ ...t, state: { toothSelection:"tooth-base", fillingMaterial:"amalgam", fillingSurfaces:[s], fillingSurfaceMaterials:{ [s]:"amalgam" } } });
     for (const m of Array.from(VALID_MODS)) cases.push({ ...t, state: { toothSelection:"tooth-base", mods:[m] } });
@@ -264,7 +264,7 @@ export function payloadCases() {
     { name: "mixed", payload: { version: "1.4", teeth } },
     // Force the FHIR emit/parse branches the enum-only "mixed" sample never reaches:
     { name: "branches", payload: { version: "1.4", teeth: {
-      "11": { toothSelection:"tooth-base", caries:["caries-occlusal"], cariesDepths:{ occlusal: 4 } },              // set -> valueInteger
+      "11": { toothSelection:"tooth-base", caries:["caries-occlusal"], cariesSeverity:{ occlusal: 4 } },            // set -> valueInteger
       "12": { toothSelection:"tooth-base", fillingMaterial:"composite", fillingSurfaces:["mesial","occlusal"],
               fillingSurfaceMaterials:{ mesial:"composite", occlusal:"amalgam" } },                                  // restoration -> component
       // `pulpInflam` here is the retired legacy raw field name (SP4 Task 3,

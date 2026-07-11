@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.17.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.18.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -44,15 +44,18 @@ Este projeto é um editor de odontograma interativo, executado no navegador, que
 - 🔢 12 filtros de seleção (todos, presentes, permanentes, decíduos, implantes, ausentes, superiores/inferiores, anteriores/molares)
 - 📊 Predefinições de estado prontas (redefinir, dentição decídua, dentição mista, edêntulo)
 - 📦 34 modelos de restauração predefinidos (pontes, próteses removíveis, próteses sobre barra com implantes)
-- 💾 Exportação/importação de estado em JSON (versão 2.3; as importações continuam aceitando as versões 1.4, 2.0, 2.1 e 2.2 e são migradas automaticamente, com estados personalizados de plugins e anotações por dente)
+- 💾 Exportação/importação de estado em JSON (versão 2.4; as importações continuam aceitando as versões 1.4, 2.0, 2.1, 2.2 e 2.3 e são migradas automaticamente, com estados personalizados de plugins e anotações por dente)
 - 🔗 Exportação HL7 FHIR R4 (Bundle de coleção com Observations por dente, codificação de dente ISO 3950 para dentição permanente, sistema de códigos local — mapeamento SNOMED CT planejado)
 - ✚ Interface de seleção de faces em cruz/mais (B/M/O/D/L) para cáries e restaurações
 - 🧱 Materiais de restauração por face (restaurações mistas, por exemplo amálgama vestibular + resina distal)
 - 🖼️ Exportação da imagem do odontograma em PNG/JPG/SVG (para download; PNG/JPG rasterizados a partir do SVG vetorial)
-- 🦷 Cárie secundária (recorrente): uma pontuação CARS armazenada por face (0–6, `secondaryCaries`), renderizada como a opacidade da camada de cárie — substituindo a antiga derivação por sobreposição cárie∩restauração (um estado legado migrado é promovido à pontuação canônica "moderada")
-- 🌱 Cárie radicular (`rootCaries`: none / active / arrested / active-cavitated), que ativa a camada de ilustração dedicada de cárie radicular
-- 📡 Profundidade radiográfica da cárie (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 por face), independente da escala visual ICDAS, exibida como um emblema e sincronizada por meio de sua própria Observation FHIR
+- 🦷 Cárie/subcárie como uma máquina de estados por face: uma face cariada sem restauração é renderizada como cárie primária (opacidade em níveis ICDAS); assim que essa face tem uma restauração, ela é renderizada como cárie secundária (recorrente) (camada `subcaries-{surface}`, pontuada por CARS) — as duas nunca ficam ativas ao mesmo tempo na mesma face
+- 🎯 Gravidade unificada por face (`cariesSeverity`, 0–6, substituindo os antigos campos separados de profundidade ICDAS e CARS): lida como profundidade ICDAS em uma face primária, como pontuação CARS nomeada (Hígido … Cavidade extensa) em uma recorrente, por meio de um popup contextual que mostra apenas a escala relevante para o estado atual da face
+- 🌱 Cárie radicular (`rootCaries`: none / active / arrested / active-cavitated), que ativa a camada de ilustração dedicada de cárie radicular com opacidade determinada pela gravidade (active 0,5 / arrested 0,7 / active-cavitated opacidade total)
+- 📡 Profundidade radiográfica da cárie (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 por face), independente da escala visual de gravidade ICDAS/CARS, exibida como um emblema e sincronizada por meio de sua própria Observation FHIR
 - 🎚️ Três configurações de granularidade de cárie (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) além de um alternador `cariesDepthEnabled`, que reduzem cada escala a uma visão de seletor mais simples sem perder o valor armazenado
+- 🩹 Linha de resumo de subcárie no painel de restaurações: lista, abaixo dos controles de restauração, qualquer dente selecionado com cárie secundária e suas faces (ex.: "36 (O) tem subcárie na restauração.")
+- ✏️ Os dentes anteriores (incisivos/caninos) rotulam sua face oclusal como "incisal" em toda a interface (seletor, popup, resumos); a chave de face armazenada permanece `occlusal`
 - 🪨 Cálculo, e reabsorção radicular tipificada como interna ou cervical externa (`resorptionType`)
 - 📏 Profundidade da cárie por face (superficial / dentina / profunda) ou pontuação ICDAS II opcional (0–6) via `enableIcdas`
 - 🩹 Alternador de infiltração marginal de coroa, exibido apenas para restauração de coroa ou ponte
@@ -74,7 +77,7 @@ Este projeto é um editor de odontograma interativo, executado no navegador, que
 - 🔒 Modo somente leitura: desativa todas as interações para casos de impressão/laudo/visualização
 - ✨ Animações de seleção: borda tracejada pulsante e sombra brilhante nos dentes selecionados (com suporte a prefers-reduced-motion)
 - 📝 Anotações por dente: clique duplo para adicionar/editar anotações, ícone de anotação ao lado do número do dente, dica ao passar o mouse com o texto da anotação, exportação/importação em JSON
-- 🧪 506 testes automatizados (Vitest) em 50 arquivos de teste cobrindo numeração, traduções, predefinições, i18n, componente App, tema, toque, plugins, acessibilidade e paridade dos eixos clínicos/diagnósticos
+- 🧪 563 testes automatizados (Vitest) em 55 arquivos de teste cobrindo numeração, traduções, predefinições, i18n, componente App, tema, toque, plugins, acessibilidade e paridade dos eixos clínicos/diagnósticos
 - 📖 Documentação de API em TypeDoc com comentários JSDoc em todos os exports públicos (`npm run docs`)
 
 ### 📦 Módulos
@@ -194,13 +197,12 @@ Este projeto é um editor de odontograma interativo, executado no navegador, que
 
 **Profundidade da cárie** (por face): `superficial` / `dentin` / `deep`, ou códigos ICDAS II opcionais `0–6` quando `enableIcdas` está definido
 
-**Cárie radicular** (`rootCaries`; ativa a camada de ilustração `caries-root` em um dente presente):
+**Gravidade da cárie** (`cariesSeverity`; campo unificado por face, `0`–`6`): em uma face sem restauração, é lida como a escala de profundidade ICDAS (`superficial` / `dentin` / `deep`, ou os códigos ICDAS II brutos `0–6` quando `enableIcdas` está ativado) e renderiza a camada primária `caries-{surface}`; em uma face com restauração, é lida como uma pontuação CARS nomeada (`0` sã … `6` cavidade extensa) e renderiza em vez disso a camada `subcaries-{surface}` (cárie secundária) — uma face nunca é primária e recorrente ao mesmo tempo
+
+**Cárie radicular** (`rootCaries`; ativa a camada de ilustração `caries-root` em um dente presente, com opacidade determinada pela gravidade — `active` 0,5 / `arrested` 0,7 / `active-cavitated` opacidade total):
 `none`, `active`, `arrested`, `active-cavitated`
 
-**Pontuação de cárie secundária (recorrente)** (`secondaryCaries`; armazenada por face, CARS `0` (sã) – `6` (cavitada), renderizada como a opacidade da camada de cárie):
-`0`, `1`, `2`, `3`, `4`, `5`, `6`
-
-**Profundidade radiográfica da cárie** (`radiographicDepth`; por face, independente da escala visual ICDAS/`cariesDepths`):
+**Profundidade radiográfica da cárie** (`radiographicDepth`; por face, independente da escala visual ICDAS/CARS `cariesSeverity`):
 `none`, `E1`, `E2`, `D1`, `D2`, `D3`
 
 **Configurações de granularidade de cárie** (globais): `secondaryCariesMode` (`simple`/`standard`/`full`, padrão `standard`), `rootCariesMode` (`simple`/`severity`, padrão `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, padrão `off`), `cariesDepthEnabled` (booleano, padrão `true`) — cada um reduz sua escala a uma visão de seletor mais simples sem alterar o valor armazenado
@@ -305,7 +307,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testes
 ```bash
-npm run test           # Executa todos os 506 testes
+npm run test           # Executa todos os 563 testes
 npm run test:watch     # Modo watch
 npm run test:coverage  # Relatório de cobertura
 ```
@@ -364,7 +366,7 @@ npm run docs           # Gera a documentação TypeDoc em docs/
 | `startIntroTour()` | Inicia o tour interativo de introdução em 12 etapas |
 
 ### 💾 Formato de exportação/importação de estado
-A exportação cria um arquivo JSON (versão `2.3`; as importações também aceitam as versões legadas `1.4`, `2.0`, `2.1` e `2.2` e migram automaticamente) contendo:
+A exportação cria um arquivo JSON (versão `2.4`; as importações também aceitam as versões legadas `1.4`, `2.0`, `2.1`, `2.2` e `2.3` e migram automaticamente) contendo:
 
 **Campos globais:**
 - `wisdomVisible` - sisos visíveis
@@ -381,8 +383,8 @@ A exportação cria um arquivo JSON (versão `2.3`; as importações também ace
 - `mods` - array de modificações (inflammation, parodontal)
 - `caries` - faces com cárie ativa
 - `rootCaries` - gravidade da cárie radicular (none/active/arrested/active-cavitated)
-- `secondaryCaries` - pontuação CARS de cárie secundária por face (0-6)
-- `radiographicDepth` - profundidade radiográfica da cárie por face (none/E1/E2/D1/D2/D3), independente da escala visual ICDAS
+- `cariesSeverity` - gravidade unificada por face (0-6): profundidade ICDAS em uma face primária (sem restauração), pontuação CARS em uma face recorrente (com restauração)
+- `radiographicDepth` - profundidade radiográfica da cárie por face (none/E1/E2/D1/D2/D3), independente da escala visual ICDAS/CARS
 - `fillingMaterial` - material de restauração
 - `fillingSurfaces` - faces restauradas
 - `pulpDx` - diagnóstico pulpar AAE (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
@@ -415,7 +417,7 @@ A exportação cria um arquivo JSON (versão `2.3`; as importações também ace
 - `src/status_extras.ts` - 34 modelos de restauração predefinidos (pontes, próteses, construções sobre barra)
 - `src/i18n/` - traduções (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) e hook de i18n
 - `src/utils/numbering.ts` - conversão de numeração FDI, Universal, Palmer
-- `src/__tests__/` - suíte de testes Vitest (506 testes em 50 arquivos)
+- `src/__tests__/` - suíte de testes Vitest (563 testes em 55 arquivos)
 - `src/assets/teeth-svgs/` - modelos de dente em SVG (6 arquivos: incisivos, caninos, pré-molares, molares + vistas oclusais)
 - `src/assets/icon-svgs/` - SVGs dos ícones da barra de ferramentas (5 arquivos)
 

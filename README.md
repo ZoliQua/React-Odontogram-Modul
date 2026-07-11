@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.17.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.18.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -42,15 +42,18 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 2.3; imports still accept legacy 1.4, 2.0, 2.1, and 2.2 and migrate automatically, with plugin custom states and per-tooth notes)
+- 💾 Status export/import in JSON (version 2.4; imports still accept legacy 1.4, 2.0, 2.1, 2.2, and 2.3 and migrate automatically, with plugin custom states and per-tooth notes)
 - 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition, local code system — SNOMED CT mapping planned)
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
 - 🖼️ PNG/JPG/SVG image export of the chart (downloadable; PNG/JPG rasterized from vector SVG)
-- 🦷 Secondary (recurrent) caries: a stored, per-surface CARS score (0–6, `secondaryCaries`), rendered as the caries layer's opacity — replacing the old caries∩filling derivation (a migrated legacy state is promoted to the canonical "moderate" score)
-- 🌱 Root caries (`rootCaries`: none / active / arrested / active-cavitated), wiring the dedicated root-caries artwork layer
-- 📡 Radiographic caries depth (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 per surface), independent of the visual ICDAS depth scale, surfaced as a badge and round-tripped through its own FHIR Observation
+- 🦷 Caries/subcaries is a per-surface state machine: a caried surface with no filling renders as primary caries (ICDAS-tiered opacity); once a filling is present on that surface it renders as recurrent caries instead (the `subcaries-{surface}` layer, CARS-scored) — the two are never both active on the same surface
+- 🎯 Unified per-surface severity (`cariesSeverity`, 0–6, replacing the old separate ICDAS-depth + CARS fields): read as ICDAS depth on a primary surface, as a named CARS score (Sound … Extensive cavity) on a recurrent one, via a contextual popup that shows only the scale relevant to the surface's current state
+- 🌱 Root caries (`rootCaries`: none / active / arrested / active-cavitated), wiring the dedicated root-caries artwork layer at a severity-driven opacity (active 0.5 / arrested 0.7 / active-cavitated full)
+- 📡 Radiographic caries depth (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 per surface), independent of the visual ICDAS/CARS severity scale, surfaced as a badge and round-tripped through its own FHIR Observation
 - 🎚️ Three caries granularity settings (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) plus a `cariesDepthEnabled` toggle, collapsing each scale to a simpler picker view without losing the stored value
+- 🩹 Fillings-panel subcaries summary line: lists any selected tooth with recurrent caries and its surfaces below the filling controls (e.g. "36 (O) has subcaries set on its filling.")
+- ✏️ Anterior teeth (incisors/canines) label their occlusal surface "incisal" throughout the UI (picker, popup, summaries); the stored surface key stays `occlusal`
 - 🪨 Calculus, and root resorption typed as internal or external-cervical (`resorptionType`)
 - 📏 Per-surface caries depth (superficial / dentin / deep), or optional ICDAS II scoring (0–6) via `enableIcdas`
 - 🩹 Crown marginal-leakage toggle, shown only for a crown or bridge restoration
@@ -72,7 +75,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔒 Read-only mode: disable all interactions for print/report/view use cases
 - ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
 - 📝 Per-tooth notes: double-click to add/edit notes, note icon next to tooth number, hover tooltip with note text, JSON export/import
-- 🧪 506 automated tests (Vitest) across 50 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins, accessibility, and clinical-axis/diagnosis parity
+- 🧪 563 automated tests (Vitest) across 55 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins, accessibility, and clinical-axis/diagnosis parity
 - 📖 TypeDoc API documentation with JSDoc comments on all public exports (`npm run docs`)
 
 ### 📦 Modules
@@ -190,15 +193,12 @@ This project is an interactive, browser-based odontogram editor that supports fa
 **Root resorption type** (`resorptionType`):
 `none`, `internal`, `external-cervical`
 
-**Caries depth** (per surface): `superficial` / `dentin` / `deep`, or optional ICDAS II codes `0–6` when `enableIcdas` is set
+**Caries severity** (`cariesSeverity`; unified per-surface field, `0`–`6`): on a surface with no filling it is read as the ICDAS caries-depth scale (`superficial` / `dentin` / `deep`, or the raw ICDAS II codes `0–6` when `enableIcdas` is set) and renders the primary `caries-{surface}` layer; on a surface with a filling it is read as a named CARS score (`0` sound … `6` extensive cavity) and renders the `subcaries-{surface}` (recurrent-caries) layer instead — a surface is never both primary and recurrent at once
 
-**Root caries** (`rootCaries`; wires the `caries-root` artwork layer on a present tooth):
+**Root caries** (`rootCaries`; wires the `caries-root` artwork layer on a present tooth, opacity driven by severity — `active` 0.5 / `arrested` 0.7 / `active-cavitated` full):
 `none`, `active`, `arrested`, `active-cavitated`
 
-**Secondary (recurrent) caries score** (`secondaryCaries`; stored per surface, CARS `0` (sound) – `6` (cavitated), rendered as the caries layer's opacity):
-`0`, `1`, `2`, `3`, `4`, `5`, `6`
-
-**Radiographic caries depth** (`radiographicDepth`; per surface, independent of the visual ICDAS/`cariesDepths` scale):
+**Radiographic caries depth** (`radiographicDepth`; per surface, independent of the visual ICDAS/CARS `cariesSeverity` scale):
 `none`, `E1`, `E2`, `D1`, `D2`, `D3`
 
 **Caries granularity settings** (global): `secondaryCariesMode` (`simple`/`standard`/`full`, default `standard`), `rootCariesMode` (`simple`/`severity`, default `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, default `off`), `cariesDepthEnabled` (boolean, default `true`) — each collapses its scale to a simpler picker view without altering the stored value
@@ -303,7 +303,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testing
 ```bash
-npm run test           # Run all 506 tests
+npm run test           # Run all 563 tests
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
 ```
@@ -362,7 +362,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `startIntroTour()` | Launch the 12-step interactive intro tour |
 
 ### 💾 Status Export/Import Format
-The export creates a JSON file (version `2.3`; imports also accept legacy `1.4`, `2.0`, `2.1`, and `2.2` and migrate automatically) containing:
+The export creates a JSON file (version `2.4`; imports also accept legacy `1.4`, `2.0`, `2.1`, `2.2`, and `2.3` and migrate automatically) containing:
 
 **Global fields:**
 - `wisdomVisible` - wisdom teeth visible
@@ -379,8 +379,8 @@ The export creates a JSON file (version `2.3`; imports also accept legacy `1.4`,
 - `mods` - modifications array (inflammation, parodontal)
 - `caries` - active caries surfaces
 - `rootCaries` - root caries severity (none/active/arrested/active-cavitated)
-- `secondaryCaries` - per-surface CARS secondary-caries score (0-6)
-- `radiographicDepth` - per-surface radiographic caries depth (none/E1/E2/D1/D2/D3), independent of the visual ICDAS scale
+- `cariesSeverity` - unified per-surface severity (0-6): ICDAS depth on a primary (unfilled) surface, CARS score on a recurrent (filled) surface
+- `radiographicDepth` - per-surface radiographic caries depth (none/E1/E2/D1/D2/D3), independent of the visual ICDAS/CARS scale
 - `fillingMaterial` - filling material
 - `fillingSurfaces` - filled surfaces
 - `pulpDx` - AAE pulp diagnosis (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
@@ -413,7 +413,7 @@ The export creates a JSON file (version `2.3`; imports also accept legacy `1.4`,
 - `src/status_extras.ts` - 34 predefined restoration templates (bridges, dentures, bar constructions)
 - `src/i18n/` - translations (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) and i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer numbering conversion
-- `src/__tests__/` - Vitest test suite (506 tests across 50 files)
+- `src/__tests__/` - Vitest test suite (563 tests across 55 files)
 - `src/assets/teeth-svgs/` - SVG tooth templates (6 files: incisors, canines, premolars, molars + occlusal views)
 - `src/assets/icon-svgs/` - toolbar icon SVGs (5 files)
 
@@ -473,15 +473,18 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 2.3; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1 y 2.2 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
+- 💾 Exportación/importación de estado en JSON (versión 2.4; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2 y 2.3 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
 - 🔗 Exportación HL7 FHIR R4 (Bundle de colección con Observations por diente, codificación dental ISO 3950 para dentición permanente, sistema de códigos local — mapeo SNOMED CT planificado)
 - ✚ Selección de superficies en cruz (B/M/O/D/L) para caries y obturaciones
 - 🧱 Materiales de obturación por superficie (obturaciones mixtas, p. ej. bucal amalgama + distal composite)
 - 🖼️ Exportación de imagen PNG/JPG/SVG del odontograma (descargable; PNG/JPG rasterizado desde SVG vectorial)
-- 🦷 Caries secundaria (recurrente): una puntuación CARS almacenada por superficie (0–6, `secondaryCaries`), representada como la opacidad de la capa de caries — reemplaza la antigua derivación por intersección caries∩obturación (un estado heredado migrado se asigna a la puntuación canónica "moderada")
-- 🌱 Caries radicular (`rootCaries`: none / active / arrested / active-cavitated), que activa la capa de ilustración dedicada de caries radicular
-- 📡 Profundidad radiográfica de caries (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 por superficie), independiente de la escala visual ICDAS, mostrada como una insignia y recuperable mediante su propia Observation FHIR
+- 🦷 Caries/subcaries como máquina de estados por superficie: una superficie cariada sin obturación se renderiza como caries primaria (opacidad por niveles ICDAS); en cuanto esa superficie tiene una obturación, se renderiza como caries recurrente (capa `subcaries-{surface}`, puntuada con CARS) — ambas nunca están activas a la vez en la misma superficie
+- 🎯 Severidad unificada por superficie (`cariesSeverity`, 0–6, sustituye los antiguos campos separados de profundidad ICDAS + CARS): se lee como profundidad ICDAS en una superficie primaria y como puntuación CARS con nombre (Sana … Cavidad extensa) en una recurrente, mediante un popup contextual que muestra solo la escala relevante para el estado actual de la superficie
+- 🌱 Caries radicular (`rootCaries`: none / active / arrested / active-cavitated), que activa la capa de ilustración dedicada de caries radicular con una opacidad según la severidad (active 0.5 / arrested 0.7 / active-cavitated completa)
+- 📡 Profundidad radiográfica de caries (`radiographicDepth`: none / E1 / E2 / D1 / D2 / D3 por superficie), independiente de la escala visual ICDAS/CARS, mostrada como una insignia y recuperable mediante su propia Observation FHIR
 - 🎚️ Tres ajustes de granularidad de caries (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) más un interruptor `cariesDepthEnabled`, que reducen cada escala a una vista de selector más simple sin perder el valor almacenado
+- 🩹 Línea de resumen de subcaries en el panel de obturaciones: lista, debajo de los controles de obturación, cualquier diente seleccionado con caries recurrente y sus superficies (p. ej. "36 (O) tiene subcaries junto a su obturación.")
+- ✏️ Los dientes anteriores (incisivos/caninos) rotulan su superficie oclusal como "incisal" en toda la interfaz (selector, popup, resúmenes); la clave de superficie almacenada sigue siendo `occlusal`
 - 🪨 Cálculo, y reabsorción radicular tipificada como interna o cervical externa (`resorptionType`)
 - 📏 Profundidad de caries por superficie (superficial / dentina / profunda), o puntuación ICDAS II opcional (0–6) con `enableIcdas`
 - 🩹 Indicador de filtración marginal de corona, visible solo con una restauración de corona o puente
@@ -503,7 +506,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
 - ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados
 - 📝 Notas por diente: doble clic para añadir/editar notas, icono de nota junto al número de diente, tooltip con texto de nota, exportación/importación JSON
-- 🧪 506 pruebas automatizadas (Vitest) en 50 archivos de test, para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins, accesibilidad y paridad de ejes clínicos/diagnósticos
+- 🧪 563 pruebas automatizadas (Vitest) en 55 archivos de test, para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins, accesibilidad y paridad de ejes clínicos/diagnósticos
 - 📖 Documentación API TypeDoc con comentarios JSDoc en todas las exportaciones públicas (`npm run docs`)
 
 ### 📦 Módulos
@@ -621,15 +624,12 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 **Tipo de reabsorción radicular** (`resorptionType`):
 `none`, `internal`, `external-cervical`
 
-**Profundidad de caries** (por superficie): `superficial` / `dentin` / `deep`, o códigos ICDAS II opcionales `0–6` cuando `enableIcdas` está activado
+**Severidad de caries** (`cariesSeverity`; campo unificado por superficie, `0`–`6`): en una superficie sin obturación se lee como escala de profundidad ICDAS (`superficial` / `dentin` / `deep`, o los códigos ICDAS II sin procesar `0–6` cuando `enableIcdas` está activado) y renderiza la capa primaria `caries-{surface}`; en una superficie con obturación se lee como una puntuación CARS con nombre (`0` sana … `6` cavidad extensa) y renderiza en su lugar la capa `subcaries-{surface}` (caries recurrente) — una superficie nunca es primaria y recurrente a la vez
 
-**Caries radicular** (`rootCaries`; activa la capa de ilustración `caries-root` en un diente presente):
+**Caries radicular** (`rootCaries`; activa la capa de ilustración `caries-root` en un diente presente, con opacidad según la severidad — `active` 0.5 / `arrested` 0.7 / `active-cavitated` completa):
 `none`, `active`, `arrested`, `active-cavitated`
 
-**Puntuación de caries secundaria (recurrente)** (`secondaryCaries`; almacenada por superficie, CARS `0` (sana) – `6` (cavitada), representada como la opacidad de la capa de caries):
-`0`, `1`, `2`, `3`, `4`, `5`, `6`
-
-**Profundidad radiográfica de caries** (`radiographicDepth`; por superficie, independiente de la escala visual ICDAS/`cariesDepths`):
+**Profundidad radiográfica de caries** (`radiographicDepth`; por superficie, independiente de la escala visual ICDAS/CARS `cariesSeverity`):
 `none`, `E1`, `E2`, `D1`, `D2`, `D3`
 
 **Ajustes de granularidad de caries** (globales): `secondaryCariesMode` (`simple`/`standard`/`full`, por defecto `standard`), `rootCariesMode` (`simple`/`severity`, por defecto `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, por defecto `off`), `cariesDepthEnabled` (booleano, por defecto `true`) — cada uno reduce su escala a una vista de selector más simple sin alterar el valor almacenado
@@ -755,7 +755,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 plantillas de restauración predefinidas (puentes, prótesis, construcciones con barra)
 - `src/i18n/` - traducciones (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) y hook i18n
 - `src/utils/numbering.ts` - conversión de numeración FDI, Universal, Palmer
-- `src/__tests__/` - suite de pruebas Vitest (506 pruebas en 50 archivos)
+- `src/__tests__/` - suite de pruebas Vitest (563 pruebas en 55 archivos)
 - `src/assets/teeth-svgs/` - plantillas SVG dentales (6 archivos: incisivos, caninos, premolares, molares + vistas oclusales)
 - `src/assets/icon-svgs/` - SVGs de iconos de barra de herramientas (5 archivos)
 

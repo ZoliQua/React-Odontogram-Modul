@@ -649,6 +649,7 @@ export default function App({
                 <input type="checkbox" id="fissureSealing" />
                 <span>{t("filling.fissureSealing")}</span>
               </label>
+              <div id="fillingSubcariesSummary" className="hint hidden"></div>
             </section>
 
             <section id="endoSection" className="card">

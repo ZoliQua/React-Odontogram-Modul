@@ -38,9 +38,9 @@ Each tooth has:
 - `resorptionType`: none | internal | external-cervical — replaced the retired `rootResorption` boolean
 - `caries`: array of surface identifiers (mesial, occlusal, distal, buccal, lingual)
 - `fillingSurfaces`: array of filled surfaces
-- `rootCaries`: none | active | arrested | active-cavitated — wires the `caries-root` artwork layer on a present tooth
-- `secondaryCaries`: per-surface CARS score (0-6) — stored, scored finding rendered as the `subcaries-{surface}` layer's opacity; no longer derived from `caries` ∩ `fillingSurfaceMaterials`
-- `radiographicDepth`: per-surface none | E1 | E2 | D1 | D2 | D3 — radiographic caries depth, independent of the visual ICDAS depth scale (`cariesDepths`); surfaced as a `data-radio` badge attribute
+- `rootCaries`: none | active | arrested | active-cavitated — wires the `caries-root` artwork layer on a present tooth, at an opacity driven by severity (`active` 0.5 / `arrested` 0.7 / `active-cavitated` full)
+- `caries`/`fillingSurfaceMaterials`/`cariesSeverity`: caries is a per-surface **state machine**, not two independent fields. `cariesSeverity` (0-6) is the single unified per-surface severity — replacing the old separate `cariesDepths` (ICDAS) and `secondaryCaries` (CARS) fields. A surface in `caries` with **no** filling on it renders as primary caries (`caries-{surface}`, ICDAS-tiered opacity from `cariesSeverity`); the same surface **with** a filling present renders as recurrent caries instead (`subcaries-{surface}`, CARS-scored opacity from `cariesSeverity`) — a surface is never both at once. A contextual popup shows only the severity group relevant to the surface's current state (primary ICDAS-depth group when unfilled, CARS group when filled)
+- `radiographicDepth`: per-surface none | E1 | E2 | D1 | D2 | D3 — radiographic caries depth, independent of the visual ICDAS/CARS severity scale (`cariesSeverity`); surfaced as a `data-radio` badge attribute
 - `extractionPlan`, `crownNeeded`, `crownReplace`: boolean flags
 
 ## Integration with DentalQuoteCreator
