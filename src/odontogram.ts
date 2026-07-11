@@ -60,12 +60,12 @@ const ALL_TEETH = [
 
 const GROUPS = {
   variants: [
-    "tooth-broken-inicisal",
-    "tooth-broken-distal-inicisal",
+    "tooth-broken-incisal",
+    "tooth-broken-distal-incisal",
     "tooth-broken-distal",
-    "tooth-broken-mesial-distal-inicisal",
+    "tooth-broken-mesial-distal-incisal",
     "tooth-broken-mesial-distal",
-    "tooth-broken-mesial-inicisal",
+    "tooth-broken-mesial-incisal",
     "tooth-broken-mesial",
     "tooth-crownprep",
     "tooth-under-gum",
@@ -82,10 +82,10 @@ const GROUPS = {
 const MILKTOOTH_BLOCKED = new Set([16,17,18,26,27,28,36,37,38,46,47,48]);
 const FISSURE_ALLOWED = new Set([16,17,26,27,36,37,46,47]);
 const BROKEN_VARIANTS = new Set([
-  "tooth-broken-inicisal",
-  "tooth-broken-distal-inicisal",
+  "tooth-broken-incisal",
+  "tooth-broken-distal-incisal",
   "tooth-broken-distal",
-  "tooth-broken-mesial-inicisal",
+  "tooth-broken-mesial-incisal",
   "tooth-broken-mesial",
 ]);
 const PRIMARY_MILK = new Set([11,12,13,14,15,21,22,23,24,25,31,32,33,34,35,41,42,43,44,45]);
@@ -654,13 +654,13 @@ function getBrokenCrownVariant(state: Any){
   const m = !!state.brokenMesial;
   const i = !!state.brokenIncisal;
   const d = !!state.brokenDistal;
-  if(m && d && i) return "tooth-broken-mesial-distal-inicisal";
+  if(m && d && i) return "tooth-broken-mesial-distal-incisal";
   if(m && d) return "tooth-broken-mesial-distal";
-  if(d && i) return "tooth-broken-distal-inicisal";
-  if(m && i) return "tooth-broken-mesial-inicisal";
+  if(d && i) return "tooth-broken-distal-incisal";
+  if(m && i) return "tooth-broken-mesial-incisal";
   if(d) return "tooth-broken-distal";
   if(m) return "tooth-broken-mesial";
-  if(i) return "tooth-broken-inicisal";
+  if(i) return "tooth-broken-incisal";
   return null;
 }
 
