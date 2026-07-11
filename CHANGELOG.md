@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.24.0] - 2026-07-11
+### Added
+- Tooth discoloration: record a discolored natural crown by cause (tetracycline, fluorosis, non-vital darkening, extrinsic staining, or other/unknown) on permanent and milk teeth. The chart tints the crown a representative colour; shown in the tooltip and a new whole-mouth "Discoloration" summary section. Completes the surface & structural conditions set (filling defect, wear, discoloration).
+### Migration
+- Payload version 2.9 (imports 1.4–2.8 accepted). Additive — legacy charts carry no discoloration.
+
 ## [1.23.0] - 2026-07-11
 ### Changed
 - Tooth wear is now recorded by clinical type per location: an incisal/occlusal wear type (attrition / erosion) and a cervical wear type (abrasion / abfraction / erosion), replacing the two on/off wear flags. Shown in the tooltip and a new whole-mouth "Wear" summary section.

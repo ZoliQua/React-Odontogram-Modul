@@ -174,6 +174,7 @@ function defaultState(){
     contactDistal: false,
     wearEdge: "none", // none | attrition | erosion  (incisal/occlusal)
     wearCervical: "none", // none | abrasion | abfraction | erosion  (cervical)
+    discoloration: "none", // none | tetracycline | fluorosis | nonvital | extrinsic | other
     brokenMesial: false,
     brokenIncisal: false,
     brokenDistal: false,
@@ -1270,6 +1271,9 @@ function getWearEdgeOptions(): { value: string; label: string }[]{
 function getWearCervicalOptions(): { value: string; label: string }[]{
   return Array.from(VALID_WEAR_CERVICAL).map(v => ({ value: v, label: t("wearType." + v) }));
 }
+function getDiscolorationOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_DISCOLORATION).map(v => ({ value: v, label: t("discoloration." + v) }));
+}
 
 // SP11 Task 3: #bruxismRow visibility gate — aligned to the render gate
 // (__renderActiveLayers' wearAllowed, ~line 1355) by requiring
@@ -1280,6 +1284,23 @@ function wearRowAllowed(s: Any): boolean{
 export function __wearRowAllowedForTest(s: Record<string, unknown>): boolean {
   return wearRowAllowed(s);
 }
+
+// SP12: discoloration crown tint. Fill is NOT recorded by the SVG-fingerprint
+// (collectActiveLayers captures id/opacity/cls only) — parity-safe. Applies to the
+// natural crown of a permanent OR milk tooth (no restoration, natural substrate).
+const DISCOLORATION_TINT: Record<string, string> = {
+  tetracycline: "#9c8f7a", fluorosis: "#d9c9a3", nonvital: "#a89a8a", extrinsic: "#c2a86a", other: "#b5a894",
+};
+function discolorationAllowed(s: Any): boolean {
+  return (s?.toothSelection === "tooth-base" || s?.toothSelection === "milktooth")
+    && s?.restorationType === "none" && s?.toothSubstrate === "natural";
+}
+export function __discolorationAllowedForTest(s: Record<string, unknown>): boolean { return discolorationAllowed(s); }
+// SP12 Task 3: named alias for the #discolorationRow visibility-gate test seam
+// (mirrors __wearRowAllowedForTest); same underlying predicate as the render
+// gate above — the row's visibility must never contradict the chart.
+export function __discolorationRowAllowedForTest(s: Record<string, unknown>): boolean { return discolorationAllowed(s); }
+
 function getPeriImplantOptions(): { value: string; label: string }[]{
   return Array.from(VALID_PERI_IMPLANT).map(v => ({ value: v, label: t("periImplant." + kebabToCamel(v)) }));
 }
@@ -1489,6 +1510,38 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   }
   if(state.toothSelection === "none" && state.extractionWound){
     setActive(svgGetById(svg, "no-tooth-after-extraction"), true);
+  }
+
+  // SP12: discoloration — tint the shown natural crown's fill. Symmetric: reset
+  // BOTH crown paths every render so a reused per-tooth node never keeps a stale
+  // tint (permanent<->milk switch, or cleared). Fill isn't fingerprinted (parity-safe).
+  //
+  // IMPORTANT: each crown path carries its base color ONLY as an inline `style`
+  // attribute baked into the SVG asset (e.g. tooth-base: "fill: #ebebeb; ...";
+  // milktooth-base: "fill: #fff; ..."); no CSS rule supplies it. Setting
+  // `el.style.fill = ""` DELETES the inline `fill` longhand (CSSOM), it does NOT
+  // revert to the asset's original color — the crown falls back to the SVG
+  // initial value (black). Since this block runs on every render and
+  // `discoloration` defaults to "none", clearing to "" would blacken every
+  // tooth's crown on first render. Instead, capture each element's own
+  // asset-original fill ONCE (this block is the sole writer of these elements'
+  // `.style.fill` — verified via grep) and restore THAT on every non-tinted
+  // render. The capture is stashed in a `data-base-fill` attribute so it
+  // survives the reused-node lifecycle; that attribute is not part of the
+  // parity fingerprint (collectActiveLayers only reads id/opacity/class).
+  {
+    const tintOn = discolorationAllowed(state) && state.discoloration !== "none";
+    const tint = tintOn ? (DISCOLORATION_TINT[state.discoloration] || "") : "";
+    const activeId = state.toothSelection === "milktooth" ? "milktooth-base" : "tooth-base";
+    for(const id of ["tooth-base", "milktooth-base"]){
+      const el = svgGetById(svg, id) as SVGElement | null;
+      if(!el) continue;
+      if(el.getAttribute("data-base-fill") === null){
+        el.setAttribute("data-base-fill", el.style.fill || "");
+      }
+      const base = el.getAttribute("data-base-fill") || "";
+      el.style.fill = (tintOn && id === activeId) ? tint : base;
+    }
   }
 
   // 2) Mods — periapical glyph.
@@ -2027,6 +2080,12 @@ function getStateSummary(toothNo: number): string[]{
     if(state.wearEdge !== "none") summary.push(`${t("tooth.bruxism.edgeWear")}: ${t("wearType." + state.wearEdge)}`);
     if(state.wearCervical !== "none") summary.push(`${t("tooth.bruxism.neckWear")}: ${t("wearType." + state.wearCervical)}`);
   }
+  // SP12 Task 4: gate discoloration on the same discolorationAllowed predicate
+  // the render tint and UI row use — a crowned/non-natural-substrate tooth must
+  // not surface a stored discoloration value that the chart itself hides.
+  if(discolorationAllowed(state) && state.discoloration !== "none"){
+    summary.push(`${t("discoloration.label")}: ${t("discoloration." + state.discoloration)}`);
+  }
 
   // Flags
   if(state.extractionPlan) summary.push(t("tooth.extractionPlan"));
@@ -2324,6 +2383,8 @@ function syncControlsFromState(state: Any){
   if($("#wearEdgeSelect").value !== state.wearEdge) state.wearEdge = $("#wearEdgeSelect").value;
   setSelectOptions($("#wearCervicalSelect"), getWearCervicalOptions(), state.wearCervical);
   if($("#wearCervicalSelect").value !== state.wearCervical) state.wearCervical = $("#wearCervicalSelect").value;
+  setSelectOptions($("#discolorationSelect"), getDiscolorationOptions(), state.discoloration);
+  if($("#discolorationSelect").value !== state.discoloration) state.discoloration = $("#discolorationSelect").value;
   $("#brokenMesial").checked = !!state.brokenMesial;
   $("#brokenIncisal").checked = !!state.brokenIncisal;
   $("#brokenDistal").checked = !!state.brokenDistal;
@@ -2540,12 +2601,20 @@ function syncControlsFromState(state: Any){
     const s = toothState.get(tn);
     return s && wearRowAllowed(s);
   });
+  // SP12 Task 3: #discolorationRow visibility gate — reuses the same
+  // discolorationAllowed predicate the render tint and tooltip use, so the
+  // dropdown's visibility never contradicts the chart (SP9/10/11 lesson).
+  const discolorationRowAllowed = selectedList.length > 0 && selectedList.every(tn => {
+    const s = toothState.get(tn);
+    return s && discolorationAllowed(s);
+  });
   const fissureAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
     return s && s.toothSelection === "tooth-base" && FISSURE_ALLOWED.has(tn);
   });
   $("#contactPointRow").classList.toggle("hidden", !contactAllowed);
   $("#bruxismRow").classList.toggle("hidden", !bruxismAllowed);
+  $("#discolorationRow").classList.toggle("hidden", !discolorationRowAllowed);
   $("#fissureSealingRow").classList.toggle("hidden", !fissureAllowed);
   const extractionPlanAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
@@ -3595,6 +3664,7 @@ function serializeState(s: Any){
     contactDistal: !!s.contactDistal,
     wearEdge: s.wearEdge,
     wearCervical: s.wearCervical,
+    discoloration: s.discoloration,
     brokenMesial: !!s.brokenMesial,
     brokenIncisal: !!s.brokenIncisal,
     brokenDistal: !!s.brokenDistal,
@@ -3639,6 +3709,7 @@ export const VALID_APICAL_DX = validValues("apicalDx");
 export const VALID_RESORPTION_TYPE = validValues("resorptionType");
 export const VALID_WEAR_EDGE = validValues("wearEdge");
 export const VALID_WEAR_CERVICAL = validValues("wearCervical");
+export const VALID_DISCOLORATION = validValues("discoloration");
 const VALID_CARIES_DEPTH = new Set(["surface","dentin","deep"]);
 export const VALID_FILLING_SURFACES = validSurfaces();
 // SP5/SP6: caries fields. `rootCaries` is a registered axis, so it reads from
@@ -4007,6 +4078,7 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
   s.wearEdge = validateEnum(raw.wearEdge, VALID_WEAR_EDGE, migratedWearEdge);
   const migratedWearCervical = raw.bruxismNeckWear ? "abrasion" : "none";
   s.wearCervical = validateEnum(raw.wearCervical, VALID_WEAR_CERVICAL, migratedWearCervical);
+  s.discoloration = validateEnum(raw.discoloration, VALID_DISCOLORATION, "none");
   s.brokenMesial = !!raw.brokenMesial;
   s.brokenIncisal = !!raw.brokenIncisal;
   s.brokenDistal = !!raw.brokenDistal;
@@ -4076,7 +4148,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.8",
+    version: "2.9",
     globals: {
       wisdomVisible,
       showBase,
@@ -5047,6 +5119,12 @@ function wireControls(){
     applyToSelected((s)=>{ s.wearCervical = value; });
   });
 
+  // Discoloration (SP12 Task 3: discoloration enum picker — mirrors the
+  // wearEdge/wearCervical buildSelect wiring above).
+  buildSelect($("#discolorationSelect"), getDiscolorationOptions(), (value)=>{
+    applyToSelected((s)=>{ s.discoloration = value; });
+  });
+
   // Bridge pillar
   $("#bridgePillar").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
@@ -5470,7 +5548,7 @@ export function getToothStateSummary(toothNo: number): string[]{
 
 /** One heading + its per-tooth entries in the tooth-information summary. */
 export type OdontogramSummarySection = {
-  key: "caries" | "fillings" | "endo" | "diagnoses" | "wear" | "prosthetics";
+  key: "caries" | "fillings" | "endo" | "diagnoses" | "wear" | "discoloration" | "prosthetics";
   heading: string;
   items: string[];
   /** Localized "no such tooth" sentence, shown when `items` is empty. */
@@ -5538,6 +5616,7 @@ export function getOdontogramSummary(): OdontogramSummary {
   const inflamed: string[] = [];
   const diagnoses: string[] = [];
   const wear: string[] = [];
+  const discoloration: string[] = [];
 
   for(const toothNo of ALL_TEETH){
     const s = toothState.get(toothNo);
@@ -5653,6 +5732,12 @@ export function getOdontogramSummary(): OdontogramSummary {
       if(s.wearCervical !== "none") parts.push(`${t("tooth.bruxism.neckWear")}: ${t("wearType." + s.wearCervical)}`);
       if(parts.length) wear.push(`${lbl(toothNo)} (${parts.join(", ")})`);
     }
+    // SP12 Task 4: gate discoloration on the same discolorationAllowed predicate
+    // the render tint, tooltip, and UI row use — suppresses stored discoloration
+    // on a crowned/non-natural-substrate tooth that the chart itself no longer tints.
+    if(discolorationAllowed(s) && s.discoloration !== "none"){
+      discoloration.push(`${lbl(toothNo)} (${t("discoloration." + s.discoloration)})`);
+    }
     // SP9: calculus + mobility join the periodontal findings.
     if(s.calculus) inflamed.push(`${lbl(toothNo)} (${t("calculus.label")})`);
     if(s.mobility && s.mobility !== "none") inflamed.push(`${lbl(toothNo)} (${t("inflammation.mobilityLabel")} ${t("mobility." + s.mobility)})`);
@@ -5691,6 +5776,7 @@ export function getOdontogramSummary(): OdontogramSummary {
     { key: "endo", heading: t("toothInfo.endo"), items: endo, emptyText: t("toothInfo.endoEmpty") },
     { key: "diagnoses", heading: t("toothInfo.diagnoses"), items: diagnoses, emptyText: t("toothInfo.diagnosesEmpty") },
     { key: "wear", heading: t("toothInfo.wear"), items: wear, emptyText: t("toothInfo.wearEmpty") },
+    { key: "discoloration", heading: t("toothInfo.discoloration"), items: discoloration, emptyText: t("toothInfo.discolorationEmpty") },
     { key: "prosthetics", heading: t("toothInfo.prosthetics"), items: prosthetics, emptyText: t("toothInfo.prostheticsEmpty") },
   ];
 

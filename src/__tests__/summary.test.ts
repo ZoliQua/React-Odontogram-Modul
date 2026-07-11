@@ -10,7 +10,7 @@ describe('getOdontogramSummary', () => {
   it('returns the expected structure with the four always-present sections', () => {
     setI18nLanguage('en');
     const s = getOdontogramSummary();
-    expect(s.sections.map((sec) => sec.key)).toEqual(['caries', 'fillings', 'endo', 'diagnoses', 'wear', 'prosthetics']);
+    expect(s.sections.map((sec) => sec.key)).toEqual(['caries', 'fillings', 'endo', 'diagnoses', 'wear', 'discoloration', 'prosthetics']);
     expect(typeof s.overview).toBe('string');
     expect(s.overview.length).toBeGreaterThan(0);
     expect(s.periodontalTitle.length).toBeGreaterThan(0);

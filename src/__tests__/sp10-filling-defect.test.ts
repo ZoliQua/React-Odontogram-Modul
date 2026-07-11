@@ -18,7 +18,7 @@ describe("SP10 Task 1: fillingDefect field + round-trip", () => {
   it("JSON export stamps 2.7 and round-trips fillingDefect", () => {
     __setToothStateForTest(16, { toothSelection: "tooth-base", fillingSurfaceMaterials: { occlusal: "composite" }, fillingDefect: { occlusal: "fracture" } });
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.8");
+    expect(payload.version).toBe("2.9");
     expect(payload.teeth[16].fillingDefect).toEqual({ occlusal: "fracture" });
   });
   it("hydrate reads fillingDefect back, drops invalid", () => {

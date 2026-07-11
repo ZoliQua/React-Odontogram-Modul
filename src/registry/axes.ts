@@ -202,6 +202,14 @@ export const AXES: ClinicalAxis[] = [
     values: valuesFrom("wearCervical"),
     svgLayer: "tooth-bruxism-neck-wear", appliesWhen: (c) => c.bruxismAllowed },
 
+  // SP12 Task 1: discoloration foundation (registry/FHIR/i18n only; render lands
+  // in a later SP12 task).
+  { id: "discoloration", field: "discoloration", kind: "enum", valueGroup: "discoloration",
+    skipValue: "none", finding: { local: "tooth-discoloration", display: "Tooth discoloration" },
+    // No svgLayer: activation is explicit in applyStateToSvgSingle — it tints the
+    // crown path's .style.fill (no layer toggle), so there is no layer to declare.
+    values: valuesFrom("discoloration") },
+
   // SP5 Task 1: caries fields foundation (additive scaffolding — registry/FHIR/i18n
   // only; render + migration land in later SP5 tasks). `rootCaries` is a normal enum
   // axis. `secondaryCaries` (per-surface CARS 0-6) and `radiographicDepth`

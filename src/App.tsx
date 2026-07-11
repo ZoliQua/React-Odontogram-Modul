@@ -587,6 +587,9 @@ export default function App({
                 <label><span>{t("tooth.bruxism.edgeWear")}</span><select id="wearEdgeSelect"></select></label>
                 <label><span>{t("tooth.bruxism.neckWear")}</span><select id="wearCervicalSelect"></select></label>
               </div>
+              <div id="discolorationRow" className="row inline-checks">
+                <label><span>{t("discoloration.label")}</span><select id="discolorationSelect"></select></label>
+              </div>
               <div id="crownActionsRow" className="row inline-checks bridge-actions-row">
                 <label id="bridgePillarRow" className="inline-check">
                   <input type="checkbox" id="bridgePillar" />

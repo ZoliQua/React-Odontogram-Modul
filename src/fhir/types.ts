@@ -25,6 +25,9 @@ export interface ToothRecord {
   contactDistal?: boolean;
   wearEdge?: string;
   wearCervical?: string;
+  // SP12 Task 1: tooth discoloration foundation (additive; see docs/superpowers
+  // SP12 design). Enum axis, no svgLayer — see registry/axes.ts.
+  discoloration?: string;
   brokenMesial?: boolean;
   brokenIncisal?: boolean;
   brokenDistal?: boolean;

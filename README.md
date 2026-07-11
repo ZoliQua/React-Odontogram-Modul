@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.23.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.24.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -43,7 +43,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 2.8; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, and 2.7 and migrate automatically, with plugin custom states and per-tooth notes)
+- 💾 Status export/import in JSON (version 2.9; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, and 2.8 and migrate automatically, with plugin custom states and per-tooth notes)
 - 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition, local code system — SNOMED CT mapping planned)
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
@@ -56,6 +56,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🩹 Fillings-panel subcaries summary line: lists any selected tooth with recurrent caries and its surfaces below the filling controls (e.g. "36 (O) has subcaries set on its filling.")
 - 🪛 Per-surface filling defects (`fillingDefect`: none / marginal / fracture / wear) on direct restorations, independent of recurrent caries — authored via a per-surface indicator on the Fillings card (mirroring the caries-depth indicator), rendered on the chart, and shown in the tooltip and whole-mouth fillings summary
 - 🦷💥 Tooth wear typed by clinical cause and location (`wearEdge`: none / attrition / erosion, incisal/occlusal; `wearCervical`: none / abrasion / abfraction / erosion, cervical) — replacing the two on/off bruxism-wear flags; authored via two dropdowns on the wear row, reuses the existing wear artwork, and shown in the tooltip and a new whole-mouth "Wear" summary section
+- 🎨 Tooth discoloration by cause (`discoloration`: none / tetracycline / fluorosis / nonvital / extrinsic / other) on permanent and milk teeth — tints the shown natural crown a representative colour when the tooth has no restoration and natural substrate; shown in the tooltip and a new whole-mouth "Discoloration" summary section; completes the surface & structural conditions set alongside filling defects and wear
 - ✏️ Anterior teeth (incisors/canines) label their occlusal surface "incisal" throughout the UI (picker, popup, summaries); the stored surface key stays `occlusal`
 - 🪨 Calculus, and root resorption typed as internal or external-cervical (`resorptionType`)
 - 📏 Per-surface caries depth (superficial / dentin / deep), or optional ICDAS II scoring (0–6) via `enableIcdas`
@@ -79,7 +80,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔒 Read-only mode: disable all interactions for print/report/view use cases
 - ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
 - 📝 Per-tooth notes: double-click to add/edit notes, note icon next to tooth number, hover tooltip with note text, JSON export/import
-- 🧪 563 automated tests (Vitest) across 55 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins, accessibility, and clinical-axis/diagnosis parity
+- 🧪 697 automated tests (Vitest) across 77 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins, accessibility, and clinical-axis/diagnosis parity
 - 📖 TypeDoc API documentation with JSDoc comments on all public exports (`npm run docs`)
 
 ### 📦 Modules
@@ -217,6 +218,9 @@ This project is an interactive, browser-based odontogram editor that supports fa
 
 **Tooth wear** (`wearEdge`, `wearCervical`; per-location clinical type, gated on tooth-base + no restoration + natural substrate; render the existing `tooth-bruxism-wear`/`tooth-bruxism-neck-wear` layers):
 `wearEdge`: `none`, `attrition`, `erosion` — `wearCervical`: `none`, `abrasion`, `abfraction`, `erosion`
+
+**Discoloration** (`discoloration`; per-tooth cause, gated on a natural tooth-base or milk tooth + no restoration + natural substrate; tints the shown natural crown's fill — no new SVG):
+`none`, `tetracycline`, `fluorosis`, `nonvital`, `extrinsic`, `other`
 
 ### 🖼️ SVG Template System
 
@@ -407,6 +411,7 @@ The export creates a JSON file (version `2.4`; imports also accept legacy `1.4`,
 - `contactDistal` - distal contact point loss
 - `wearEdge` - incisal/occlusal wear type (none/attrition/erosion)
 - `wearCervical` - cervical wear type (none/abrasion/abfraction/erosion)
+- `discoloration` - per-tooth discoloration cause (none/tetracycline/fluorosis/nonvital/extrinsic/other), tints the natural crown fill on a natural tooth-base/milk tooth with no restoration
 - `brokenMesial`, `brokenIncisal`, `brokenDistal` - fracture locations
 - `extractionWound` - post-extraction wound
 - `extractionPlan` - planned extraction
@@ -488,7 +493,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 2.8; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6 y 2.7 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
+- 💾 Exportación/importación de estado en JSON (versión 2.9; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7 y 2.8 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
 - 🔗 Exportación HL7 FHIR R4 (Bundle de colección con Observations por diente, codificación dental ISO 3950 para dentición permanente, sistema de códigos local — mapeo SNOMED CT planificado)
 - ✚ Selección de superficies en cruz (B/M/O/D/L) para caries y obturaciones
 - 🧱 Materiales de obturación por superficie (obturaciones mixtas, p. ej. bucal amalgama + distal composite)
@@ -501,6 +506,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🩹 Línea de resumen de subcaries en el panel de obturaciones: lista, debajo de los controles de obturación, cualquier diente seleccionado con caries recurrente y sus superficies (p. ej. "36 (O) tiene subcaries junto a su obturación.")
 - 🪛 Defectos de obturación por superficie (`fillingDefect`: none / marginal / fracture / wear) en restauraciones directas, independientes de la caries recurrente — se registran mediante un indicador por superficie en la tarjeta de Obturaciones (espejo del indicador de profundidad de caries), se renderizan en el odontograma y se muestran en el tooltip y en el resumen de obturaciones de toda la boca
 - 🦷💥 Desgaste dental tipificado por causa clínica y localización (`wearEdge`: none / attrition / erosion, incisal/oclusal; `wearCervical`: none / abrasion / abfraction / erosion, cervical) — sustituye los dos indicadores on/off de desgaste por bruxismo; se registra mediante dos menús desplegables en la fila de desgaste, reutiliza el arte existente y se muestra en el tooltip y en una nueva sección de resumen "Desgaste" de toda la boca
+- 🎨 Decoloración dental por causa (`discoloration`: none / tetracycline / fluorosis / nonvital / extrinsic / other) en dientes permanentes y temporales — tiñe la corona natural mostrada con un color representativo cuando el diente no tiene restauración y su sustrato es natural; se muestra en el tooltip y en una nueva sección de resumen "Decoloración" de toda la boca; completa el conjunto de condiciones de superficie y estructurales junto con los defectos de obturación y el desgaste
 - ✏️ Los dientes anteriores (incisivos/caninos) rotulan su superficie oclusal como "incisal" en toda la interfaz (selector, popup, resúmenes); la clave de superficie almacenada sigue siendo `occlusal`
 - 🪨 Cálculo, y reabsorción radicular tipificada como interna o cervical externa (`resorptionType`)
 - 📏 Profundidad de caries por superficie (superficial / dentina / profunda), o puntuación ICDAS II opcional (0–6) con `enableIcdas`
@@ -524,7 +530,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
 - ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados
 - 📝 Notas por diente: doble clic para añadir/editar notas, icono de nota junto al número de diente, tooltip con texto de nota, exportación/importación JSON
-- 🧪 563 pruebas automatizadas (Vitest) en 55 archivos de test, para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins, accesibilidad y paridad de ejes clínicos/diagnósticos
+- 🧪 697 pruebas automatizadas (Vitest) en 77 archivos de test, para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins, accesibilidad y paridad de ejes clínicos/diagnósticos
 - 📖 Documentación API TypeDoc con comentarios JSDoc en todas las exportaciones públicas (`npm run docs`)
 
 ### 📦 Módulos
@@ -662,6 +668,9 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 
 **Desgaste dental** (`wearEdge`, `wearCervical`; tipo clínico por localización, condicionado a diente natural + sin restauración + sustrato natural; renderizan las capas existentes `tooth-bruxism-wear`/`tooth-bruxism-neck-wear`):
 `wearEdge`: `none`, `attrition`, `erosion` — `wearCervical`: `none`, `abrasion`, `abfraction`, `erosion`
+
+**Decoloración** (`discoloration`; causa por diente, condicionada a un diente natural (permanente o temporal) sin restauración y sustrato natural; tiñe el relleno de la corona natural mostrada — sin SVG nuevo):
+`none`, `tetracycline`, `fluorosis`, `nonvital`, `extrinsic`, `other`
 
 ### 🖼️ Sistema de plantillas SVG
 
