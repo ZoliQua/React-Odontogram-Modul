@@ -15,6 +15,7 @@ export interface AxisValue {
   id: string;                    // engine value id (e.g. "metal", "caries-occlusal")
   coding: ConceptRef;            // additive codings for this value
   labelKey?: string;             // i18n key (added in the UI stage)
+  svgLayer?: string | string[];   // SVG layer id(s) this value toggles (render metadata)
 }
 
 /** One chartable tooth axis. Resolver fields are optional here (filled per stage). */

@@ -11,13 +11,36 @@ import { LOCAL_VALUE_MAPS } from "../fhir/codesystems";
 const valuesFrom = (group: string) =>
   Object.values(LOCAL_VALUE_MAPS[group]).map(e => ({ id: e.code, coding: { local: e.code, display: e.display } }));
 
+/** Attach `svgLayer` (render metadata) to values whose activation is a clean id
+ *  (or fixed id set) in today's render (`odontogram.ts`). Values not present in
+ *  `layers` are returned unchanged (no `svgLayer`). */
+const withSvgLayer = (
+  values: ReturnType<typeof valuesFrom>,
+  layers: Record<string, string | string[]>,
+) => values.map(v => (v.id in layers ? { ...v, svgLayer: layers[v.id] } : v));
+
+/** Maps each id in `ids` to itself — for axes whose value id equals its SVG layer id. */
+const sameIdLayers = (ids: string[]): Record<string, string> =>
+  Object.fromEntries(ids.map(id => [id, id]));
+
 export const AXES: ClinicalAxis[] = [
   { id: "toothSelection", field: "toothSelection", kind: "enum", valueGroup: "toothSelection",
     skipValue: "tooth-base", finding: { local: "tooth-status", display: "Tooth status" },
-    values: valuesFrom("toothSelection") },
+    values: withSvgLayer(valuesFrom("toothSelection"), {
+      "implant": "implant",
+      "milktooth": "milktooth",
+      "tooth-under-gum": "tooth-under-gum",
+      "no-tooth-after-extraction": "no-tooth-after-extraction",
+    }) },
   { id: "endo", field: "endo", kind: "enum", valueGroup: "endo",
     skipValue: "none", finding: { local: "endodontic-status", display: "Endodontic status" },
-    values: valuesFrom("endo") },
+    values: withSvgLayer(valuesFrom("endo"), {
+      "endo-medical-filling": "endo-medical-filling",
+      "endo-filling": "endo-filling",
+      "endo-filling-incomplete": "endo-filling-incomplete",
+      "endo-glass-pin": ["endo-filling", "endo-glass-pin"],
+      "endo-metal-pin": ["endo-filling", "endo-metal-pin"],
+    }) },
   { id: "crownMaterial", field: "crownMaterial", kind: "enum", valueGroup: "crownMaterial",
     skipValue: "natural", finding: { local: "crown-material", display: "Crown material" },
     values: valuesFrom("crownMaterial") },
@@ -30,17 +53,23 @@ export const AXES: ClinicalAxis[] = [
 
   { id: "caries", field: "caries", kind: "set", valueGroup: "caries",
     finding: { local: "caries", display: "Dental caries" },
-    values: valuesFrom("caries") },
+    values: withSvgLayer(valuesFrom("caries"), sameIdLayers([
+      "caries-subcrown", "caries-buccal", "caries-lingual", "caries-mesial", "caries-distal", "caries-occlusal",
+    ])) },
   { id: "mods", field: "mods", kind: "set", valueGroup: "mods",
     finding: { local: "tooth-modifier", display: "Tooth modifier" },
-    values: valuesFrom("mods") },
+    values: withSvgLayer(valuesFrom("mods"), sameIdLayers(["inflammation", "parodontal", "mobility"])) },
   { id: "calculus", field: "calculus", kind: "boolean",
     finding: { local: "calculus", display: "Dental calculus" } },
   { id: "rootResorption", field: "rootResorption", kind: "boolean",
     finding: { local: "root-resorption", display: "Root resorption" } },
   { id: "periapicalType", field: "periapicalType", kind: "enum", valueGroup: "periapicalType",
     skipValue: "none", finding: { local: "periapical-lesion-type", display: "Periapical lesion type" },
-    values: valuesFrom("periapicalType") },
+    values: withSvgLayer(valuesFrom("periapicalType"), {
+      "granuloma": "granuloma",
+      "cyst": "cysta",
+      "abscess": "abscess",
+    }) },
 
   { id: "fillingMaterial", field: "fillingMaterial", kind: "restoration", valueGroup: "fillingMaterial",
     skipValue: "none", surfacesField: "fillingSurfaces", finding: { local: "restoration", display: "Dental restoration" },

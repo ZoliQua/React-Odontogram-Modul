@@ -5,6 +5,7 @@ import { type OdontogramPlugin, getQuadrant, LAYER_Z } from "./plugin";
 import { buildFhirBundle } from "./fhir/toFhir";
 import { parseFhirBundle } from "./fhir/fromFhir";
 import type { FhirExportOptions } from "./fhir/types";
+import { allClearLayers } from "./registry/svgLayers";
 import tooth11Url from "./assets/teeth-svgs/11.svg";
 import tooth13Url from "./assets/teeth-svgs/13.svg";
 import tooth14Url from "./assets/teeth-svgs/14.svg";
@@ -738,53 +739,8 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
     if(g.hasAttribute("data-active")) g.setAttribute("data-active","1");
   }
 
-  // Turn OFF all known items
-  setActive(svgGetById(svg, "tooth-base"), false);
-  setActive(svgGetById(svg, "tooth-healthy-pulp"), false);
-  setActive(svgGetById(svg, "tooth-inflam-pulp"), false);
-  setActive(svgGetById(svg, "tooth-bruxism-wear"), false);
-  setActive(svgGetById(svg, "tooth-bruxism-neck-wear"), false);
-  setActive(svgGetById(svg, "tooth-base-beauty"), false);
-  setActive(svgGetById(svg, "endo-resection"), false);
-  setActive(svgGetById(svg, "milktooth-base"), false);
-  setActive(svgGetById(svg, "milktooth-beauty"), false);
-  setActive(svgGetById(svg, "milktooth-healthy-pulp"), false);
-  setActive(svgGetById(svg, "milktooth-inflam-pulp"), false);
-  setActive(svgGetById(svg, "fissure-sealing"), false);
-  setActive(svgGetById(svg, "mesial-no-contact-point"), false);
-  setActive(svgGetById(svg, "distal-no-contact-point"), false);
-  setActive(svgGetById(svg, "no-tooth-after-extraction"), false);
-  clearAllInGroup(svg, GROUPS.variants);
-  clearAllInGroup(svg, GROUPS.mods);
-  for(const id of ["cysta","granuloma","abscess"]){
-    setActive(svgGetById(svg, id), false);
-  }
-  clearAllInGroup(svg, GROUPS.endo);
-  setActive(svgGetById(svg, "endo-resorption"), false);
-  // Caries: subcrown and surface groups
-  // caries-distal etc are groups, buccal/subcrown are paths
-  for(const id of ["caries-subcrown","caries-buccal","caries-lingual","caries-distal","caries-mesial","caries-occlusal"]){
-    setActive(svgGetById(svg,id), false);
-  }
-  for(const s of GROUPS.fillingSurfaces){
-    setActive(svgGetById(svg, `subcaries-${s}`), false);
-  }
-  setActive(svgGetById(svg, "calculus"), false);
-  // Fillings
-  for(const mat of ["amalgam","composite","gic","temporary"]){
-    for(const s of GROUPS.fillingSurfaces){
-      setActive(svgGetById(svg, `filling-${mat}-${s}`), false);
-    }
-  }
-  // Restorations
-  for(const id of ["implant-base","implant-connector","implant-healing-abutment","implant-locator-screw","implant-bar","prosthesis","prosthesis-implant","prosthesis-implant-crown","prosthesis-implant-gum","telescope","zircon","metal","emax-crown","zircon-crown","metal-crown","temporary-crown","telescope-crown-inside","telescope-crown-outside","extraction-plan","zircon-bridge-connector","metal-bridge-connector","temporary-bridge-connector","telescope-bridge-connector"]){
-    setActive(svgGetById(svg,id), false);
-  }
-  setActive(svgGetById(svg, "temporary-restorations"), false);
-  // Specials group layers
-  setActive(svgGetById(svg, "crown-replace"), false);
-  setActive(svgGetById(svg, "crown-needed"), false);
-  setActive(svgGetById(svg, "missing-closed"), false);
+  // Turn OFF all known switchable layers (derived from the registry + fixed non-axis set).
+  for (const id of allClearLayers()) setActive(svgGetById(svg, id), false);
 
   const hasCrown = state.crownMaterial !== "natural";
   const brokenVariant = state.crownMaterial === "broken" ? getBrokenCrownVariant(state) : null;
