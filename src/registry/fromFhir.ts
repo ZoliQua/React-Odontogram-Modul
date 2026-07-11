@@ -79,5 +79,5 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
       }
     }
   }
-  return { version: "2.1", globals, teeth };
+  return { version: "2.2", globals, teeth };
 }

@@ -22,6 +22,8 @@ vi.mock('../odontogram', () => ({
   getNotesEnabled: vi.fn().mockReturnValue(false),
   setIcdasEnabled: vi.fn(),
   getIcdasEnabled: vi.fn().mockReturnValue(false),
+  setPulpDetailLevel: vi.fn(),
+  getPulpDetailLevel: vi.fn().mockReturnValue('aae'),
   getOdontogramSummary: vi.fn().mockReturnValue({
     overview: '', permanentList: null, missingList: null,
     sections: [], implants: null, periodontalTitle: '', periodontalText: '',

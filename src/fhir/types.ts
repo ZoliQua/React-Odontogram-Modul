@@ -5,7 +5,6 @@ export type { Bundle, Observation, Patient, CodeableConcept, Coding };
 /** Per-tooth record as produced by the engine's serializeState(). */
 export interface ToothRecord {
   toothSelection?: string;
-  pulpInflam?: boolean;
   endoResection?: boolean;
   mods?: string[];
   periapicalType?: string;
@@ -14,7 +13,6 @@ export interface ToothRecord {
   cariesActiveDepth?: number;
   cariesDepths?: Record<string, number>;
   calculus?: boolean;
-  rootResorption?: boolean;
   fillingMaterial?: string;
   fillingSurfaces?: string[];
   fillingSurfaceMaterials?: Record<string, string>;
@@ -39,6 +37,14 @@ export interface ToothRecord {
   restorationType?: string;
   restorationMaterial?: string;
   crownLeakage?: boolean;
+  // SP4 Task 1: pulp/apical/resorption diagnosis axes — see
+  // docs/superpowers/specs/2026-07-13-odontogram-sp4-endo-pulp-diagnosis-design.md.
+  // `pulpDx` is rendered/emitted (replaced the retired `pulpInflam` boolean,
+  // SP4 Task 3); `pulpLatin`/`apicalDx` are still additive-only scaffolding.
+  pulpDx?: string;
+  pulpLatin?: string;
+  apicalDx?: string;
+  resorptionType?: string;
   customStates?: Record<string, unknown>;
   note?: string;
 }

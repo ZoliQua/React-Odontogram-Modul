@@ -13,8 +13,9 @@ describe("parseFhirBundle (FHIR import)", () => {
         "36": { fillingSurfaceMaterials: { buccal: "amalgam", distal: "composite" } },
         "46": { mobility: "m2", extractionPlan: true },
         "16": { mods: ["inflammation"], periapicalType: "cyst" },
-        "26": { calculus: true, rootResorption: true },
+        "26": { calculus: true, resorptionType: "external-cervical" },
         "37": { caries: ["caries-mesial"], cariesDepths: { mesial: 5 } },
+        "45": { pulpDx: "irreversible-pulpitis" },
       },
     };
     const bundle = buildFhirBundle(payload as never);
@@ -29,8 +30,9 @@ describe("parseFhirBundle (FHIR import)", () => {
     expect(out.teeth["46"].extractionPlan).toBe(true);
     expect(out.teeth["16"].periapicalType).toBe("cyst");
     expect(out.teeth["26"].calculus).toBe(true);
-    expect(out.teeth["26"].rootResorption).toBe(true);
+    expect(out.teeth["26"].resorptionType).toBe("external-cervical");
     expect(out.teeth["37"].cariesDepths).toEqual({ mesial: 5 });
+    expect(out.teeth["45"].pulpDx).toBe("irreversible-pulpitis");
   });
 
   it("reads chart-level edentulous", () => {
@@ -47,5 +49,55 @@ describe("parseFhirBundle (FHIR import)", () => {
       { resource: { resourceType: "Observation", status: "final", code: { coding: [{ system: "http://snomed.info/sct", code: "80967001" }] }, bodySite: { coding: [{ system: "urn:iso:std:iso:3950", code: "11" }] } } },
     ]};
     expect(parseFhirBundle(foreign as never).teeth).toEqual({});
+  });
+});
+
+// SP4 Task 6: the four diagnosis axes (`pulpDx`, `pulpLatin`, `apicalDx`,
+// `resorptionType`) are auto-emitted by the registry (AXES in
+// src/registry/axes.ts, byte-identical to FIELD_MAPPINGS in
+// src/fhir/fieldMappings.ts) exactly like every other enum axis — no
+// bespoke wiring was needed. This test proves the full set survives an
+// export(2.2) -> import round-trip losslessly, including `pulpLatin`
+// (only emitted when set — LOCAL codes, per the payload-2.2 release brief).
+describe("SP4 Task 6: diagnosis axes FHIR round-trip (export 2.2 -> import lossless)", () => {
+  it("pulpDx, pulpLatin, apicalDx, resorptionType, periapicalType all survive export->import losslessly", () => {
+    const payload = {
+      version: "2.2",
+      teeth: {
+        "16": {
+          toothSelection: "tooth-base",
+          pulpDx: "irreversible-pulpitis",
+          pulpLatin: "pulpitis-acuta-purulenta",
+          apicalDx: "asymptomatic-apical-periodontitis",
+          periapicalType: "cyst",
+          resorptionType: "external-cervical",
+        },
+      },
+    };
+    const bundle = buildFhirBundle(payload as never);
+    const codes = (bundle.entry ?? []).map((e) => (e.resource as { code?: { coding?: Array<{ code?: string }> } } | undefined)?.code?.coding?.[0]?.code);
+    expect(codes).toEqual(expect.arrayContaining([
+      "pulp-diagnosis", "pulp-diagnosis-latin", "apical-diagnosis", "root-resorption-type",
+    ]));
+
+    const out = parseFhirBundle(bundle);
+    const t = out.teeth["16"];
+    expect(t.pulpDx).toBe("irreversible-pulpitis");
+    expect(t.pulpLatin).toBe("pulpitis-acuta-purulenta");
+    expect(t.apicalDx).toBe("asymptomatic-apical-periodontitis");
+    expect(t.periapicalType).toBe("cyst");
+    expect(t.resorptionType).toBe("external-cervical");
+  });
+
+  it("pulpLatin is omitted from the FHIR bundle when absent/'none' (only emitted when set) and does not round-trip a stray value", () => {
+    const payload = { version: "2.2", teeth: { "21": { pulpDx: "necrosis" } } };
+    const bundle = buildFhirBundle(payload as never);
+    const codes = (bundle.entry ?? []).map((e) => (e.resource as { code?: { coding?: Array<{ code?: string }> } } | undefined)?.code?.coding?.[0]?.code);
+    expect(codes).toContain("pulp-diagnosis");
+    expect(codes).not.toContain("pulp-diagnosis-latin");
+
+    const out = parseFhirBundle(bundle);
+    expect(out.teeth["21"].pulpDx).toBe("necrosis");
+    expect(out.teeth["21"].pulpLatin).toBeUndefined();
   });
 });

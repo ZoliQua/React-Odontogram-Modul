@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.16.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -34,19 +34,21 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔍 Caries charting on 6 surfaces: mesial, distal, buccal, lingual, occlusal, subcrown
 - 🪥 Filling materials per surface: amalgam, composite, GIC, temporary
 - 🏥 Endodontic states: medicinal filling, root canal filling, incomplete root filling, glass fiber post, metal post, resection, parapulpal pin
+- 🩺 AAE pulp diagnosis (`pulpDx`: normal / reversible / irreversible pulpitis / necrosis), with an optional 3-level pulp detail setting (`pulpDetailLevel`: simple / AAE / practical-Latin) surfacing 9 practical-Latin pulp subtypes (pulpa sana … gangraena pulpae) via `pulpLatin`
+- 🦴 Apical diagnosis (`apicalDx`: symptomatic/asymptomatic apical periodontitis, acute/chronic apical abscess, condensing osteitis) drives the periapical glyph directly, with an optional granuloma/cyst/abscess glyph subtype
 - ⚕️ Modifications: periapical inflammation (inside/outside), periodontal disease, mobility grades (M1/M2/M3)
 - 🏷️ Special indicators: crown needed, crown replacement needed, missing closed gap, extraction plan, bruxism wear/neck wear, fissure sealing, contact point loss
 - 👁️ Occlusal view, wisdom teeth, bone and pulp visibility toggles
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 2.0; imports still accept 1.4 and migrate automatically, with plugin custom states and per-tooth notes)
+- 💾 Status export/import in JSON (version 2.2; imports still accept legacy 1.4, 2.0, and 2.1 and migrate automatically, with plugin custom states and per-tooth notes)
 - 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition, local code system — SNOMED CT mapping planned)
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
 - 🖼️ PNG/JPG/SVG image export of the chart (downloadable; PNG/JPG rasterized from vector SVG)
 - 🦷 Secondary (recurrent) caries — auto-derived when caries overlaps a filling
-- 🪨 Calculus, root resorption, and typed periapical lesions (granuloma / cyst / abscess)
+- 🪨 Calculus, and root resorption typed as internal or external-cervical (`resorptionType`)
 - 📏 Per-surface caries depth (superficial / dentin / deep), or optional ICDAS II scoring (0–6) via `enableIcdas`
 - 🩹 Crown marginal-leakage toggle, shown only for a crown or bridge restoration
 - 🧰 Unified topbar icon row with a Settings menu (numbering, notes, ICDAS, tooth information)
@@ -67,7 +69,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔒 Read-only mode: disable all interactions for print/report/view use cases
 - ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
 - 📝 Per-tooth notes: double-click to add/edit notes, note icon next to tooth number, hover tooltip with note text, JSON export/import
-- 🧪 340 automated tests (Vitest) across 37 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins and accessibility
+- 🧪 421 automated tests (Vitest) across 43 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins, accessibility, and clinical-axis/diagnosis parity
 - 📖 TypeDoc API documentation with JSDoc comments on all public exports (`npm run docs`)
 
 ### 📦 Modules
@@ -168,13 +170,27 @@ This project is an interactive, browser-based odontogram editor that supports fa
 **Modifications:**
 `inflammation` (periapical), `parodontal` (periodontal), `mobility` (M1/M2/M3)
 
-**Periapical lesion type** (qualifies `inflammation`):
+**Periapical lesion type** (`periapicalType`; qualifies the periapical glyph, driven by `apicalDx`):
 `none`, `granuloma`, `cyst`, `abscess`
+
+**Pulp diagnosis** (AAE terminology; `pulpDx`):
+`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+
+**Pulp diagnosis, practical Latin** (`pulpLatin`; shown by the pulp picker only when `pulpDetailLevel` is `latin`):
+`none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
+
+**Pulp detail level** (`pulpDetailLevel`, global setting): `simple`, `aae` (default), `latin` — controls which pulp vocabulary the picker offers
+
+**Apical diagnosis** (`apicalDx`; drives the periapical glyph):
+`normal`, `symptomatic-apical-periodontitis`, `asymptomatic-apical-periodontitis`, `acute-apical-abscess`, `chronic-apical-abscess`, `condensing-osteitis`
+
+**Root resorption type** (`resorptionType`):
+`none`, `internal`, `external-cervical`
 
 **Caries depth** (per surface): `superficial` / `dentin` / `deep`, or optional ICDAS II codes `0–6` when `enableIcdas` is set
 
 **Special indicators:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `rootResorption`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
 ### 🖼️ SVG Template System
 
@@ -273,7 +289,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testing
 ```bash
-npm run test           # Run all 340 tests
+npm run test           # Run all 421 tests
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
 ```
@@ -322,6 +338,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `getReadOnly()` | Get current read-only state |
 | `setNotesEnabled(value)` | Enable/disable per-tooth notes |
 | `getNotesEnabled()` | Get current notes-enabled state |
+| `setPulpDetailLevel(level)` | Set the pulp picker's vocabulary — `"simple"`, `"aae"`, or `"latin"` |
+| `getPulpDetailLevel()` | Get the current pulp detail level |
 | `exportFhir(options?)` | Export the chart as an HL7 FHIR R4 collection Bundle (JSON download). Optional `{ subject }` reference; otherwise a placeholder Patient is embedded |
 | `exportImage(format)` | Download the chart as an image — `"png"` or `"jpg"` |
 | `exportSvg()` | Download the chart as a scalable SVG (vector) |
@@ -330,7 +348,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `startIntroTour()` | Launch the 12-step interactive intro tour |
 
 ### 💾 Status Export/Import Format
-The export creates a JSON file (version `2.0`) containing:
+The export creates a JSON file (version `2.2`; imports also accept legacy `1.4`, `2.0`, and `2.1` and migrate automatically) containing:
 
 **Global fields:**
 - `wisdomVisible` - wisdom teeth visible
@@ -348,7 +366,10 @@ The export creates a JSON file (version `2.0`) containing:
 - `caries` - active caries surfaces
 - `fillingMaterial` - filling material
 - `fillingSurfaces` - filled surfaces
-- `pulpInflam` - pulp inflammation flag
+- `pulpDx` - AAE pulp diagnosis (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
+- `pulpLatin` - practical-Latin pulp subtype (shown by the pulp picker only when `pulpDetailLevel` is `latin`)
+- `apicalDx` - apical diagnosis driving the periapical glyph
+- `resorptionType` - root resorption type (none/internal/external-cervical)
 - `endoResection` - apicoectomy flag
 - `fissureSealing` - fissure sealant flag
 - `contactMesial` - mesial contact point loss
@@ -375,7 +396,7 @@ The export creates a JSON file (version `2.0`) containing:
 - `src/status_extras.ts` - 34 predefined restoration templates (bridges, dentures, bar constructions)
 - `src/i18n/` - translations (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) and i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer numbering conversion
-- `src/__tests__/` - Vitest test suite (340 tests across 37 files)
+- `src/__tests__/` - Vitest test suite (421 tests across 43 files)
 - `src/assets/teeth-svgs/` - SVG tooth templates (6 files: incisors, canines, premolars, molars + occlusal views)
 - `src/assets/icon-svgs/` - toolbar icon SVGs (5 files)
 
@@ -427,19 +448,21 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔍 Registro de caries en 6 superficies: mesial, distal, bucal, lingual, oclusal, subcoronal
 - 🪥 Materiales de obturación por superficie: amalgama, composite, ionómero de vidrio, temporal
 - 🏥 Estados endodónticos: obturación medicinal, tratamiento de conductos, obturación incompleta, poste de fibra de vidrio, poste metálico, resección, pin parapulpar
+- 🩺 Diagnóstico pulpar AAE (`pulpDx`: normal / pulpitis reversible / irreversible / necrosis), con un ajuste opcional de 3 niveles de detalle pulpar (`pulpDetailLevel`: simple / AAE / latín práctico) que muestra 9 subtipos en latín práctico (pulpa sana … gangraena pulpae) mediante `pulpLatin`
+- 🦴 Diagnóstico apical (`apicalDx`: periodontitis apical sintomática/asintomática, absceso apical agudo/crónico, osteítis condensante) determina directamente el glifo periapical, con un subtipo opcional de granuloma/quiste/absceso
 - ⚕️ Modificaciones: inflamación periapical (interna/externa), enfermedad periodontal, grados de movilidad (M1/M2/M3)
 - 🏷️ Indicadores especiales: corona necesaria, reemplazo de corona necesario, espacio cerrado, plan de extracción, desgaste por bruxismo/desgaste cervical, sellado de fisuras, pérdida de punto de contacto
 - 👁️ Vista oclusal, muelas del juicio, visibilidad de hueso y pulpa
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 2.0; las importaciones siguen aceptando la versión 1.4 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
+- 💾 Exportación/importación de estado en JSON (versión 2.2; las importaciones siguen aceptando las versiones 1.4, 2.0 y 2.1 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
 - 🔗 Exportación HL7 FHIR R4 (Bundle de colección con Observations por diente, codificación dental ISO 3950 para dentición permanente, sistema de códigos local — mapeo SNOMED CT planificado)
 - ✚ Selección de superficies en cruz (B/M/O/D/L) para caries y obturaciones
 - 🧱 Materiales de obturación por superficie (obturaciones mixtas, p. ej. bucal amalgama + distal composite)
 - 🖼️ Exportación de imagen PNG/JPG/SVG del odontograma (descargable; PNG/JPG rasterizado desde SVG vectorial)
 - 🦷 Caries secundaria — derivada automáticamente cuando la caries coincide con una obturación
-- 🪨 Cálculo, reabsorción radicular y lesiones periapicales tipificadas (granuloma / quiste / absceso)
+- 🪨 Cálculo, y reabsorción radicular tipificada como interna o cervical externa (`resorptionType`)
 - 📏 Profundidad de caries por superficie (superficial / dentina / profunda), o puntuación ICDAS II opcional (0–6) con `enableIcdas`
 - 🩹 Indicador de filtración marginal de corona, visible solo con una restauración de corona o puente
 - 🧰 Barra superior unificada de iconos con menú de Ajustes (numeración, notas, ICDAS, información dental)
@@ -460,7 +483,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
 - ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados
 - 📝 Notas por diente: doble clic para añadir/editar notas, icono de nota junto al número de diente, tooltip con texto de nota, exportación/importación JSON
-- 🧪 340 pruebas automatizadas (Vitest) en 37 archivos de test, para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins y accesibilidad
+- 🧪 421 pruebas automatizadas (Vitest) en 43 archivos de test, para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins, accesibilidad y paridad de ejes clínicos/diagnósticos
 - 📖 Documentación API TypeDoc con comentarios JSDoc en todas las exportaciones públicas (`npm run docs`)
 
 ### 📦 Módulos
@@ -561,13 +584,27 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 **Modificaciones:**
 `inflammation` (periapical), `parodontal` (periodontal), `mobility` (M1/M2/M3)
 
-**Tipo de lesión periapical** (califica `inflammation`):
+**Tipo de lesión periapical** (`periapicalType`; califica el glifo periapical, determinado por `apicalDx`):
 `none`, `granuloma`, `cyst`, `abscess`
+
+**Diagnóstico pulpar** (terminología AAE; `pulpDx`):
+`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+
+**Diagnóstico pulpar, latín práctico** (`pulpLatin`; el selector de pulpa solo lo muestra cuando `pulpDetailLevel` es `latin`):
+`none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
+
+**Nivel de detalle pulpar** (`pulpDetailLevel`, ajuste global): `simple`, `aae` (por defecto), `latin` — controla el vocabulario que ofrece el selector de pulpa
+
+**Diagnóstico apical** (`apicalDx`; determina el glifo periapical):
+`normal`, `symptomatic-apical-periodontitis`, `asymptomatic-apical-periodontitis`, `acute-apical-abscess`, `chronic-apical-abscess`, `condensing-osteitis`
+
+**Tipo de reabsorción radicular** (`resorptionType`):
+`none`, `internal`, `external-cervical`
 
 **Profundidad de caries** (por superficie): `superficial` / `dentin` / `deep`, o códigos ICDAS II opcionales `0–6` cuando `enableIcdas` está activado
 
 **Indicadores especiales:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `rootResorption`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
 ### 🖼️ Sistema de plantillas SVG
 
@@ -670,6 +707,8 @@ export default function Host(){
 | `getReadOnly()` | Obtener estado actual de solo lectura |
 | `setNotesEnabled(value)` | Activar/desactivar notas por diente |
 | `getNotesEnabled()` | Obtener estado actual de notas |
+| `setPulpDetailLevel(level)` | Definir el vocabulario del selector de pulpa — `"simple"`, `"aae"` o `"latin"` |
+| `getPulpDetailLevel()` | Obtener el nivel de detalle pulpar actual |
 | `exportFhir(options?)` | Exportar el odontograma como Bundle de colección HL7 FHIR R4 (descarga JSON). Referencia `{ subject }` opcional; si no, se incluye un Patient de marcador |
 | `exportImage(format)` | Descargar el odontograma como imagen — `"png"` o `"jpg"` |
 | `exportSvg()` | Descargar el odontograma como SVG escalable (vectorial) |
@@ -685,7 +724,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 plantillas de restauración predefinidas (puentes, prótesis, construcciones con barra)
 - `src/i18n/` - traducciones (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) y hook i18n
 - `src/utils/numbering.ts` - conversión de numeración FDI, Universal, Palmer
-- `src/__tests__/` - suite de pruebas Vitest (340 pruebas en 37 archivos)
+- `src/__tests__/` - suite de pruebas Vitest (421 pruebas en 43 archivos)
 - `src/assets/teeth-svgs/` - plantillas SVG dentales (6 archivos: incisivos, caninos, premolares, molares + vistas oclusales)
 - `src/assets/icon-svgs/` - SVGs de iconos de barra de herramientas (5 archivos)
 

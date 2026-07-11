@@ -32,6 +32,10 @@ Each tooth has:
 - `prosthesis`: none | healing-abutment | locator | locator-denture | bar | bar-denture | removable-partial | removable-full — orthogonal implant-attachment / removable-denture axis, surfaced as "Kivehető:" entries in the combined restoration dropdown
 - `crownLeakage`: boolean — marginal-leakage finding, shown only when `restorationType` is crown or bridge
 - `endo`: none | root-canal | post-core | apicoectomy
+- `pulpDx`: normal | reversible-pulpitis | irreversible-pulpitis | necrosis — AAE pulp diagnosis (replaced the retired `pulpInflam` boolean)
+- `pulpLatin`: none | pulpa-sana | hyperaemia-pulpae | pulpitis-acuta-serosa | pulpitis-acuta-purulenta | pulpitis-chronica-clausa | pulpitis-chronica-ulcerosa | pulpitis-chronica-hyperplastica | necrosis-pulpae | gangraena-pulpae — practical-Latin pulp subtypes, surfaced by the pulp picker only when the `pulpDetailLevel` setting (`simple` | `aae` | `latin`, default `aae`) is `latin`
+- `apicalDx`: normal | symptomatic-apical-periodontitis | asymptomatic-apical-periodontitis | acute-apical-abscess | chronic-apical-abscess | condensing-osteitis — drives the periapical glyph directly, decoupled from the `mods.inflammation` modifier
+- `resorptionType`: none | internal | external-cervical — replaced the retired `rootResorption` boolean
 - `caries`: array of surface identifiers (mesial, occlusal, distal, buccal, lingual)
 - `fillingSurfaces`: array of filled surfaces
 - `extractionPlan`, `crownNeeded`, `crownReplace`: boolean flags

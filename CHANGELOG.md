@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.16.0] - 2026-07-11
+
+### Added
+- **AAE pulp diagnosis** clinical axis (`pulpDx`): normal / reversible pulpitis / irreversible pulpitis / necrosis — replaces the retired `pulpInflam` boolean, with a byte-identical SVG render for the migrated "inflamed pulp" case (on both permanent and milk-tooth branches).
+- **Practical-Latin pulp subtypes** (`pulpLatin`): pulpa sana, hyperaemia pulpae, pulpitis acuta serosa/purulenta, pulpitis chronica clausa/ulcerosa/hyperplastica, necrosis pulpae, gangraena pulpae — surfaced through a new 3-level **pulp detail setting** (`pulpDetailLevel`: `simple` / `aae` / `latin`, default `aae`) that collapses the pulp picker to the appropriate vocabulary; `getPulpDetailLevel()`/`setPulpDetailLevel()` public API.
+- **Apical diagnosis** clinical axis (`apicalDx`): normal / symptomatic apical periodontitis / asymptomatic apical periodontitis / acute apical abscess / chronic apical abscess / condensing osteitis — now drives the periapical glyph directly on a present tooth.
+- **Root resorption type** (`resorptionType`): internal / external-cervical — replaces the retired `rootResorption` boolean, with a byte-identical SVG render (including the `inflammationHome` z-order lift when combined with an apical diagnosis).
+
+### Changed
+- JSON export payload bumped to **version 2.2**; imports still accept legacy 1.4, 2.0, and 2.1 payloads and migrate them automatically (`pulpInflam` → `pulpDx`, `rootResorption` → `resorptionType`, `mods.inflammation`/`periapicalType` → `apicalDx`).
+- The periapical glyph is now driven by the `apicalDx` diagnosis axis, decoupled from the `mods.inflammation` modifier (existing `mods.inflammation` payloads still migrate to an equivalent `apicalDx` value; render is byte-identical for migrated states).
+- The legacy `pulpInflam` and `rootResorption` boolean clinical axes are retired from the live state model (kept only as a read-only input-side migration path for legacy payloads).
+
 ## [1.15.0] - 2026-07-11
 
 ### Added

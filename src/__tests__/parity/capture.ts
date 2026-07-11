@@ -21,8 +21,14 @@ export function runCapture() {
   const svgTexts: Record<string, string> = {};
   const svg = svgCases().map((c, i) => {
     svgTexts[c.template] ??= svgText(c.template);
-    return { i, template: c.template, toothNo: c.toothNo, view: c.view, state: c.state,
-      layers: __renderActiveLayers(svgTexts[c.template], c.toothNo, c.state) };
+    // __renderActiveLayers/hydrateState MUTATE the passed-in state object BY
+    // REFERENCE. Clone twice: one clone is recorded as the golden `state`
+    // (the INPUT, untouched), a SEPARATE clone is handed to the render seam
+    // (free to be mutated) — so the recorded `state` never reflects
+    // post-render mutation.
+    const state = structuredClone(c.state);
+    const layers = __renderActiveLayers(svgTexts[c.template], c.toothNo, structuredClone(c.state));
+    return { i, template: c.template, toothNo: c.toothNo, view: c.view, state, layers };
   });
   write("svg-fingerprints.json", svg);
 

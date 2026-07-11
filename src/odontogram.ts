@@ -8,7 +8,7 @@ import type { FhirExportOptions } from "./fhir/types";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
-import { optionsFor } from "./registry/uiOptions";
+import { optionsFor, isAxisFlagSatisfied } from "./registry/uiOptions";
 import {
   composeRestorationLayers, restorationOptions, isValidRestoration, RESTORATION_MATRIX,
   type RestorationType, type RestorationMaterial,
@@ -144,9 +144,7 @@ const PROSTHESIS_SUMMARY_KEY: Record<string, string> = {
 function defaultState(){
   return {
     toothSelection: "tooth-base", // none | tooth-base | milktooth | implant | variants
-    pulpInflam: false,
     endoResection: false,
-    rootResorption: false,
     mods: new Set(),
     periapicalType: "none", // none | granuloma | cyst | abscess (qualifies mods "inflammation")
     endo: "none", // none | endo-medical-filling | endo-filling | endo-glass-pin | endo-metal-pin
@@ -178,6 +176,16 @@ function defaultState(){
     restorationType: "none",    // none | crown | inlay | onlay | veneer | bridge
     restorationMaterial: "none", // none | emax | gold | gradia | zircon | metal | metal-ceramic | telescope | temporary
     crownLeakage: false, // marginal leakage on a crown/bridge restoration (SP3b Task 6)
+    // SP4 Task 1: pulp/apical/resorption diagnosis axes. pulpLatin/apicalDx
+    // are additive scaffolding — not yet rendered/wired to UI or migration;
+    // see later SP4 tasks. resorptionType was wired up (render + migration;
+    // replaced the retired `rootResorption` boolean) in SP4 Task 2. pulpDx
+    // was wired up (render + migration; replaced the retired `pulpInflam`
+    // boolean) in SP4 Task 3.
+    pulpDx: "normal", // normal | reversible-pulpitis | irreversible-pulpitis | necrosis (replaces the legacy `pulpInflam` boolean)
+    pulpLatin: "none", // none | pulpa-sana | hyperaemia-pulpae | pulpitis-acuta-serosa | pulpitis-acuta-purulenta | pulpitis-chronica-clausa | pulpitis-chronica-ulcerosa | pulpitis-chronica-hyperplastica | necrosis-pulpae | gangraena-pulpae
+    apicalDx: "normal", // normal | symptomatic-apical-periodontitis | asymptomatic-apical-periodontitis | acute-apical-abscess | chronic-apical-abscess | condensing-osteitis
+    resorptionType: "none", // none | internal | external-cervical (replaces the legacy `rootResorption` boolean)
     customStates: {} as Record<string, unknown>,
     note: "",
   };
@@ -295,6 +303,17 @@ let notesEnabled = false;
 let icdasEnabled = false;
 export function setIcdasEnabled(value: boolean){ icdasEnabled = !!value; if(activeTooth) syncControlsFromState(toothState.get(activeTooth)); }
 export function getIcdasEnabled(): boolean { return icdasEnabled; }
+// SP4 Task 5: pulp-detail level drives how the pulp control presents the pulp
+// diagnosis — "simple" (healthy/pulpitis), "aae" (4 AAE pulpDx values, default)
+// or "latin" (9 practical-Latin pulpLatin subtypes). Changing it re-syncs the
+// active tooth's controls (the stored value is re-displayed collapsed to the
+// new level; state is not mutated). Mirrors the `icdasEnabled` accessor pattern.
+let pulpDetailLevel: PulpDetailLevel = "aae";
+export function setPulpDetailLevel(value: PulpDetailLevel){
+  pulpDetailLevel = (value === "simple" || value === "latin") ? value : "aae";
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+}
+export function getPulpDetailLevel(): PulpDetailLevel { return pulpDetailLevel; }
 let i18nUnsubscribe: (() => void) | null = null;
 
 // ---- State-change subscription ----
@@ -794,6 +813,105 @@ function getCariesDepthOptions(): Array<{ value: number; label: string; title?: 
   ];
 }
 
+// ---- SP4 Task 5: pulp/apical/resorption diagnosis authoring ----
+export type PulpDetailLevel = "simple" | "aae" | "latin";
+
+// kebab-case value id -> camelCase i18n key suffix. Matches the keys Task 1
+// added to translations.ts (e.g. "reversible-pulpitis" -> "reversiblePulpitis",
+// "external-cervical" -> "externalCervical").
+function kebabToCamel(id: string): string {
+  return String(id).replace(/-([a-z])/g, (_m, c) => c.toUpperCase());
+}
+
+// Each practical-Latin pulp subtype collapses to exactly one AAE `pulpDx`
+// parent (spec §3.2 clinical grouping): pulpa-sana = normal; hyperaemia =
+// reversible; every "pulpitis acuta/chronica" = irreversible; necrosis /
+// gangraena = necrosis. "none" (no Latin subtype recorded) maps to the
+// healthy parent.
+export const PULP_LATIN_PARENT: Record<string, string> = {
+  "none": "normal",
+  "pulpa-sana": "normal",
+  "hyperaemia-pulpae": "reversible-pulpitis",
+  "pulpitis-acuta-serosa": "irreversible-pulpitis",
+  "pulpitis-acuta-purulenta": "irreversible-pulpitis",
+  "pulpitis-chronica-clausa": "irreversible-pulpitis",
+  "pulpitis-chronica-ulcerosa": "irreversible-pulpitis",
+  "pulpitis-chronica-hyperplastica": "irreversible-pulpitis",
+  "necrosis-pulpae": "necrosis",
+  "gangraena-pulpae": "necrosis",
+};
+
+// Representative Latin subtype per AAE parent — used ONLY to display an
+// AAE/simple-authored value (pulpLatin:"none") when the panel is in "latin"
+// mode. Never written back to state (display-only collapse).
+const PULP_DX_TO_LATIN: Record<string, string> = {
+  "normal": "pulpa-sana",
+  "reversible-pulpitis": "hyperaemia-pulpae",
+  "irreversible-pulpitis": "pulpitis-acuta-serosa",
+  "necrosis": "necrosis-pulpae",
+};
+
+/** Option {value,labelKey} list for the pulp control at a given detail level.
+ *  simple -> 2 (healthy / pulpitis); aae -> the 4 pulpDx values; latin -> the 9
+ *  pulpLatin subtypes. The "latin" branch consults `ClinicalAxis.flag`
+ *  (`isAxisFlagSatisfied` — the first consumer of the registry feature-flag
+ *  gate). Pure; reads no module state. */
+export function pulpSelectOptionValues(level: PulpDetailLevel): { value: string; labelKey: string }[] {
+  if(level === "latin" && isAxisFlagSatisfied("pulpLatin", { latinPulpDetail: true })){
+    return Array.from(VALID_PULP_LATIN).filter(v => v !== "none")
+      .map(v => ({ value: v, labelKey: "pulpLatin." + kebabToCamel(v) }));
+  }
+  if(level === "simple"){
+    return [
+      { value: "normal", labelKey: "pulpDx.normal" },
+      { value: "irreversible-pulpitis", labelKey: "pulpDx.irreversiblePulpitis" },
+    ];
+  }
+  return Array.from(VALID_PULP_DX).map(v => ({ value: v, labelKey: "pulpDx." + kebabToCamel(v) }));
+}
+
+/** Maps a pulp-control selection to the {pulpDx,pulpLatin} it writes. At "latin"
+ *  the selected Latin value sets `pulpLatin` and its parent `pulpDx`; at
+ *  "simple"/"aae" the value is a `pulpDx` and `pulpLatin` is cleared to "none". */
+/** Whether the periapical lesion-subtype (#periapicalTypeRow) is visible for a
+ *  tooth: on a present tooth it follows the apical diagnosis; on a non-present
+ *  tooth (implant/missing, which never derives apicalDx) it follows the still-
+ *  toggleable `mods.inflammation` (pre-SP4 behaviour — keeps the subtype authorable). */
+export function periapicalRowVisible(state: Any): boolean {
+  if(state.apicalDx !== "normal") return true;
+  const mods: Set<string> | undefined = state.mods;
+  return !isToothPresent(state.toothSelection) && !!mods && mods.has("inflammation");
+}
+
+export function pulpSelectionToState(level: PulpDetailLevel, value: string): { pulpDx: string; pulpLatin: string }{
+  if(level === "latin"){
+    return { pulpLatin: value, pulpDx: PULP_LATIN_PARENT[value] ?? "normal" };
+  }
+  return { pulpDx: value, pulpLatin: "none" };
+}
+
+/** The option value to SHOW for a stored state at a given level (display-only
+ *  collapse; never mutates state). latin -> stored pulpLatin (or a representative
+ *  for pulpDx when only pulpDx is set); aae -> pulpDx; simple -> healthy vs. the
+ *  single pulpitis bucket. */
+export function pulpDisplayValue(level: PulpDetailLevel, state: { pulpDx?: string; pulpLatin?: string }): string {
+  const pulpDx = state.pulpDx ?? "normal";
+  const pulpLatin = state.pulpLatin ?? "none";
+  if(level === "simple") return pulpDx === "normal" ? "normal" : "irreversible-pulpitis";
+  if(level === "latin") return pulpLatin !== "none" ? pulpLatin : (PULP_DX_TO_LATIN[pulpDx] ?? "pulpa-sana");
+  return pulpDx;
+}
+
+function getPulpOptions(): { value: string; label: string }[]{
+  return pulpSelectOptionValues(pulpDetailLevel).map(o => ({ value: o.value, label: t(o.labelKey) }));
+}
+function getApicalDxOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_APICAL_DX).map(v => ({ value: v, label: t("apicalDx." + kebabToCamel(v)) }));
+}
+function getResorptionOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_RESORPTION_TYPE).map(v => ({ value: v, label: t("resorption.type." + kebabToCamel(v)) }));
+}
+
 // ---- SVG apply logic ----
 function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.get(toothNo)){
   if(!state || !svg) return;
@@ -832,6 +950,24 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   };
   applyFlagLayers(svg, state, buildFlagCtx(state, toothNo, flagDeps), flagDeps);
 
+  // SP4 Task 2: resorptionType (enum) replaces the retired rootResorption
+  // boolean. applyFlagLayers only auto-activates boolean-kind axes' svgLayer,
+  // so this enum axis needs explicit activation here. Both "internal" and
+  // "external-cervical" render the SAME endo-resorption layer (visually
+  // identical; only the data model distinguishes them) — byte-identical to
+  // the retired rootResorption:true render (same appliesWhen: toothPresent).
+  if(state.resorptionType !== "none" && isToothPresent(state.toothSelection)){
+    setActive(svgGetById(svg, "endo-resorption"), true);
+  }
+
+  // SP4 Task 3: pulpDx (enum) replaces the retired pulpInflam boolean. Any
+  // non-"normal" pulpDx value is clinically "diseased pulp" for rendering
+  // purposes — the same single condition the old boolean encoded — so a
+  // plain boolean gate here is byte-identical to the retired render. The
+  // bespoke milktooth/permanent split + showHealthyPulp gating below is
+  // otherwise unchanged.
+  const pulpDiseased = state.pulpDx !== "normal";
+
   // base visibility toggle
   setActive(svgGetById(svg, "base"), showBase);
 
@@ -844,7 +980,7 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   }else if(isMilktooth){
     setActive(svgGetById(svg, "milktooth-base"), true);
     setActive(svgGetById(svg, "milktooth-beauty"), true);
-    if(state.pulpInflam){
+    if(pulpDiseased){
       setActive(svgGetById(svg, "milktooth-inflam-pulp"), true);
     }else if(showHealthyPulp){
       setActive(svgGetById(svg, "milktooth-healthy-pulp"), true);
@@ -860,7 +996,7 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
     }
     if(!underGum && !extraction){
       // Pulpa: show when tooth is present
-      if(state.pulpInflam){
+      if(pulpDiseased){
         setActive(svgGetById(svg, "tooth-inflam-pulp"), true);
       }else if(showHealthyPulp){
         setActive(svgGetById(svg, "tooth-healthy-pulp"), true);
@@ -885,10 +1021,32 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
     setActive(svgGetById(svg, "no-tooth-after-extraction"), true);
   }
 
-  // 2) Mods
-  if(state.mods.has("inflammation")){
+  // 2) Mods — periapical glyph.
+  // SP4 Task 4: on a PRESENT tooth the `apicalDx` clinical axis (not
+  // `mods.inflammation`) drives the periapical glyph. On a NON-present tooth
+  // (missing / implant) `mods.inflammation` retains its SECOND, PERIODONTAL
+  // role and still drives the glyph exactly as before — the label switches to
+  // "periodontal inflammation" in updateInflammationSection, but the glyph is
+  // unchanged. This split is byte-identical to the pre-rewrite single block:
+  // migration derives apicalDx from a present tooth's legacy mods.inflammation
+  // (and strips that mod), while a non-present tooth keeps mods.inflammation
+  // with apicalDx left at "normal". `periapicalType` still selects the lesion
+  // subtype glyph; when it is unset, apicalDx suggests abscess-vs-granuloma.
+  const periapicalGlyphActive = isToothPresent(state.toothSelection)
+    ? state.apicalDx !== "normal"
+    : state.mods.has("inflammation");
+  if(periapicalGlyphActive){
+    // The `inflammation` container group is the glyph's parent; collectActiveLayers
+    // hides any child whose ancestor is inactive. On the non-present path it is
+    // already activated by applyFlagLayers via the `mods.inflammation` set entry;
+    // on the present (apicalDx) path — where migration has stripped that mod —
+    // we must activate the group here so the glyph is not hidden. Idempotent when
+    // both fire, so the collected layers stay byte-identical to the old render.
+    setActive(svgGetById(svg, "inflammation"), true);
     const glyph = state.periapicalType === "cyst" ? "cysta"
-      : state.periapicalType === "abscess" ? "abscess"
+      : (state.periapicalType === "abscess"
+          || state.apicalDx === "acute-apical-abscess"
+          || state.apicalDx === "chronic-apical-abscess") ? "abscess"
       : "granuloma"; // default incl. "none" and "granuloma"
     setActive(svgGetById(svg, glyph), true);
   }
@@ -1040,8 +1198,13 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
       inflammationHome.set(inflammation, { parent: inflammation.parentElement, next: inflammation.nextSibling });
     }
     const resectionActive = state.endoResection && isToothPresent(state.toothSelection) && !underGum && !extraction;
-    const resorptionActive = state.rootResorption && isToothPresent(state.toothSelection);
-    const lift = (resectionActive || resorptionActive) && state.mods.has("inflammation");
+    const resorptionActive = state.resorptionType !== "none" && isToothPresent(state.toothSelection);
+    // SP4 Task 4: the lift now keys off the SAME `periapicalGlyphActive`
+    // predicate that gates the glyph render above (was `mods.inflammation`).
+    // Both resection/resorption are toothPresent-gated, so this reduces to
+    // `apicalDx !== "normal"` on a present tooth — byte-identical to the old
+    // `mods.inflammation` gate after migration moves that lesion into apicalDx.
+    const lift = (resectionActive || resorptionActive) && periapicalGlyphActive;
     if(lift){
       // Move inflammation to the END of the `tooth` group's own parent, so it
       // paints in front of the whole tooth group (including the endo-resection /
@@ -1137,6 +1300,15 @@ export function __getToothStateForTest(toothNo: number): Record<string, unknown>
     cariesDepths: Object.fromEntries(s.cariesDepths ?? []),
     mods: Array.from(s.mods ?? []),
   };
+}
+
+/** TEST-ONLY: set the module-level `showHealthyPulp` flag directly, without the
+ *  DOM/all-teeth side effects `setHealthyPulpVisible` performs (button toggle
+ *  state, re-rendering every tooth in `ALL_TEETH`) — needed so `__renderActiveLayers`
+ *  callers can exercise both the "healthy pulp shown" and "hidden" render paths
+ *  in isolation. Not part of the public API. */
+export function __setShowHealthyPulpForTest(on: boolean): void {
+  showHealthyPulp = !!on;
 }
 
 // ---- Plugin overlay rendering ----
@@ -1387,7 +1559,17 @@ function updateWarningsFromState(state: Any){
 
 // ---- Control sync ----
 function syncControlsFromState(state: Any){
-  $("#pulpInflam").checked = !!state.pulpInflam;
+  // SP4 Task 5: pulp diagnosis is authored via #pulpSelect, presented at the
+  // active pulp-detail level. The displayed option is the stored value collapsed
+  // to that level (see pulpDisplayValue) — a display-only projection that must
+  // NOT be written back to state, so (unlike the other selects below) there is
+  // deliberately no normalization assignment here.
+  setSelectOptions($("#pulpSelect"), getPulpOptions(), pulpDisplayValue(pulpDetailLevel, state));
+  // SP4 Task 5: apical (AAE) diagnosis picker.
+  setSelectOptions($("#apicalDxSelect"), getApicalDxOptions(), state.apicalDx);
+  if($("#apicalDxSelect").value !== state.apicalDx){
+    state.apicalDx = $("#apicalDxSelect").value;
+  }
   $("#endoResection").checked = !!state.endoResection;
   $("#fissureSealing").checked = !!state.fissureSealing;
   $("#contactMesial").checked = !!state.contactMesial;
@@ -1475,8 +1657,13 @@ function syncControlsFromState(state: Any){
   }
   // mods
   $$("#modsChecks input[type=checkbox]").forEach(c => c.checked = state.mods.has(c.value));
-  const hasInflammation = state.mods.has("inflammation");
-  $("#periapicalTypeRow").classList.toggle("hidden", !hasInflammation);
+  // SP4: the periapical lesion-subtype row follows the apical diagnosis on a
+  // present tooth (apicalDx !== "normal"). A non-present tooth (implant/missing)
+  // never derives apicalDx but CAN still carry `mods.inflammation` (peri-implant /
+  // periodontal, still toggleable) — for those, keep the pre-SP4 behaviour and
+  // show the subtype row when the inflammation mod is set, so the lesion subtype
+  // stays authorable (regression fix).
+  $("#periapicalTypeRow").classList.toggle("hidden", !periapicalRowVisible(state));
   setSelectOptions($("#periapicalTypeSelect"), getPeriapicalTypeOptions(), state.periapicalType);
   if($("#periapicalTypeSelect").value !== state.periapicalType){
     state.periapicalType = $("#periapicalTypeSelect").value;
@@ -1484,7 +1671,13 @@ function syncControlsFromState(state: Any){
   $("#calculusToggle").checked = !!state.calculus;
   const calculusAllowed = state.toothSelection === "tooth-base" || state.toothSelection === "milktooth";
   $("#calculusRow").classList.toggle("hidden", !calculusAllowed);
-  $("#rootResorption").checked = !!state.rootResorption;
+  // SP4 Task 5: resorptionType (enum) is authored via a none/internal/
+  // external-cervical picker (both subtypes render identically; the picker only
+  // records which). Replaces the interim on/off checkbox.
+  setSelectOptions($("#resorptionSelect"), getResorptionOptions(), state.resorptionType);
+  if($("#resorptionSelect").value !== state.resorptionType){
+    state.resorptionType = $("#resorptionSelect").value;
+  }
 
   // caries (cross surfaces + the separate subcrown row) + per-surface depth indicator
   $$("#cariesChecks input[type=checkbox], #cariesSubcrownRow input[type=checkbox]").forEach(c => c.checked = state.caries.has(c.value));
@@ -1534,7 +1727,9 @@ function syncControlsFromState(state: Any){
   // endo only if tooth present
   const endoDisabled = !isToothPresent(state.toothSelection) || underGum || extraction;
   setDisabled($("#endoSelect"), endoDisabled);
-  setDisabled($("#pulpInflam"), endoDisabled);
+  setDisabled($("#pulpSelect"), endoDisabled);
+  setDisabled($("#apicalDxSelect"), endoDisabled);
+  setDisabled($("#resorptionSelect"), endoDisabled);
   setDisabled($("#endoResection"), endoDisabled);
   setDisabled($("#parapulpalPin"), endoDisabled);
   const mobilityDisabled = state.toothSelection === "none" || extraction;
@@ -1818,6 +2013,12 @@ function refreshAllSelectOptions(){
   if(mobilityEl) setSelectOptions(mobilityEl, getMobilityOptions(), mobilityEl.value);
   const periapicalEl = $("#periapicalTypeSelect");
   if(periapicalEl) setSelectOptions(periapicalEl, getPeriapicalTypeOptions(), periapicalEl.value);
+  const pulpEl = $("#pulpSelect");
+  if(pulpEl) setSelectOptions(pulpEl, getPulpOptions(), pulpEl.value);
+  const apicalEl = $("#apicalDxSelect");
+  if(apicalEl) setSelectOptions(apicalEl, getApicalDxOptions(), apicalEl.value);
+  const resorptionEl = $("#resorptionSelect");
+  if(resorptionEl) setSelectOptions(resorptionEl, getResorptionOptions(), resorptionEl.value);
   const cariesDepthEl = $("#cariesDepthSelect");
   if(cariesDepthEl) setSelectOptions(cariesDepthEl, getCariesDepthOptions(), Number(cariesDepthEl.value));
 }
@@ -2470,9 +2671,15 @@ function setHealthyPulpVisible(on: Any){
 function serializeState(s: Any){
   return {
     toothSelection: s.toothSelection,
-    pulpInflam: !!s.pulpInflam,
+    pulpDx: s.pulpDx,
+    // SP4 Task 5: pulpLatin (practical-Latin subtype) and apicalDx (apical AAE
+    // diagnosis) are now authorable in the diagnosis UI, so they join the
+    // serialized payload — this is also what feeds the FHIR export (both are
+    // already mapped in FIELD_MAPPINGS). Both round-trip via fromRaw below.
+    pulpLatin: s.pulpLatin,
+    apicalDx: s.apicalDx,
     endoResection: !!s.endoResection,
-    rootResorption: !!s.rootResorption,
+    resorptionType: s.resorptionType,
     mods: Array.from(s.mods || []),
     periapicalType: s.periapicalType,
     endo: s.endo,
@@ -2521,6 +2728,12 @@ export const VALID_RESTORATION_MATERIAL = validValues("restorationMaterial");
 export const VALID_MODS = validValues("mods");
 export const VALID_PERIAPICAL_TYPE = validValues("periapicalType");
 export const VALID_CARIES = validValues("caries");
+// SP4 Task 1: pulp/apical/resorption diagnosis axes (additive; unused until
+// later SP4 tasks wire up render/migration/validate).
+export const VALID_PULP_DX = validValues("pulpDx");
+export const VALID_PULP_LATIN = validValues("pulpLatin");
+export const VALID_APICAL_DX = validValues("apicalDx");
+export const VALID_RESORPTION_TYPE = validValues("resorptionType");
 const VALID_CARIES_DEPTH = new Set(["surface","dentin","deep"]);
 export const VALID_FILLING_SURFACES = validSurfaces();
 
@@ -2622,11 +2835,43 @@ function hydrateState(raw: Any){
     }
   }
   s.toothSelection = validateEnum(raw.toothSelection, VALID_TOOTH_SELECTION, s.toothSelection);
-  s.pulpInflam = !!raw.pulpInflam;
+  // SP4 Task 3: pulpInflam (boolean) retired in favor of pulpDx (enum).
+  // Legacy true -> "irreversible-pulpitis" (the only condition state the
+  // old boolean could represent); false/absent -> "normal". A modern
+  // payload's own pulpDx (if present and valid) wins over the migrated
+  // legacy value.
+  const migratedPulpDx = raw.pulpInflam ? "irreversible-pulpitis" : "normal";
+  s.pulpDx = validateEnum(raw.pulpDx, VALID_PULP_DX, migratedPulpDx);
+  // SP4 Task 5: pulpLatin (practical-Latin subtype) round-trips independently of
+  // the pulp-detail level. It has no legacy predecessor, so absent/invalid -> "none".
+  s.pulpLatin = validateEnum(raw.pulpLatin, VALID_PULP_LATIN, "none");
   s.endoResection = !!raw.endoResection;
-  s.rootResorption = !!raw.rootResorption;
+  // SP4 Task 2: rootResorption (boolean) retired in favor of resorptionType
+  // (enum). Legacy true -> "external-cervical" (the only subtype the old
+  // boolean could represent); false/absent -> "none". A modern payload's own
+  // resorptionType (if present and valid) wins over the migrated legacy value.
+  const migratedResorptionType = raw.rootResorption ? "external-cervical" : "none";
+  s.resorptionType = validateEnum(raw.resorptionType, VALID_RESORPTION_TYPE, migratedResorptionType);
   s.mods = filterSet(raw.mods, VALID_MODS);
   s.periapicalType = validateEnum(raw.periapicalType, VALID_PERIAPICAL_TYPE, "none");
+  // SP4 Task 4: `apicalDx` (enum) drives the periapical glyph on a PRESENT
+  // tooth, decoupled from `mods.inflammation`. Derive it from the legacy
+  // pairing of mods.inflammation + periapicalType: on a present tooth, a set
+  // `inflammation` mod meant an apical lesion — the "abscess" subtype maps to
+  // acute-apical-abscess, every other subtype (granuloma / cyst / unset) to
+  // asymptomatic-apical-periodontitis. The `inflammation` mod is then REMOVED
+  // from a present tooth's mods (the lesion is fully represented by apicalDx;
+  // keeping it would double-encode and re-fire the retired render path). On a
+  // NON-present tooth (missing / implant) `inflammation` keeps its SECOND role
+  // — periodontal inflammation — so it is LEFT untouched and apicalDx stays
+  // "normal". periapicalType is preserved as the histological lesion subtype.
+  // A modern payload's own apicalDx (if present and valid) wins over the derived value.
+  let migratedApicalDx = "normal";
+  if(s.mods.has("inflammation") && isToothPresent(s.toothSelection)){
+    migratedApicalDx = s.periapicalType === "abscess" ? "acute-apical-abscess" : "asymptomatic-apical-periodontitis";
+    s.mods.delete("inflammation");
+  }
+  s.apicalDx = validateEnum(raw.apicalDx, VALID_APICAL_DX, migratedApicalDx);
   s.endo = validateEnum(raw.endo, VALID_ENDO, s.endo);
   s.caries = filterSet(raw.caries, VALID_CARIES);
   const toIcdas = (v: Any): number | null => {
@@ -2739,7 +2984,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.1",
+    version: "2.2",
     globals: {
       wisdomVisible,
       showBase,
@@ -3410,7 +3655,7 @@ function wireControls(){
       if(value === "implant" || value === "none"){
         next.caries.clear();
         next.endo = "none";
-        next.pulpInflam = false;
+        next.pulpDx = "normal";
         next.fillingMaterial = "none";
         next.fillingSurfaces.clear();
       }
@@ -3455,11 +3700,21 @@ function wireControls(){
     });
   });
 
-  // Pulpitis
-  $("#pulpInflam").addEventListener("change", (e)=>{
+  // Pulp diagnosis (SP4 Task 5: pulpDx/pulpLatin enums, presented at the active
+  // pulp-detail level). The selection maps to {pulpDx, pulpLatin} via
+  // pulpSelectionToState — at "latin" it writes the Latin subtype AND its parent
+  // pulpDx; at "simple"/"aae" it writes pulpDx and clears pulpLatin to "none".
+  buildSelect($("#pulpSelect"), getPulpOptions(), (value)=>{
     applyToSelected((s)=>{
-      s.pulpInflam = (e.target as HTMLInputElement).checked;
+      const mapped = pulpSelectionToState(pulpDetailLevel, value);
+      s.pulpDx = mapped.pulpDx;
+      s.pulpLatin = mapped.pulpLatin;
     });
+  });
+
+  // Apical (AAE) diagnosis
+  buildSelect($("#apicalDxSelect"), getApicalDxOptions(), (value)=>{
+    applyToSelected((s)=>{ s.apicalDx = value; });
   });
 
   // Resection
@@ -3476,9 +3731,10 @@ function wireControls(){
     });
   });
 
-  // Root resorption
-  $("#rootResorption").addEventListener("change", (e)=>{
-    applyToSelected((s)=>{ s.rootResorption = (e.target as HTMLInputElement).checked; });
+  // Root resorption (SP4 Task 5: resorptionType enum — none / internal /
+  // external-cervical picker; both subtypes render identically).
+  buildSelect($("#resorptionSelect"), getResorptionOptions(), (value)=>{
+    applyToSelected((s)=>{ s.resorptionType = value; });
   });
 
   // Extraction wound

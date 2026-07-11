@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.16.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -36,19 +36,21 @@
 - 🔍 Картирование кариеса на 6 поверхностях: мезиальная, дистальная, щёчная, язычная, окклюзионная, подкоронковая
 - 🪥 Материалы пломб по поверхностям: амальгама, композит, стеклоиономер (СИЦ), временная
 - 🏥 Эндодонтические статусы: лечебное пломбирование канала, пломбирование канала, неполное пломбирование канала, стекловолоконный штифт, металлический штифт, резекция, парапульпарный штифт
+- 🩺 Диагноз пульпы по AAE (`pulpDx`: норма / обратимый / необратимый пульпит / некроз), с опциональным 3-уровневым режимом детализации пульпы (`pulpDetailLevel`: simple / aae / практический латинский), раскрывающим 9 практических латинских подтипов (pulpa sana … gangraena pulpae) через `pulpLatin`
+- 🦴 Апикальный диагноз (`apicalDx`: симптоматический/бессимптомный апикальный периодонтит, острый/хронический апикальный абсцесс, конденсирующий остеит) напрямую определяет периапикальный глиф, с опциональным подтипом гранулёма/киста/абсцесс
 - ⚕️ Модификации: периапикальное воспаление (внутри/снаружи), заболевание пародонта, степени подвижности (M1/M2/M3)
 - 🏷️ Специальные индикаторы: требуется коронка, требуется замена коронки, закрытый дефект, планируемое удаление, стирание при бруксизме/стирание в области шейки, герметизация фиссур, потеря контактного пункта
 - 👁️ Переключение видимости: окклюзионный вид, зубы мудрости, кость и пульпа
 - 🔢 12 фильтров выбора (все, присутствующие, постоянные, молочные, имплантаты, отсутствующие, верхние/нижние, фронтальные/моляры)
 - 📊 Предустановленные статусные шаблоны (сброс, молочный прикус, сменный прикус, беззубый)
 - 📦 34 предустановленных шаблона реставраций (мосты, съёмные протезы, балочные протезы с имплантатами)
-- 💾 Экспорт/импорт статуса в JSON (версия 2.0; импорт по-прежнему принимает версию 1.4 и автоматически мигрирует её, с пользовательскими состояниями плагинов и заметками к зубам)
+- 💾 Экспорт/импорт статуса в JSON (версия 2.2; импорт по-прежнему принимает версии 1.4, 2.0 и 2.1 и автоматически мигрирует их, с пользовательскими состояниями плагинов и заметками к зубам)
 - 🔗 Экспорт HL7 FHIR R4 (коллекция Bundle наблюдений по каждому зубу, кодирование зубов ISO 3950 для постоянного прикуса, локальная система кодов — сопоставление SNOMED CT запланировано)
 - ✚ Интерфейс выбора поверхностей «крест/плюс» (B/M/O/D/L) для кариеса и пломб
 - 🧱 Материалы реставраций по поверхностям (смешанные пломбы, например щёчная амальгама + дистальный композит)
 - 🖼️ Экспорт зубной карты в PNG/JPG/SVG (для загрузки; PNG/JPG растеризованы из векторного SVG)
 - 🦷 Вторичный (рецидивирующий) кариес — автоматически определяется при наложении кариеса на пломбу
-- 🪨 Зубной камень, резорбция корня и типизированные периапикальные очаги (гранулёма / киста / абсцесс)
+- 🪨 Зубной камень, а также резорбция корня, типизируемая как внутренняя или наружная цервикальная (`resorptionType`)
 - 📏 Глубина кариеса по поверхностям (поверхностный / дентин / глубокий), или опциональная оценка по ICDAS II (0–6) через `enableIcdas`
 - 🩹 Переключатель краевой негерметичности коронки, отображается только при реставрации коронкой или мостом
 - 🧰 Унифицированная панель иконок с меню настроек (нумерация, заметки, ICDAS, информация о зубах)
@@ -69,7 +71,7 @@
 - 🔒 Режим «только чтение»: отключение всех взаимодействий для печати, отчётов или просмотра
 - ✨ Анимация выбора: пульсирующая пунктирная рамка и светящаяся тень на выбранных зубах (с поддержкой prefers-reduced-motion)
 - 📝 Заметки к зубам: двойной щелчок для добавления/редактирования, значок заметки рядом с номером зуба, всплывающая подсказка с текстом заметки, экспорт/импорт в JSON
-- 🧪 340 автоматизированных тестов (Vitest) в 37 файлах: нумерация, переводы, шаблоны, i18n, компонент App, тема, сенсорный ввод, плагины и доступность
+- 🧪 421 автоматизированный тест (Vitest) в 43 файлах: нумерация, переводы, шаблоны, i18n, компонент App, тема, сенсорный ввод, плагины, доступность и паритет клинических/диагностических осей
 - 📖 Документация API TypeDoc с JSDoc-комментариями ко всем публичным экспортам (`npm run docs`)
 
 ### 📦 Модули
@@ -170,13 +172,27 @@
 **Модификации:**
 `inflammation` (периапикальное), `parodontal` (пародонтальное), `mobility` (M1/M2/M3)
 
-**Тип периапикального очага** (уточняет `inflammation`):
+**Тип периапикального очага** (`periapicalType`; уточняет периапикальный глиф, теперь определяемый `apicalDx`):
 `none`, `granuloma`, `cyst`, `abscess`
+
+**Диагноз пульпы** (терминология AAE; `pulpDx`):
+`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+
+**Диагноз пульпы, практический латинский** (`pulpLatin`; селектор пульпы показывает его только когда `pulpDetailLevel` равен `latin`):
+`none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
+
+**Уровень детализации пульпы** (`pulpDetailLevel`, глобальная настройка): `simple`, `aae` (по умолчанию), `latin` — определяет, какой словарь предлагает селектор пульпы
+
+**Апикальный диагноз** (`apicalDx`; определяет периапикальный глиф):
+`normal`, `symptomatic-apical-periodontitis`, `asymptomatic-apical-periodontitis`, `acute-apical-abscess`, `chronic-apical-abscess`, `condensing-osteitis`
+
+**Тип резорбции корня** (`resorptionType`):
+`none`, `internal`, `external-cervical`
 
 **Глубина кариеса** (по поверхности): `superficial` / `dentin` / `deep`, или опциональные коды ICDAS II `0–6` при установленном `enableIcdas`
 
 **Специальные индикаторы:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `rootResorption`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
 ### 🖼️ Система SVG-шаблонов
 
@@ -275,7 +291,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Тестирование
 ```bash
-npm run test           # Run all 340 tests
+npm run test           # Run all 421 tests
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
 ```
@@ -324,6 +340,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `getReadOnly()` | Получить текущее состояние режима «только чтение» |
 | `setNotesEnabled(value)` | Включение/отключение заметок к зубам |
 | `getNotesEnabled()` | Получить текущее состояние включения заметок |
+| `setPulpDetailLevel(level)` | Установить словарь селектора пульпы — `"simple"`, `"aae"` или `"latin"` |
+| `getPulpDetailLevel()` | Получить текущий уровень детализации пульпы |
 | `exportFhir(options?)` | Экспорт одонтограммы в виде HL7 FHIR R4 collection Bundle (загрузка JSON). Опциональная ссылка `{ subject }`; при отсутствии встраивается Patient-заглушка |
 | `exportImage(format)` | Загрузка одонтограммы в виде изображения — `"png"` или `"jpg"` |
 | `exportSvg()` | Загрузка одонтограммы в виде масштабируемого SVG (вектор) |
@@ -332,7 +350,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `startIntroTour()` | Запустить интерактивное обучение из 12 шагов |
 
 ### 💾 Формат экспорта/импорта статуса
-При экспорте создаётся файл JSON (версия `2.0`), содержащий:
+При экспорте создаётся файл JSON (версия `2.2`; импорт также принимает устаревшие версии `1.4`, `2.0` и `2.1` и автоматически мигрирует их), содержащий:
 
 **Глобальные поля:**
 - `wisdomVisible` — видимость зубов мудрости
@@ -350,7 +368,10 @@ npm run docs           # Generate TypeDoc docs in docs/
 - `caries` — активные поверхности кариеса
 - `fillingMaterial` — материал пломбы
 - `fillingSurfaces` — запломбированные поверхности
-- `pulpInflam` — флаг воспаления пульпы
+- `pulpDx` — диагноз пульпы по AAE (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
+- `pulpLatin` — практический латинский подтип пульпы (селектор пульпы показывает его только когда `pulpDetailLevel` равен `latin`)
+- `apicalDx` — апикальный диагноз, определяющий периапикальный глиф
+- `resorptionType` — тип резорбции корня (none/internal/external-cervical)
 - `endoResection` — флаг апикоэктомии
 - `fissureSealing` — флаг герметизации фиссур
 - `contactMesial` — потеря мезиального контактного пункта
@@ -377,7 +398,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 - `src/status_extras.ts` — 34 предустановленных шаблона реставраций (мосты, протезы, балочные конструкции)
 - `src/i18n/` — переводы (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) и хук i18n
 - `src/utils/numbering.ts` — преобразование нумерации FDI, Universal, Palmer
-- `src/__tests__/` — набор тестов Vitest (340 тестов в 37 файлах)
+- `src/__tests__/` — набор тестов Vitest (421 тест в 43 файлах)
 - `src/assets/teeth-svgs/` — SVG-шаблоны зубов (6 файлов: резцы, клыки, премоляры, моляры + окклюзионные виды)
 - `src/assets/icon-svgs/` — SVG-иконки панели инструментов (5 файлов)
 

@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.16.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -36,19 +36,21 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 - 🔍 Szuvasodás rögzítése 6 felületen: meziális, disztális, bukkális, linguális, okkluzális, korona alatti
 - 🪥 Tömőanyagok felületenként: amalgám, kompozit, GIC, ideiglenes
 - 🏥 Endodonciai állapotok: gyógyszeres tömés, gyökértömés, nem teljes gyökértömés, üvegszálas csap, fémcsap, rezekció, parapulpális csap
+- 🩺 AAE pulpa diagnózis (`pulpDx`: normal / reverzibilis / irreverzibilis pulpitis / necrosis), opcionális 3 szintű pulpa részletezettségi beállítással (`pulpDetailLevel`: simple / AAE / gyakorlati latin), amely 9 gyakorlati latin pulpa altípust jelenít meg (pulpa sana … gangraena pulpae) a `pulpLatin` mezőn keresztül
+- 🦴 Apikális diagnózis (`apicalDx`: tünetekkel járó/tünetmentes apikális periodontitis, akut/krónikus apikális tályog, condensing osteitis) közvetlenül meghatározza a periapikális jelölést, opcionális granuloma/ciszta/tályog altípussal
 - ⚕️ Módosítók: periapikális gyulladás (belső/külső), parodontális betegség, mobilitási fokok (M1/M2/M3)
 - 🏷️ Speciális jelzők: korona szükséges, koronacsere szükséges, zárt foghiány, fogeltávolítási terv, bruxizmus okozta kopás/nyaki kopás, barázdazárás, kontaktpont veszteség
 - 👁️ Okkluzális nézet, bölcsességfog, csont és pulpa láthatóság kapcsolók
 - 🔢 12 kiválasztási szűrő (összes, jelenlévő, maradó, tej, implantátum, hiányzó, felső/alsó, front/molárisok)
 - 📊 Előre definiált státusz minták (alaphelyzet, tejfogazat, vegyes fogazat, fogatlan)
 - 📦 34 előre definiált restaurációs sablon (hidak, kivehető protézisek, bár protézisek implantátumokkal)
-- 💾 Állapot export/import JSON formátumban (2.0 verzió; az importálás továbbra is elfogadja az 1.4 verziót és automatikusan migrálja, plugin egyedi állapotokkal és fogankénti megjegyzésekkel)
+- 💾 Állapot export/import JSON formátumban (2.2 verzió; az importálás továbbra is elfogadja az 1.4, 2.0 és 2.1 verziót és automatikusan migrálja, plugin egyedi állapotokkal és fogankénti megjegyzésekkel)
 - 🔗 HL7 FHIR R4 export (collection Bundle fogankénti Observation-ökkel, ISO 3950 fogkódolás a maradó fogazatra, lokális kódrendszer — SNOMED CT megfeleltetés tervezett)
 - ✚ Kereszt/plusz felület-választó (B/M/O/D/L) szuvasodáshoz és tömésekhez
 - 🧱 Felületenkénti tömőanyagok (vegyes tömések, pl. buccal amalgám + distal composite)
 - 🖼️ PNG/JPG/SVG képexport az odontogramról (letölthető; a PNG/JPG vektoros SVG-ből raszterizált)
 - 🦷 Szekunder (másodlagos) szuvasodás — automatikusan jelenik meg, ha a caries tömésre esik
-- 🪨 Fogkő, gyökérreszorpció és típusos periapikális léziók (granuloma / ciszta / tályog)
+- 🪨 Fogkő, valamint belső vagy külső cervikális típusú gyökérreszorpció (`resorptionType`)
 - 📏 Felületenkénti szuvasodás mélysége (felületes / dentin / mély), vagy opcionális ICDAS II pontozás (0–6) az `enableIcdas` proppal
 - 🩹 Korona szegélyi rés (leakage) kapcsoló, csak korona vagy híd pótlás esetén jelenik meg
 - 🧰 Egységes ikon-fejléc Beállítások menüvel (számozás, jegyzetek, ICDAS, fogadatok)
@@ -69,7 +71,7 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 - 🔒 Csak olvasható mód: összes interakció letiltása nyomtatási/jelentés nézetekhez
 - ✨ Kijelölési animációk: pulzáló szaggatott keret és ragyogó árnyék a kijelölt fogakon (prefers-reduced-motion támogatással)
 - 📝 Fogankénti megjegyzések: dupla kattintás megjegyzés hozzáadásához/szerkesztéséhez, megjegyzés ikon a fogszám mellett, hover tooltip a megjegyzés szövegével, JSON export/import
-- 🧪 340 automatizált teszt (Vitest) 37 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés lefedésére
+- 🧪 421 automatizált teszt (Vitest) 43 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek, akadálymentesítés és klinikai tengelyek/diagnózisok paritása lefedésére
 - 📖 TypeDoc API dokumentáció JSDoc kommentekkel minden publikus exporton (`npm run docs`)
 
 ### 📦 Modulok
@@ -170,13 +172,27 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 **Módosítók:**
 `inflammation` (periapikális), `parodontal` (parodontális), `mobility` (M1/M2/M3)
 
-**Periapikális lézió típusa** (az `inflammation`-t minősíti):
+**Periapikális lézió típusa** (`periapicalType`; a periapikális jelölést minősíti, amelyet az `apicalDx` határoz meg):
 `none`, `granuloma`, `cyst`, `abscess`
+
+**Pulpa diagnózis** (AAE terminológia; `pulpDx`):
+`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+
+**Pulpa diagnózis, gyakorlati latin** (`pulpLatin`; a pulpa választó csak akkor jeleníti meg, ha a `pulpDetailLevel` értéke `latin`):
+`none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
+
+**Pulpa részletezettségi szint** (`pulpDetailLevel`, globális beállítás): `simple`, `aae` (alapértelmezett), `latin` — meghatározza, hogy a választó milyen pulpa terminológiát kínál
+
+**Apikális diagnózis** (`apicalDx`; a periapikális jelölést határozza meg):
+`normal`, `symptomatic-apical-periodontitis`, `asymptomatic-apical-periodontitis`, `acute-apical-abscess`, `chronic-apical-abscess`, `condensing-osteitis`
+
+**Gyökérreszorpció típusa** (`resorptionType`):
+`none`, `internal`, `external-cervical`
 
 **Szuvasodás mélysége** (felületenként): `superficial` / `dentin` / `deep`, vagy opcionális ICDAS II kódok `0–6`, ha az `enableIcdas` aktív
 
 **Speciális jelzők:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `rootResorption`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
 ### 🖼️ SVG sablon rendszer
 
@@ -275,7 +291,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Tesztelés
 ```bash
-npm run test           # Összes 340 teszt futtatása
+npm run test           # Összes 421 teszt futtatása
 npm run test:watch     # Figyelési mód
 npm run test:coverage  # Lefedettségi jelentés
 ```
@@ -324,6 +340,8 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `getReadOnly()` | Aktuális csak olvasható állapot lekérdezése |
 | `setNotesEnabled(value)` | Fogankénti megjegyzések be/kikapcsolása |
 | `getNotesEnabled()` | Aktuális megjegyzés-engedélyezés állapot lekérdezése |
+| `setPulpDetailLevel(level)` | A pulpa választó terminológiájának beállítása — `"simple"`, `"aae"` vagy `"latin"` |
+| `getPulpDetailLevel()` | Aktuális pulpa részletezettségi szint lekérdezése |
 | `exportFhir(options?)` | Az odontogram exportálása HL7 FHIR R4 collection Bundle-ként (JSON letöltés). Opcionális `{ subject }` referencia; egyébként placeholder Patient kerül be |
 | `exportImage(format)` | Az odontogram letöltése képként — `"png"` vagy `"jpg"` |
 | `exportSvg()` | Az odontogram letöltése méretezhető SVG-ként (vektoros) |
@@ -332,7 +350,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `startIntroTour()` | A 12 lépéses interaktív bemutató túra indítása |
 
 ### 💾 Állapot Export/Import formátum
-Az export egy JSON fájlt hoz létre (`2.0` verziójú), amely tartalmazza:
+Az export egy JSON fájlt hoz létre (`2.2` verziójú; az importálás továbbra is elfogadja a korábbi `1.4`, `2.0` és `2.1` verziókat és automatikusan migrálja őket), amely tartalmazza:
 
 **Globális mezők:**
 - `wisdomVisible` - bölcsességfogak láthatók
@@ -350,7 +368,10 @@ Az export egy JSON fájlt hoz létre (`2.0` verziójú), amely tartalmazza:
 - `caries` - aktív szuvasodási felületek
 - `fillingMaterial` - tömőanyag
 - `fillingSurfaces` - tömött felületek
-- `pulpInflam` - pulpa gyulladás jelzője
+- `pulpDx` - AAE pulpa diagnózis (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
+- `pulpLatin` - gyakorlati latin pulpa altípus (a pulpa választó csak akkor jeleníti meg, ha a `pulpDetailLevel` értéke `latin`)
+- `apicalDx` - apikális diagnózis, amely meghatározza a periapikális jelölést
+- `resorptionType` - gyökérreszorpció típusa (none/internal/external-cervical)
 - `endoResection` - rezekció jelzője
 - `fissureSealing` - barázdazárás jelzője
 - `contactMesial` - meziális kontaktpont veszteség
@@ -377,7 +398,7 @@ Az export egy JSON fájlt hoz létre (`2.0` verziójú), amely tartalmazza:
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, bár konstrukciók)
 - `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) és i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
-- `src/__tests__/` - Vitest tesztcsomag (340 teszt, 37 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés)
+- `src/__tests__/` - Vitest tesztcsomag (421 teszt, 43 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek, akadálymentesítés és klinikai tengelyek/diagnózisok paritása)
 - `src/assets/teeth-svgs/` - SVG fogsablonok (6 fájl: metszők, szemfogak, kis őrlők, nagy őrlők + okkluzális nézetek)
 - `src/assets/icon-svgs/` - eszköztár ikon SVG-k (5 fájl)
 

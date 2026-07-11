@@ -129,6 +129,41 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "telescope": { code: "telescope", display: "Telescopic crown" },
     "temporary": { code: "temporary", display: "Temporary" },
   },
+  // SP4 Task 1: pulp/apical/resorption diagnosis axes (additive; not yet
+  // rendered). See docs/superpowers/specs/2026-07-13-odontogram-sp4-endo-pulp-diagnosis-design.md.
+  pulpDx: {
+    "normal": { code: "normal", display: "Normal pulp" },
+    "reversible-pulpitis": { code: "reversible-pulpitis", display: "Reversible pulpitis" },
+    "irreversible-pulpitis": { code: "irreversible-pulpitis", display: "Irreversible pulpitis" },
+    "necrosis": { code: "necrosis", display: "Pulp necrosis" },
+  },
+  // Practical clinical Latin pulp subtypes (spec §3.2); `display` is the Latin
+  // label itself (language-neutral, identical across UI languages).
+  pulpLatin: {
+    "none": { code: "none", display: "No Latin pulp subtype" },
+    "pulpa-sana": { code: "pulpa-sana", display: "Pulpa sana" },
+    "hyperaemia-pulpae": { code: "hyperaemia-pulpae", display: "Hyperaemia pulpae" },
+    "pulpitis-acuta-serosa": { code: "pulpitis-acuta-serosa", display: "Pulpitis acuta serosa" },
+    "pulpitis-acuta-purulenta": { code: "pulpitis-acuta-purulenta", display: "Pulpitis acuta purulenta" },
+    "pulpitis-chronica-clausa": { code: "pulpitis-chronica-clausa", display: "Pulpitis chronica clausa" },
+    "pulpitis-chronica-ulcerosa": { code: "pulpitis-chronica-ulcerosa", display: "Pulpitis chronica ulcerosa (aperta)" },
+    "pulpitis-chronica-hyperplastica": { code: "pulpitis-chronica-hyperplastica", display: "Pulpitis chronica hyperplastica (pulpa-polyp)" },
+    "necrosis-pulpae": { code: "necrosis-pulpae", display: "Necrosis pulpae" },
+    "gangraena-pulpae": { code: "gangraena-pulpae", display: "Gangraena pulpae" },
+  },
+  apicalDx: {
+    "normal": { code: "normal", display: "No apical pathology" },
+    "symptomatic-apical-periodontitis": { code: "symptomatic-apical-periodontitis", display: "Symptomatic apical periodontitis" },
+    "asymptomatic-apical-periodontitis": { code: "asymptomatic-apical-periodontitis", display: "Asymptomatic apical periodontitis" },
+    "acute-apical-abscess": { code: "acute-apical-abscess", display: "Acute apical abscess" },
+    "chronic-apical-abscess": { code: "chronic-apical-abscess", display: "Chronic apical abscess" },
+    "condensing-osteitis": { code: "condensing-osteitis", display: "Condensing osteitis" },
+  },
+  resorptionType: {
+    "none": { code: "none", display: "No root resorption" },
+    "internal": { code: "internal", display: "Internal root resorption" },
+    "external-cervical": { code: "external-cervical", display: "External cervical root resorption" },
+  },
 };
 
 /**

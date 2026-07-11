@@ -923,10 +923,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "natural",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural"
     },
     "layers": [
       {
@@ -1063,10 +1060,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken"
     },
     "layers": [
       {
@@ -1198,10 +1192,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "crownprep"
     },
     "layers": [
       {
@@ -1333,10 +1324,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "radix",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "radix"
     },
     "layers": [
       {
@@ -1468,10 +1456,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax"
     },
     "layers": [
       {
@@ -1613,10 +1598,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "zircon"
+      "crownMaterial": "zircon"
     },
     "layers": [
       {
@@ -1758,10 +1740,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -1903,10 +1882,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "temporary"
+      "crownMaterial": "temporary"
     },
     "layers": [
       {
@@ -2048,10 +2024,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "telescope"
+      "crownMaterial": "telescope"
     },
     "layers": [
       {
@@ -2203,9 +2176,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "healing-abutment",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "healing-abutment"
     },
     "layers": [
       {
@@ -2342,9 +2313,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator"
     },
     "layers": [
       {
@@ -2481,9 +2450,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator-prosthesis"
     },
     "layers": [
       {
@@ -2620,9 +2587,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar"
     },
     "layers": [
       {
@@ -2759,9 +2724,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar-prosthesis"
     },
     "layers": [
       {
@@ -4029,11 +3992,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "zircon",
-      "crownMaterial": "natural"
+      "bridgeUnit": "zircon"
     },
     "layers": [
       {
@@ -4175,11 +4134,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "metal-ceramic",
-      "crownMaterial": "natural"
+      "bridgeUnit": "metal"
     },
     "layers": [
       {
@@ -4321,11 +4276,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "temporary",
-      "crownMaterial": "natural"
+      "bridgeUnit": "temporary"
     },
     "layers": [
       {
@@ -13736,13 +13687,10 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
+      "crownMaterial": "broken",
       "brokenMesial": true,
       "brokenIncisal": true,
-      "brokenDistal": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "brokenDistal": true
     },
     "layers": [
       {
@@ -13874,11 +13822,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "brokenMesial": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken",
+      "brokenMesial": true
     },
     "layers": [
       {
@@ -14656,10 +14601,7 @@
     "view": "front",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -15070,11 +15012,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -15226,11 +15165,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -19110,10 +19046,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "natural",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural"
     },
     "layers": [
       {
@@ -19250,10 +19183,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken"
     },
     "layers": [
       {
@@ -19385,10 +19315,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "crownprep"
     },
     "layers": [
       {
@@ -19520,10 +19447,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "radix",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "radix"
     },
     "layers": [
       {
@@ -19655,10 +19579,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax"
     },
     "layers": [
       {
@@ -19800,10 +19721,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "zircon"
+      "crownMaterial": "zircon"
     },
     "layers": [
       {
@@ -19945,10 +19863,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -20090,10 +20005,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "temporary"
+      "crownMaterial": "temporary"
     },
     "layers": [
       {
@@ -20235,10 +20147,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "telescope"
+      "crownMaterial": "telescope"
     },
     "layers": [
       {
@@ -20390,9 +20299,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "healing-abutment",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "healing-abutment"
     },
     "layers": [
       {
@@ -20529,9 +20436,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator"
     },
     "layers": [
       {
@@ -20668,9 +20573,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator-prosthesis"
     },
     "layers": [
       {
@@ -20807,9 +20710,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar"
     },
     "layers": [
       {
@@ -20946,9 +20847,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar-prosthesis"
     },
     "layers": [
       {
@@ -22216,11 +22115,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "zircon",
-      "crownMaterial": "natural"
+      "bridgeUnit": "zircon"
     },
     "layers": [
       {
@@ -22362,11 +22257,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "metal-ceramic",
-      "crownMaterial": "natural"
+      "bridgeUnit": "metal"
     },
     "layers": [
       {
@@ -22508,11 +22399,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "temporary",
-      "crownMaterial": "natural"
+      "bridgeUnit": "temporary"
     },
     "layers": [
       {
@@ -31923,13 +31810,10 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
+      "crownMaterial": "broken",
       "brokenMesial": true,
       "brokenIncisal": true,
-      "brokenDistal": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "brokenDistal": true
     },
     "layers": [
       {
@@ -32061,11 +31945,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "brokenMesial": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken",
+      "brokenMesial": true
     },
     "layers": [
       {
@@ -32843,10 +32724,7 @@
     "view": "front",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -33257,11 +33135,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -33413,11 +33288,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -37347,10 +37219,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "natural",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural"
     },
     "layers": [
       {
@@ -37507,10 +37376,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken"
     },
     "layers": [
       {
@@ -37652,10 +37518,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "crownprep"
     },
     "layers": [
       {
@@ -37797,10 +37660,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "radix",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "radix"
     },
     "layers": [
       {
@@ -37942,10 +37802,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax"
     },
     "layers": [
       {
@@ -38097,10 +37954,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "zircon"
+      "crownMaterial": "zircon"
     },
     "layers": [
       {
@@ -38252,10 +38106,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -38407,10 +38258,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "temporary"
+      "crownMaterial": "temporary"
     },
     "layers": [
       {
@@ -38562,10 +38410,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "telescope"
+      "crownMaterial": "telescope"
     },
     "layers": [
       {
@@ -38727,9 +38572,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "healing-abutment",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "healing-abutment"
     },
     "layers": [
       {
@@ -38886,9 +38729,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator"
     },
     "layers": [
       {
@@ -39045,9 +38886,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator-prosthesis"
     },
     "layers": [
       {
@@ -39204,9 +39043,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar"
     },
     "layers": [
       {
@@ -39363,9 +39200,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar-prosthesis"
     },
     "layers": [
       {
@@ -40813,11 +40648,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "zircon",
-      "crownMaterial": "natural"
+      "bridgeUnit": "zircon"
     },
     "layers": [
       {
@@ -40969,11 +40800,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "metal-ceramic",
-      "crownMaterial": "natural"
+      "bridgeUnit": "metal"
     },
     "layers": [
       {
@@ -41125,11 +40952,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "temporary",
-      "crownMaterial": "natural"
+      "bridgeUnit": "temporary"
     },
     "layers": [
       {
@@ -51815,13 +51638,10 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
+      "crownMaterial": "broken",
       "brokenMesial": true,
       "brokenIncisal": true,
-      "brokenDistal": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "brokenDistal": true
     },
     "layers": [
       {
@@ -51963,11 +51783,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "brokenMesial": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken",
+      "brokenMesial": true
     },
     "layers": [
       {
@@ -52845,10 +52662,7 @@
     "view": "front",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -53259,11 +53073,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -53425,11 +53236,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -57509,10 +57317,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "natural",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural"
     },
     "layers": [
       {
@@ -57669,10 +57474,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken"
     },
     "layers": [
       {
@@ -57814,10 +57616,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "crownprep"
     },
     "layers": [
       {
@@ -57959,10 +57758,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "radix",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "radix"
     },
     "layers": [
       {
@@ -58104,10 +57900,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax"
     },
     "layers": [
       {
@@ -58259,10 +58052,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "zircon"
+      "crownMaterial": "zircon"
     },
     "layers": [
       {
@@ -58414,10 +58204,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -58569,10 +58356,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "temporary"
+      "crownMaterial": "temporary"
     },
     "layers": [
       {
@@ -58724,10 +58508,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "telescope"
+      "crownMaterial": "telescope"
     },
     "layers": [
       {
@@ -58889,9 +58670,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "healing-abutment",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "healing-abutment"
     },
     "layers": [
       {
@@ -59048,9 +58827,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator"
     },
     "layers": [
       {
@@ -59207,9 +58984,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator-prosthesis"
     },
     "layers": [
       {
@@ -59366,9 +59141,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar"
     },
     "layers": [
       {
@@ -59525,9 +59298,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar-prosthesis"
     },
     "layers": [
       {
@@ -60975,11 +60746,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "zircon",
-      "crownMaterial": "natural"
+      "bridgeUnit": "zircon"
     },
     "layers": [
       {
@@ -61131,11 +60898,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "metal-ceramic",
-      "crownMaterial": "natural"
+      "bridgeUnit": "metal"
     },
     "layers": [
       {
@@ -61287,11 +61050,7 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "temporary",
-      "crownMaterial": "natural"
+      "bridgeUnit": "temporary"
     },
     "layers": [
       {
@@ -71987,13 +71746,10 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
+      "crownMaterial": "broken",
       "brokenMesial": true,
       "brokenIncisal": true,
-      "brokenDistal": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "brokenDistal": true
     },
     "layers": [
       {
@@ -72135,11 +71891,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "brokenMesial": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken",
+      "brokenMesial": true
     },
     "layers": [
       {
@@ -73017,10 +72770,7 @@
     "view": "front",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -73431,11 +73181,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -73597,11 +73344,8 @@
     "view": "front",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -77626,10 +77370,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "natural",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural"
     },
     "layers": [
       {
@@ -77766,10 +77507,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken"
     },
     "layers": [
       {
@@ -77906,10 +77644,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "crownprep"
     },
     "layers": [
       {
@@ -78041,10 +77776,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "radix",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "radix"
     },
     "layers": [
       {
@@ -78161,10 +77893,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax"
     },
     "layers": [
       {
@@ -78306,10 +78035,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "zircon"
+      "crownMaterial": "zircon"
     },
     "layers": [
       {
@@ -78451,10 +78177,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -78596,10 +78319,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "temporary"
+      "crownMaterial": "temporary"
     },
     "layers": [
       {
@@ -78741,10 +78461,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "telescope"
+      "crownMaterial": "telescope"
     },
     "layers": [
       {
@@ -78896,9 +78613,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "healing-abutment",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "healing-abutment"
     },
     "layers": [
       {
@@ -79035,9 +78750,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator"
     },
     "layers": [
       {
@@ -79174,9 +78887,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator-prosthesis"
     },
     "layers": [
       {
@@ -79313,9 +79024,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar"
     },
     "layers": [
       {
@@ -79452,9 +79161,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar-prosthesis"
     },
     "layers": [
       {
@@ -80687,11 +80394,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "zircon",
-      "crownMaterial": "natural"
+      "bridgeUnit": "zircon"
     },
     "layers": [
       {
@@ -80838,11 +80541,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "metal-ceramic",
-      "crownMaterial": "natural"
+      "bridgeUnit": "metal"
     },
     "layers": [
       {
@@ -80989,11 +80688,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "temporary",
-      "crownMaterial": "natural"
+      "bridgeUnit": "temporary"
     },
     "layers": [
       {
@@ -90229,13 +89924,10 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
+      "crownMaterial": "broken",
       "brokenMesial": true,
       "brokenIncisal": true,
-      "brokenDistal": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "brokenDistal": true
     },
     "layers": [
       {
@@ -90352,11 +90044,8 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "brokenMesial": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken",
+      "brokenMesial": true
     },
     "layers": [
       {
@@ -91054,10 +90743,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -91443,11 +91129,8 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -91599,11 +91282,8 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -96078,10 +95758,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "natural",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural"
     },
     "layers": [
       {
@@ -96213,10 +95890,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken"
     },
     "layers": [
       {
@@ -96348,10 +96022,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "crownprep"
     },
     "layers": [
       {
@@ -96478,10 +96149,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "radix",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "radix"
     },
     "layers": [
       {
@@ -96593,10 +96261,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax"
     },
     "layers": [
       {
@@ -96733,10 +96398,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "zircon"
+      "crownMaterial": "zircon"
     },
     "layers": [
       {
@@ -96873,10 +96535,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -97013,10 +96672,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "temporary"
+      "crownMaterial": "temporary"
     },
     "layers": [
       {
@@ -97153,10 +96809,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "telescope"
+      "crownMaterial": "telescope"
     },
     "layers": [
       {
@@ -97303,9 +96956,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "healing-abutment",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "healing-abutment"
     },
     "layers": [
       {
@@ -97437,9 +97088,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator"
     },
     "layers": [
       {
@@ -97571,9 +97220,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "locator-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "locator-prosthesis"
     },
     "layers": [
       {
@@ -97705,9 +97352,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar"
     },
     "layers": [
       {
@@ -97839,9 +97484,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "bar-prosthesis",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "bar-prosthesis"
     },
     "layers": [
       {
@@ -99029,11 +98672,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "zircon",
-      "crownMaterial": "natural"
+      "bridgeUnit": "zircon"
     },
     "layers": [
       {
@@ -99175,11 +98814,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "metal-ceramic",
-      "crownMaterial": "natural"
+      "bridgeUnit": "metal"
     },
     "layers": [
       {
@@ -99321,11 +98956,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "bridgeUnit": "none",
-      "toothSubstrate": "natural",
-      "restorationType": "bridge",
-      "restorationMaterial": "temporary",
-      "crownMaterial": "natural"
+      "bridgeUnit": "temporary"
     },
     "layers": [
       {
@@ -108241,13 +107872,10 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
+      "crownMaterial": "broken",
       "brokenMesial": true,
       "brokenIncisal": true,
-      "brokenDistal": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "brokenDistal": true
     },
     "layers": [
       {
@@ -108359,11 +107987,8 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "brokenMesial": true,
-      "toothSubstrate": "broken",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "broken",
+      "brokenMesial": true
     },
     "layers": [
       {
@@ -109036,10 +108661,7 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "natural",
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal"
     },
     "layers": [
       {
@@ -109410,11 +109032,8 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "metal-ceramic"
+      "crownMaterial": "metal",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -109561,11 +109180,8 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "tooth-base",
-      "crownMaterial": "natural",
-      "crownReplace": true,
-      "toothSubstrate": "crownprep",
-      "restorationType": "crown",
-      "restorationMaterial": "emax"
+      "crownMaterial": "emax",
+      "crownReplace": true
     },
     "layers": [
       {
@@ -113071,6 +112687,2134 @@
       },
       {
         "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 766,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "resorptionType": "external-cervical"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endo-resorption",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 767,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "mods": [
+        "inflammation"
+      ],
+      "resorptionType": "external-cervical"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endo-resorption",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "inflammation",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma-outside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma-inside",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 768,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "resorptionType": "internal"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endo-resorption",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 769,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "pulpDx": "irreversible-pulpitis"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-inflam-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-inflam-pulp-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-8",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-7",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-6",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-5",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-4",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-3",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-2",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-1",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 770,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "milktooth",
+      "pulpDx": "irreversible-pulpitis"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "milktooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "milktooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "milktooth-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "milktooth-inflam-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-inflam-pulp-base1",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-81",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-71",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-61",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-51",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-41",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-31",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-21",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-11",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 771,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "pulpDx": "reversible-pulpitis"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-inflam-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-inflam-pulp-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-8",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-7",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-6",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-5",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-4",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-3",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-2",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-1",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 772,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "pulpDx": "necrosis"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-inflam-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-inflam-pulp-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-8",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-7",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-6",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-5",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-4",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-3",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-2",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "pulp-inflam-path-1",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 773,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "apicalDx": "asymptomatic-apical-periodontitis"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "inflammation",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma-outside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma-inside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 774,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "apicalDx": "asymptomatic-apical-periodontitis",
+      "periapicalType": "cyst"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "inflammation",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "cysta",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "cysta-outside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "cysta-inside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 775,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "apicalDx": "acute-apical-abscess",
+      "periapicalType": "abscess"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "inflammation",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "abscess",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "abscess-inside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 776,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "apicalDx": "chronic-apical-abscess"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "inflammation",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "abscess",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "abscess-inside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 777,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "apicalDx": "asymptomatic-apical-periodontitis",
+      "endoResection": true
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endo-resection",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "inflammation",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma-outside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma-inside",
+        "opacity": "",
+        "cls": ""
+      }
+    ]
+  },
+  {
+    "i": 778,
+    "template": "11",
+    "toothNo": 11,
+    "view": "front",
+    "state": {
+      "toothSelection": "tooth-base",
+      "apicalDx": "asymptomatic-apical-periodontitis",
+      "resorptionType": "external-cervical"
+    },
+    "layers": [
+      {
+        "id": "base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "bone-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gum-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "mods",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-variants",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-base-beauty",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "tooth-healthy-pulp",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endos",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "endo-resorption",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "surfaces",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "subcaries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "caries",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "fillings",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "amalgam",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "composite",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gic",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "defect",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "contact-point",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "restorations",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "ortho",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "arrows",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "specials",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "plan",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "inflammation",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma-outside",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "granuloma-inside",
         "opacity": "",
         "cls": ""
       }

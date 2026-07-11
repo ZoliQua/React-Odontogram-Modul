@@ -92,9 +92,6 @@ export const AXES: ClinicalAxis[] = [
     finding: { local: "calculus", display: "Dental calculus" },
     svgLayer: "calculus",
     appliesWhen: (c, s) => !c.isImplant && !c.underGum && !c.extraction && s.toothSelection !== "none" },
-  { id: "rootResorption", field: "rootResorption", kind: "boolean",
-    finding: { local: "root-resorption", display: "Root resorption" },
-    svgLayer: "endo-resorption", appliesWhen: (c) => c.toothPresent },
   { id: "periapicalType", field: "periapicalType", kind: "enum", valueGroup: "periapicalType",
     skipValue: "none", finding: { local: "periapical-lesion-type", display: "Periapical lesion type" },
     values: withSvgLayer(valuesFrom("periapicalType"), {
@@ -111,8 +108,6 @@ export const AXES: ClinicalAxis[] = [
     skipValue: "none", surfacesField: "fillingSurfaces", finding: { local: "restoration", display: "Dental restoration" },
     values: valuesFrom("fillingMaterial") },
 
-  { id: "pulpInflam", field: "pulpInflam", kind: "boolean",
-    finding: { local: "pulp-inflammation", display: "Pulp inflammation" } },
   { id: "endoResection", field: "endoResection", kind: "boolean",
     finding: { local: "apicoectomy", display: "Apicoectomy / root resection" },
     svgLayer: "endo-resection", appliesWhen: (c) => c.toothPresent && !c.underGum && !c.extraction },
@@ -166,4 +161,36 @@ export const AXES: ClinicalAxis[] = [
     finding: { local: "crown-leakage", display: "Crown marginal leakage" },
     svgLayer: "crown-leakage",
     appliesWhen: (c, s) => s.restorationType === "crown" || s.restorationType === "bridge" },
+
+  // SP4 Task 1: pulp/apical/resorption diagnosis axes (additive scaffolding —
+  // registry/FHIR/i18n only; render + migration + retirement of the legacy
+  // booleans land in later SP4 tasks). `resorptionType` below was wired up
+  // (render + migration; replaced the retired `rootResorption` boolean) in
+  // SP4 Task 2. `pulpDx` below was wired up (render + migration; replaced
+  // the retired `pulpInflam` boolean) in SP4 Task 3 — its render is bespoke
+  // (milktooth/permanent split in odontogram.ts), so unlike `resorptionType`
+  // it deliberately carries no `svgLayer` metadata here (mirrors the retired
+  // `pulpInflam` axis, which never had one either).
+  // See docs/superpowers/specs/2026-07-13-odontogram-sp4-endo-pulp-diagnosis-design.md.
+  { id: "pulpDx", field: "pulpDx", kind: "enum", valueGroup: "pulpDx",
+    skipValue: "normal", finding: { local: "pulp-diagnosis", display: "Pulp diagnosis (AAE)" },
+    values: valuesFrom("pulpDx") },
+  { id: "pulpLatin", field: "pulpLatin", kind: "enum", valueGroup: "pulpLatin",
+    skipValue: "none", flag: "latinPulpDetail",
+    finding: { local: "pulp-diagnosis-latin", display: "Pulp diagnosis (Latin, practical)" },
+    values: valuesFrom("pulpLatin") },
+  { id: "apicalDx", field: "apicalDx", kind: "enum", valueGroup: "apicalDx",
+    skipValue: "normal", finding: { local: "apical-diagnosis", display: "Apical diagnosis (AAE)" },
+    values: valuesFrom("apicalDx") },
+  { id: "resorptionType", field: "resorptionType", kind: "enum", valueGroup: "resorptionType",
+    skipValue: "none", finding: { local: "root-resorption-type", display: "Root resorption type" },
+    values: valuesFrom("resorptionType"),
+    // Both `internal` and `external-cervical` render the single `endo-resorption`
+    // layer (visually identical; only the data distinguishes them). This axis-
+    // level svgLayer/appliesWhen is metadata only (kept for the clear-set +
+    // svg-layers.test.ts coverage) — `applyFlagLayers` only auto-activates
+    // boolean-kind axes, so the actual activation is explicit in
+    // applyStateToSvgSingle (odontogram.ts), byte-identical to the retired
+    // `rootResorption:true` boolean render (SP4 Task 2).
+    svgLayer: "endo-resorption", appliesWhen: (c) => c.toothPresent },
 ];

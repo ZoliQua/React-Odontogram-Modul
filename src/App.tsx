@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, exportFhir, exportImage, exportSvg, setImportFormat };
-import type { OdontogramSummary } from "./odontogram";
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, exportFhir, exportImage, exportSvg, setImportFormat };
+import type { OdontogramSummary, PulpDetailLevel } from "./odontogram";
+export type { PulpDetailLevel } from "./odontogram";
 export type { OdontogramSummary, OdontogramSummarySection } from "./odontogram";
 export type { FhirExportOptions } from "./fhir/types";
 import { startIntroTour } from "./tour";
@@ -65,7 +66,20 @@ type AppProps = {
    * numeric badge; otherwise the 3-level scale is used.
    */
   enableIcdas?: boolean;
+  /**
+   * Pulp-diagnosis detail level for the pulp control:
+   * `"simple"` (healthy / pulpitis), `"aae"` (4 AAE pulp diagnoses, default) or
+   * `"latin"` (9 practical-Latin subtypes). A stored value round-trips at every
+   * level; the level only governs how the pulp control presents it.
+   */
+  pulpDetailLevel?: PulpDetailLevel;
 };
+
+const PULP_LEVEL_OPTIONS: { value: PulpDetailLevel; labelKey: string }[] = [
+  { value: "simple", labelKey: "pulp.level.simple" },
+  { value: "aae", labelKey: "pulp.level.aae" },
+  { value: "latin", labelKey: "pulp.level.latin" },
+];
 
 const NUMBERING_OPTIONS: { value: NumberingSystem; labelKey: string }[] = [
   { value: "FDI", labelKey: "numbering.fdi" },
@@ -120,6 +134,7 @@ export default function App({
   readOnly: readOnlyProp,
   enableNotes,
   enableIcdas,
+  pulpDetailLevel,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
@@ -131,6 +146,7 @@ export default function App({
   const settingsRef = useRef<HTMLDivElement | null>(null);
   const [notesOn, setNotesOn] = useState<boolean>(enableNotes ?? false);
   const [icdasOn, setIcdasOn] = useState<boolean>(enableIcdas ?? false);
+  const [pulpLevel, setPulpLevel] = useState<PulpDetailLevel>(pulpDetailLevel ?? "aae");
   const [toothInfoOn, setToothInfoOn] = useState<boolean>(true);
   const [summary, setSummary] = useState<OdontogramSummary | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
@@ -209,6 +225,12 @@ export default function App({
     setIcdasEnabled(enableIcdas ?? false);
     setIcdasOn(enableIcdas ?? false);
   }, [enableIcdas]);
+
+  // Sync pulp-detail level (controlled prop -> engine + local segmented control)
+  useEffect(() => {
+    setPulpDetailLevel(pulpDetailLevel ?? "aae");
+    setPulpLevel(pulpDetailLevel ?? "aae");
+  }, [pulpDetailLevel]);
 
   // Refresh the tooth-information summary while its panel is open. Recomputes on
   // every state change, and when language/numbering change (which affect labels).
@@ -315,6 +337,14 @@ export default function App({
                   onClick={() => { const v = !icdasOn; setIcdasOn(v); setIcdasEnabled(v); }}>
                   {t("icdas.enable")}{icdasOn ? " ✓" : ""}
                 </button>
+                <div className="settings-sep" />
+                <div className="settings-group-label">{t("pulp.level.label")}</div>
+                {PULP_LEVEL_OPTIONS.map((opt) => (
+                  <button key={opt.value} className="dropdown-item" role="menuitemradio" aria-checked={pulpLevel === opt.value}
+                    onClick={() => { setPulpLevel(opt.value); setPulpDetailLevel(opt.value); }}>
+                    {t(opt.labelKey)}{pulpLevel === opt.value ? " ✓" : ""}
+                  </button>
+                ))}
                 <button className="dropdown-item" role="menuitemcheckbox" aria-checked={toothInfoOn}
                   onClick={() => { setToothInfoOn((v) => !v); }}>
                   {t("settings.toothInfo")}{toothInfoOn ? " ✓" : ""}
@@ -589,21 +619,23 @@ export default function App({
               <div className="row">
                 <select id="endoSelect"></select>
               </div>
+              <div id="pulpDxRow" className="row">
+                <span>{t("pulp.dxLabel")}</span>
+                <select id="pulpSelect"></select>
+              </div>
+              <div id="apicalDxRow" className="row">
+                <span>{t("apical.dxLabel")}</span>
+                <select id="apicalDxSelect"></select>
+              </div>
+              <div id="resorptionRow" className="row">
+                <span>{t("root.resorption")}</span>
+                <select id="resorptionSelect"></select>
+              </div>
               <div className="row inline-checks">
-                <label>
-                  <input type="checkbox" id="pulpInflam" />
-                  <span>{t("endo.pulpitis")}</span>
-                </label>
                 <label>
                   <input type="checkbox" id="endoResection" />
                   <span>{t("endo.resection")}</span>
                 </label>
-                <label>
-                  <input type="checkbox" id="rootResorption" />
-                  <span>{t("root.resorption")}</span>
-                </label>
-              </div>
-              <div className="row inline-checks">
                 <label>
                   <input type="checkbox" id="parapulpalPin" />
                   <span>{t("endo.parapulpalPin")}</span>

@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.16.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -36,19 +36,21 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🔍 Zaznamenávanie kazu na 6 plochách: meziálne, distálne, bukálne, linguálne, oklúzne, subkoronálne
 - 🪥 Materiály výplní na každú plochu: amalgám, kompozit, GIC, dočasný
 - 🏥 Endodontické stavy: liečivá výplň, koreňová výplň, nekompletná koreňová výplň, sklený kolík, kovový kolík, resekcia, parapulpálny kolík
+- 🩺 AAE diagnóza drene (`pulpDx`: normálna / reverzibilná / ireverzibilná pulpitída / nekróza), s voliteľným 3-úrovňovým nastavením podrobnosti drene (`pulpDetailLevel`: simple / aae / latin), ktoré cez `pulpLatin` sprístupňuje 9 praktických latinských podtypov drene (pulpa sana … gangraena pulpae)
+- 🦴 Apikálna diagnóza (`apicalDx`: symptomatická/asymptomatická apikálna parodontitída, akútny/chronický apikálny absces, kondenzujúca osteitída) priamo určuje periapikálny glyf, s voliteľným podtypom granulóm/cysta/absces
 - ⚕️ Modifikácie: periapikálny zápal (vnútri/vonku), parodontálne ochorenie, stupne mobility (M1/M2/M3)
 - 🏷️ Špeciálne indikátory: potrebná korunka, potrebná výmena korunky, uzavretá medzera, plán extrakcie, bruxistické opotrebenie/cervikálne opotrebenie, zapečatenie fisúr, strata kontaktného bodu
 - 👁️ Oklúzny pohľad, zuby múdrosti, prepínače viditeľnosti kosti a drene
 - 🔢 12 filtrov výberu (všetky, prítomné, trvalé, mliečne, implantáty, chýbajúce, horné/dolné, predné/moláre)
 - 📊 Preddefinované stavové predvoľby (obnoviť, mliečny chrup, zmiešaný chrup, bezzubý)
 - 📦 34 preddefinovaných šablón reštaurácií (mostíky, snímateľné protézy, stegové protézy s implantátmi)
-- 💾 Export/import stavu v JSON (verzia 2.0; import stále akceptuje verziu 1.4 a automaticky ju migruje, s vlastnými stavmi pluginov a poznámkami ku každému zubu)
+- 💾 Export/import stavu v JSON (verzia 2.2; import stále akceptuje verzie 1.4, 2.0 a 2.1 a automaticky ich migruje, s vlastnými stavmi pluginov a poznámkami ku každému zubu)
 - 🔗 Export HL7 FHIR R4 (kolekcia Bundle s Observations pre každý zub, kódovanie zubov ISO 3950 pre trvalý chrup, lokálny systém kódov — mapovanie SNOMED CT plánované)
 - ✚ Krížový výber plôch (B/M/O/D/L) pre kaz a výplne
 - 🧱 Materiály reštaurácie pre každú plochu (zmiešané výplne, napr. bukálny amalgám + distálny kompozit)
 - 🖼️ Export obrázka odontogramu vo formáte PNG/JPG/SVG (na stiahnutie; PNG/JPG rastrovaný z vektorového SVG)
 - 🦷 Sekundárny (rekurentný) kaz — automaticky odvodený, keď sa kaz prekrýva s výplňou
-- 🪨 Zubný kameň, resorpcia koreňa a typizované periapikálne lézie (granulóm / cysta / absces)
+- 🪨 Zubný kameň a resorpcia koreňa typizovaná ako interná alebo externá cervikálna (`resorptionType`)
 - 📏 Hĺbka kazu na každú plochu (povrchový / dentín / hlboký), alebo voliteľné skórovanie ICDAS II (0–6) cez `enableIcdas`
 - 🩹 Prepínač okrajovej netesnosti korunky, zobrazený len pri korunkovej alebo mostíkovej náhrade
 - 🧰 Zjednotená lišta ikon v hornej časti s ponukou Nastavenia (číslovanie, poznámky, ICDAS, informácie o zuboch)
@@ -69,7 +71,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🔒 Režim iba na čítanie: zakázanie všetkých interakcií pre prípady tlače/správ/prezerania
 - ✨ Animácie výberu: pulzujúci prerušovaný okraj a žiariaci tieň na vybraných zuboch (s podporou prefers-reduced-motion)
 - 📝 Poznámky ku každému zubu: dvojklik pre pridanie/úpravu poznámok, ikona poznámky vedľa čísla zuba, tooltip pri najetí s textom poznámky, export/import JSON
-- 🧪 340 automatizovaných testov (Vitest) v 37 testovacích súboroch pokrývajúcich číslovanie, preklady, predvoľby, i18n, komponent App, tému, dotyk, pluginy a prístupnosť
+- 🧪 421 automatizovaných testov (Vitest) v 43 testovacích súboroch pokrývajúcich číslovanie, preklady, predvoľby, i18n, komponent App, tému, dotyk, pluginy, prístupnosť a paritu klinických/diagnostických osí
 - 📖 Dokumentácia API TypeDoc s komentármi JSDoc pre všetky verejné exporty (`npm run docs`)
 
 ### 📦 Moduly
@@ -170,13 +172,27 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 **Modifikácie:**
 `inflammation` (periapikálny), `parodontal` (parodontálny), `mobility` (M1/M2/M3)
 
-**Typ periapikálnej lézie** (upresňuje `inflammation`):
+**Typ periapikálnej lézie** (`periapicalType`; upresňuje periapikálny glyf, ktorý teraz určuje `apicalDx`):
 `none`, `granuloma`, `cyst`, `abscess`
+
+**Diagnóza drene** (terminológia AAE; `pulpDx`):
+`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+
+**Diagnóza drene, praktická latinčina** (`pulpLatin`; výber drene ju zobrazuje iba keď je `pulpDetailLevel` nastavené na `latin`):
+`none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
+
+**Úroveň podrobnosti drene** (`pulpDetailLevel`, globálne nastavenie): `simple`, `aae` (predvolené), `latin` — určuje, aký slovník drene výber ponúka
+
+**Apikálna diagnóza** (`apicalDx`; určuje periapikálny glyf):
+`normal`, `symptomatic-apical-periodontitis`, `asymptomatic-apical-periodontitis`, `acute-apical-abscess`, `chronic-apical-abscess`, `condensing-osteitis`
+
+**Typ resorpcie koreňa** (`resorptionType`):
+`none`, `internal`, `external-cervical`
 
 **Hĺbka kazu** (na plochu): `superficial` / `dentin` / `deep`, alebo voliteľné kódy ICDAS II `0–6` pri nastavení `enableIcdas`
 
 **Špeciálne indikátory:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `rootResorption`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
 ### 🖼️ Systém SVG šablón
 
@@ -275,7 +291,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testovanie
 ```bash
-npm run test           # Spustiť všetkých 340 testov
+npm run test           # Spustiť všetkých 421 testov
 npm run test:watch     # Sledovací režim
 npm run test:coverage  # Správa pokrytia
 ```
@@ -324,6 +340,8 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `getReadOnly()` | Získať aktuálny stav iba na čítanie |
 | `setNotesEnabled(value)` | Povolenie/zakázanie poznámok ku každému zubu |
 | `getNotesEnabled()` | Získať aktuálny stav povolenosti poznámok |
+| `setPulpDetailLevel(level)` | Nastaviť slovník výberu drene — `"simple"`, `"aae"` alebo `"latin"` |
+| `getPulpDetailLevel()` | Získať aktuálnu úroveň podrobnosti drene |
 | `exportFhir(options?)` | Export odontogramu ako kolekcia HL7 FHIR R4 Bundle (stiahnutie JSON). Voliteľná referencia `{ subject }`; inak je vložený zástupný Patient |
 | `exportImage(format)` | Stiahnuť odontogram ako obrázok — `"png"` alebo `"jpg"` |
 | `exportSvg()` | Stiahnuť odontogram ako škálovateľný SVG (vektor) |
@@ -332,7 +350,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `startIntroTour()` | Spustiť 12-krokový interaktívny úvodný sprievodca |
 
 ### 💾 Formát exportu/importu stavu
-Export vytvorí súbor JSON (verzia `2.0`) obsahujúci:
+Export vytvorí súbor JSON (verzia `2.2`; import tiež akceptuje staršie verzie `1.4`, `2.0` a `2.1` a automaticky ich migruje) obsahujúci:
 
 **Globálne polia:**
 - `wisdomVisible` - zuby múdrosti viditeľné
@@ -350,7 +368,10 @@ Export vytvorí súbor JSON (verzia `2.0`) obsahujúci:
 - `caries` - aktívne plochy kazu
 - `fillingMaterial` - materiál výplne
 - `fillingSurfaces` - plombované plochy
-- `pulpInflam` - príznak zápalu drene
+- `pulpDx` - AAE diagnóza drene (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
+- `pulpLatin` - praktický latinský podtyp drene (zobrazený vo výbere drene iba keď je `pulpDetailLevel` nastavené na `latin`)
+- `apicalDx` - apikálna diagnóza určujúca periapikálny glyf
+- `resorptionType` - typ resorpcie koreňa (none/internal/external-cervical)
 - `endoResection` - príznak apikektómie
 - `fissureSealing` - príznak zapečatenia fisúr
 - `contactMesial` - strata meziálneho kontaktného bodu
@@ -377,7 +398,7 @@ Export vytvorí súbor JSON (verzia `2.0`) obsahujúci:
 - `src/status_extras.ts` - 34 preddefinovaných šablón reštaurácií (mostíky, protézy, stegové konštrukcie)
 - `src/i18n/` - preklady (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) a i18n hook
 - `src/utils/numbering.ts` - konverzia číslovania FDI, Universal, Palmer
-- `src/__tests__/` - testovacia sada Vitest (340 testov v 37 súboroch)
+- `src/__tests__/` - testovacia sada Vitest (421 testov v 43 súboroch)
 - `src/assets/teeth-svgs/` - SVG šablóny zubov (6 súborov: rezáky, špičáky, premoláre, moláre + oklúzne pohľady)
 - `src/assets/icon-svgs/` - SVG ikony panela nástrojov (5 súborov)
 

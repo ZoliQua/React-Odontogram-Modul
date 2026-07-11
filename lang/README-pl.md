@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.16.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -36,19 +36,21 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🔍 Dokumentowanie próchnicy na 6 powierzchniach: mezjalnej, dystalnej, policzkowej, językowej, okluzyjnej, podkoronowej
 - 🪥 Materiały wypełnień na powierzchnię: amalgamat, kompozyt, GIC, tymczasowe
 - 🏥 Stany endodontyczne: wypełnienie lecznicze, wypełnienie kanałowe, niekompletne wypełnienie kanałowe, wkład z włókna szklanego, wkład metalowy, resekcja, wkład parapulpalny
+- 🩺 Diagnoza miazgi wg AAE (`pulpDx`: normalna / odwracalne / nieodwracalne zapalenie miazgi / martwica), z opcjonalnym 3-poziomowym ustawieniem szczegółowości miazgi (`pulpDetailLevel`: proste / AAE / praktyczna łacina), które udostępnia 9 praktycznych łacińskich podtypów (pulpa sana … gangraena pulpae) za pomocą `pulpLatin`
+- 🦴 Diagnoza okołowierzchołkowa (`apicalDx`: objawowe/bezobjawowe zapalenie ozębnej wierzchołkowej, ostry/przewlekły ropień okołowierzchołkowy, osteoskleroza) bezpośrednio determinuje symbol okołowierzchołkowy, z opcjonalnym podtypem ziarniniak/torbiel/ropień
 - ⚕️ Modyfikacje: zapalenie okołowierzchołkowe (wewnętrzne/zewnętrzne), choroba przyzębia, stopnie ruchomości (M1/M2/M3)
 - 🏷️ Wskaźniki specjalne: korona wymagana, wymiana korony konieczna, zamknięta luka, plan ekstrakcji, starcie bruksistyczne/szyjkowe, lakowanie bruzd, utrata punktu stycznego
 - 👁️ Widok okluzyjny, zęby mądrości, widoczność kości i miazgi
 - 🔢 12 filtrów wyboru (wszystkie, obecne, stałe, mleczne, implanty, brakujące, górne/dolne, przednie/trzonowe)
 - 📊 Predefiniowane presety statusu (reset, uzębienie mleczne, uzębienie mieszane, bezzębny)
 - 📦 34 predefiniowane szablony uzupełnień (mosty, protezy ruchome, protezy na belce z implantami)
-- 💾 Eksport/import statusu w formacie JSON (wersja 2.0; import nadal akceptuje wersję 1.4 i migruje ją automatycznie, z niestandardowymi stanami wtyczek i notatkami do zębów)
+- 💾 Eksport/import statusu w formacie JSON (wersja 2.2; import nadal akceptuje wersje 1.4, 2.0 i 2.1 i migruje je automatycznie, z niestandardowymi stanami wtyczek i notatkami do zębów)
 - 🔗 Eksport HL7 FHIR R4 (kolekcja Bundle z obserwacjami na ząb, kodowanie zębów wg ISO 3950 dla uzębienia stałego, lokalny system kodów — mapowanie SNOMED CT planowane)
 - ✚ Interfejs wyboru powierzchni w układzie krzyżowym (B/M/O/D/L) dla próchnicy i wypełnień
 - 🧱 Materiały wypełnień na powierzchnię (mieszane wypełnienia, np. policzkowe amalgamat + dystalne kompozyt)
 - 🖼️ Eksport obrazu PNG/JPG/SVG wykresu (do pobrania; PNG/JPG rastrowane z wektorowego SVG)
 - 🦷 Próchnica wtórna (nawracająca) — automatycznie wyznaczana, gdy próchnica nakłada się na wypełnienie
-- 🪨 Kamień nazębny, resorpcja korzenia i typowane zmiany okołowierzchołkowe (ziarniniak / torbiel / ropień)
+- 🪨 Kamień nazębny oraz resorpcja korzenia typowana jako wewnętrzna lub zewnętrzna szyjkowa (`resorptionType`)
 - 📏 Głębokość próchnicy na powierzchnię (powierzchowna / zębina / głęboka), lub opcjonalne punktowanie ICDAS II (0–6) za pomocą `enableIcdas`
 - 🩹 Przełącznik nieszczelności brzeżnej korony, widoczny tylko przy odbudowie koronowej lub mostowej
 - 🧰 Ujednolicony wiersz ikon paska górnego z menu Ustawień (numeracja, notatki, ICDAS, informacje o zębach)
@@ -69,7 +71,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🔒 Tryb tylko do odczytu: wyłączenie wszystkich interakcji do drukowania/raportowania/przeglądania
 - ✨ Animacje zaznaczenia: pulsująca przerywana ramka i świecący cień na zaznaczonych zębach (z obsługą prefers-reduced-motion)
 - 📝 Notatki do zębów: dwuklik, aby dodać/edytować notatki, ikona notatki obok numeru zęba, etykietka po najechaniu z tekstem notatki, eksport/import JSON
-- 🧪 340 testów automatycznych (Vitest) w 37 plikach testowych obejmujące numerację, tłumaczenia, presety, i18n, komponent App, motyw, dotyk, wtyczki i dostępność
+- 🧪 421 testów automatycznych (Vitest) w 43 plikach testowych obejmujące numerację, tłumaczenia, presety, i18n, komponent App, motyw, dotyk, wtyczki, dostępność oraz parytet osi klinicznych/diagnostycznych
 - 📖 Dokumentacja API TypeDoc z komentarzami JSDoc dla wszystkich publicznych eksportów (`npm run docs`)
 
 ### 📦 Moduły
@@ -170,13 +172,27 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 **Modyfikacje:**
 `inflammation` (okołowierzchołkowe), `parodontal` (przyzębia), `mobility` (M1/M2/M3)
 
-**Typ zmiany okołowierzchołkowej** (kwalifikuje `inflammation`):
+**Typ zmiany okołowierzchołkowej** (`periapicalType`; kwalifikuje symbol okołowierzchołkowy, determinowany przez `apicalDx`):
 `none`, `granuloma`, `cyst`, `abscess`
+
+**Diagnoza miazgi** (terminologia AAE; `pulpDx`):
+`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+
+**Diagnoza miazgi, praktyczna łacina** (`pulpLatin`; selektor miazgi pokazuje ją tylko wtedy, gdy `pulpDetailLevel` ma wartość `latin`):
+`none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
+
+**Poziom szczegółowości miazgi** (`pulpDetailLevel`, ustawienie globalne): `simple`, `aae` (domyślne), `latin` — kontroluje słownictwo oferowane przez selektor miazgi
+
+**Diagnoza okołowierzchołkowa** (`apicalDx`; determinuje symbol okołowierzchołkowy):
+`normal`, `symptomatic-apical-periodontitis`, `asymptomatic-apical-periodontitis`, `acute-apical-abscess`, `chronic-apical-abscess`, `condensing-osteitis`
+
+**Typ resorpcji korzenia** (`resorptionType`):
+`none`, `internal`, `external-cervical`
 
 **Głębokość próchnicy** (na powierzchnię): `superficial` / `dentin` / `deep`, lub opcjonalne kody ICDAS II `0–6` gdy ustawiono `enableIcdas`
 
 **Wskaźniki specjalne:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `rootResorption`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
 ### 🖼️ System szablonów SVG
 
@@ -275,7 +291,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testowanie
 ```bash
-npm run test           # Uruchom wszystkie 340 testów
+npm run test           # Uruchom wszystkie 421 testów
 npm run test:watch     # Tryb obserwowania
 npm run test:coverage  # Raport pokrycia
 ```
@@ -324,6 +340,8 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `getReadOnly()` | Pobierz bieżący stan tylko do odczytu |
 | `setNotesEnabled(value)` | Włącz/wyłącz notatki do zębów |
 | `getNotesEnabled()` | Pobierz bieżący stan włączenia notatek |
+| `setPulpDetailLevel(level)` | Ustaw słownictwo selektora miazgi — `"simple"`, `"aae"` lub `"latin"` |
+| `getPulpDetailLevel()` | Pobierz bieżący poziom szczegółowości miazgi |
 | `exportFhir(options?)` | Eksportuj wykres jako kolekcję HL7 FHIR R4 Bundle (pobieranie JSON). Opcjonalne odwołanie `{ subject }`; w przeciwnym razie osadzany jest zastępczy pacjent |
 | `exportImage(format)` | Pobierz wykres jako obraz — `"png"` lub `"jpg"` |
 | `exportSvg()` | Pobierz wykres jako skalowalny SVG (wektorowy) |
@@ -332,7 +350,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `startIntroTour()` | Uruchom 12-krokowy interaktywny samouczek wprowadzający |
 
 ### 💾 Format eksportu/importu statusu
-Eksport tworzy plik JSON (wersja `2.0`) zawierający:
+Eksport tworzy plik JSON (wersja `2.2`; import akceptuje też starsze wersje `1.4`, `2.0` i `2.1` i migruje je automatycznie) zawierający:
 
 **Pola globalne:**
 - `wisdomVisible` - widoczność zębów mądrości
@@ -350,7 +368,10 @@ Eksport tworzy plik JSON (wersja `2.0`) zawierający:
 - `caries` - aktywne powierzchnie z próchnicą
 - `fillingMaterial` - materiał wypełnienia
 - `fillingSurfaces` - powierzchnie wypełnione
-- `pulpInflam` - flaga zapalenia miazgi
+- `pulpDx` - diagnoza miazgi wg AAE (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
+- `pulpLatin` - praktyczny łaciński podtyp miazgi (pokazywany przez selektor miazgi tylko gdy `pulpDetailLevel` ma wartość `latin`)
+- `apicalDx` - diagnoza okołowierzchołkowa determinująca symbol okołowierzchołkowy
+- `resorptionType` - typ resorpcji korzenia (none/internal/external-cervical)
 - `endoResection` - flaga apikoektomii
 - `fissureSealing` - flaga lakowania bruzd
 - `contactMesial` - utrata punktu stycznego mezjalnego
@@ -377,7 +398,7 @@ Eksport tworzy plik JSON (wersja `2.0`) zawierający:
 - `src/status_extras.ts` - 34 predefiniowane szablony uzupełnień (mosty, protezy, konstrukcje belkowe)
 - `src/i18n/` - tłumaczenia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) i hook i18n
 - `src/utils/numbering.ts` - konwersja numeracji FDI, Universal, Palmer
-- `src/__tests__/` - zestaw testów Vitest (340 testów w 37 plikach)
+- `src/__tests__/` - zestaw testów Vitest (421 testów w 43 plikach)
 - `src/assets/teeth-svgs/` - szablony SVG zębów (6 plików: siekacze, kły, zęby przedtrzonowe, trzonowce + widoki okluzyjne)
 - `src/assets/icon-svgs/` - ikony SVG paska narzędzi (5 plików)
 

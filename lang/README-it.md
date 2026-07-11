@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.16.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -36,19 +36,21 @@ Questo progetto è un editor di odontogramma interattivo basato su browser che s
 - 🔍 Registrazione delle carie su 6 superfici: mesiale, distale, buccale, linguale, occlusale, sottocoronale
 - 🪥 Materiali di otturazione per superficie: amalgama, composito, vetroionomero, provvisorio
 - 🏥 Stati endodontici: otturazione medicinale, otturazione canalare, otturazione canalare incompleta, perno in fibra di vetro, perno metallico, resezione, perno parapulpale
+- 🩺 Diagnosi pulpare AAE (`pulpDx`: normale / pulpite reversibile / irreversibile / necrosi), con un'impostazione opzionale a 3 livelli di dettaglio pulpare (`pulpDetailLevel`: simple / AAE / latino pratico) che mostra 9 sottotipi in latino pratico (pulpa sana … gangraena pulpae) tramite `pulpLatin`
+- 🦴 Diagnosi apicale (`apicalDx`: parodontite apicale sintomatica/asintomatica, ascesso apicale acuto/cronico, osteite condensante) determina direttamente il glifo periapicale, con un sottotipo opzionale granuloma/cisti/ascesso
 - ⚕️ Modifiche: infiammazione periapicale (interna/esterna), malattia parodontale, gradi di mobilità (M1/M2/M3)
 - 🏷️ Indicatori speciali: corona necessaria, sostituzione corona necessaria, spazio chiuso dopo estrazione, estrazione pianificata, usura da bruxismo/usura cervicale, sigillatura dei solchi, perdita del punto di contatto
 - 👁️ Vista occlusale, denti del giudizio, visibilità di osso e polpa
 - 🔢 12 filtri di selezione (tutti, presenti, permanenti, decidui, impianti, mancanti, superiori/inferiori, frontali/molari)
 - 📊 Preset di stato predefiniti (ripristino, dentizione primaria, dentizione mista, edentulo)
 - 📦 34 template di restauro predefiniti (ponti, protesi rimovibili, protesi su barra con impianti)
-- 💾 Esportazione/importazione dello stato in JSON (versione 2.0; le importazioni continuano ad accettare la versione 1.4 e vengono migrate automaticamente, con stati personalizzati dei plugin e note per dente)
+- 💾 Esportazione/importazione dello stato in JSON (versione 2.2; le importazioni continuano ad accettare le versioni 1.4, 2.0 e 2.1 e vengono migrate automaticamente, con stati personalizzati dei plugin e note per dente)
 - 🔗 Esportazione HL7 FHIR R4 (Bundle di raccolta di Observation per dente, codifica dentale ISO 3950 per la dentizione permanente, sistema di codici locale — mappatura SNOMED CT pianificata)
 - ✚ Interfaccia di selezione superfici a croce (B/M/O/D/L) per carie e otturazioni
 - 🧱 Materiali di restauro per superficie (otturazioni miste, es. buccale amalgama + distale composito)
 - 🖼️ Esportazione immagine PNG/JPG/SVG dell'odontogramma (scaricabile; PNG/JPG rasterizzato da SVG vettoriale)
 - 🦷 Carie secondaria (ricorrente) — derivata automaticamente quando la carie si sovrappone a un'otturazione
-- 🪨 Tartaro, riassorbimento radicolare e lesioni periapicali tipizzate (granuloma / cisti / ascesso)
+- 🪨 Tartaro, e riassorbimento radicolare tipizzato come interno o cervicale esterno (`resorptionType`)
 - 📏 Profondità della carie per superficie (superficiale / dentina / profonda), o punteggio ICDAS II opzionale (0–6) tramite `enableIcdas`
 - 🩹 Interruttore di microinfiltrazione marginale della corona, visibile solo con restauro a corona o ponte
 - 🧰 Barra superiore di icone unificata con menu Impostazioni (numerazione, note, ICDAS, informazioni dentali)
@@ -69,7 +71,7 @@ Questo progetto è un editor di odontogramma interattivo basato su browser che s
 - 🔒 Modalità sola lettura: disabilita tutte le interazioni per casi d'uso di stampa/report/visualizzazione
 - ✨ Animazioni di selezione: bordo tratteggiato pulsante e ombra luminosa sui denti selezionati (con supporto prefers-reduced-motion)
 - 📝 Note per dente: doppio clic per aggiungere/modificare note, icona nota accanto al numero del dente, tooltip al passaggio del cursore con il testo della nota, esportazione/importazione JSON
-- 🧪 340 test automatizzati (Vitest) in 37 file di test che coprono numerazione, traduzioni, preset, i18n, componente App, tema, touch, plugin e accessibilità
+- 🧪 421 test automatizzati (Vitest) in 43 file di test che coprono numerazione, traduzioni, preset, i18n, componente App, tema, touch, plugin, accessibilità e parità degli assi clinici/diagnostici
 - 📖 Documentazione API TypeDoc con commenti JSDoc su tutti gli export pubblici (`npm run docs`)
 
 ### 📦 Moduli
@@ -170,13 +172,27 @@ Questo progetto è un editor di odontogramma interattivo basato su browser che s
 **Modifiche:**
 `inflammation` (periapicale), `parodontal` (parodontale), `mobility` (M1/M2/M3)
 
-**Tipo di lesione periapicale** (qualifica `inflammation`):
+**Tipo di lesione periapicale** (`periapicalType`; qualifica il glifo periapicale, determinato da `apicalDx`):
 `none`, `granuloma`, `cyst`, `abscess`
+
+**Diagnosi pulpare** (terminologia AAE; `pulpDx`):
+`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+
+**Diagnosi pulpare, latino pratico** (`pulpLatin`; mostrata dal selettore di pulpa solo quando `pulpDetailLevel` è `latin`):
+`none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
+
+**Livello di dettaglio pulpare** (`pulpDetailLevel`, impostazione globale): `simple`, `aae` (predefinito), `latin` — controlla il vocabolario offerto dal selettore di pulpa
+
+**Diagnosi apicale** (`apicalDx`; determina il glifo periapicale):
+`normal`, `symptomatic-apical-periodontitis`, `asymptomatic-apical-periodontitis`, `acute-apical-abscess`, `chronic-apical-abscess`, `condensing-osteitis`
+
+**Tipo di riassorbimento radicolare** (`resorptionType`):
+`none`, `internal`, `external-cervical`
 
 **Profondità della carie** (per superficie): `superficial` / `dentin` / `deep`, o codici ICDAS II opzionali `0–6` quando `enableIcdas` è attivo
 
 **Indicatori speciali:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `pulpInflam`, `endoResection`, `rootResorption`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
 
 ### 🖼️ Sistema di template SVG
 
@@ -275,7 +291,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Test
 ```bash
-npm run test           # Esegui tutti i 340 test
+npm run test           # Esegui tutti i 421 test
 npm run test:watch     # Modalità watch
 npm run test:coverage  # Report di copertura
 ```
@@ -324,6 +340,8 @@ npm run docs           # Genera la documentazione TypeDoc in docs/
 | `getReadOnly()` | Ottiene lo stato corrente di sola lettura |
 | `setNotesEnabled(value)` | Abilita/disabilita le note per dente |
 | `getNotesEnabled()` | Ottiene lo stato corrente delle note |
+| `setPulpDetailLevel(level)` | Imposta il vocabolario del selettore di pulpa — `"simple"`, `"aae"` o `"latin"` |
+| `getPulpDetailLevel()` | Ottiene il livello di dettaglio pulpare corrente |
 | `exportFhir(options?)` | Esporta l'odontogramma come Bundle HL7 FHIR R4 (download JSON). Riferimento `{ subject }` opzionale; altrimenti viene incorporato un Paziente segnaposto |
 | `exportImage(format)` | Scarica l'odontogramma come immagine — `"png"` o `"jpg"` |
 | `exportSvg()` | Scarica l'odontogramma come SVG scalabile (vettoriale) |
@@ -332,7 +350,7 @@ npm run docs           # Genera la documentazione TypeDoc in docs/
 | `startIntroTour()` | Avvia il tour introduttivo interattivo in 12 passi |
 
 ### 💾 Formato di esportazione/importazione dello stato
-L'esportazione crea un file JSON (versione `2.0`) contenente:
+L'esportazione crea un file JSON (versione `2.2`; le importazioni accettano anche le versioni legacy `1.4`, `2.0` e `2.1` e vengono migrate automaticamente) contenente:
 
 **Campi globali:**
 - `wisdomVisible` - denti del giudizio visibili
@@ -350,7 +368,10 @@ L'esportazione crea un file JSON (versione `2.0`) contenente:
 - `caries` - superfici con carie attiva
 - `fillingMaterial` - materiale dell'otturazione
 - `fillingSurfaces` - superfici otturate
-- `pulpInflam` - flag infiammazione pulpare
+- `pulpDx` - diagnosi pulpare AAE (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
+- `pulpLatin` - sottotipo pulpare in latino pratico (mostrato dal selettore di pulpa solo quando `pulpDetailLevel` è `latin`)
+- `apicalDx` - diagnosi apicale che determina il glifo periapicale
+- `resorptionType` - tipo di riassorbimento radicolare (none/internal/external-cervical)
 - `endoResection` - flag apicectomia
 - `fissureSealing` - flag sigillante per solchi
 - `contactMesial` - perdita del punto di contatto mesiale
@@ -377,7 +398,7 @@ L'esportazione crea un file JSON (versione `2.0`) contenente:
 - `src/status_extras.ts` - 34 template di restauro predefiniti (ponti, protesi, costruzioni su barra)
 - `src/i18n/` - traduzioni (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) e hook i18n
 - `src/utils/numbering.ts` - conversione della numerazione FDI, Universal, Palmer
-- `src/__tests__/` - suite di test Vitest (340 test in 37 file)
+- `src/__tests__/` - suite di test Vitest (421 test in 43 file)
 - `src/assets/teeth-svgs/` - template SVG dentali (6 file: incisivi, canini, premolari, molari + viste occlusali)
 - `src/assets/icon-svgs/` - SVG delle icone della barra degli strumenti (5 file)
 

@@ -40,12 +40,10 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "caries", kind: "set", valueGroup: "caries", findingCode: "caries", findingDisplay: "Dental caries" },
   { field: "mods", kind: "set", valueGroup: "mods", findingCode: "tooth-modifier", findingDisplay: "Tooth modifier" },
   { field: "calculus", kind: "boolean", findingCode: "calculus", findingDisplay: "Dental calculus" },
-  { field: "rootResorption", kind: "boolean", findingCode: "root-resorption", findingDisplay: "Root resorption" },
   { field: "periapicalType", kind: "enum", valueGroup: "periapicalType", skipValue: "none", findingCode: "periapical-lesion-type", findingDisplay: "Periapical lesion type" },
 
   { field: "fillingMaterial", kind: "restoration", valueGroup: "fillingMaterial", skipValue: "none", surfacesField: "fillingSurfaces", findingCode: "restoration", findingDisplay: "Dental restoration" },
 
-  { field: "pulpInflam", kind: "boolean", findingCode: "pulp-inflammation", findingDisplay: "Pulp inflammation" },
   { field: "endoResection", kind: "boolean", findingCode: "apicoectomy", findingDisplay: "Apicoectomy / root resection" },
   { field: "fissureSealing", kind: "boolean", findingCode: "fissure-sealing", findingDisplay: "Fissure sealing" },
   { field: "contactMesial", kind: "boolean", findingCode: "contact-mesial", findingDisplay: "Mesial contact issue" },
@@ -63,4 +61,10 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "crownNeeded", kind: "boolean", findingCode: "crown-needed", findingDisplay: "Crown needed" },
   { field: "missingClosed", kind: "boolean", findingCode: "missing-gap-closed", findingDisplay: "Closed gap (missing tooth)" },
   { field: "crownLeakage", kind: "boolean", findingCode: "crown-leakage", findingDisplay: "Crown marginal leakage" },
+
+  // SP4 Task 1: pulp/apical/resorption diagnosis axes (additive; see axes.ts).
+  { field: "pulpDx", kind: "enum", valueGroup: "pulpDx", skipValue: "normal", findingCode: "pulp-diagnosis", findingDisplay: "Pulp diagnosis (AAE)" },
+  { field: "pulpLatin", kind: "enum", valueGroup: "pulpLatin", skipValue: "none", findingCode: "pulp-diagnosis-latin", findingDisplay: "Pulp diagnosis (Latin, practical)" },
+  { field: "apicalDx", kind: "enum", valueGroup: "apicalDx", skipValue: "normal", findingCode: "apical-diagnosis", findingDisplay: "Apical diagnosis (AAE)" },
+  { field: "resorptionType", kind: "enum", valueGroup: "resorptionType", skipValue: "none", findingCode: "root-resorption-type", findingDisplay: "Root resorption type" },
 ];

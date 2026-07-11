@@ -26,6 +26,13 @@ const TEMPLATES: { toothNo: number; template: string; view: "front"|"occlusal" }
   { toothNo: 16, template: "16_occl", view: "occlusal" },
 ];
 
+// `rootResorption` and `pulpInflam` (retired booleans, SP4 Task 2 / Task 3)
+// are intentionally kept here — like LEGACY_CROWN_MATERIAL_VALUES above,
+// this hardcodes the legacy raw field names so the matrix keeps exercising
+// hydrateState's `rootResorption` -> `resorptionType` and `pulpInflam` ->
+// `pulpDx` migration branches even though the live axes are gone. The
+// (byte-identical) new-model equivalents are authored directly in
+// `resorptionTypeParityCases()` / `pulpDxParityCases()` below.
 const BOOLEAN_FIELDS = [
   "pulpInflam","endoResection","rootResorption","fissureSealing","calculus","contactMesial","contactDistal",
   "bruxismWear","bruxismNeckWear","brokenMesial","brokenIncisal","brokenDistal","parapulpalPin","bridgePillar",
@@ -48,6 +55,7 @@ function trickyStates(): { label: string; state: Record<string, unknown> }[] {
     { label: "caries+filling-occlusal", state: { toothSelection:"tooth-base", caries:["caries-occlusal"], fillingMaterial:"amalgam", fillingSurfaces:["occlusal"], fillingSurfaceMaterials:{ occlusal:"amalgam" } } },
     { label: "periapical+inflammation", state: { toothSelection:"tooth-base", mods:["inflammation"], periapicalType:"cyst" } },
     { label: "inflammation+endo-resection", state: { toothSelection:"tooth-base", mods:["inflammation"], endoResection:true } },
+    // Legacy raw field (see BOOLEAN_FIELDS comment) — migrates to resorptionType:"external-cervical".
     { label: "inflammation+root-resorption", state: { toothSelection:"tooth-base", mods:["inflammation"], rootResorption:true } },
     { label: "implant+metal-crown", state: { toothSelection:"implant", crownMaterial:"metal" } },
     { label: "removable-bridge", state: { toothSelection:"none", bridgeUnit:"removable" } },
@@ -105,6 +113,86 @@ function newModelOcclusalOnlyCases(): { label: string; state: Record<string, unk
   }));
 }
 
+// SP4 Task 2 parity proof: `resorptionType` (enum, new-model, authored
+// directly — bypasses hydrateState's `rootResorption` legacy-migration branch
+// entirely) must render the identical `endo-resorption` layer set that the
+// retired `rootResorption:true` boolean produced, including the
+// `inflammationHome` z-order lift when it coincides with `mods.inflammation`.
+// Appended at the very end of svgCases() (outside the per-template loop, one
+// template only) so it cannot shift any existing case's index/golden entry —
+// parity.test.ts's byte-identical assertion is a matter of the resulting
+// `layers` content matching, not index position.
+function resorptionTypeParityCases(): { label: string; state: Record<string, unknown> }[] {
+  return [
+    // Equivalent to the legacy BOOLEAN_FIELDS "rootResorption:true" case above.
+    { label: "resorptionType-external-cervical-new", state: { toothSelection:"tooth-base", resorptionType:"external-cervical" } },
+    // Equivalent to the legacy trickyStates() "inflammation+root-resorption" case above.
+    { label: "inflammation+resorptionType-external-cervical-new", state: { toothSelection:"tooth-base", mods:["inflammation"], resorptionType:"external-cervical" } },
+    // "internal" was never expressible via the old boolean — proves both
+    // subtypes activate the SAME endo-resorption layer (visually identical).
+    { label: "resorptionType-internal-new", state: { toothSelection:"tooth-base", resorptionType:"internal" } },
+  ];
+}
+
+// SP4 Task 3 parity proof: `pulpDx` (enum, new-model, authored directly —
+// bypasses hydrateState's `pulpInflam` legacy-migration branch entirely) must
+// render the identical pulp layer that the retired `pulpInflam:true` boolean
+// produced, on both the permanent (`tooth-inflam-pulp`) and milktooth
+// (`milktooth-inflam-pulp`) branches. Appended at the very end of svgCases()
+// (outside the per-template loop, one template only) so it cannot shift any
+// existing case's index/golden entry — parity.test.ts's byte-identical
+// assertion is a matter of the resulting `layers` content matching, not
+// index position. `showHealthyPulp` on/off coverage lives in the dedicated
+// pulp-parity.test.ts unit test (this matrix always captures/replays under
+// the module's default `showHealthyPulp:true`, and per-case toggling isn't
+// something the capture/replay harness supports).
+function pulpDxParityCases(): { label: string; state: Record<string, unknown> }[] {
+  return [
+    // Equivalent to the legacy BOOLEAN_FIELDS "pulpInflam:true" case above.
+    { label: "pulpDx-irreversible-pulpitis-new", state: { toothSelection:"tooth-base", pulpDx:"irreversible-pulpitis" } },
+    // Milktooth branch — never exercised by BOOLEAN_FIELDS/ENUM_FIELDS (those
+    // only ever vary toothSelection OR a single boolean flag on a "tooth-base"
+    // template, never both at once) — proves `milktooth-inflam-pulp` activates
+    // identically off the enum as it did off the legacy boolean.
+    { label: "pulpDx-irreversible-pulpitis-milktooth-new", state: { toothSelection:"milktooth", pulpDx:"irreversible-pulpitis" } },
+    // "reversible-pulpitis" and "necrosis" were never expressible via the old
+    // boolean — proves every non-"normal" pulpDx value activates the SAME
+    // single tooth-inflam-pulp layer (visually identical; only the data
+    // distinguishes them).
+    { label: "pulpDx-reversible-pulpitis-new", state: { toothSelection:"tooth-base", pulpDx:"reversible-pulpitis" } },
+    { label: "pulpDx-necrosis-new", state: { toothSelection:"tooth-base", pulpDx:"necrosis" } },
+  ];
+}
+
+// SP4 Task 4 parity proof: the `apicalDx` clinical axis (enum, new-model,
+// authored directly — bypasses hydrateState's mods.inflammation legacy-migration
+// branch) drives the periapical glyph on a PRESENT tooth. Each non-"normal"
+// value must render the same `inflammation`+glyph group the retired
+// `mods.inflammation` render produced (see the equivalent legacy trickyStates()
+// "periapical+inflammation" / "inflammation+endo-resection" /
+// "inflammation+root-resorption" cases above), including the `inflammationHome`
+// z-order lift. Appended at the very end of svgCases() (outside the per-template
+// loop, one template only) so it cannot shift any existing case's index/golden
+// entry — see resorptionTypeParityCases() doc. The mods.inflammation-on-missing
+// periodontal role + the render-path equivalence live in the dedicated
+// apical-parity.test.ts unit test.
+function apicalDxParityCases(): { label: string; state: Record<string, unknown> }[] {
+  return [
+    // Equivalent to legacy { mods:["inflammation"] } (granuloma default glyph).
+    { label: "apicalDx-asymptomatic-apical-periodontitis-new", state: { toothSelection:"tooth-base", apicalDx:"asymptomatic-apical-periodontitis" } },
+    // Equivalent to legacy { mods:["inflammation"], periapicalType:"cyst" } (cysta glyph).
+    { label: "apicalDx-with-cyst-subtype-new", state: { toothSelection:"tooth-base", apicalDx:"asymptomatic-apical-periodontitis", periapicalType:"cyst" } },
+    // Equivalent to legacy { mods:["inflammation"], periapicalType:"abscess" } (abscess glyph).
+    { label: "apicalDx-acute-apical-abscess-new", state: { toothSelection:"tooth-base", apicalDx:"acute-apical-abscess", periapicalType:"abscess" } },
+    // apicalDx suggests the abscess glyph even without a periapicalType subtype.
+    { label: "apicalDx-chronic-apical-abscess-new", state: { toothSelection:"tooth-base", apicalDx:"chronic-apical-abscess" } },
+    // Equivalent to legacy { mods:["inflammation"], endoResection:true } — z-order lift.
+    { label: "apicalDx-with-endo-resection-new", state: { toothSelection:"tooth-base", apicalDx:"asymptomatic-apical-periodontitis", endoResection:true } },
+    // Equivalent to legacy { mods:["inflammation"], rootResorption:true } — z-order lift.
+    { label: "apicalDx-with-resorption-new", state: { toothSelection:"tooth-base", apicalDx:"asymptomatic-apical-periodontitis", resorptionType:"external-cervical" } },
+  ];
+}
+
 export function svgCases() {
   const cases: { toothNo:number; view:"front"|"occlusal"; template:string; state:Record<string,unknown> }[] = [];
   for (const t of TEMPLATES) {
@@ -129,6 +217,18 @@ export function svgCases() {
     for (const nr of newModelRestorationCases()) cases.push({ ...t, state: nr.state });
     if (t.view === "occlusal") for (const oc of newModelOcclusalOnlyCases()) cases.push({ ...t, state: oc.state });
   }
+  // Appended AFTER the per-template loop — see resorptionTypeParityCases() doc.
+  for (const rc of resorptionTypeParityCases()) {
+    cases.push({ toothNo: 11, view: "front", template: "11", state: rc.state });
+  }
+  // Appended AFTER resorptionTypeParityCases() — see pulpDxParityCases() doc.
+  for (const pc of pulpDxParityCases()) {
+    cases.push({ toothNo: 11, view: "front", template: "11", state: pc.state });
+  }
+  // Appended AFTER pulpDxParityCases() — see apicalDxParityCases() doc.
+  for (const ac of apicalDxParityCases()) {
+    cases.push({ toothNo: 11, view: "front", template: "11", state: ac.state });
+  }
   return cases;
 }
 
@@ -146,6 +246,11 @@ export function payloadCases() {
       "11": { toothSelection:"tooth-base", caries:["caries-occlusal"], cariesDepths:{ occlusal: 4 } },              // set -> valueInteger
       "12": { toothSelection:"tooth-base", fillingMaterial:"composite", fillingSurfaces:["mesial","occlusal"],
               fillingSurfaceMaterials:{ mesial:"composite", occlusal:"amalgam" } },                                  // restoration -> component
+      // `pulpInflam` here is the retired legacy raw field name (SP4 Task 3,
+      // see BOOLEAN_FIELDS comment) — intentionally kept to prove
+      // buildFhirBundle silently ignores a raw field with no FIELD_MAPPINGS
+      // row (no Observation emitted for it); `calculus:true` still covers
+      // the "boolean -> valueBoolean" case this row is annotated for.
       "13": { toothSelection:"tooth-base", pulpInflam:true, calculus:true, extractionPlan:true },                    // boolean -> valueBoolean
       "14": { toothSelection:"none", missingClosed:true },                                                           // boolean on none
       // New-model restoration coding, authored directly (not via legacy

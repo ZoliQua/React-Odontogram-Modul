@@ -62,8 +62,8 @@ describe("FHIR field mappings", () => {
     const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials", "cariesActiveDepth", "cariesDepths"]);
     // Full output of serializeState():
     const SERIALIZED = [
-      "toothSelection", "pulpInflam", "endoResection", "mods", "periapicalType", "endo", "caries",
-      "cariesActiveDepth", "cariesDepths", "calculus", "rootResorption",
+      "toothSelection", "pulpDx", "pulpLatin", "apicalDx", "endoResection", "mods", "periapicalType", "endo", "caries",
+      "cariesActiveDepth", "cariesDepths", "calculus", "resorptionType",
       "fillingMaterial", "fillingSurfaces", "fillingSurfaceMaterials", "fissureSealing", "contactMesial", "contactDistal",
       "bruxismWear", "bruxismNeckWear", "brokenMesial", "brokenIncisal", "brokenDistal",
       "extractionWound", "extractionPlan", "parapulpalPin", "crownReplace", "crownNeeded",
