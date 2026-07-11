@@ -52,11 +52,19 @@ describe("surfaceLabelKey (spec §8 anterior label swap)", () => {
     expect(surfaceLabelKey("occlusal")).toBe("surface.occlusal");
     expect(surfaceLabelKey("occlusal", null)).toBe("surface.occlusal");
   });
-  it("a non-occlusal surface is unaffected even on an anterior tooth", () => {
+  it("mesial/distal are position-independent — unaffected on an anterior tooth", () => {
     expect(surfaceLabelKey("mesial", 12)).toBe("surface.mesial");
     expect(surfaceLabelKey("distal", 21)).toBe("surface.distal");
-    expect(surfaceLabelKey("buccal", 43)).toBe("surface.buccal");
-    expect(surfaceLabelKey("lingual", 33)).toBe("surface.lingualPalatal");
+  });
+  // SP16 Task 2: surfaceLabelKey became arch/anterior-aware for buccal AND
+  // lingual too, under the default "full" surfaceNotation setting — 43/33 are
+  // both LOWER anterior canines, so buccal reads "labial" (anterior) and
+  // lingual reads the new "lingual" key (lower arch), not the combined
+  // "lingualPalatal" key. See sp16-surface-notation.test.ts for the full
+  // upper/lower x anterior/posterior x simple/full matrix.
+  it("buccal/lingual are now arch/anterior-aware in \"full\" notation mode (default)", () => {
+    expect(surfaceLabelKey("buccal", 43)).toBe("surface.labial");
+    expect(surfaceLabelKey("lingual", 33)).toBe("surface.lingual");
   });
   it("an unmapped surface (not in surfaceLabelKey's own map, e.g. subcrown) falls back to the raw string", () => {
     expect(surfaceLabelKey("subcrown")).toBe("subcrown");

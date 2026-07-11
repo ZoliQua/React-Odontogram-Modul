@@ -101,6 +101,14 @@ export function isAnteriorTooth(toothNo: number): boolean {
   return ANTERIOR_TEETH.has(toothNo);
 }
 
+// SP16 Task 2: arch helper (upper vs. lower jaw) — quadrants 1/2 (permanent
+// upper) and 5/6 (milk upper) are "upper"; 3/4 (permanent lower) and 7/8
+// (milk lower) are "lower". Drives the full-mode lingual->palatal swap.
+export function isUpperTooth(toothNo: number): boolean {
+  const q = Math.floor(toothNo / 10);
+  return q === 1 || q === 2 || q === 5 || q === 6;
+}
+
 const MOD_OPTIONS = optionsFor("mods");
 
 function getPeriapicalTypeOptions(){
@@ -366,6 +374,32 @@ export function setDiscolorationDetailLevel(value: ToothDetailLevel){
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
 }
 export function getDiscolorationDetailLevel(): ToothDetailLevel { return discolorationDetailLevel; }
+
+// SP16 Task 2: surface-notation setting — "full" (default) makes the
+// caries/filling surface letters + captions POSITION-AWARE (incisal on an
+// anterior tooth, labial on an anterior buccal surface, palatal on an upper
+// lingual surface); "simple" always shows the tooth-independent B/O/L set.
+// Mirrors the wearDetailLevel/discolorationDetailLevel accessor pattern
+// above: sanitize to the literal set, re-sync the active tooth's controls,
+// never mutate stored state.
+export type SurfaceNotation = "simple" | "full";
+let surfaceNotation: SurfaceNotation = "full";
+export function setSurfaceNotation(value: SurfaceNotation){
+  surfaceNotation = value === "simple" ? "simple" : "full";
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  // The new notation changes the caries/filling-defect LETTERS shown in the
+  // whole-mouth summary panel and every per-tooth tooltip (both resolve
+  // through surfaceLetter()/summarySurfaceLetter(), which read the module-
+  // level `surfaceNotation`) — refresh both so they don't show stale letters
+  // until the next tooth edit. notifyStateChange() fires the onStateChange
+  // listeners the App uses to re-run getOdontogramSummary(); the per-tooth
+  // loop mirrors the registerPlugins() pattern above.
+  notifyStateChange();
+  for(const toothNo of ALL_TEETH){
+    updateToothTooltip(toothNo);
+  }
+}
+export function getSurfaceNotation(): SurfaceNotation { return surfaceNotation; }
 
 // SP5 Task 5: caries-granularity settings (modes). Each mode governs ONLY the
 // option list its authoring control offers; it never mutates stored state.
@@ -2526,6 +2560,75 @@ function updateFillingSubcariesSummary(): void {
   lineEl.classList.toggle("hidden", !line);
 }
 
+/** A minimal shape covering what {@link fillingDefectLettersForTooth} and
+ *  {@link computeFillingDefectSummaryLine} read from a tooth state. */
+type FillingDefectStateLike =
+  | { fillingDefect?: Map<string, string>; fillingSurfaceMaterials?: Map<string, string>; restorationType?: string }
+  | undefined
+  | null;
+
+/** SP16 Task 1: the filling-defect surfaces on ONE tooth, parallel to
+ *  {@link subcariesLettersForTooth} — a surface carries a defect when it is
+ *  BOTH present in `fillingSurfaceMaterials` AND has a non-"none"
+ *  `fillingDefect` entry, gated the SAME way the existing whole-mouth
+ *  filling-defect summary is (`restorationType === "none"`, i.e. defects are
+ *  suppressed under a crown/bridge — see the `defects` derivation in
+ *  {@link getOdontogramSummary}). Returns the surfaces' letters in
+ *  `SUMMARY_SURFACE_ORDER`, concatenated with no separator; "" when the tooth
+ *  has no defect surface (or no state). Pure and exported for direct unit
+ *  testing. */
+export function fillingDefectLettersForTooth(toothNo: number, state: FillingDefectStateLike): string {
+  if(!state || !state.fillingDefect || !state.fillingSurfaceMaterials) return "";
+  if(state.restorationType && state.restorationType !== "none") return "";
+  const letters: string[] = [];
+  for(const surface of SUMMARY_SURFACE_ORDER){
+    if(surface === "subcrown") continue; // fillings never target subcrown
+    if(state.fillingDefect.has(surface) && state.fillingSurfaceMaterials.has(surface)){
+      letters.push(summarySurfaceLetter(surface, toothNo));
+    }
+  }
+  return letters.join("");
+}
+
+/** SP16 Task 1: the "Fillings and restorative" panel's informational
+ *  filling-defect-summary line, parallel to {@link computeFillingSubcariesSummaryLine}
+ *  — one entry per SELECTED tooth that has a filling-defect surface (see
+ *  {@link fillingDefectLettersForTooth}), in `ALL_TEETH` order, styled
+ *  "{FDI} ({letters})" and joined with ", ". Uses the singular phrasing
+ *  (`filling.fillingDefectSummarySingle`) for exactly one such tooth, the
+ *  plural (`filling.fillingDefectSummaryMultiple`) for more than one, and
+ *  returns "" (no line — purely informational, hidden when empty) when none
+ *  of the selected teeth have a defect surface.
+ *
+ *  Pure/testable: takes the selected tooth numbers and a state lookup instead
+ *  of reading the module's `selectedTeeth`/`toothState` globals directly. */
+export function computeFillingDefectSummaryLine(
+  selectedToothNos: Iterable<number>,
+  getState: (toothNo: number) => FillingDefectStateLike,
+): string {
+  const selected = new Set(selectedToothNos);
+  const entries: string[] = [];
+  for(const toothNo of ALL_TEETH){
+    if(!selected.has(toothNo)) continue;
+    const letters = fillingDefectLettersForTooth(toothNo, getState(toothNo));
+    if(letters) entries.push(`${toothNo} (${letters})`);
+  }
+  if(entries.length === 0) return "";
+  const key = entries.length > 1 ? "filling.fillingDefectSummaryMultiple" : "filling.fillingDefectSummarySingle";
+  return t(key, { teeth: entries.join(", ") });
+}
+
+/** DOM sync for the fillings-panel filling-defect-summary line
+ *  (`#fillingDefectSummary`), parallel to {@link updateFillingSubcariesSummary}.
+ *  No-op when the element isn't present (e.g. in a DOM-free test harness). */
+function updateFillingDefectSummary(): void {
+  const lineEl = $("#fillingDefectSummary");
+  if(!lineEl) return;
+  const line = computeFillingDefectSummaryLine(Array.from(selectedTeeth) as number[], (toothNo) => toothState.get(toothNo));
+  lineEl.textContent = line;
+  lineEl.classList.toggle("hidden", !line);
+}
+
 /** SP13 Task 2: toggle the wear (edge + cervical, shared wearDetailLevel) and
  *  discoloration (own discolorationDetailLevel) controls between their
  *  "complex" <select> and "simple" checkbox presentation, and derive each
@@ -2917,6 +3020,9 @@ function syncControlsFromState(state: Any){
   // subcaries-summary line depends on ALL selected teeth, not just the active
   // one, so it reads `selectedTeeth`/`toothState` directly rather than `state`.
   updateFillingSubcariesSummary();
+  // SP16 Task 1: parallel filling-defect-summary line, same all-selected-teeth
+  // rationale as updateFillingSubcariesSummary above.
+  updateFillingDefectSummary();
 }
 
 // ---- Event handlers ----
@@ -3003,16 +3109,32 @@ function refreshCheckLabels(){
   for(const opt of CARIES_OPTIONS){
     const label = $(`#lbl-${opt.value}`);
     if(!label) continue;
-    // SP6 Task 4 (§8): "caries-occlusal" reads "incisal" on an anterior tooth.
-    const key = opt.value === "caries-occlusal" ? surfaceLabelKey("occlusal", activeTooth) : opt.labelKey;
+    const surface = opt.value.replace("caries-", "");
+    // SP6 Task 4 (§8) / SP16 Task 2: occlusal, buccal, and lingual all resolve
+    // through surfaceLabelKey — arch/anterior-aware in "full" notation mode
+    // ("incisal"/"labial"/"palatal"); mesial/distal/subcrown are
+    // position-independent and keep their own generic labelKey.
+    const key = (surface === "occlusal" || surface === "buccal" || surface === "lingual")
+      ? surfaceLabelKey(surface, activeTooth)
+      : opt.labelKey;
     label.textContent = t(key);
+    // SP16 Task 2: the boxed `.surf-letter` span is set once at build time
+    // (buildSurfaceCross) and was never refreshed per-tooth — rewrite it here
+    // too, so it tracks the active tooth's position + the surfaceNotation
+    // setting (subcrown has no `.surf-letter` sibling, so this is a no-op there).
+    const letterEl = label.parentElement?.querySelector(".surf-letter");
+    if(letterEl) letterEl.textContent = surfaceLetter(surface, activeTooth);
   }
   for(const surface of GROUPS.fillingSurfaces){
     const label = $(`#lbl-${surface}`);
     if(!label) continue;
-    // SP6 Task 4 (§8): mirrors the caries-picker "occlusal" -> "incisal" swap.
-    const key = surface === "occlusal" ? surfaceLabelKey("occlusal", activeTooth) : (FILLING_SURFACE_LABELS[surface] || "surface.mesial");
+    // SP6 Task 4 (§8) / SP16 Task 2: mirrors the caries-picker swap above.
+    const key = (surface === "occlusal" || surface === "buccal" || surface === "lingual")
+      ? surfaceLabelKey(surface, activeTooth)
+      : (FILLING_SURFACE_LABELS[surface] || "surface.mesial");
     label.textContent = t(key);
+    const letterEl = label.parentElement?.querySelector(".surf-letter");
+    if(letterEl) letterEl.textContent = surfaceLetter(surface, activeTooth);
   }
 }
 
@@ -3384,6 +3506,38 @@ function hideCariesDepthPopup(){
  *  picker and — only when `radiographicDepthMode !== "off"` — a per-surface
  *  radiographic-depth picker. Each group's option list follows its granularity
  *  mode; the depth group itself is hidden when `cariesDepthEnabled` is off. */
+/** SP16 Task 2: resolves the DISPLAY LETTER for a caries/filling surface,
+ *  respecting the `surfaceNotation` setting ("full", default) and — in full
+ *  mode — the tooth's arch (upper/lower) and anterior/posterior position.
+ *
+ *  FULL: occlusal -> "I" (incisal) on an anterior tooth, else "O" (occlusal);
+ *  buccal -> "L" (labial) on an anterior tooth, else "B" (buccal); lingual ->
+ *  "P" (palatal) on an upper tooth, else "L" (lingual) — on a LOWER ANTERIOR
+ *  tooth this means BOTH buccal(labial) and lingual(lingual) letter as "L"
+ *  (ratified: position in the surface-cross and the caption disambiguate; a
+ *  "(L, L)"-style summary is inherently ambiguous, which is accepted).
+ *  mesial -> "M", distal -> "D", subcrown -> "SC" always.
+ *
+ *  SIMPLE: always the tooth-independent B/M/O/D/L/SC set, regardless of
+ *  position. Exported so both {@link summarySurfaceLetter} and the live
+ *  surface-cross UI (buildSurfaceCross/refreshCheckLabels) share one source
+ *  of truth. */
+export function surfaceLetter(surface: string, toothNo?: number | null): string {
+  if(surface === "subcrown") return "SC";
+  if(surfaceNotation === "simple"){
+    const map: Record<string, string> = { buccal: "B", mesial: "M", occlusal: "O", distal: "D", lingual: "L" };
+    return map[surface] || surface;
+  }
+  const anterior = toothNo != null && isAnteriorTooth(toothNo);
+  const upper = toothNo != null && isUpperTooth(toothNo);
+  if(surface === "occlusal") return anterior ? "I" : "O";
+  if(surface === "buccal") return anterior ? "L" : "B";
+  if(surface === "lingual") return upper ? "P" : "L";
+  if(surface === "mesial") return "M";
+  if(surface === "distal") return "D";
+  return surface;
+}
+
 /** Maps a caries surface identifier to its existing i18n surface-label key,
  *  so the popup header can read e.g. "Caries details – Buccal". Falls back to
  *  the raw surface string for any (unexpected) unmapped value.
@@ -3392,9 +3546,24 @@ function hideCariesDepthPopup(){
  *  (incisor/canine), the "occlusal" surface DISPLAYS as "incisal"
  *  (`surface.incisal`) instead of `surface.occlusal` — the stored surface
  *  value is unaffected, this only changes which i18n key the label resolves
- *  to. Exported so it can be unit-tested directly. */
+ *  to.
+ *
+ *  SP16 Task 2: extended to be arch/anterior-aware for ALL of
+ *  occlusal/buccal/lingual, gated on the `surfaceNotation` setting. In
+ *  "full" mode (default): occlusal -> incisal (anterior), buccal -> labial
+ *  (anterior), lingual -> palatal (upper) / lingual (lower, a NEW key
+ *  separate from the combined `surface.lingualPalatal`). In "simple" mode
+ *  the generic, tooth-independent keys are always used
+ *  (buccal/occlusal/lingualPalatal). Exported so it can be unit-tested
+ *  directly. */
 export function surfaceLabelKey(surface: string, toothNo?: number | null): string {
-  if(surface === "occlusal" && toothNo != null && isAnteriorTooth(toothNo)) return "surface.incisal";
+  if(surfaceNotation === "full"){
+    const anterior = toothNo != null && isAnteriorTooth(toothNo);
+    const upper = toothNo != null && isUpperTooth(toothNo);
+    if(surface === "occlusal") return anterior ? "surface.incisal" : "surface.occlusal";
+    if(surface === "buccal") return anterior ? "surface.labial" : "surface.buccal";
+    if(surface === "lingual") return upper ? "surface.palatal" : "surface.lingual";
+  }
   const map: Record<string, string> = {
     buccal: "surface.buccal",
     lingual: "surface.lingualPalatal",
@@ -5850,18 +6019,15 @@ export type OdontogramSummary = {
 };
 
 const SUMMARY_SURFACE_ORDER = ["buccal", "mesial", "occlusal", "distal", "lingual", "subcrown"];
-const SUMMARY_SURFACE_LETTER: Record<string, string> = {
-  buccal: "B", mesial: "M", occlusal: "O", distal: "D", lingual: "L", subcrown: "SC",
-};
-/** SP6 Task 4 (§8): the letter used for `surface` in a per-tooth "(...)"
- *  summary — "I" (incisal) instead of "O" (occlusal) on an anterior tooth
- *  (incisor/canine). Shared by {@link subcariesLettersForTooth} and
- *  {@link getOdontogramSummary}'s per-tooth caries/fillings/radiographic-depth
- *  lists, so every existing summary that names the occlusal surface picks up
- *  the anterior label too. */
+/** SP6 Task 4 (§8) / SP16 Task 2: the letter used for `surface` in a
+ *  per-tooth "(...)" summary — delegates to {@link surfaceLetter}, which is
+ *  position-aware (incisal/labial/palatal) in "full" notation mode (the
+ *  default) and respects the `surfaceNotation` setting. Shared by
+ *  {@link subcariesLettersForTooth} and {@link getOdontogramSummary}'s
+ *  per-tooth caries/fillings/radiographic-depth lists, so every existing
+ *  summary that names a surface picks up the position-aware letter too. */
 function summarySurfaceLetter(surface: string, toothNo: number): string {
-  if(surface === "occlusal" && isAnteriorTooth(toothNo)) return "I";
-  return SUMMARY_SURFACE_LETTER[surface] || surface;
+  return surfaceLetter(surface, toothNo);
 }
 const SUMMARY_ENDO_KEY: Record<string, string> = {
   "endo-medical-filling": "endo.option.medicalFilling",

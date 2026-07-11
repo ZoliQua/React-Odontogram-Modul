@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, exportFhir, exportImage, exportSvg, setImportFormat };
-import type { OdontogramSummary, PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode, ToothDetailLevel } from "./odontogram";
-export type { PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode, ToothDetailLevel } from "./odontogram";
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, setSurfaceNotation, getSurfaceNotation, exportFhir, exportImage, exportSvg, setImportFormat } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, setSurfaceNotation, getSurfaceNotation, exportFhir, exportImage, exportSvg, setImportFormat };
+import type { OdontogramSummary, PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode, ToothDetailLevel, SurfaceNotation } from "./odontogram";
+export type { PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode, ToothDetailLevel, SurfaceNotation } from "./odontogram";
 export type { OdontogramSummary, OdontogramSummarySection } from "./odontogram";
 export type { FhirExportOptions } from "./fhir/types";
 import { startIntroTour } from "./tour";
@@ -111,6 +111,13 @@ type AppProps = {
    */
   discolorationDetailLevel?: ToothDetailLevel;
   /**
+   * Surface-notation mode for caries/filling surface letters + captions:
+   * `"full"` (default) makes them position-aware (incisal on an anterior
+   * tooth, labial on an anterior buccal surface, palatal on an upper lingual
+   * surface) or `"simple"` (always the tooth-independent B/O/L set).
+   */
+  surfaceNotation?: SurfaceNotation;
+  /**
    * Whether the Statuses panel (`#statusCard`) is shown. Default `true`. The
    * panel visibility is a settings-driven wrapper around the section — the
    * section's own imperative collapse/expand behavior is unaffected.
@@ -179,6 +186,7 @@ export default function App({
   cariesDepthEnabled,
   wearDetailLevel,
   discolorationDetailLevel,
+  surfaceNotation,
   showStatusCard: showStatusCardProp,
   showOrthoCard: showOrthoCardProp,
 }: AppProps){
@@ -198,6 +206,7 @@ export default function App({
   const [cariesDepthOn, setCariesDepthOn] = useState<boolean>(cariesDepthEnabled ?? true);
   const [wearLevel, setWearLevel] = useState<ToothDetailLevel>(wearDetailLevel ?? "complex");
   const [discoLevel, setDiscoLevel] = useState<ToothDetailLevel>(discolorationDetailLevel ?? "complex");
+  const [notation, setNotation] = useState<SurfaceNotation>(surfaceNotation ?? "full");
   const [toothInfoOn, setToothInfoOn] = useState<boolean>(true);
   const [showStatusCard, setShowStatusCard] = useState<boolean>(showStatusCardProp ?? true);
   const [showOrthoCard, setShowOrthoCard] = useState<boolean>(showOrthoCardProp ?? true);
@@ -310,6 +319,7 @@ export default function App({
   }, [cariesDepthEnabled]);
   useEffect(() => { const v = wearDetailLevel ?? "complex"; setWearDetailLevel(v); setWearLevel(v); }, [wearDetailLevel]);
   useEffect(() => { const v = discolorationDetailLevel ?? "complex"; setDiscolorationDetailLevel(v); setDiscoLevel(v); }, [discolorationDetailLevel]);
+  useEffect(() => { const v = surfaceNotation ?? "full"; setSurfaceNotation(v); setNotation(v); }, [surfaceNotation]);
   useEffect(() => { setShowStatusCard(showStatusCardProp ?? true); }, [showStatusCardProp]);
   useEffect(() => { setShowOrthoCard(showOrthoCardProp ?? true); }, [showOrthoCardProp]);
 
@@ -367,6 +377,8 @@ export default function App({
     onWearDetailLevel: (v) => { setWearLevel(v); setWearDetailLevel(v); },
     discolorationDetailLevel: discoLevel,
     onDiscolorationDetailLevel: (v) => { setDiscoLevel(v); setDiscolorationDetailLevel(v); },
+    surfaceNotation: notation,
+    onSurfaceNotation: (v) => { setNotation(v); setSurfaceNotation(v); },
     notes: notesOn,
     onNotes: (v) => { setNotesOn(v); setNotesEnabled(v); },
     showStatusCard,
@@ -723,6 +735,7 @@ export default function App({
                 <span>{t("filling.fissureSealing")}</span>
               </label>
               <div id="fillingSubcariesSummary" className="hint hidden"></div>
+              <div id="fillingDefectSummary" className="hint hidden"></div>
             </section>
 
             <section id="rootPeriodontiumSection" className="card">

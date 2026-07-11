@@ -7,6 +7,7 @@ import type {
   RootCariesMode,
   RadiographicDepthMode,
   ToothDetailLevel,
+  SurfaceNotation,
 } from "./odontogram";
 
 /** Translation function signature (subset of `useI18n`'s `t`). */
@@ -44,6 +45,8 @@ export type SettingsState = {
   onWearDetailLevel: (value: ToothDetailLevel) => void;
   discolorationDetailLevel: ToothDetailLevel;
   onDiscolorationDetailLevel: (value: ToothDetailLevel) => void;
+  surfaceNotation: SurfaceNotation;
+  onSurfaceNotation: (value: SurfaceNotation) => void;
   notes: boolean;
   onNotes: (value: boolean) => void;
   showStatusCard: boolean;
@@ -110,6 +113,11 @@ const PULP_OPTIONS: { value: PulpDetailLevel; labelKey: string }[] = [
 const TOOTH_DETAIL_OPTIONS: { value: ToothDetailLevel; labelKey: string }[] = [
   { value: "complex", labelKey: "settings.toothDetail.complex" },
   { value: "simple", labelKey: "settings.toothDetail.simple" },
+];
+
+const SURFACE_NOTATION_OPTIONS: { value: SurfaceNotation; labelKey: string }[] = [
+  { value: "full", labelKey: "settings.surfaceNotation.full" },
+  { value: "simple", labelKey: "settings.surfaceNotation.simple" },
 ];
 
 /** A single settings row: label + description + a control on the right. */
@@ -293,6 +301,14 @@ export const SETTINGS_TABS: SettingsTab[] = [
           value={s.discolorationDetailLevel}
           options={TOOTH_DETAIL_OPTIONS}
           onChange={s.onDiscolorationDetailLevel}
+        />
+        <SelectRow<SurfaceNotation>
+          t={t}
+          label={t("settings.surfaceNotation.label")}
+          descKey="settings.surfaceNotation.desc"
+          value={s.surfaceNotation}
+          options={SURFACE_NOTATION_OPTIONS}
+          onChange={s.onSurfaceNotation}
         />
       </>
     ),

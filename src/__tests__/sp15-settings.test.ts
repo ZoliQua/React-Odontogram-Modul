@@ -43,6 +43,8 @@ function makeSettings(overrides: Partial<SettingsState> = {}): SettingsState {
     onWearDetailLevel: vi.fn(),
     discolorationDetailLevel: "complex",
     onDiscolorationDetailLevel: vi.fn(),
+    surfaceNotation: "full",
+    onSurfaceNotation: vi.fn(),
     notes: false,
     onNotes: vi.fn(),
     showStatusCard: true,

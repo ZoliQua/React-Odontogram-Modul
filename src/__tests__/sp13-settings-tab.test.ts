@@ -34,6 +34,8 @@ function stubSettings(): SettingsState {
     onWearDetailLevel: vi.fn(),
     discolorationDetailLevel: "complex",
     onDiscolorationDetailLevel: vi.fn(),
+    surfaceNotation: "full",
+    onSurfaceNotation: vi.fn(),
     notes: false,
     onNotes: vi.fn(),
     showStatusCard: true,
@@ -60,7 +62,7 @@ describe("SP13 Task 3: toothDetails settings tab", () => {
     expect(SETTINGS_TABS[toothDetailsIdx].titleKey).toBe("settings.tab.toothDetails");
   });
 
-  it("renders two controls bound to wearDetailLevel and discolorationDetailLevel", () => {
+  it("renders three controls bound to wearDetailLevel, discolorationDetailLevel, and surfaceNotation", () => {
     const tab = SETTINGS_TABS.find((tab) => tab.id === "toothDetails")!;
     const s = stubSettings();
     const node = tab.render({ t, s });
@@ -68,9 +70,9 @@ describe("SP13 Task 3: toothDetails settings tab", () => {
     const children = Children.toArray((node as ReactElement).props.children).filter(
       isValidElement,
     ) as ReactElement<any>[];
-    expect(children).toHaveLength(2);
+    expect(children).toHaveLength(3);
 
-    const [wearRow, discoRow] = children;
+    const [wearRow, discoRow, notationRow] = children;
 
     expect(wearRow.props.value).toBe(s.wearDetailLevel);
     expect(wearRow.props.descKey).toBe("settings.wearDetail.desc");
@@ -86,6 +88,14 @@ describe("SP13 Task 3: toothDetails settings tab", () => {
     expect(
       (discoRow.props.options as { value: string; labelKey: string }[]).map((o) => o.value).sort(),
     ).toEqual(["complex", "simple"]);
+
+    // SP16 Task 2: a new SelectRow bound to surfaceNotation ("full"/"simple").
+    expect(notationRow.props.value).toBe(s.surfaceNotation);
+    expect(notationRow.props.descKey).toBe("settings.surfaceNotation.desc");
+    expect(notationRow.props.label).toBe(t("settings.surfaceNotation.label"));
+    expect(
+      (notationRow.props.options as { value: string; labelKey: string }[]).map((o) => o.value).sort(),
+    ).toEqual(["full", "simple"]);
   });
 
   it("invoking each control's onChange calls the matching settings handler with the new value", () => {
@@ -95,7 +105,7 @@ describe("SP13 Task 3: toothDetails settings tab", () => {
     const children = Children.toArray((node as ReactElement).props.children).filter(
       isValidElement,
     ) as ReactElement<any>[];
-    const [wearRow, discoRow] = children;
+    const [wearRow, discoRow, notationRow] = children;
 
     wearRow.props.onChange("simple");
     expect(s.onWearDetailLevel).toHaveBeenCalledTimes(1);
@@ -105,5 +115,9 @@ describe("SP13 Task 3: toothDetails settings tab", () => {
     discoRow.props.onChange("simple");
     expect(s.onDiscolorationDetailLevel).toHaveBeenCalledTimes(1);
     expect(s.onDiscolorationDetailLevel).toHaveBeenCalledWith("simple");
+
+    notationRow.props.onChange("simple");
+    expect(s.onSurfaceNotation).toHaveBeenCalledTimes(1);
+    expect(s.onSurfaceNotation).toHaveBeenCalledWith("simple");
   });
 });

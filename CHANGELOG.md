@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.28.0] - 2026-07-11
+### Added
+- Position-aware surface notation: caries/filling surface letters and labels now read incisal/labial/palatal on the relevant tooth positions (occlusal → incisal on anteriors; buccal → labial on anteriors; lingual → palatal on upper teeth, lingual on lower teeth), controlled by a new Settings → Tooth details "Surface notation" setting (simple / full, default full). Applies to the whole-mouth summary and to both the caries and filling-defect surface pickers (letter + caption).
+- A filling-defect hint note on the Fillings card (e.g. "36 has a filling defect recorded."), parallel to the existing subcaries hint note.
+### Changed
+- The filling-defect popup's option list now stacks vertically (previously horizontal), matching the caries-depth popup layout.
+- Summary and surface-picker letters now default to the anatomically-specific ("full") notation instead of the generic B/O/L set.
+
 ## [1.27.0] - 2026-07-11
 ### Fixed
 - Implants and missing/gap teeth once again offer their full restoration/attachment picker: crown/bridge + healing-abutment/locator/locator-denture/bar/bar-denture on an implant; bridge-pontic + removable-partial/removable-full on a missing/gap tooth.

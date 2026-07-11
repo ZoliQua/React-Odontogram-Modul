@@ -517,6 +517,12 @@ select:focus{
 
 /* Caries depth popup */
 .odon-depth-popup{position:fixed; z-index:130; background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:0 12px 24px rgba(30,42,58,.18); padding:6px; display:flex; flex-direction:column; gap:4px; min-width:150px}
+/* SP16 Task 1: the filling-defect popup's option buttons live in a plain
+   `.odon-depth-group` wrapper div inside `.odon-depth-popup` — without this
+   rule they default to block flow but the <button>s themselves are
+   inline-block, so they wrap left-to-right instead of stacking. Stack them
+   vertically like every other option group in this popup family. */
+.odon-depth-group{display:flex; flex-direction:column; gap:4px}
 .odon-depth-option{border:1px solid var(--line); background:rgba(0,0,0,.04); color:var(--text); padding:8px 10px; border-radius:10px; font-weight:600; cursor:pointer; text-align:left; font-size:13px}
 .odon-depth-option:hover{background:rgba(59,123,255,.12)}
 .odon-depth-option.is-active{border-color:var(--accent,#3b7bff); background:rgba(59,123,255,.16)}
