@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.20.0] - 2026-07-11
+### Added
+- Peri-implant status axis for implants: peri-implant health / mucositis / peri-implantitis with graded (mild/moderate/severe) crestal bone loss, shown as a dedicated selector on implants.
+### Changed
+- Implants no longer render the (clinically incorrect) periapical lesion glyph; their inflammation is expressed through the new peri-implant axis. Missing/extraction-socket teeth are unaffected.
+- Removed the ad-hoc "Peri-implantitis" relabel of the periodontal-modifier checkbox (superseded by the dedicated axis).
+### Migration
+- Payload version 2.6 (imports 1.4–2.5 accepted). On import, an implant that carried the inflammation or periodontal modifier becomes peri-implant mucositis (no bone-loss grade is invented).
+
 ## [1.19.0] - 2026-07-11
 
 ### Changed

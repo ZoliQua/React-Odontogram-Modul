@@ -72,4 +72,7 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   // `radiographicDepth` are per-surface scalar maps, special-cased outside this table
   // exactly like `cariesDepths` — no row here for them by design.
   { field: "rootCaries", kind: "enum", valueGroup: "rootCaries", skipValue: "none", findingCode: "root-caries", findingDisplay: "Root caries" },
+
+  // SP8 Task 1: peri-implantitis foundation (additive; see axes.ts).
+  { field: "periImplant", kind: "enum", valueGroup: "periImplant", skipValue: "none", findingCode: "peri-implant-status", findingDisplay: "Peri-implant status" },
 ];

@@ -184,7 +184,7 @@ describe("SP4 Task 6: combined legacy migration (pulpInflam + rootResorption + i
     expect(s).not.toHaveProperty("rootResorption");
 
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.5");
+    expect(payload.version).toBe("2.6");
     const tooth14 = payload.teeth[14];
     expect(tooth14).not.toHaveProperty("pulpInflam");
     expect(tooth14).not.toHaveProperty("rootResorption");

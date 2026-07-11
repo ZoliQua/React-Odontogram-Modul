@@ -175,6 +175,13 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "arrested": { code: "arrested", display: "Arrested root caries" },
     "active-cavitated": { code: "active-cavitated", display: "Active cavitated root caries" },
   },
+  periImplant: {
+    "none": { code: "none", display: "Peri-implant health" },
+    "mucositis": { code: "mucositis", display: "Peri-implant mucositis" },
+    "peri-implantitis-mild": { code: "peri-implantitis-mild", display: "Peri-implantitis, mild bone loss" },
+    "peri-implantitis-moderate": { code: "peri-implantitis-moderate", display: "Peri-implantitis, moderate bone loss" },
+    "peri-implantitis-severe": { code: "peri-implantitis-severe", display: "Peri-implantitis, severe bone loss" },
+  },
   radiographicDepth: {
     "none": { code: "none", display: "No radiographic caries depth recorded" },
     "E1": { code: "E1", display: "Enamel, outer half (E1)" },

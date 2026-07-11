@@ -31,6 +31,14 @@ export const FIXED_CLEAR_LAYERS: string[] = [
   // above, which every AXES/svg-layers test already tolerates being absent from
   // an individual template as long as it exists in at least one installed SVG).
   "caries-root",
+  // SP8 Task 3: peri-implant-bone-loss toggle — the `periImplant` axis has no
+  // svgLayer (see registry/axes.ts; the bone-loss layer only exists on the 4
+  // implant SVGs, so axisClearLayers() must not expect it on every tooth) and
+  // its render block (odontogram.ts applyStateToSvgSingle) only turns this ON
+  // conditionally, never explicitly OFF — so it must be listed here for the
+  // general per-render clear sweep to reset it symmetrically (same pattern as
+  // caries-root above for the analogous rootCaries axis).
+  "peri-implant-bone-loss",
   // subcaries per surface
   "subcaries-buccal","subcaries-lingual","subcaries-mesial","subcaries-distal","subcaries-occlusal",
   "calculus",

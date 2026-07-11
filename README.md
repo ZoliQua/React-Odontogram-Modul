@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.19.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.20.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -37,12 +37,13 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🦴 Apical diagnosis (`apicalDx`: symptomatic/asymptomatic apical periodontitis, acute/chronic apical abscess, condensing osteitis) drives the periapical glyph directly; a granuloma/cyst lesion-subtype qualifier is shown only under symptomatic/asymptomatic apical periodontitis (the redundant "abscess" subtype was dropped — it's already covered by the apical diagnosis)
 - 🩹 Merged "Root and periodontium" card (single collapsible section for root/periapical and periodontal findings)
 - ⚕️ Modifications: periapical inflammation (hidden on present teeth, where `apicalDx` alone drives the periapical glyph — retiring the duplicate toggle; still available for missing/extraction-socket teeth), periodontal disease, mobility grades (M1/M2/M3)
+- 🦷🔩 Peri-implant status (`periImplant`: none / mucositis / peri-implantitis-mild / -moderate / -severe) — 2018 World Workshop staging, shown as a dedicated selector on implants; mucositis reuses the periodontal gum glyph, peri-implantitis adds a graded `peri-implant-bone-loss` layer (opacity 0.4/0.7/1.0). Implants no longer render the periapical lesion glyph — their inflammation is expressed through this axis instead — and the periodontal-modifier checkboxes are hidden on implants (the ad-hoc "Peri-implantitis" checkbox relabel is retired)
 - 🏷️ Special indicators: crown needed, crown replacement needed, missing closed gap, extraction plan, bruxism wear/neck wear, fissure sealing, contact point loss
 - 👁️ Occlusal view, wisdom teeth, bone and pulp visibility toggles
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 2.5; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, and 2.4 and migrate automatically, with plugin custom states and per-tooth notes)
+- 💾 Status export/import in JSON (version 2.6; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, and 2.5 and migrate automatically, with plugin custom states and per-tooth notes)
 - 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition, local code system — SNOMED CT mapping planned)
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
@@ -194,6 +195,9 @@ This project is an interactive, browser-based odontogram editor that supports fa
 
 **Root resorption type** (`resorptionType`):
 `none`, `internal`, `external-cervical`
+
+**Peri-implant status** (`periImplant`; implant-only, 2018 World Workshop staging): `mucositis` reuses the periodontal gum glyph; `peri-implantitis-*` adds the `peri-implant-bone-loss` layer at severity-scaled opacity (mild 0.4 / moderate 0.7 / severe 1.0). Implants no longer render the periapical lesion glyph (their inflammation is expressed via this axis instead), and the `mods` inflammation/parodontal checkboxes are hidden on implants:
+`none`, `mucositis`, `peri-implantitis-mild`, `peri-implantitis-moderate`, `peri-implantitis-severe`
 
 **Caries severity** (`cariesSeverity`; unified per-surface field, `0`–`6`): on a surface with no filling it is read as the ICDAS caries-depth scale (`superficial` / `dentin` / `deep`, or the raw ICDAS II codes `0–6` when `enableIcdas` is set) and renders the primary `caries-{surface}` layer; on a surface with a filling it is read as a named CARS score (`0` sound … `6` extensive cavity) and renders the `subcaries-{surface}` (recurrent-caries) layer instead — a surface is never both primary and recurrent at once
 
@@ -471,12 +475,13 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🦴 Diagnóstico apical (`apicalDx`: periodontitis apical sintomática/asintomática, absceso apical agudo/crónico, osteítis condensante) determina directamente el glifo periapical; el subtipo de lesión granuloma/quiste solo se muestra bajo periodontitis apical sintomática/asintomática (se eliminó el subtipo redundante "absceso", ya cubierto por el diagnóstico apical)
 - 🩹 Tarjeta combinada "Raíz y periodonto" (sección colapsable única para hallazgos radiculares/periapicales y periodontales)
 - ⚕️ Modificaciones: inflamación periapical (oculta en dientes presentes, donde el glifo periapical lo determina únicamente `apicalDx` — se retira el interruptor duplicado; sigue disponible para dientes ausentes/alvéolo de extracción), enfermedad periodontal, grados de movilidad (M1/M2/M3)
+- 🦷🔩 Estado periimplantario (`periImplant`: none / mucositis / peri-implantitis-mild / -moderate / -severe) — clasificación del World Workshop 2018, mostrada como un selector dedicado en los implantes; la mucositis reutiliza el glifo gingival periodontal, y la periimplantitis añade una capa graduada `peri-implant-bone-loss` (opacidad 0.4/0.7/1.0). Los implantes ya no renderizan el glifo de lesión periapical — su inflamación se expresa mediante este eje — y las casillas de modificadores periodontales quedan ocultas en los implantes (se retira el renombrado ad-hoc "Peri-implantitis" de la casilla)
 - 🏷️ Indicadores especiales: corona necesaria, reemplazo de corona necesario, espacio cerrado, plan de extracción, desgaste por bruxismo/desgaste cervical, sellado de fisuras, pérdida de punto de contacto
 - 👁️ Vista oclusal, muelas del juicio, visibilidad de hueso y pulpa
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 2.5; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3 y 2.4 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
+- 💾 Exportación/importación de estado en JSON (versión 2.6; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3, 2.4 y 2.5 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
 - 🔗 Exportación HL7 FHIR R4 (Bundle de colección con Observations por diente, codificación dental ISO 3950 para dentición permanente, sistema de códigos local — mapeo SNOMED CT planificado)
 - ✚ Selección de superficies en cruz (B/M/O/D/L) para caries y obturaciones
 - 🧱 Materiales de obturación por superficie (obturaciones mixtas, p. ej. bucal amalgama + distal composite)
@@ -628,6 +633,9 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 
 **Tipo de reabsorción radicular** (`resorptionType`):
 `none`, `internal`, `external-cervical`
+
+**Estado periimplantario** (`periImplant`; solo implantes, clasificación del World Workshop 2018): `mucositis` reutiliza el glifo gingival periodontal; `peri-implantitis-*` añade la capa `peri-implant-bone-loss` con opacidad graduada por severidad (leve 0.4 / moderada 0.7 / severa 1.0). Los implantes ya no renderizan el glifo de lesión periapical (su inflamación se expresa mediante este eje), y las casillas de modificadores inflamación/periodontal quedan ocultas en los implantes:
+`none`, `mucositis`, `peri-implantitis-mild`, `peri-implantitis-moderate`, `peri-implantitis-severe`
 
 **Severidad de caries** (`cariesSeverity`; campo unificado por superficie, `0`–`6`): en una superficie sin obturación se lee como escala de profundidad ICDAS (`superficial` / `dentin` / `deep`, o los códigos ICDAS II sin procesar `0–6` cuando `enableIcdas` está activado) y renderiza la capa primaria `caries-{surface}`; en una superficie con obturación se lee como una puntuación CARS con nombre (`0` sana … `6` cavidad extensa) y renderiza en su lugar la capa `subcaries-{surface}` (caries recurrente) — una superficie nunca es primaria y recurrente a la vez
 

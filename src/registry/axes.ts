@@ -204,4 +204,15 @@ export const AXES: ClinicalAxis[] = [
     skipValue: "none", finding: { local: "root-caries", display: "Root caries" },
     values: valuesFrom("rootCaries"),
     svgLayer: "caries-root", appliesWhen: (c) => c.toothPresent },
+
+  // SP8 Task 1: peri-implantitis foundation (registry/FHIR/i18n only; SVG layer +
+  // render + migration land in later SP8 tasks).
+  { id: "periImplant", field: "periImplant", kind: "enum", valueGroup: "periImplant",
+    skipValue: "none", finding: { local: "peri-implant-status", display: "Peri-implant status" },
+    // No svgLayer: activation is explicit in applyStateToSvgSingle (mucositis reuses
+    // the `parodontal` glyph; peri-implantitis adds `peri-implant-bone-loss` at
+    // severity-scaled opacity). The bone-loss layer exists only on the 4 implant
+    // SVGs, so it must NOT be declared as an axis svgLayer (which svg-layers.test.ts
+    // would expect on every tooth). Mirrors the apicalDx axis.
+    values: valuesFrom("periImplant") },
 ];

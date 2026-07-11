@@ -207,6 +207,10 @@ function defaultState(){
     // `cariesSeverity` above; still read from the raw payload on migration).
     rootCaries: "none", // none | active | arrested | active-cavitated
     radiographicDepth: new Map(), // surface -> none | E1 | E2 | D1 | D2 | D3
+    // SP8 Task 1 foundation, wired up (render + migration) in Task 3: implant-only
+    // peri-implant disease axis. none | mucositis | peri-implantitis-mild |
+    // peri-implantitis-moderate | peri-implantitis-severe.
+    periImplant: "none",
     customStates: {} as Record<string, unknown>,
     note: "",
   };
@@ -686,6 +690,30 @@ export function __syncInflammationModVisibilityForTest(container: Element, tooth
   syncInflammationModVisibility(container, toothSelection);
 }
 
+/** SP8 Task 5: on an implant, the dedicated `periImplant` axis supersedes the
+ *  parodontal/inflammation mods (they're migrated away for implants — see
+ *  hydrateState's implant-mods migration), so show `#periImplantRow` only for
+ *  an implant and hide BOTH mod checkboxes' rows there. Composes with
+ *  {@link syncInflammationModVisibility} (that one hides `inflammation` for a
+ *  PRESENT tooth) — both only ever set `.hidden`, order doesn't matter. */
+function syncPeriImplantVisibility(periImplantRow: Element | null, modsContainer: Element | null, toothSelection: Any): void {
+  const isImplantSel = toothSelection === "implant";
+  if(periImplantRow) periImplantRow.classList.toggle("hidden", !isImplantSel);
+  if(!modsContainer) return;
+  for(const val of ["parodontal", "inflammation"]){
+    const chk = modsContainer.querySelector(`input[value="${val}"]`) as HTMLInputElement | null;
+    const lbl = chk ? (chk.closest("label") || chk.parentElement) : null;
+    if(lbl) lbl.classList.toggle("hidden", isImplantSel);
+  }
+}
+
+/** TEST-ONLY: apply {@link syncPeriImplantVisibility} to hand-built DOM
+ *  fragments, without requiring a live initOdontogram(). Not part of the
+ *  public API. */
+export function __syncPeriImplantVisibilityForTest(periImplantRow: Element | null, modsContainer: Element | null, toothSelection: string): void {
+  syncPeriImplantVisibility(periImplantRow, modsContainer, toothSelection);
+}
+
 function isUnderGum(sel: Any){
   return sel === "tooth-under-gum";
 }
@@ -1156,6 +1184,21 @@ function getApicalDxOptions(): { value: string; label: string }[]{
 function getResorptionOptions(): { value: string; label: string }[]{
   return Array.from(VALID_RESORPTION_TYPE).map(v => ({ value: v, label: t("resorption.type." + kebabToCamel(v)) }));
 }
+function getPeriImplantOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_PERI_IMPLANT).map(v => ({ value: v, label: t("periImplant." + kebabToCamel(v)) }));
+}
+
+// Pure mutation for #periImplantSelect's change handler — mirrors
+// applyRestorationSelection's role/shape and __applyRestorationSelectionForTest.
+function applyPeriImplantSelection(s: Any, value: string){
+  s.periImplant = value;
+}
+
+/** TEST-ONLY: apply a #periImplantSelect value to a state object, exactly as
+ *  the change handler does. Not part of the public API. */
+export function __applyPeriImplantSelectionForTest(s: Record<string, unknown>, value: string): void {
+  applyPeriImplantSelection(s, value);
+}
 
 // SP7 (fixed post-review): symmetrically set the 8 flame sublayers (and their
 // "-N1" variants) of the tooth-inflam-pulp / milktooth-inflam-pulp group to
@@ -1246,6 +1289,21 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
         : state.rootCaries === "arrested" ? "0.7"
         : "1";
     }
+  }
+
+  // SP8: peri-implant disease (implants only). mucositis = soft-tissue inflammation
+  // (reuse the existing `parodontal` gum glyph); peri-implantitis adds crestal bone
+  // loss at severity-scaled opacity. Set both the active flag and opacity every
+  // render (the live app reuses one SVG DOM node per tooth — SP7 lesson).
+  if(isImplant && state.periImplant !== "none"){
+    setActive(svgGetById(svg, "parodontal"), true);
+    const boneEl = svgGetById(svg, "peri-implant-bone-loss") as SVGElement | null;
+    const boneOpacity = state.periImplant === "peri-implantitis-mild" ? "0.4"
+      : state.periImplant === "peri-implantitis-moderate" ? "0.7"
+      : state.periImplant === "peri-implantitis-severe" ? "1"
+      : ""; // mucositis → no bone loss
+    setActive(boneEl, boneOpacity !== "");
+    if(boneEl && boneOpacity !== "") boneEl.style.opacity = boneOpacity;
   }
 
   // SP4 Task 3: pulpDx (enum) replaces the retired pulpInflam boolean. Any
@@ -1339,9 +1397,12 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   // (and strips that mod), while a non-present tooth keeps mods.inflammation
   // with apicalDx left at "normal". `periapicalType` still selects the lesion
   // subtype glyph; when it is unset, apicalDx suggests abscess-vs-granuloma.
+  // SP8: an implant no longer shows the periapical (apical-lesion) glyph — its
+  // inflammation is expressed via the periImplant axis. Missing / extraction-socket
+  // teeth keep the mods.inflammation-driven periapical/residual glyph (SP4).
   const periapicalGlyphActive = isToothPresent(state.toothSelection)
     ? state.apicalDx !== "normal"
-    : state.mods.has("inflammation");
+    : (state.toothSelection === "implant" ? false : state.mods.has("inflammation"));
   if(periapicalGlyphActive){
     // The `inflammation` container group is the glyph's parent; collectActiveLayers
     // hides any child whose ancestor is inactive. On the non-present path it is
@@ -1356,6 +1417,15 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
           || state.apicalDx === "chronic-apical-abscess") ? "abscess"
       : "granuloma"; // default incl. "none" and "granuloma"
     setActive(svgGetById(svg, glyph), true);
+  } else if(isImplant){
+    // SP8: applyFlagLayers (the generic mods-set pass) unconditionally activates
+    // the shared "inflammation" container for ANY tooth carrying a legacy/imported
+    // `mods.inflammation` entry, independent of periapicalGlyphActive above. Since
+    // an implant's periapical glyph is retired (finding now expressed via
+    // periImplant), explicitly retire the container too, so a stray implant
+    // mods.inflammation entry renders no glyph at all instead of an orphaned
+    // empty-of-children-but-active "inflammation" group.
+    setActive(svgGetById(svg, "inflammation"), false);
   }
   if(state.mobility !== "none" && state.toothSelection !== "none" && !extraction){
     setActive(svgGetById(svg, "mobility"), true);
@@ -2172,6 +2242,13 @@ function syncControlsFromState(state: Any){
   $("#calculusToggle").checked = !!state.calculus;
   const calculusAllowed = state.toothSelection === "tooth-base" || state.toothSelection === "milktooth";
   $("#calculusRow").classList.toggle("hidden", !calculusAllowed);
+  // SP8 Task 5: periImplant (enum) is authored via a picker, shown only for an
+  // implant; on an implant it also supersedes the parodontal/inflammation mods.
+  setSelectOptions($("#periImplantSelect"), getPeriImplantOptions(), state.periImplant);
+  if($("#periImplantSelect").value !== state.periImplant){
+    state.periImplant = $("#periImplantSelect").value;
+  }
+  syncPeriImplantVisibility($("#periImplantRow"), $("#modsChecks"), state.toothSelection);
   // SP4 Task 5: resorptionType (enum) is authored via a none/internal/
   // external-cervical picker (both subtypes render identically; the picker only
   // records which). Replaces the interim on/off checkbox.
@@ -2242,7 +2319,6 @@ function syncControlsFromState(state: Any){
   });
   const hideByBase = state.toothSelection === "implant" || state.toothSelection === "none" || underGum || extraction || hiddenSelected;
   const noneSelected = selectedArr.length > 0 && selectedArr.some(tn => toothState.get(tn)?.toothSelection === "none");
-  const implantSelected = selectedArr.length > 0 && selectedArr.some(tn => toothState.get(tn)?.toothSelection === "implant");
   const hideByNone = state.toothSelection === "none" || noneSelected;
   const hideByRadix = state.toothSubstrate === "radix";
   $("#cariesSection").classList.toggle("hidden", hideByBase || hideByRadix);
@@ -2340,11 +2416,10 @@ function syncControlsFromState(state: Any){
     }
     extractionPlanRow.classList.toggle("hidden", !extractionPlanAllowed);
   }
-  const periImplant = state.toothSelection === "implant" || implantSelected;
+  // SP8 Task 5: the dedicated periImplant axis now owns "peri-implantitis";
+  // the parodontal mod keeps its plain label on every tooth type.
   const parodontLabel = $("#lbl-parodontal");
-  if(parodontLabel){
-    parodontLabel.textContent = periImplant ? t("mods.periimplantitis") : t("mods.parodontal");
-  }
+  if(parodontLabel){ parodontLabel.textContent = t("mods.parodontal"); }
 
   const milkOption = $("#toothSelect").querySelector('option[value="milktooth"]');
   if(milkOption){
@@ -3338,6 +3413,9 @@ export const VALID_FILLING_SURFACES = validSurfaces();
 // reading the retired SP5 `secondaryCaries` map off legacy raw payloads during
 // migration (see hydrateState).
 export const VALID_ROOT_CARIES = validValues("rootCaries");
+// SP8 Task 1: peri-implantitis foundation (registry axis; unused until later
+// SP8 tasks wire up render/migration/UI).
+export const VALID_PERI_IMPLANT = validValues("periImplant");
 export const VALID_CARS = new Set([0, 1, 2, 3, 4, 5, 6]);
 export const VALID_CARIES_SEVERITY = new Set([0, 1, 2, 3, 4, 5, 6]);
 export const VALID_RADIOGRAPHIC_DEPTH = new Set(["none", "E1", "E2", "D1", "D2", "D3"]);
@@ -3578,6 +3656,19 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
   // SP5 Task 1: `rootCaries` is a normal enum. `radiographicDepth` is a
   // per-surface scalar map, independent of the unified visual severity.
   s.rootCaries = validateEnum(raw.rootCaries, VALID_ROOT_CARIES, "none");
+  // SP8 Task 3: peri-implant disease (enum, implant-only). Additive axis — a
+  // legacy payload never had this field, so absent/invalid -> "none" (no
+  // change in render for pre-SP8 payloads).
+  s.periImplant = validateEnum(raw.periImplant, VALID_PERI_IMPLANT, "none");
+  // SP8 Task 4: migrate pre-SP8 implant signals. An implant tooth that carried
+  // mods.inflammation or mods.parodontal recorded soft-tissue inflammation with
+  // no bone-loss grade, so it becomes peri-implant mucositis and the mod is
+  // removed (non-implant teeth keep their mods). Runs unconditionally — a modern
+  // 2.6 payload never has those mods on an implant, so it's a no-op there.
+  if(s.toothSelection === "implant" && s.periImplant === "none"){
+    if(s.mods.has("inflammation")){ s.periImplant = "mucositis"; s.mods.delete("inflammation"); }
+    if(s.mods.has("parodontal")){ s.periImplant = "mucositis"; s.mods.delete("parodontal"); }
+  }
   s.radiographicDepth = new Map();
   if(raw.radiographicDepth && typeof raw.radiographicDepth === "object"){
     for(const [surf, val] of Object.entries(raw.radiographicDepth)){
@@ -3735,7 +3826,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.5",
+    version: "2.6",
     globals: {
       wisdomVisible,
       showBase,
@@ -4489,6 +4580,12 @@ function wireControls(){
   // external-cervical picker; both subtypes render identically).
   buildSelect($("#resorptionSelect"), getResorptionOptions(), (value)=>{
     applyToSelected((s)=>{ s.resorptionType = value; });
+  });
+
+  // Peri-implant status (SP8 Task 5: implants only — supersedes the parodontal/
+  // inflammation mods there).
+  buildSelect($("#periImplantSelect"), getPeriImplantOptions(), (value)=>{
+    applyToSelected((s)=>{ applyPeriImplantSelection(s, value); });
   });
 
   // Extraction wound

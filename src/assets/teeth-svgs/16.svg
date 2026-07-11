@@ -332,6 +332,7 @@
         <path d="M21.9,9.6v-.8c.5,0,1-.2,1.6-.2v.8l-1.6.2Z" data-active="1" style="fill: #e6eaeb;" />
         <path d="M21.8,6c.5,0,1-.2,1.5-.2v.8l-1.5.2v-.8Z" data-active="1" style="fill: #e1e5e6;" />
         </g>
+      <path id="peri-implant-bone-loss" d="M12.4,27.5c2,7,6,10,9,10s7-3,9-10c-2,4-5,6-9,6s-7-2-9-6Z" data-active="1" style="display: none; fill: #d9534f;" />
       </g>
     <g id="prosthesis-implant" data-active="1">
       <g id="prosthesis-implant-gum" data-active="1" style="display: none; opacity: .5;">

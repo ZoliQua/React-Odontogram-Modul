@@ -104,9 +104,16 @@ describe("SP4 Task 4: mods.inflammation keeps its PERIODONTAL role on a NON-pres
     expect(ids(layers)).not.toContain("inflammation");
   });
 
-  it("implant + mods.inflammation still renders the glyph (implant is non-present per isToothPresent)", () => {
+  // SP8 Task 3: an implant is the one non-present toothSelection where
+  // mods.inflammation's periodontal role is now retired — the finding is
+  // expressed via the periImplant axis instead (see sp8-peri-implant-render.test.ts).
+  // This narrows the "NON-present tooth (unchanged)" describe block: implant
+  // no longer matches missing/extraction-socket, which keep the legacy glyph
+  // (still asserted above/below).
+  it("implant + mods.inflammation no longer renders the glyph (retired in favor of the periImplant axis)", () => {
     const layers = render({ toothSelection: "implant", mods: ["inflammation"] });
-    expect(ids(layers)).toContain("granuloma");
+    expect(ids(layers)).not.toContain("granuloma");
+    expect(ids(layers)).not.toContain("inflammation");
   });
 });
 

@@ -699,6 +699,10 @@ export default function App({
                 <div id="calculusRow" className="row inline-checks hidden">
                   <label><input type="checkbox" id="calculusToggle" /><span>{t("calculus.label")}</span></label>
                 </div>
+                <div id="periImplantRow" className="row hidden">
+                  <span>{t("periImplant.label")}</span>
+                  <select id="periImplantSelect"></select>
+                </div>
               </div>
             </section>
 
