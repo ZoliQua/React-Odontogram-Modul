@@ -33,13 +33,12 @@ export interface ToothRecord {
   crownNeeded?: boolean;
   missingClosed?: boolean;
   bridgePillar?: boolean;
-  bridgeUnit?: string;
+  prosthesis?: string;
   mobility?: string;
   toothSubstrate?: string;
   restorationType?: string;
   restorationMaterial?: string;
-  /** Interim legacy field: retained only for the implant-attachment render path (SP3b). */
-  crownMaterial?: string;
+  crownLeakage?: boolean;
   customStates?: Record<string, unknown>;
   note?: string;
 }

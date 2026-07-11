@@ -67,6 +67,21 @@ describe('App.tsx', () => {
       expect(statusCard).toBeInTheDocument();
     });
 
+    // SP3b Task 6: crown-leakage toggle row. `wireControls`/`syncControlsFromState`
+    // (odontogram.ts, mocked out here) own the actual show/hide + state-write
+    // behavior — see src/__tests__/crown-leakage.test.ts and warnings.test.ts for
+    // that. This only pins down that the row + checkbox exist in the DOM and
+    // start hidden (matching every other conditionally-shown row, e.g. calculusRow).
+    it('renders the crown-leakage toggle row, hidden by default', () => {
+      render(<App />);
+      const row = document.getElementById('crownLeakageRow');
+      const checkbox = document.getElementById('crownLeakage');
+      expect(row).toBeInTheDocument();
+      expect(checkbox).toBeInTheDocument();
+      expect(checkbox).toHaveAttribute('type', 'checkbox');
+      expect(row).toHaveClass('hidden');
+    });
+
     it('renders chart action buttons', () => {
       render(<App />);
       expect(document.getElementById('btnOcclView')).toBeInTheDocument();

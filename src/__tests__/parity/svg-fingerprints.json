@@ -14656,9 +14656,10 @@
     "view": "front",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "metal",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural",
+      "toothSubstrate": "crownprep",
+      "restorationType": "crown",
+      "restorationMaterial": "metal-ceramic"
     },
     "layers": [
       {
@@ -14767,12 +14768,12 @@
         "cls": ""
       },
       {
-        "id": "metal",
+        "id": "metal-ceramic",
         "opacity": "",
         "cls": ""
       },
       {
-        "id": "metal-crown",
+        "id": "metal-ceramic-crown",
         "opacity": "",
         "cls": ""
       },
@@ -32842,9 +32843,10 @@
     "view": "front",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "metal",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural",
+      "toothSubstrate": "crownprep",
+      "restorationType": "crown",
+      "restorationMaterial": "metal-ceramic"
     },
     "layers": [
       {
@@ -32953,12 +32955,12 @@
         "cls": ""
       },
       {
-        "id": "metal",
+        "id": "metal-ceramic",
         "opacity": "",
         "cls": ""
       },
       {
-        "id": "metal-crown",
+        "id": "metal-ceramic-crown",
         "opacity": "",
         "cls": ""
       },
@@ -52843,9 +52845,10 @@
     "view": "front",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "metal",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural",
+      "toothSubstrate": "crownprep",
+      "restorationType": "crown",
+      "restorationMaterial": "metal-ceramic"
     },
     "layers": [
       {
@@ -52954,12 +52957,12 @@
         "cls": ""
       },
       {
-        "id": "metal",
+        "id": "metal-ceramic",
         "opacity": "",
         "cls": ""
       },
       {
-        "id": "metal-crown",
+        "id": "metal-ceramic-crown",
         "opacity": "",
         "cls": ""
       },
@@ -73014,9 +73017,10 @@
     "view": "front",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "metal",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural",
+      "toothSubstrate": "crownprep",
+      "restorationType": "crown",
+      "restorationMaterial": "metal-ceramic"
     },
     "layers": [
       {
@@ -73125,12 +73129,12 @@
         "cls": ""
       },
       {
-        "id": "metal",
+        "id": "metal-ceramic",
         "opacity": "",
         "cls": ""
       },
       {
-        "id": "metal-crown",
+        "id": "metal-ceramic-crown",
         "opacity": "",
         "cls": ""
       },
@@ -91050,9 +91054,10 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "metal",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural",
+      "toothSubstrate": "crownprep",
+      "restorationType": "crown",
+      "restorationMaterial": "metal-ceramic"
     },
     "layers": [
       {
@@ -91156,12 +91161,12 @@
         "cls": ""
       },
       {
-        "id": "metal",
+        "id": "metal-ceramic",
         "opacity": "",
         "cls": ""
       },
       {
-        "id": "metal-crown",
+        "id": "metal-ceramic-crown",
         "opacity": "",
         "cls": ""
       },
@@ -109031,9 +109036,10 @@
     "view": "occlusal",
     "state": {
       "toothSelection": "implant",
-      "crownMaterial": "metal",
-      "restorationType": "none",
-      "restorationMaterial": "none"
+      "crownMaterial": "natural",
+      "toothSubstrate": "crownprep",
+      "restorationType": "crown",
+      "restorationMaterial": "metal-ceramic"
     },
     "layers": [
       {
@@ -109132,12 +109138,12 @@
         "cls": ""
       },
       {
-        "id": "metal",
+        "id": "metal-ceramic",
         "opacity": "",
         "cls": ""
       },
       {
-        "id": "metal-crown",
+        "id": "metal-ceramic-crown",
         "opacity": "",
         "cls": ""
       },

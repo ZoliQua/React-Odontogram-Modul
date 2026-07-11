@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -31,8 +31,8 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🦷 Typy zębów: stały, mleczny, implant, poddziąsłowy, brakujący
 - 🦷 Podłoże zęba (niezależne od jakiejkolwiek odbudowy): naturalne, radix (pozostałość korzenia), złamane, przygotowane pod koronę
 - 👑 Odbudowy według typu × materiału: korona / wkład (inlay) / nakład (onlay) / licówka / most z e.max, złota, gradii, cyrkonu, metalu, metalowo-ceramicznego, teleskopowego lub tymczasowego (nakład dostępny tylko w widoku okluzyjnym) — wybierane z jednego połączonego, niskoklikowego selektora „Fix: Korona – …”; istniejące korony `metal` migrują automatycznie do `metal-ceramic` (metalowo-ceramicznej)
-- 🔩 Filary implantów: śruba gojąca, lokator, lokator z protezą, belka, belka z protezą
-- 🌉 Elementy mostowe: cyrkon, metal, tymczasowy, ruchomy, belka, belka z protezą
+- 🦿 Protetyka ruchoma/na łącznikach na dedykowanej osi `prosthesis` (wpisy „Kivehető:” w połączonym selektorze): śruba gojąca implantu, lokator, lokator z protezą nakładaną, belka, belka z protezą nakładaną; ruchoma proteza częściowa lub całkowita wsparta na zębach
+- 🌉 Nakładka odcinka mostu wielozębowego: kolejne zęby mostu (przęsła + filary) są renderowane jako jeden ciągły łącznik przez przerwy między zębami, uwzględniony w eksporcie PNG/JPG/SVG
 - 🔍 Dokumentowanie próchnicy na 6 powierzchniach: mezjalnej, dystalnej, policzkowej, językowej, okluzyjnej, podkoronowej
 - 🪥 Materiały wypełnień na powierzchnię: amalgamat, kompozyt, GIC, tymczasowe
 - 🏥 Stany endodontyczne: wypełnienie lecznicze, wypełnienie kanałowe, niekompletne wypełnienie kanałowe, wkład z włókna szklanego, wkład metalowy, resekcja, wkład parapulpalny
@@ -50,6 +50,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🦷 Próchnica wtórna (nawracająca) — automatycznie wyznaczana, gdy próchnica nakłada się na wypełnienie
 - 🪨 Kamień nazębny, resorpcja korzenia i typowane zmiany okołowierzchołkowe (ziarniniak / torbiel / ropień)
 - 📏 Głębokość próchnicy na powierzchnię (powierzchowna / zębina / głęboka), lub opcjonalne punktowanie ICDAS II (0–6) za pomocą `enableIcdas`
+- 🩹 Przełącznik nieszczelności brzeżnej korony, widoczny tylko przy odbudowie koronowej lub mostowej
 - 🧰 Ujednolicony wiersz ikon paska górnego z menu Ustawień (numeracja, notatki, ICDAS, informacje o zębach)
 - 📋 Panel informacji o zębach: na żywo tekstowe podsumowanie całego wykresu (liczba zębów, listy obecnych/brakujących, próchnica w tym wtórna, wypełnienia, kanały korzeniowe, protetyka, implanty, stan przyzębia) — wyświetlany domyślnie, przełączany w Ustawieniach
 - 🗂️ Skonsolidowane menu Eksportu (Status JSON / FHIR / PNG / JPG)
@@ -68,7 +69,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🔒 Tryb tylko do odczytu: wyłączenie wszystkich interakcji do drukowania/raportowania/przeglądania
 - ✨ Animacje zaznaczenia: pulsująca przerywana ramka i świecący cień na zaznaczonych zębach (z obsługą prefers-reduced-motion)
 - 📝 Notatki do zębów: dwuklik, aby dodać/edytować notatki, ikona notatki obok numeru zęba, etykietka po najechaniu z tekstem notatki, eksport/import JSON
-- 🧪 284 testy automatyczne (Vitest) w 33 plikach testowych obejmujące numerację, tłumaczenia, presety, i18n, komponent App, motyw, dotyk, wtyczki i dostępność
+- 🧪 340 testów automatycznych (Vitest) w 37 plikach testowych obejmujące numerację, tłumaczenia, presety, i18n, komponent App, motyw, dotyk, wtyczki i dostępność
 - 📖 Dokumentacja API TypeDoc z komentarzami JSDoc dla wszystkich publicznych eksportów (`npm run docs`)
 
 ### 📦 Moduły
@@ -274,7 +275,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testowanie
 ```bash
-npm run test           # Uruchom wszystkie 284 testy
+npm run test           # Uruchom wszystkie 340 testów
 npm run test:watch     # Tryb obserwowania
 npm run test:coverage  # Raport pokrycia
 ```
@@ -376,7 +377,7 @@ Eksport tworzy plik JSON (wersja `2.0`) zawierający:
 - `src/status_extras.ts` - 34 predefiniowane szablony uzupełnień (mosty, protezy, konstrukcje belkowe)
 - `src/i18n/` - tłumaczenia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) i hook i18n
 - `src/utils/numbering.ts` - konwersja numeracji FDI, Universal, Palmer
-- `src/__tests__/` - zestaw testów Vitest (284 testy w 33 plikach)
+- `src/__tests__/` - zestaw testów Vitest (340 testów w 37 plikach)
 - `src/assets/teeth-svgs/` - szablony SVG zębów (6 plików: siekacze, kły, zęby przedtrzonowe, trzonowce + widoki okluzyjne)
 - `src/assets/icon-svgs/` - ikony SVG paska narzędzi (5 plików)
 

@@ -33,10 +33,10 @@ describe('restoration/substrate summaries (tooltip + tooth-information panel)', 
     expect(summary).toContain(t('substrate.radix'));
   });
 
-  it('tooltip summary still shows implant attachments via the legacy crownMaterial field', () => {
-    __setToothStateForTest(14, { toothSelection: 'implant', crownMaterial: 'locator' });
+  it('tooltip summary shows implant attachments via the new prosthesis axis (SP3b field-move)', () => {
+    __setToothStateForTest(14, { toothSelection: 'implant', prosthesis: 'locator' });
     const summary = getToothStateSummary(14);
-    expect(summary).toContain(t('crown.option.locator'));
+    expect(summary).toContain(t('prosthesis.type.locator'));
   });
 
   it('tooth-information prosthetics section lists fixed restorations from the new model', () => {
@@ -46,11 +46,11 @@ describe('restoration/substrate summaries (tooltip + tooth-information panel)', 
     expect(prosthetics.items.some((item) => item.includes(t('restoration.type.crown')) && item.includes(t('restoration.material.emax')))).toBe(true);
   });
 
-  it('tooth-information prosthetics section still lists removable bridge units', () => {
-    __setToothStateForTest(22, { toothSelection: 'none', bridgeUnit: 'removable' });
+  it('tooth-information prosthetics section lists removable dentures via the prosthesis axis (SP3b field-move)', () => {
+    __setToothStateForTest(22, { toothSelection: 'none', prosthesis: 'removable-partial' });
     const s = getOdontogramSummary();
     const prosthetics = s.sections.find((sec) => sec.key === 'prosthetics')!;
-    expect(prosthetics.items.some((item) => item.includes(t('bridge.option.removable')))).toBe(true);
+    expect(prosthetics.items.some((item) => item.includes(t('prosthesis.type.removablePartial')))).toBe(true);
   });
 
   it('a bridge pontic (restorationType:"bridge" on a missing tooth) shows up in prosthetics', () => {

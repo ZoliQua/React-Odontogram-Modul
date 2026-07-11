@@ -34,7 +34,7 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "toothSubstrate", kind: "enum", valueGroup: "toothSubstrate", skipValue: "natural", findingCode: "tooth-substrate", findingDisplay: "Tooth substrate" },
   { field: "restorationType", kind: "enum", valueGroup: "restorationType", skipValue: "none", findingCode: "restoration-type", findingDisplay: "Restoration type" },
   { field: "restorationMaterial", kind: "enum", valueGroup: "restorationMaterial", skipValue: "none", findingCode: "restoration-material", findingDisplay: "Restoration material" },
-  { field: "bridgeUnit", kind: "enum", valueGroup: "bridgeUnit", skipValue: "none", findingCode: "bridge-unit", findingDisplay: "Prosthetic / bridge unit" },
+  { field: "prosthesis", kind: "enum", valueGroup: "prosthesis", skipValue: "none", findingCode: "prosthesis-type", findingDisplay: "Prosthesis / attachment" },
   { field: "mobility", kind: "enum", valueGroup: "mobility", skipValue: "none", findingCode: "tooth-mobility", findingDisplay: "Tooth mobility" },
 
   { field: "caries", kind: "set", valueGroup: "caries", findingCode: "caries", findingDisplay: "Dental caries" },
@@ -62,4 +62,5 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "crownReplace", kind: "boolean", findingCode: "crown-replace-planned", findingDisplay: "Planned crown replacement" },
   { field: "crownNeeded", kind: "boolean", findingCode: "crown-needed", findingDisplay: "Crown needed" },
   { field: "missingClosed", kind: "boolean", findingCode: "missing-gap-closed", findingDisplay: "Closed gap (missing tooth)" },
+  { field: "crownLeakage", kind: "boolean", findingCode: "crown-leakage", findingDisplay: "Crown marginal leakage" },
 ];

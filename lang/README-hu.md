@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -31,8 +31,8 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 - 🦷 Fogtípusok: maradó, tejfog, implantátum, ínyalatti, hiányzó
 - 🦷 Fogszubsztrátum (bármely pótlástól függetlenül): természetes, radix (gyökércsonk), törött, koronára előkészített
 - 👑 Pótlások típus × anyag szerint: korona / inlay / onlay / héj (veneer) / híd e.max, arany, gradia, cirkon, fém, fémkerámia, teleszkópos vagy ideiglenes anyagból (az onlay csak okkluzális nézetben érhető el) — egyetlen kombinált, kevés kattintást igénylő „Fix: Korona – …” választóból kiválasztva; a korábbi `metal` koronák automatikusan `metal-ceramic` (fémkerámia) típusra migrálódnak
-- 🔩 Implantátum felépítmények: gyógyuló csavar, lokátor, lokátor protézissel, bár, bár protézissel
-- 🌉 Hídtagok: cirkon, fém, ideiglenes, kivehető, bár, bár protézissel
+- 🦿 Kivehető/csatlakozós protetika a dedikált `prosthesis` tengelyen (a kombinált választó „Kivehető:” bejegyzései): implantátum gyógyuló csavarja, lokátor, lokátor protézissel (overdenture), bár, bár protézissel; fogtámasztékú kivehető részleges vagy teljes fogsor
+- 🌉 Több fogra kiterjedő híd-overlay: az egymást követő hídtagok (pontikok + pillérek) egyetlen folytonos csatlakozóként jelennek meg a fogak közötti réseken át, a PNG/JPG/SVG exportban is szerepel
 - 🔍 Szuvasodás rögzítése 6 felületen: meziális, disztális, bukkális, linguális, okkluzális, korona alatti
 - 🪥 Tömőanyagok felületenként: amalgám, kompozit, GIC, ideiglenes
 - 🏥 Endodonciai állapotok: gyógyszeres tömés, gyökértömés, nem teljes gyökértömés, üvegszálas csap, fémcsap, rezekció, parapulpális csap
@@ -50,6 +50,7 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 - 🦷 Szekunder (másodlagos) szuvasodás — automatikusan jelenik meg, ha a caries tömésre esik
 - 🪨 Fogkő, gyökérreszorpció és típusos periapikális léziók (granuloma / ciszta / tályog)
 - 📏 Felületenkénti szuvasodás mélysége (felületes / dentin / mély), vagy opcionális ICDAS II pontozás (0–6) az `enableIcdas` proppal
+- 🩹 Korona szegélyi rés (leakage) kapcsoló, csak korona vagy híd pótlás esetén jelenik meg
 - 🧰 Egységes ikon-fejléc Beállítások menüvel (számozás, jegyzetek, ICDAS, fogadatok)
 - 📋 Fogadatok panel: élő szöveges összegzés a teljes státuszról (fogszámok, meglévő/hiányzó listák, szuvasodás beleértve a szekundert, tömések, gyökérkezelések, fogpótlások, implantátumok, fogágy állapota) — alaphelyzetben látszik, a Beállításokban kapcsolható
 - 🗂️ Egységes Export menü (Státusz JSON / FHIR / PNG / JPG)
@@ -68,7 +69,7 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 - 🔒 Csak olvasható mód: összes interakció letiltása nyomtatási/jelentés nézetekhez
 - ✨ Kijelölési animációk: pulzáló szaggatott keret és ragyogó árnyék a kijelölt fogakon (prefers-reduced-motion támogatással)
 - 📝 Fogankénti megjegyzések: dupla kattintás megjegyzés hozzáadásához/szerkesztéséhez, megjegyzés ikon a fogszám mellett, hover tooltip a megjegyzés szövegével, JSON export/import
-- 🧪 284 automatizált teszt (Vitest) 33 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés lefedésére
+- 🧪 340 automatizált teszt (Vitest) 37 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés lefedésére
 - 📖 TypeDoc API dokumentáció JSDoc kommentekkel minden publikus exporton (`npm run docs`)
 
 ### 📦 Modulok
@@ -274,7 +275,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Tesztelés
 ```bash
-npm run test           # Összes 284 teszt futtatása
+npm run test           # Összes 340 teszt futtatása
 npm run test:watch     # Figyelési mód
 npm run test:coverage  # Lefedettségi jelentés
 ```
@@ -376,7 +377,7 @@ Az export egy JSON fájlt hoz létre (`2.0` verziójú), amely tartalmazza:
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, bár konstrukciók)
 - `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) és i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
-- `src/__tests__/` - Vitest tesztcsomag (284 teszt, 33 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés)
+- `src/__tests__/` - Vitest tesztcsomag (340 teszt, 37 tesztfájlban: számozás, fordítások, presetek, i18n, App komponens, téma, érintés, pluginek és akadálymentesítés)
 - `src/assets/teeth-svgs/` - SVG fogsablonok (6 fájl: metszők, szemfogak, kis őrlők, nagy őrlők + okkluzális nézetek)
 - `src/assets/icon-svgs/` - eszköztár ikon SVG-k (5 fájl)
 

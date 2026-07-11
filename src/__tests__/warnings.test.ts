@@ -79,4 +79,31 @@ describe('getStateWarnings (via __getStateWarnings)', () => {
     expect(warnings).toContain(t('warn.fillingOnMissing'));
     expect(warnings).toContain(t('warn.cariesOnMissing'));
   });
+
+  // Task 6 (spec §9 gap): defense-in-depth. hydrateState() coerces an invalid
+  // (restorationType, restorationMaterial) pair on import, so this check should
+  // never fire for a state that only ever went through hydrateState — but it
+  // reuses the SAME warning mechanism (getStateWarnings) as a safety net for any
+  // state built by another path (e.g. a hand-built object, as here) that skips
+  // that coercion.
+  it('fires an invalid-restoration-combo warning for a pair not in RESTORATION_MATRIX', () => {
+    setI18nLanguage('en');
+    const state = { ...base(), restorationType: 'inlay', restorationMaterial: 'metal' };
+    const warnings = __getStateWarnings(state);
+    expect(warnings).toContain(t('warn.invalidRestorationCombo'));
+  });
+
+  it('does NOT fire the invalid-restoration-combo warning for a valid pair', () => {
+    setI18nLanguage('en');
+    const state = { ...base(), restorationType: 'crown', restorationMaterial: 'zircon' };
+    const warnings = __getStateWarnings(state);
+    expect(warnings).not.toContain(t('warn.invalidRestorationCombo'));
+  });
+
+  it('does NOT fire the invalid-restoration-combo warning for restorationType:"none"/restorationMaterial:"none"', () => {
+    setI18nLanguage('en');
+    const state = { ...base() };
+    const warnings = __getStateWarnings(state);
+    expect(warnings).not.toContain(t('warn.invalidRestorationCombo'));
+  });
 });

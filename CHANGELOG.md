@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.0] - 2026-07-11
+
+### Added
+- New **`prosthesis`** clinical axis (healing-abutment / locator / locator-denture / bar / bar-denture / removable-partial / removable-full), orthogonal to `restorationType`×`restorationMaterial`, surfaced with a "Kivehető:" prefix in the combined restoration dropdown. Covers implant attachments (healing abutment, locator, bar, with or without an overdenture) and tooth-supported removable partial/full dentures — replacing the legacy `crownMaterial`/`bridgeUnit` attachment and removable values field-for-field (byte-identical render).
+- **Implant fixed crowns** now join the `restorationType`×`restorationMaterial` model: implants are no longer gated away from crown/bridge restoration options, and render via composition (`{material}-{type}` layers) plus an implant connector layer, with `metal` migrating to `metal-ceramic` for implants too.
+- Multi-tooth **bridge-span overlay**: consecutive bridge teeth (`restorationType: "bridge"` or `bridgePillar`) within one arch now render a single continuous gum-line saddle across the inter-tooth gaps, drawn as an engine-owned `<svg>` over the tooth grid. The overlay is purely presentational (derives spans from existing tooth state; no new state field), repositions on resize, and is included in SVG/PNG/JPG export.
+- **Crown marginal-leakage toggle**: a new `crownLeakage` boolean clinical axis + tooth-editor checkbox, shown only for a crown or bridge restoration, activating the previously dormant `crown-leakage` artwork layer. Round-trips through FHIR export/import (`crown-leakage` finding) like any other boolean axis.
+
+### Changed
+- JSON export payload bumped to **version 2.1** (adds `prosthesis`, drops `crownMaterial`/`bridgeUnit`); imports still accept legacy 1.4 and 2.0 payloads and migrate them automatically (implant `crownMaterial` fixed crowns → `restorationType`+material; attachment/removable `crownMaterial`/`bridgeUnit` values → `prosthesis`).
+- FHIR export now emits a `prosthesis` coding in place of the dropped attachment/removable `crown-material`/`bridge-unit` codings, restoring round-trip fidelity for implant attachments (locator/bar/healing-abutment) that SP3a had dropped from FHIR; implant crowns round-trip via the existing `restoration-type`/`restoration-material` codings.
+- The legacy `crownMaterial`/`bridgeUnit` fields are fully retired from state, serialization, and the value-map registry (kept only as a read-only input-side migration path for legacy payloads).
+
+### Fixed
+- **Invalid restoration type/material combinations are now corrected on import**: a hand-edited or imported payload that pairs a restoration type with a material it doesn't support (e.g. an inlay in metal) is coerced to that type's first valid material (or dropped to no restoration if the type itself carries none), and a warning is surfaced — instead of silently persisting a combination the renderer would have drawn nothing for.
+- **Implant fixed crowns from 2.0-format payloads are no longer silently dropped on import**: an implant crown serialized by an intermediate build as `{restorationType:"none", crownMaterial:<material>}` now correctly folds into `restorationType:"crown"` + that material (with `metal` → `metal-ceramic`), instead of vanishing.
+- The combined restoration dropdown now actually lists the **"Kivehető:" (removable) `prosthesis` entries** (implant attachments for an implant tooth; removable partial/full dentures for a gap) and writes the `prosthesis` axis when one is chosen — previously only the "Fix:" half was wired and the removable prefix was unused.
+- Selecting a "Kivehető:" prosthesis or a fixed restoration now keeps the two axes mutually exclusive (a tooth has **either** a fixed restoration **or** a prosthesis); import also enforces this coherence (restoration wins if a crafted payload sets both).
+- **Stale `crownLeakage` is now cleared** when a restoration changes away from crown/bridge, preventing an orphaned `crown-leakage` finding on a non-crown tooth.
+
 ## [1.14.0] - 2026-07-11
 
 ### Added

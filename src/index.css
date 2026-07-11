@@ -171,6 +171,16 @@ select:focus{
   grid-template-columns: repeat(16, minmax(36px, 1fr));
   gap:4px;
   padding:10px;
+  position:relative;
+}
+/* Engine-owned multi-tooth bridge-span overlay. Absolutely positioned so it does
+   not consume a grid cell; sits above the tiles but never intercepts pointer
+   events (per-tooth clicks stay on the tiles below). */
+.tooth-grid > svg.bridge-overlay{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:5;
 }
 .tooth-label-row{
   display:contents;

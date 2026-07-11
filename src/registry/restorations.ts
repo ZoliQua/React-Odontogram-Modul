@@ -49,13 +49,39 @@ export interface RestorationOption {
   restorationType: RestorationType; restorationMaterial: RestorationMaterial;
   labelKey: string; // for "none"; combos carry typeLabelKey+materialLabelKey instead
   typeLabelKey?: string; materialLabelKey?: string; prefixKey?: string;
+  // Set on a "Kivehető:" (removable) entry — selecting it writes `s.prosthesis`
+  // and clears restorationType/material (a tooth has EITHER a fixed restoration
+  // OR a prosthesis, never both). `restorationType`/`restorationMaterial` stay
+  // "none" on these options so the shape is uniform.
+  prosthesis?: ProsthesisValue;
 }
 
-export function restorationOptions(view: ToothView, _ctx: Record<string, unknown>): RestorationOption[] {
+export type ProsthesisValue =
+  | "healing-abutment" | "locator" | "locator-denture" | "bar" | "bar-denture"
+  | "removable-partial" | "removable-full";
+
+// Gate the prosthesis half of the combined dropdown: `isImplant` for an implant
+// tooth, `toothSelection === "none"` (a gap) for a removable denture.
+export interface RestorationOptionsCtx { isImplant?: boolean; view?: ToothView; toothSelection?: string }
+
+// Implants carry a fixed crown/bridge on an abutment, never an inlay/onlay/
+// veneer (those need natural tooth substrate) — so the dropdown for an implant
+// tooth is restricted to those two restoration types.
+const IMPLANT_RESTORATION_TYPES: (keyof typeof RESTORATION_MATRIX)[] = ["crown", "bridge"];
+
+// "Kivehető:" (removable) prosthesis entries appended after the fixed ones.
+// Implant abutments carry attachments; a gap carries a removable denture.
+const IMPLANT_PROSTHESIS: ProsthesisValue[] = ["healing-abutment", "locator", "locator-denture", "bar", "bar-denture"];
+const GAP_PROSTHESIS: ProsthesisValue[] = ["removable-partial", "removable-full"];
+
+export function restorationOptions(view: ToothView, ctx: RestorationOptionsCtx = {}): RestorationOption[] {
   const opts: RestorationOption[] = [
     { restorationType: "none", restorationMaterial: "none", labelKey: "restoration.none" },
   ];
-  for (const type of Object.keys(RESTORATION_MATRIX) as (keyof typeof RESTORATION_MATRIX)[]) {
+  const types = ctx.isImplant
+    ? IMPLANT_RESTORATION_TYPES
+    : (Object.keys(RESTORATION_MATRIX) as (keyof typeof RESTORATION_MATRIX)[]);
+  for (const type of types) {
     const spec = RESTORATION_MATRIX[type];
     if (spec.occlusalOnly && view !== "occlusal") continue;
     for (const material of spec.materials) {
@@ -65,6 +91,17 @@ export function restorationOptions(view: ToothView, _ctx: Record<string, unknown
         typeLabelKey: LABEL_KEY.type(type), materialLabelKey: LABEL_KEY.material(material),
       });
     }
+  }
+  // "Kivehető:" (removable) prosthesis half of the combined dropdown.
+  const prosthesisValues = ctx.isImplant
+    ? IMPLANT_PROSTHESIS
+    : (ctx.toothSelection === "none" ? GAP_PROSTHESIS : []);
+  for (const p of prosthesisValues) {
+    opts.push({
+      restorationType: "none", restorationMaterial: "none",
+      labelKey: "", prefixKey: "restoration.prefix.removable",
+      prosthesis: p,
+    });
   }
   return opts;
 }

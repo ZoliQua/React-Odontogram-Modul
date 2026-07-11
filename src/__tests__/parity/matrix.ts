@@ -1,8 +1,21 @@
 // Deterministic parity matrix: every enum value / surface / boolean in isolation,
 // plus curated tricky combinations, over the 6 representative templates.
-import { VALID_TOOTH_SELECTION, VALID_CROWN_MATERIAL, VALID_ENDO, VALID_BRIDGE_UNIT,
+import { VALID_TOOTH_SELECTION, VALID_ENDO,
   VALID_MOBILITY, VALID_PERIAPICAL_TYPE, VALID_CARIES, VALID_FILLING_MATERIAL, VALID_FILLING_SURFACES,
   VALID_MODS } from "../../odontogram";
+
+// Frozen legacy vocabularies (Task 4 retired the live `crownMaterial`/`bridgeUnit`
+// axes + their VALID_* exports and LOCAL_VALUE_MAPS entries). hydrateState's
+// input-side migration branch still accepts these exact raw string values on
+// import (backward compat), so the matrix hardcodes them here — verbatim, same
+// order — to keep exercising that legacy path without depending on any exported
+// vocabulary set. (Mirrors the pre-Task-4 LOCAL_VALUE_MAPS.crownMaterial /
+// .bridgeUnit key order exactly, so the SVG golden fingerprints are unaffected.)
+const LEGACY_CROWN_MATERIAL_VALUES = [
+  "natural", "broken", "crownprep", "radix", "emax", "zircon", "metal", "temporary",
+  "telescope", "healing-abutment", "locator", "locator-prosthesis", "bar", "bar-prosthesis",
+];
+const LEGACY_BRIDGE_UNIT_VALUES = ["none", "removable", "zircon", "metal", "temporary", "bar", "bar-prosthesis"];
 
 const TEMPLATES: { toothNo: number; template: string; view: "front"|"occlusal" }[] = [
   { toothNo: 11, template: "11", view: "front" },
@@ -20,8 +33,8 @@ const BOOLEAN_FIELDS = [
 ];
 
 const ENUM_FIELDS: [string, Iterable<string>][] = [
-  ["toothSelection", VALID_TOOTH_SELECTION], ["crownMaterial", VALID_CROWN_MATERIAL],
-  ["endo", VALID_ENDO], ["bridgeUnit", VALID_BRIDGE_UNIT], ["mobility", VALID_MOBILITY],
+  ["toothSelection", VALID_TOOTH_SELECTION], ["crownMaterial", LEGACY_CROWN_MATERIAL_VALUES],
+  ["endo", VALID_ENDO], ["bridgeUnit", LEGACY_BRIDGE_UNIT_VALUES], ["mobility", VALID_MOBILITY],
   ["periapicalType", VALID_PERIAPICAL_TYPE], ["fillingMaterial", VALID_FILLING_MATERIAL],
 ];
 

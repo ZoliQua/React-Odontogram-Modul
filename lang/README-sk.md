@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -31,8 +31,8 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🦷 Typy zubov: trvalý, mliečny, implantát, subgingiválny, chýbajúci
 - 🦷 Substrát zuba (nezávislý od akejkoľvek náhrady): prirodzený, radix (zvyšok koreňa), zlomený, preparovaný na korunku
 - 👑 Náhrady podľa typu × materiálu: korunka / inlay / onlay / fazeta / mostík z e.max, zlata, gradie, zirkónu, kovu, kovovo-keramického materiálu, teleskopu alebo dočasného materiálu (onlay je dostupný len v okluzálnom zobrazení) — vyberané z jedného kombinovaného výberu „Fix: Korunka – …" s nízkym počtom klikov; staršie korunky `metal` sa automaticky migrujú na `metal-ceramic` (kovovo-keramickú)
-- 🔩 Implantátové abutmenty: hojivý abutment, lokátor, lokátor s protézou, steg, steg s protézou
-- 🌉 Mostové členy: zirkón, kov, dočasný, snímateľný, steg, steg s protézou
+- 🦿 Snímateľná/náustavcová protetika na vyhradenej osi `prosthesis` (položky „Kivehető:“ v kombinovanom výbere): hojivý abutment implantátu, lokátor, lokátor s protézou (overdenture), steg, steg s protézou; zubami podopretá snímateľná čiastočná alebo celková náhrada
+- 🌉 Prekrytie viaczubového mostíkového úseku: po sebe idúce zuby mostíka (články + piliere) sa vykresľujú ako jeden súvislý konektor cez medzizubné medzery, zahrnuté v exporte PNG/JPG/SVG
 - 🔍 Zaznamenávanie kazu na 6 plochách: meziálne, distálne, bukálne, linguálne, oklúzne, subkoronálne
 - 🪥 Materiály výplní na každú plochu: amalgám, kompozit, GIC, dočasný
 - 🏥 Endodontické stavy: liečivá výplň, koreňová výplň, nekompletná koreňová výplň, sklený kolík, kovový kolík, resekcia, parapulpálny kolík
@@ -50,6 +50,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🦷 Sekundárny (rekurentný) kaz — automaticky odvodený, keď sa kaz prekrýva s výplňou
 - 🪨 Zubný kameň, resorpcia koreňa a typizované periapikálne lézie (granulóm / cysta / absces)
 - 📏 Hĺbka kazu na každú plochu (povrchový / dentín / hlboký), alebo voliteľné skórovanie ICDAS II (0–6) cez `enableIcdas`
+- 🩹 Prepínač okrajovej netesnosti korunky, zobrazený len pri korunkovej alebo mostíkovej náhrade
 - 🧰 Zjednotená lišta ikon v hornej časti s ponukou Nastavenia (číslovanie, poznámky, ICDAS, informácie o zuboch)
 - 📋 Panel informácií o zuboch: živý textový súhrn celého odontogramu (počty zubov, zoznamy prítomných/chýbajúcich, kaz vrátane sekundárneho, výplne, koreňové kanáliky, protetika, implantáty, stav parodontu) — zobrazený predvolene, prepínateľný v Nastaveniach
 - 🗂️ Konsolidovaný rozbaľovací zoznam Exportu (Stav JSON / FHIR / PNG / JPG)
@@ -68,7 +69,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🔒 Režim iba na čítanie: zakázanie všetkých interakcií pre prípady tlače/správ/prezerania
 - ✨ Animácie výberu: pulzujúci prerušovaný okraj a žiariaci tieň na vybraných zuboch (s podporou prefers-reduced-motion)
 - 📝 Poznámky ku každému zubu: dvojklik pre pridanie/úpravu poznámok, ikona poznámky vedľa čísla zuba, tooltip pri najetí s textom poznámky, export/import JSON
-- 🧪 284 automatizovaných testov (Vitest) v 33 testovacích súboroch pokrývajúcich číslovanie, preklady, predvoľby, i18n, komponent App, tému, dotyk, pluginy a prístupnosť
+- 🧪 340 automatizovaných testov (Vitest) v 37 testovacích súboroch pokrývajúcich číslovanie, preklady, predvoľby, i18n, komponent App, tému, dotyk, pluginy a prístupnosť
 - 📖 Dokumentácia API TypeDoc s komentármi JSDoc pre všetky verejné exporty (`npm run docs`)
 
 ### 📦 Moduly
@@ -274,7 +275,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testovanie
 ```bash
-npm run test           # Spustiť všetkých 284 testov
+npm run test           # Spustiť všetkých 340 testov
 npm run test:watch     # Sledovací režim
 npm run test:coverage  # Správa pokrytia
 ```
@@ -376,7 +377,7 @@ Export vytvorí súbor JSON (verzia `2.0`) obsahujúci:
 - `src/status_extras.ts` - 34 preddefinovaných šablón reštaurácií (mostíky, protézy, stegové konštrukcie)
 - `src/i18n/` - preklady (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) a i18n hook
 - `src/utils/numbering.ts` - konverzia číslovania FDI, Universal, Palmer
-- `src/__tests__/` - testovacia sada Vitest (284 testov v 33 súboroch)
+- `src/__tests__/` - testovacia sada Vitest (340 testov v 37 súboroch)
 - `src/assets/teeth-svgs/` - SVG šablóny zubov (6 súborov: rezáky, špičáky, premoláre, moláre + oklúzne pohľady)
 - `src/assets/icon-svgs/` - SVG ikony panela nástrojov (5 súborov)
 

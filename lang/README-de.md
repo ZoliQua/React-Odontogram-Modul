@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -31,8 +31,8 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🦷 Zahntypen: bleibend, Milchzahn, Implantat, subgingival, fehlend
 - 🦷 Zahnsubstrat (unabhängig von jeder Restauration): natürlich, Radix (Wurzelrest), frakturiert, für Krone präpariert
 - 👑 Restaurationen nach Typ × Material: Krone / Inlay / Onlay / Veneer / Brücke in e.max, Gold, Gradia, Zirkon, Metall, Metallkeramik, Teleskop oder provisorisch (Onlay nur okklusale Ansicht) — Auswahl über einen einzigen kombinierten „Fix: Krone – …“-Picker mit wenigen Klicks; bestehende `metal`-Kronen werden automatisch zu `metal-ceramic` (Metallkeramik) migriert
-- 🔩 Implantat-Abutments: Heilabutment, Locator, Locator mit Prothese, Steg, Steg mit Prothese
-- 🌉 Brückenglieder: Zirkon, Metall, provisorisch, herausnehmbar, Steg, Steg mit Prothese
+- 🦿 Herausnehmbare/Abutment-Prothetik auf der eigenen `prosthesis`-Achse („Kivehető:“-Einträge im kombinierten Picker): Implantat-Heilabutment, Locator, Locator mit Suprakonstruktion, Steg, Steg mit Suprakonstruktion; zahngetragene herausnehmbare Teil- oder Vollprothese
+- 🌉 Mehrzahn-Brückenspann-Overlay: aufeinanderfolgende Brückenzähne (Glieder + Pfeiler) werden als durchgehender Verbinder über die Zahnzwischenräume gerendert, im PNG/JPG/SVG-Export enthalten
 - 🔍 Karieskartierung auf 6 Flächen: mesial, distal, bukkal, lingual, okklusal, subkronal
 - 🪥 Füllungsmaterialien pro Fläche: Amalgam, Komposit, GIZ, provisorisch
 - 🏥 Endodontische Zustände: medikamentöse Füllung, Wurzelfüllung, inkomplette Wurzelfüllung, Glasfaserstift, Metallstift, Resektion, parapulpaler Stift
@@ -50,6 +50,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🦷 Sekundärkaries — automatisch abgeleitet, wenn Karies eine Füllung überlappt
 - 🪨 Zahnstein, Wurzelresorption und typisierte periapikale Läsionen (Granulom / Zyste / Abszess)
 - 📏 Kariestiefe pro Fläche (oberflächlich / Dentin / tief) oder optionales ICDAS-II-Scoring (0–6) via `enableIcdas`
+- 🩹 Kronenrand-Undichtigkeits-Umschalter, nur sichtbar bei Kronen- oder Brückenrestauration
 - 🧰 Vereinheitlichte Topbar-Icon-Leiste mit Einstellungsmenü (Nummerierung, Notizen, ICDAS, Zahninformationen)
 - 📋 Zahninformationen-Panel: textuelle Live-Zusammenfassung des gesamten Befunds (Zahnzahlen, vorhandene/fehlende Zähne, Karies inkl. Sekundärkaries, Füllungen, Wurzelbehandlungen, Zahnersatz, Implantate, Parodontalstatus) — standardmäßig sichtbar, in den Einstellungen umschaltbar
 - 🗂️ Konsolidiertes Export-Dropdown (Status JSON / FHIR / PNG / JPG)
@@ -68,7 +69,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔒 Schreibgeschützter Modus: alle Interaktionen deaktivieren für Druck-/Berichtsansichten
 - ✨ Auswahl-Animationen: pulsierende gestrichelte Umrandung und leuchtender Schatten auf ausgewählten Zähnen (mit Unterstützung für prefers-reduced-motion)
 - 📝 Per-Zahn Notizen: Doppelklick zum Hinzufügen/Bearbeiten, Notiz-Symbol neben der Zahnnummer, Hover-Tooltip mit Notiztext, JSON Export/Import
-- 🧪 284 automatisierte Tests (Vitest) in 33 Testdateien für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
+- 🧪 340 automatisierte Tests (Vitest) in 37 Testdateien für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
 - 📖 TypeDoc API-Dokumentation mit JSDoc-Kommentaren für alle öffentlichen Exporte (`npm run docs`)
 
 ### 📦 Module
@@ -274,7 +275,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Tests
 ```bash
-npm run test           # Alle 284 Tests ausführen
+npm run test           # Alle 340 Tests ausführen
 npm run test:watch     # Watch-Modus
 npm run test:coverage  # Coverage-Bericht
 ```
@@ -376,7 +377,7 @@ Der Export erzeugt eine JSON-Datei (Version `2.0`) mit folgenden Feldern:
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
-- `src/__tests__/` - Vitest-Testsuite (284 Tests in 33 Dateien)
+- `src/__tests__/` - Vitest-Testsuite (340 Tests in 37 Dateien)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
 - `src/assets/icon-svgs/` - Toolbar-Icon-SVGs (5 Dateien)
 

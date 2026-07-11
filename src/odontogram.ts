@@ -9,8 +9,19 @@ import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
 import { optionsFor } from "./registry/uiOptions";
-import { composeRestorationLayers, restorationOptions } from "./registry/restorations";
-import { LOCAL_VALUE_MAPS } from "./fhir/codesystems";
+import {
+  composeRestorationLayers, restorationOptions, isValidRestoration, RESTORATION_MATRIX,
+  type RestorationType, type RestorationMaterial,
+} from "./registry/restorations";
+import {
+  renderBridgeOverlay,
+  detectBridgeSpans,
+  computeBridgeBars,
+  barRect,
+  tileRectFor,
+  defaultMaterialColor,
+  type BridgeToothState,
+} from "./bridgeOverlay";
 import tooth11Url from "./assets/teeth-svgs/11.svg";
 import tooth13Url from "./assets/teeth-svgs/13.svg";
 import tooth14Url from "./assets/teeth-svgs/14.svg";
@@ -116,6 +127,20 @@ const RESTORATION_WRAPPER_GROUP: Record<string, string> = {
   "metal-ceramic": "metal-ceramic", telescope: "telescope", temporary: "temporary-restorations",
 };
 
+// `prosthesis` axis value -> its i18n summary label. Implant attachments
+// (healing-abutment/locator/bar) and removable/bar-retained dentures share this
+// one map — used by both the per-tooth tooltip (getStateSummary) and the
+// tooth-information panel (getOdontogramSummary).
+const PROSTHESIS_SUMMARY_KEY: Record<string, string> = {
+  "healing-abutment": "prosthesis.type.healingAbutment",
+  locator: "prosthesis.type.locator",
+  "locator-denture": "prosthesis.type.locatorDenture",
+  bar: "prosthesis.type.bar",
+  "bar-denture": "prosthesis.type.barDenture",
+  "removable-partial": "prosthesis.type.removablePartial",
+  "removable-full": "prosthesis.type.removableFull",
+};
+
 function defaultState(){
   return {
     toothSelection: "tooth-base", // none | tooth-base | milktooth | implant | variants
@@ -147,14 +172,12 @@ function defaultState(){
     crownNeeded: false,
     missingClosed: false,
     bridgePillar: false,
-    bridgeUnit: "none", // none | removable | bar | bar-prosthesis (fixed values migrated to restorationType×material)
+    prosthesis: "none", // none | healing-abutment | locator | locator-denture | bar | bar-denture | removable-partial | removable-full
     mobility: "none", // none | m1 | m2 | m3
     toothSubstrate: "natural",  // natural | radix | broken | crownprep
     restorationType: "none",    // none | crown | inlay | onlay | veneer | bridge
     restorationMaterial: "none", // none | emax | gold | gradia | zircon | metal | metal-ceramic | telescope | temporary
-    // Legacy field retained (interim) only for the implant-attachment render path
-    // (healing-abutment/locator/bar) absorbed by SP3b; no longer drives crown/substrate.
-    crownMaterial: "natural",   // interim: implant attachments (healing-abutment/locator/bar[-prosthesis]/locator-prosthesis)
+    crownLeakage: false, // marginal leakage on a crown/bridge restoration (SP3b Task 6)
     customStates: {} as Record<string, unknown>,
     note: "",
   };
@@ -296,6 +319,52 @@ function notifyStateChange(){
     try{ cb(); }
     catch(e){ console.error("odontogram state-change listener failed", e); }
   }
+  // Redraw the multi-tooth bridge overlay after per-tooth renders settle.
+  // notifyStateChange() is synchronous and is always invoked at the END of a
+  // mutation batch (single edit :~1570, edentulous :~2298, import :~2850, init
+  // :~3753), so tile geometry is current by this point. renderBridgeOverlay is
+  // internally guarded, but wrap defensively so a geometry hiccup can never
+  // break state notification.
+  try{ updateBridgeOverlay(); }
+  catch(e){ console.error("odontogram bridge overlay render failed", e); }
+}
+
+/** Read a tooth's state as the minimal shape the bridge overlay consumes. */
+function bridgeStateFor(toothNo: number): BridgeToothState | undefined {
+  return toothState.get(toothNo) as BridgeToothState | undefined;
+}
+
+/** (Re)draw the engine-owned multi-tooth bridge overlay over `#toothGrid`. */
+function updateBridgeOverlay(){
+  const grid = $("#toothGrid") as HTMLElement | null;
+  renderBridgeOverlay({ grid, getState: bridgeStateFor, materialColor: defaultMaterialColor });
+}
+
+// ---- Bridge overlay resize handling ----
+let bridgeOverlayResizeObserver: ResizeObserver | null = null;
+let bridgeOverlayResizeTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** Observe `#toothGrid` and re-run the bridge overlay (debounced) on resize. */
+function setupBridgeOverlayResize(){
+  if(typeof ResizeObserver === "undefined") return;
+  const grid = $("#toothGrid") as HTMLElement | null;
+  if(!grid) return;
+  teardownBridgeOverlayResize();
+  bridgeOverlayResizeObserver = new ResizeObserver(() => {
+    if(bridgeOverlayResizeTimer) clearTimeout(bridgeOverlayResizeTimer);
+    bridgeOverlayResizeTimer = setTimeout(() => {
+      bridgeOverlayResizeTimer = null;
+      try{ updateBridgeOverlay(); }
+      catch(e){ console.error("odontogram bridge overlay resize render failed", e); }
+    }, 100);
+  });
+  bridgeOverlayResizeObserver.observe(grid);
+}
+
+/** Disconnect the bridge-overlay resize observer and cancel any pending redraw. */
+function teardownBridgeOverlayResize(){
+  if(bridgeOverlayResizeObserver){ bridgeOverlayResizeObserver.disconnect(); bridgeOverlayResizeObserver = null; }
+  if(bridgeOverlayResizeTimer){ clearTimeout(bridgeOverlayResizeTimer); bridgeOverlayResizeTimer = null; }
 }
 
 // ---- Plugin state ----
@@ -609,13 +678,62 @@ function getSubstrateOptions(){
 // Combined restoration dropdown, generated from RESTORATION_MATRIX via
 // restorationOptions(). Each option encodes `${type}|${material}` so a single
 // select writes BOTH restorationType and restorationMaterial.
-function getRestorationOptions(view: "front" | "occlusal"){
-  return restorationOptions(view, {}).map(o => ({
-    value: `${o.restorationType}|${o.restorationMaterial}`,
-    label: o.restorationType === "none"
-      ? t(o.labelKey)
-      : `${t(o.prefixKey ?? "restoration.prefix.fixed")}: ${t(o.typeLabelKey ?? "")} – ${t(o.materialLabelKey ?? "")}`,
-  }));
+function getRestorationOptions(view: "front" | "occlusal", ctx: { isImplant?: boolean; toothSelection?: string } = {}){
+  return restorationOptions(view, { isImplant: !!ctx.isImplant, view, toothSelection: ctx.toothSelection }).map(o => {
+    // "Kivehető:" (removable) entry — encoded distinctly so the change handler
+    // writes `s.prosthesis` (and clears restorationType/material) instead.
+    if(o.prosthesis){
+      return {
+        value: `prosthesis|${o.prosthesis}`,
+        label: `${t(o.prefixKey ?? "restoration.prefix.removable")}: ${t(PROSTHESIS_SUMMARY_KEY[o.prosthesis] ?? o.prosthesis)}`,
+      };
+    }
+    return {
+      value: `${o.restorationType}|${o.restorationMaterial}`,
+      label: o.restorationType === "none"
+        ? t(o.labelKey)
+        : `${t(o.prefixKey ?? "restoration.prefix.fixed")}: ${t(o.typeLabelKey ?? "")} – ${t(o.materialLabelKey ?? "")}`,
+    };
+  });
+}
+
+// Apply a combined-dropdown value to a tooth state. The value is either a fixed
+// restoration `${type}|${material}` or a "Kivehető:" prosthesis `prosthesis|<value>`.
+// A tooth ends up with EITHER a fixed restoration OR a prosthesis, never both
+// (coherence mirrored in hydrateState's FIX 4 guard). Pure mutation, shared by the
+// #restorationSelect change handler and covered by __applyRestorationSelectionForTest.
+function applyRestorationSelection(s: Any, value: string){
+  if(value.startsWith("prosthesis|")){
+    // "Kivehető:" entry — set the prosthesis axis, clear the fixed restoration.
+    s.prosthesis = value.slice("prosthesis|".length);
+    s.restorationType = "none";
+    s.restorationMaterial = "none";
+    s.bridgePillar = false;
+    s.crownReplace = false;
+  }else{
+    const [type, material] = value.split("|");
+    s.restorationType = type || "none";
+    s.restorationMaterial = material || "none";
+    s.prosthesis = "none";
+    if(s.restorationType === "none"){
+      s.bridgePillar = false;
+      s.crownReplace = false;
+    }else{
+      s.crownNeeded = false;
+    }
+  }
+  // FIX 3: crown-leakage is a crown/bridge-only finding — clear it whenever the
+  // restoration is no longer a crown or bridge (prevents a stale crown-leakage
+  // FHIR finding on a non-crown tooth).
+  if(s.restorationType !== "crown" && s.restorationType !== "bridge"){
+    s.crownLeakage = false;
+  }
+}
+
+/** TEST-ONLY: apply a combined restoration-dropdown value to a state object,
+ *  exactly as the #restorationSelect change handler does. Not part of the public API. */
+export function __applyRestorationSelectionForTest(s: Record<string, unknown>, value: string): void {
+  applyRestorationSelection(s, value);
 }
 
 // "Type – Material" label for a fixed restoration (crown/inlay/onlay/veneer/bridge),
@@ -700,7 +818,8 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   const isMilktooth = state.toothSelection === "milktooth";
   const underGum = isUnderGum(state.toothSelection);
   const extraction = isExtraction(state.toothSelection) || (state.toothSelection === "none" && state.extractionWound);
-  const hasRemovable = state.toothSelection === "none" && state.bridgeUnit === "removable";
+  const hasRemovable = state.toothSelection === "none"
+    && (state.prosthesis === "removable-partial" || state.prosthesis === "removable-full");
   const isNone = state.toothSelection === "none";
   const hasRestoration = hasCrown || hasRemovable;
   // Occlusal-view SVGs are the only templates carrying `*-onlay` layers; the
@@ -801,31 +920,23 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
     setActive(svgGetById(svg, "prosthesis-connector"), true);
   }
 
-  // Implant attachments (healing-abutment / locator / bar) — legacy interim path
-  // retained via `crownMaterial` until SP3b's prosthesis path absorbs it. The
-  // fixed-material implant crown (zircon/metal/temporary) now flows through the
-  // restoration composition below.
+  // Implant attachments (healing-abutment / locator / bar) — SP3b: render off the
+  // dedicated `prosthesis` axis (field-move from the legacy `crownMaterial`,
+  // byte-identical to the pre-move layer sets). Fixed implant crowns/bridges
+  // (Task 3) are first-class in the restoration model: only the connector is
+  // implant-specific here — the crown/bridge material layers themselves flow
+  // through the shared restoration composition below (same as non-implant teeth).
   if(isImplant){
-    if(state.crownMaterial === "healing-abutment"){
+    if(state.prosthesis === "healing-abutment"){
       setActive(svgGetById(svg, "implant-healing-abutment"), true);
-    } else if(["zircon","metal","temporary"].includes(state.crownMaterial)){
-      // Implant fixed crown (SP3b defers migration): render the connector plus
-      // the legacy shared-crown layers exactly as a549534 did — these no longer
-      // flow through the restoration composition (restorationType stays "none").
+    } else if(state.restorationType === "crown" || state.restorationType === "bridge"){
       setActive(svgGetById(svg, "implant-connector"), true);
-      if(state.crownMaterial === "temporary"){
-        setActive(svgGetById(svg, "temporary-restorations"), true);
-        setActive(svgGetById(svg, "temporary-crown"), true);
-      } else {
-        setActive(svgGetById(svg, state.crownMaterial), true);
-        setActive(svgGetById(svg, state.crownMaterial + "-crown"), true);
-      }
-    } else if(state.crownMaterial === "locator"){
+    } else if(state.prosthesis === "locator"){
       setActive(svgGetById(svg, "restorations"), true);
       setActive(svgGetById(svg, "implant"), true);
       setActive(svgGetById(svg, "implant-connector"), true);
       setActive(svgGetById(svg, "implant-locator-screw"), true);
-    } else if(state.crownMaterial === "locator-prosthesis"){
+    } else if(state.prosthesis === "locator-denture"){
       setActive(svgGetById(svg, "restorations"), true);
       setActive(svgGetById(svg, "implant"), true);
       setActive(svgGetById(svg, "implant-connector"), true);
@@ -833,13 +944,13 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
       setActive(svgGetById(svg, "prosthesis-implant"), true);
       setActive(svgGetById(svg, "prosthesis-implant-crown"), true);
       setActive(svgGetById(svg, "prosthesis-implant-gum"), true);
-    } else if(state.crownMaterial === "bar"){
+    } else if(state.prosthesis === "bar"){
       setActive(svgGetById(svg, "restorations"), true);
       setActive(svgGetById(svg, "implant"), true);
       setActive(svgGetById(svg, "implant-connector"), true);
       setActive(svgGetById(svg, "implant-locator-screw"), true);
       setActive(svgGetById(svg, "implant-bar"), true);
-    } else if(state.crownMaterial === "bar-prosthesis"){
+    } else if(state.prosthesis === "bar-denture"){
       setActive(svgGetById(svg, "restorations"), true);
       setActive(svgGetById(svg, "implant"), true);
       setActive(svgGetById(svg, "implant-connector"), true);
@@ -852,12 +963,15 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   }
   if(isNone){
     setActive(svgGetById(svg, "restorations"), true);
-    // Legacy removable/bar prosthesis on a gap (retained through SP3a; SP3b
-    // absorbs it). Fixed bridge values now flow through the composition below.
-    if(state.bridgeUnit === "bar"){
+    // Removable/bar prosthesis on a gap — SP3b: render off `prosthesis` (field-move
+    // from the legacy `bridgeUnit`). Fixed bridge values flow through the
+    // composition below. Note this branch's layer set intentionally differs from
+    // the isImplant "bar"/"bar-denture" branch above (no connector/locator-screw
+    // on a gap tooth) — matches the pre-move `bridgeUnit` render exactly.
+    if(state.prosthesis === "bar"){
       setActive(svgGetById(svg, "implant"), true);
       setActive(svgGetById(svg, "implant-bar"), true);
-    } else if(state.bridgeUnit === "bar-prosthesis"){
+    } else if(state.prosthesis === "bar-denture"){
       setActive(svgGetById(svg, "implant"), true);
       setActive(svgGetById(svg, "implant-bar"), true);
       setActive(svgGetById(svg, "prosthesis-implant"), true);
@@ -1115,15 +1229,12 @@ function getStateSummary(toothNo: number): string[]{
     summary.push(restorationSummaryLabel(state.restorationType, state.restorationMaterial));
   }
 
-  // Implant attachment (interim: still carried on the legacy crownMaterial field —
-  // absorbed by SP3b; the fixed-restoration values above never appear here anymore).
-  {
-    const attachmentKey = {
-      "healing-abutment": "crown.option.healingAbutment",
-      locator: "crown.option.locator", "locator-prosthesis": "crown.option.locatorProsthesis",
-      bar: "crown.option.bar", "bar-prosthesis": "crown.option.barProsthesis",
-    }[state.crownMaterial];
-    if(attachmentKey) summary.push(t(attachmentKey));
+  // Prosthesis / implant attachment (healing-abutment/locator/bar attachments and
+  // removable/bar-retained dentures) — SP3b: reads the dedicated `prosthesis` axis
+  // (field-move from the legacy `crownMaterial`/`bridgeUnit`).
+  if(state.prosthesis !== "none"){
+    const prosthesisKey = PROSTHESIS_SUMMARY_KEY[state.prosthesis];
+    if(prosthesisKey) summary.push(t(prosthesisKey));
   }
 
   // Endo
@@ -1149,16 +1260,6 @@ function getStateSummary(toothNo: number): string[]{
 
   // Caries
   if(state.caries.size > 0) summary.push(t("caries.title"));
-
-  // Removable / bar bridge unit (legacy field — fixed bridge values now live in
-  // restorationType/restorationMaterial and are covered by the block above).
-  if(state.bridgeUnit !== "none"){
-    const bridgeKey = {
-      removable: "bridge.option.removable",
-      bar: "bridge.option.bar", "bar-prosthesis": "bridge.option.barProsthesis",
-    }[state.bridgeUnit];
-    if(bridgeKey) summary.push(t(bridgeKey));
-  }
 
   // Mods
   if(state.mods.size > 0){
@@ -1252,6 +1353,17 @@ function getStateWarnings(state: Any): string[]{
   if(state.bridgePillar && !(state.toothSelection === "tooth-base" && state.restorationType !== "none")){
     warnings.push(t("warn.pillarNoCrown"));
   }
+  // Invalid restoration type/material combo (SP3b Task 6, spec §9 gap). Defense
+  // in depth: hydrateState() already coerces an invalid pair on import, so this
+  // should never fire for a state that only ever went through hydrateState —
+  // but it reuses the SAME warning mechanism as every other check here as a
+  // safety net for any other path (plugins, direct programmatic state writes)
+  // that could still produce one. View-agnostic ("occlusal") for the same
+  // reason as hydrateState's coercion: view is a render/UI concern, not a
+  // data-validity one.
+  if(!isValidRestoration(state.restorationType, state.restorationMaterial, "occlusal")){
+    warnings.push(t("warn.invalidRestorationCombo"));
+  }
 
   return warnings;
 }
@@ -1292,6 +1404,7 @@ function syncControlsFromState(state: Any){
   $("#crownNeeded").checked = !!state.crownNeeded;
   $("#missingClosed").checked = !!state.missingClosed;
   $("#bridgePillar").checked = !!state.bridgePillar;
+  $("#crownLeakage").checked = !!state.crownLeakage;
   const isMilktooth = state.toothSelection === "milktooth";
   const isImplant = state.toothSelection === "implant";
   const underGum = isUnderGum(state.toothSelection);
@@ -1309,18 +1422,36 @@ function syncControlsFromState(state: Any){
   // Combined restoration dropdown — one <select> encodes `${type}|${material}`
   // and writes BOTH fields. Options are filtered by the active tooth's view.
   const restoView = restorationViewFor(activeTooth);
-  setSelectOptions($("#restorationSelect"), getRestorationOptions(restoView), `${state.restorationType}|${state.restorationMaterial}`);
+  // The ONE dropdown reflects EITHER a fixed restoration OR a "Kivehető:"
+  // prosthesis (never both — FIX 4 coherence). Prefer the prosthesis encoding
+  // when one is set.
+  const restoSelected = state.prosthesis && state.prosthesis !== "none"
+    ? `prosthesis|${state.prosthesis}`
+    : `${state.restorationType}|${state.restorationMaterial}`;
+  setSelectOptions($("#restorationSelect"), getRestorationOptions(restoView, { isImplant, toothSelection: state.toothSelection }), restoSelected);
   {
-    const [selType, selMat] = String($("#restorationSelect").value).split("|");
-    if(selType !== state.restorationType || selMat !== state.restorationMaterial){
-      state.restorationType = selType || "none";
-      state.restorationMaterial = selMat || "none";
+    const val = String($("#restorationSelect").value);
+    if(val.startsWith("prosthesis|")){
+      const p = val.slice("prosthesis|".length);
+      if(state.prosthesis !== p){ state.prosthesis = p; }
+      state.restorationType = "none";
+      state.restorationMaterial = "none";
+    }else{
+      const [selType, selMat] = val.split("|");
+      if(selType !== state.restorationType || selMat !== state.restorationMaterial){
+        state.restorationType = selType || "none";
+        state.restorationMaterial = selMat || "none";
+      }
+      if(state.prosthesis !== "none"){ state.prosthesis = "none"; }
     }
   }
 
-  // Gating: implant / milktooth / under-gum / extraction carry no fixed
-  // restoration (mirrors the old crownMaterial="natural" reset).
-  if(isImplant || isMilktooth || underGum || extraction){
+  // Gating: milktooth / under-gum / extraction carry no fixed restoration
+  // (mirrors the old crownMaterial="natural" reset). Implants are exempt —
+  // a fixed crown/bridge on an abutment is first-class (Task 3): the
+  // restorationOptions(ctx) call above already restricts an implant's
+  // dropdown to crown/bridge × material.
+  if(isMilktooth || underGum || extraction){
     state.restorationType = "none";
     state.restorationMaterial = "none";
     $("#restorationSelect").value = "none|none";
@@ -1390,7 +1521,8 @@ function syncControlsFromState(state: Any){
 
   // disable logic in UI
   const hasCrown = state.restorationType !== "none";
-  const hasRemovable = state.toothSelection === "none" && state.bridgeUnit === "removable";
+  const hasRemovable = state.toothSelection === "none"
+    && (state.prosthesis === "removable-partial" || state.prosthesis === "removable-full");
   const hasRestoration = hasCrown || hasRemovable;
   $$("#cariesChecks input[type=checkbox], #cariesSubcrownRow input[type=checkbox]").forEach(c => {
     if(c.value === "caries-subcrown") setDisabled(c, !hasCrown);
@@ -1477,6 +1609,10 @@ function syncControlsFromState(state: Any){
   const restorationRowHidden = $("#restorationRow").classList.contains("hidden");
   const bridgePillarAllowed = !restorationRowHidden && state.restorationType !== "none";
   $("#bridgePillarRow").classList.toggle("hidden", !bridgePillarAllowed);
+  // Crown-leakage toggle: only meaningful on a fixed crown/bridge restoration
+  // (mirrors the crownLeakage axis's appliesWhen in src/registry/axes.ts).
+  const crownLeakageAllowed = !restorationRowHidden && (state.restorationType === "crown" || state.restorationType === "bridge");
+  $("#crownLeakageRow").classList.toggle("hidden", !crownLeakageAllowed);
 
   const extractionPlanRow = $("#extractionPlanRow");
   const brokenCrownRow = $("#brokenCrownRow");
@@ -1673,7 +1809,7 @@ function refreshAllSelectOptions(){
   const substrateEl = $("#substrateSelect");
   if(substrateEl) setSelectOptions(substrateEl, getSubstrateOptions(), substrateEl.value);
   const restorationEl = $("#restorationSelect");
-  if(restorationEl) setSelectOptions(restorationEl, getRestorationOptions(restorationViewFor(activeTooth)), restorationEl.value);
+  if(restorationEl) setSelectOptions(restorationEl, getRestorationOptions(restorationViewFor(activeTooth), { isImplant: state?.toothSelection === "implant" }), restorationEl.value);
   const endoEl = $("#endoSelect");
   if(endoEl) setSelectOptions(endoEl, getEndoOptions(isMilktooth), endoEl.value);
   const fillingEl = $("#fillingSelect");
@@ -2296,6 +2432,9 @@ function setWisdomVisible(on: Any){
   wisdomVisible = !!on;
   setToggleButton($("#btnWisdomVisible"), wisdomVisible);
   updateToothTileVisibility();
+  // Wisdom teeth fade via opacity (no size change), so the ResizeObserver won't
+  // fire — redraw the bridge overlay explicitly so a span onto a wisdom tooth stays current.
+  updateBridgeOverlay();
 }
 
 /** Toggle visibility of the bone/gum base layer on all teeth. */
@@ -2314,6 +2453,9 @@ function setOcclusalVisible(on: Any){
   $$(".tooth-tile.occl-view").forEach(tile => {
     tile.classList.toggle("occl-hidden", !occlusalVisible);
   });
+  // Occlusal rows change grid height — redraw immediately instead of waiting for
+  // the debounced ResizeObserver, so bridge bars don't sit at a stale Y.
+  updateBridgeOverlay();
 }
 
 /** Toggle visibility of the healthy-pulp layer on all teeth. */
@@ -2356,14 +2498,12 @@ function serializeState(s: Any){
     crownNeeded: !!s.crownNeeded,
     missingClosed: !!s.missingClosed,
     bridgePillar: !!s.bridgePillar,
-    bridgeUnit: s.bridgeUnit,
+    prosthesis: s.prosthesis,
     mobility: s.mobility,
     toothSubstrate: s.toothSubstrate,
     restorationType: s.restorationType,
     restorationMaterial: s.restorationMaterial,
-    // Interim: emit `crownMaterial` only when it holds an implant-attachment value
-    // (the legacy render path SP3b will absorb); natural/retired values are dropped.
-    ...(ATTACHMENT_CROWN_VALUES.has(s.crownMaterial) ? { crownMaterial: s.crownMaterial } : {}),
+    crownLeakage: !!s.crownLeakage,
     ...(Object.keys(s.customStates || {}).length > 0 ? { customStates: s.customStates } : {}),
     ...(s.note ? { note: s.note } : {}),
   };
@@ -2373,17 +2513,11 @@ function serializeState(s: Any){
 export const VALID_TOOTH_SELECTION = validValues("toothSelection");
 export const VALID_ENDO = validValues("endo");
 export const VALID_FILLING_MATERIAL = validValues("fillingMaterial");
-export const VALID_BRIDGE_UNIT = validValues("bridgeUnit");
+export const VALID_PROSTHESIS = validValues("prosthesis");
 export const VALID_MOBILITY = validValues("mobility");
 export const VALID_TOOTH_SUBSTRATE = validValues("toothSubstrate");
 export const VALID_RESTORATION_TYPE = validValues("restorationType");
 export const VALID_RESTORATION_MATERIAL = validValues("restorationMaterial");
-// Interim: `crownMaterial` axis retired, but the field survives for the legacy
-// implant-attachment render path (SP3b). Source its vocabulary directly from the
-// value map (the axis — and thus validValues("crownMaterial") — no longer exists).
-export const VALID_CROWN_MATERIAL = new Set(Object.keys(LOCAL_VALUE_MAPS.crownMaterial));
-// Implant-attachment values kept in `crownMaterial` after migration (interim path).
-const ATTACHMENT_CROWN_VALUES = new Set(["healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"]);
 export const VALID_MODS = validValues("mods");
 export const VALID_PERIAPICAL_TYPE = validValues("periapicalType");
 export const VALID_CARIES = validValues("caries");
@@ -2410,20 +2544,11 @@ function hydrateState(raw: Any){
   const legacyFixedBridge = raw.bridgeUnit === "zircon" || raw.bridgeUnit === "metal" || raw.bridgeUnit === "temporary";
   if(raw.restorationType === undefined && (raw.crownMaterial !== undefined || legacyFixedBridge)){
     const cm = typeof raw.crownMaterial === "string" ? raw.crownMaterial : "natural";
-    const isImplantSel = raw.toothSelection === "implant";
     if(cm === "natural" || cm === "radix" || cm === "broken" || cm === "crownprep"){
       raw.toothSubstrate = cm;
       raw.restorationType = "none";
       raw.restorationMaterial = "none";
       raw.crownMaterial = "natural";
-    }else if(isImplantSel && (cm === "zircon" || cm === "metal" || cm === "temporary")){
-      // Implant fixed crowns stay on the legacy `crownMaterial` path (like the
-      // implant attachments healing-abutment/locator/bar). SP3b absorbs them.
-      // Do NOT fold into restorationType:"crown" (that would VANISH on sync,
-      // which force-resets implants to restorationType:"none"). No metal rename.
-      raw.restorationType = "none";
-      raw.restorationMaterial = "none";
-      // raw.crownMaterial preserved as zircon/metal/temporary
     }else if(cm === "metal"){
       // Legacy "metal" crown = PFM → metal-ceramic (deliberate rename).
       raw.toothSubstrate = "crownprep";
@@ -2447,6 +2572,53 @@ function hydrateState(raw: Any){
       raw.restorationType = "bridge";
       raw.restorationMaterial = raw.bridgeUnit === "metal" ? "metal-ceramic" : raw.bridgeUnit;
       raw.bridgeUnit = "none";
+    }
+  }
+  // SP3b FIX 1: a v1.14.0 (payload 2.0) implant FIXED crown was serialized by the
+  // SP3a interim defer as {toothSelection:"implant", restorationType:"none",
+  // restorationMaterial:"none", crownMaterial:<fixed material>}. The legacy block
+  // above is gated on restorationType===undefined so it skips this (restorationType
+  // is "none", not absent), and the prosthesis-migration below only maps ATTACHMENT
+  // crownMaterial values — so the crown would silently vanish. Fold a fixed-crown
+  // crownMaterial on an implant (restorationType absent OR "none") into
+  // restorationType:"crown" × material, mirroring the 1.4 fold + metal→metal-ceramic
+  // rename. Attachment crownMaterial values (healing-abutment/locator/bar…) are not
+  // in this set, so they fall through to the prosthesis migration untouched.
+  const FIXED_CROWN_MATERIALS = ["emax", "zircon", "gold", "gradia", "metal", "telescope", "temporary"];
+  if(raw.toothSelection === "implant"
+     && (raw.restorationType === undefined || raw.restorationType === "none")
+     && typeof raw.crownMaterial === "string"
+     && FIXED_CROWN_MATERIALS.includes(raw.crownMaterial)){
+    raw.restorationType = "crown";
+    raw.restorationMaterial = raw.crownMaterial === "metal" ? "metal-ceramic" : raw.crownMaterial;
+    raw.crownMaterial = "natural";
+  }
+  // SP3b field-move: migrate the legacy implant-attachment (`crownMaterial` on an
+  // implant tooth) and removable/bar-denture (`bridgeUnit` on a gap tooth) values
+  // onto the new `prosthesis` axis when no explicit `prosthesis` was supplied —
+  // whether this payload is old-format (migrated above) or was written by the
+  // interim SP3a/SP3b-foundation engine (restorationType already defined, but
+  // `prosthesis` never serialized before this task). Gated by the SAME context
+  // the legacy render branches required (isImplant / isNone): an attachment value
+  // sitting on an unrelated toothSelection (only reachable via crafted/imported
+  // payloads, never the UI) must not gain a `prosthesis` value it never rendered.
+  if(raw.prosthesis === undefined){
+    const CROWN_MATERIAL_TO_PROSTHESIS: Record<string, string> = {
+      "healing-abutment": "healing-abutment",
+      "locator": "locator",
+      "locator-prosthesis": "locator-denture",
+      "bar": "bar",
+      "bar-prosthesis": "bar-denture",
+    };
+    const BRIDGE_UNIT_TO_PROSTHESIS: Record<string, string> = {
+      "removable": "removable-partial",
+      "bar": "bar",
+      "bar-prosthesis": "bar-denture",
+    };
+    if(raw.toothSelection === "implant" && typeof raw.crownMaterial === "string" && CROWN_MATERIAL_TO_PROSTHESIS[raw.crownMaterial]){
+      raw.prosthesis = CROWN_MATERIAL_TO_PROSTHESIS[raw.crownMaterial];
+    }else if(raw.toothSelection === "none" && typeof raw.bridgeUnit === "string" && BRIDGE_UNIT_TO_PROSTHESIS[raw.bridgeUnit]){
+      raw.prosthesis = BRIDGE_UNIT_TO_PROSTHESIS[raw.bridgeUnit];
     }
   }
   s.toothSelection = validateEnum(raw.toothSelection, VALID_TOOTH_SELECTION, s.toothSelection);
@@ -2508,13 +2680,44 @@ function hydrateState(raw: Any){
   s.crownNeeded = !!raw.crownNeeded;
   s.missingClosed = !!raw.missingClosed;
   s.bridgePillar = !!raw.bridgePillar;
-  s.bridgeUnit = validateEnum(raw.bridgeUnit, VALID_BRIDGE_UNIT, s.bridgeUnit);
+  s.prosthesis = validateEnum(raw.prosthesis, VALID_PROSTHESIS, "none");
   s.mobility = validateEnum(raw.mobility, VALID_MOBILITY, s.mobility);
   s.toothSubstrate = validateEnum(raw.toothSubstrate, VALID_TOOTH_SUBSTRATE, s.toothSubstrate);
   s.restorationType = validateEnum(raw.restorationType, VALID_RESTORATION_TYPE, s.restorationType);
   s.restorationMaterial = validateEnum(raw.restorationMaterial, VALID_RESTORATION_MATERIAL, s.restorationMaterial);
-  // Interim: only the implant-attachment values survive in `crownMaterial`.
-  s.crownMaterial = validateEnum(raw.crownMaterial, VALID_CROWN_MATERIAL, "natural");
+  // SP3b Task 6 (spec §9 gap): the two fields above are validated independently
+  // against their own enums, so a hand-edited/imported payload can still pair a
+  // legal type with a material that type never supports (e.g. inlay+metal — the
+  // matrix only allows inlay in emax/gold/gradia/zircon/temporary). Guard the
+  // (type, material) PAIR here so an invalid combo never reaches state/render —
+  // composeRestorationLayers() already no-ops on one, but a "sane-looking but
+  // impossible" state is still worth correcting rather than leaving in place.
+  // isValidRestoration() also takes a `view` (onlay is occlusal-only), but view
+  // is a render/UI concern, not a data-validity one: a stored/imported state has
+  // no notion of which template will eventually draw it, so validate here with
+  // "occlusal" (the permissive superset of front) so a valid onlay+material pair
+  // is never rejected just because we don't yet know the view.
+  if(!isValidRestoration(s.restorationType as RestorationType, s.restorationMaterial as RestorationMaterial, "occlusal")){
+    const spec = RESTORATION_MATRIX[s.restorationType as Exclude<RestorationType, "none">];
+    if(spec && spec.materials.length > 0){
+      // Type is legitimate, material is not: keep the type, fall back to its
+      // first valid material (deterministic — RESTORATION_MATRIX order).
+      s.restorationMaterial = spec.materials[0];
+    }else{
+      // No type (or a type with no valid materials at all, which today's
+      // matrix never produces) — drop both to "none" rather than guess.
+      s.restorationType = "none";
+      s.restorationMaterial = "none";
+    }
+  }
+  // SP3b FIX 4: cross-field coherence — a tooth has EITHER a fixed restoration OR a
+  // prosthesis, never both. A crafted/imported payload can pair both; keep the
+  // restoration and clear the prosthesis (restoration wins, matching render
+  // precedence). Never throws.
+  if((s.restorationType === "crown" || s.restorationType === "bridge") && s.prosthesis !== "none"){
+    s.prosthesis = "none";
+  }
+  s.crownLeakage = !!raw.crownLeakage;
   // Restore note
   if(typeof raw.note === "string") s.note = raw.note;
   // Restore plugin custom states (only for registered plugin IDs)
@@ -2536,7 +2739,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.0",
+    version: "2.1",
     globals: {
       wisdomVisible,
       showBase,
@@ -2546,6 +2749,12 @@ function collectExportPayload(){
     },
     teeth,
   };
+}
+
+/** TEST-ONLY: collect the full export payload ({version, globals, teeth}) exactly
+ *  as exportStatus()/exportFhir() would serialize it. Not part of the public API. */
+export function __collectExportPayloadForTest(): Any {
+  return collectExportPayload();
 }
 
 function downloadJson(payload: Any, filenamePrefix: string){
@@ -2654,7 +2863,7 @@ export function namespaceIds(root: Element, prefix: string){
  * `<svg>` at its laid-out position; tooth number labels are emitted as `<text>`.
  * Returns null if the grid is not present.
  */
-function buildOdontogramSvg(): { xml: string; width: number; height: number } | null {
+export function buildOdontogramSvg(): { xml: string; width: number; height: number } | null {
   const grid = document.querySelector("#toothGrid, .tooth-grid") as HTMLElement | null;
   if(!grid) return null;
   const gridRect = grid.getBoundingClientRect();
@@ -2692,6 +2901,18 @@ function buildOdontogramSvg(): { xml: string; width: number; height: number } | 
     while(clone.firstChild) wrap.appendChild(clone.firstChild);
     out.appendChild(wrap);
   });
+
+  // Multi-tooth bridge-span saddle bars. The export is allowlist-based (only the
+  // tooth SVGs and label cells above are cloned), so the live `.bridge-overlay`
+  // <svg> is silently excluded; we recompute the SAME bars from tooth geometry
+  // (shared computeBridgeBars) and emit them as native <rect> so PNG/JPG/SVG all
+  // include the bridge. Drawn after the teeth (mirrors the live z-order).
+  const bridgeSpans = detectBridgeSpans(bridgeStateFor);
+  if(bridgeSpans.length){
+    const rectFor = (toothNo: number) => tileRectFor(grid, gridRect, toothNo);
+    const bars = computeBridgeBars(bridgeSpans, bridgeStateFor, rectFor, defaultMaterialColor);
+    for(const bar of bars) out.appendChild(barRect(bar));
+  }
 
   // Tooth number labels as text.
   grid.querySelectorAll(".tooth-label-cell").forEach((cell) => {
@@ -2870,7 +3091,6 @@ function applyStatusExtra(option: Any){
     s.toothSubstrate = "crownprep";
     s.restorationType = "crown";
     s.restorationMaterial = toRestorationMaterial(material);
-    s.crownMaterial = "natural";
     s.bridgePillar = true;
     s.brokenMesial = false;
     s.brokenIncisal = false;
@@ -2881,7 +3101,6 @@ function applyStatusExtra(option: Any){
   const setBridgePontic = (s, material)=>{
     s.restorationType = "bridge";
     s.restorationMaterial = toRestorationMaterial(material);
-    s.bridgeUnit = "none";
   };
 
   if(option.type === "span"){
@@ -2930,7 +3149,7 @@ function applyStatusExtra(option: Any){
     applyChanges(teeth, (s, tn)=>{
       if(wisdom.has(tn)) return;
       if(s.toothSelection === "none"){
-        s.bridgeUnit = "removable";
+        s.prosthesis = "removable-partial";
       }
     });
     return;
@@ -2942,7 +3161,7 @@ function applyStatusExtra(option: Any){
     applyChanges(teeth, (_s, tn)=>{
       const next = defaultState();
       next.toothSelection = "none";
-      next.bridgeUnit = wisdom.has(tn) ? "none" : "removable";
+      next.prosthesis = wisdom.has(tn) ? "none" : "removable-full";
       return next;
     });
     return;
@@ -2956,19 +3175,18 @@ function applyStatusExtra(option: Any){
     applyChanges(implantTeeth, (_s, _tn)=>{
       const next = defaultState();
       next.toothSelection = "implant";
-      next.crownMaterial = "bar-prosthesis";
+      next.prosthesis = "bar-denture";
       return next;
     });
     applyChanges(missingTeeth, (_s, _tn)=>{
       const next = defaultState();
       next.toothSelection = "none";
-      next.bridgeUnit = "bar-prosthesis";
+      next.prosthesis = "bar-denture";
       return next;
     });
     applyChanges(sevenEight, (_s, _tn)=>{
       const next = defaultState();
       next.toothSelection = "none";
-      next.bridgeUnit = "none";
       return next;
     });
   }
@@ -3188,7 +3406,6 @@ function wireControls(){
       }
       if(value !== "none"){
         next.extractionWound = false;
-        next.bridgeUnit = "none";
       }
       if(value === "implant" || value === "none"){
         next.caries.clear();
@@ -3221,18 +3438,13 @@ function wireControls(){
 
   // Combined restoration dropdown (crown / inlay / onlay / veneer / bridge ×
   // material). Value encodes `${type}|${material}` and writes BOTH fields.
-  buildSelect($("#restorationSelect"), getRestorationOptions("occlusal"), (value)=>{
-    const [type, material] = String(value).split("|");
-    applyToSelected((s)=>{
-      s.restorationType = type || "none";
-      s.restorationMaterial = material || "none";
-      if(s.restorationType === "none"){
-        s.bridgePillar = false;
-        s.crownReplace = false;
-      }else{
-        s.crownNeeded = false;
-      }
-    });
+  // At initial wiring there is no active tooth yet (options get narrowed by
+  // syncControlsFromState/refreshAllSelectOptions once one is selected), but
+  // thread ctx consistently in case activeTooth is already set (e.g. re-wire).
+  const initialToothState = activeTooth ? toothState.get(activeTooth) : null;
+  buildSelect($("#restorationSelect"), getRestorationOptions("occlusal", { isImplant: initialToothState?.toothSelection === "implant", toothSelection: initialToothState?.toothSelection }), (value)=>{
+    const v = String(value);
+    applyToSelected((s)=>{ applyRestorationSelection(s, v); });
     setEdentulous(false);
   });
 
@@ -3294,6 +3506,13 @@ function wireControls(){
   $("#crownNeeded").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
       s.crownNeeded = (e.target as HTMLInputElement).checked;
+    });
+  });
+
+  // Crown leakage (marginal leakage on a crown/bridge restoration)
+  $("#crownLeakage").addEventListener("change", (e)=>{
+    applyToSelected((s)=>{
+      s.crownLeakage = (e.target as HTMLInputElement).checked;
     });
   });
 
@@ -3729,6 +3948,7 @@ export async function initOdontogram(){
       syncControlsFromState(state);
     }
   }
+  setupBridgeOverlayResize();
   notifyStateChange();
 }
 
@@ -3742,6 +3962,7 @@ export function destroyOdontogram(){
   initialized = false;
   initToken++;
   controlsWired = false;
+  teardownBridgeOverlayResize();
   document.removeEventListener("click", onCardToggleClick);
   document.removeEventListener("click", onGlobalToggleClick);
   if(i18nUnsubscribe){
@@ -3887,12 +4108,6 @@ const SUMMARY_ENDO_KEY: Record<string, string> = {
   "endo-glass-pin": "endo.option.glassPin",
   "endo-metal-pin": "endo.option.metalPin",
 };
-// Removable / bar bridge unit — the only values `bridgeUnit` still carries; fixed
-// bridge values now live in restorationType:"bridge" × restorationMaterial (below).
-const SUMMARY_BRIDGE_KEY: Record<string, string> = {
-  removable: "bridge.option.removable", bar: "bridge.option.bar", "bar-prosthesis": "bridge.option.barProsthesis",
-};
-
 /**
  * Build a human-readable, localized summary of the current odontogram state:
  * tooth counts, present/missing lists, and caries / fillings / endo /
@@ -3957,12 +4172,13 @@ export function getOdontogramSummary(): OdontogramSummary {
       endo.push(`${lbl(toothNo)} (${name})`);
     }
 
-    // Prosthetics (fixed restorations — crown/inlay/onlay/veneer/bridge — + removable/bar bridge units)
+    // Prosthetics (fixed restorations — crown/inlay/onlay/veneer/bridge — +
+    // implant attachments / removable / bar-retained dentures via `prosthesis`)
     if(s.restorationType && s.restorationType !== "none"){
       prosthetics.push(`${lbl(toothNo)}: ${restorationSummaryLabel(s.restorationType, s.restorationMaterial)}`);
     }
-    if(s.bridgeUnit && s.bridgeUnit !== "none"){
-      prosthetics.push(`${lbl(toothNo)}: ${t(SUMMARY_BRIDGE_KEY[s.bridgeUnit] || s.bridgeUnit)}`);
+    if(s.prosthesis && s.prosthesis !== "none"){
+      prosthetics.push(`${lbl(toothNo)}: ${t(PROSTHESIS_SUMMARY_KEY[s.prosthesis] || s.prosthesis)}`);
     }
 
     // Periodontal / periapical inflammation

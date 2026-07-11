@@ -50,6 +50,9 @@ export const FIXED_CLEAR_LAYERS: string[] = [
   "emax-veneer","gold-veneer","gradia-veneer","zircon-veneer","temporary-veneer",
   // specials
   "crown-replace","crown-needed","missing-closed",
+  // SP3b Task 6: crown-marginal-leakage toggle — activates the dormant
+  // `crown-leakage` artwork layer (present since v2.5.0 but never toggled).
+  "crown-leakage",
   // toothSelection activation layers (see comment above): cleared here, re-set at :763-764
   "implant","milktooth",
 ];

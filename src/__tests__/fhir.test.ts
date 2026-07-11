@@ -7,9 +7,7 @@ const EXPECTED = {
   toothSelection: ["none","tooth-base","milktooth","implant","tooth-under-gum","no-tooth-after-extraction"],
   endo: ["none","endo-medical-filling","endo-filling","endo-filling-incomplete","endo-glass-pin","endo-metal-pin"],
   fillingMaterial: ["none","amalgam","composite","gic","temporary"],
-  bridgeUnit: ["none","removable","zircon","metal","temporary","bar","bar-prosthesis"],
   mobility: ["none","m1","m2","m3"],
-  crownMaterial: ["natural","broken","crownprep","radix","emax","zircon","metal","temporary","telescope","healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"],
   mods: ["inflammation","parodontal","mobility"],
   periapicalType: ["none","granuloma","cyst","abscess"],
   caries: ["caries-subcrown","caries-buccal","caries-lingual","caries-mesial","caries-distal","caries-occlusal"],
@@ -58,11 +56,10 @@ describe("FHIR field mappings", () => {
     // Handled outside FIELD_MAPPINGS by design (special-cased in buildFhirBundle):
     // fillingSurfaceMaterials is consumed inline by the restoration emitter (per-surface materials).
     // Handled outside FIELD_MAPPINGS by design: fillingSurfaceMaterials (consumed
-    // inline by the restoration emitter) + caries depth; `crownMaterial` is now an
-    // interim legacy field (implant-attachment render path, SP3b) that is emitted
-    // to the JSON payload only for attachment values and is deliberately NOT
-    // FHIR-mapped (its concerns split across toothSubstrate/restoration axes).
-    const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials", "cariesActiveDepth", "cariesDepths", "crownMaterial"]);
+    // inline by the restoration emitter) + caries depth. Task 4 retired the legacy
+    // `crownMaterial`/`bridgeUnit` fields entirely (from state, serialize, and the
+    // `bridgeUnit` FHIR mapping) — neither is emitted by serializeState() anymore.
+    const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials", "cariesActiveDepth", "cariesDepths"]);
     // Full output of serializeState():
     const SERIALIZED = [
       "toothSelection", "pulpInflam", "endoResection", "mods", "periapicalType", "endo", "caries",
@@ -70,8 +67,8 @@ describe("FHIR field mappings", () => {
       "fillingMaterial", "fillingSurfaces", "fillingSurfaceMaterials", "fissureSealing", "contactMesial", "contactDistal",
       "bruxismWear", "bruxismNeckWear", "brokenMesial", "brokenIncisal", "brokenDistal",
       "extractionWound", "extractionPlan", "parapulpalPin", "crownReplace", "crownNeeded",
-      "missingClosed", "bridgePillar", "bridgeUnit", "mobility",
-      "toothSubstrate", "restorationType", "restorationMaterial", "crownMaterial",
+      "missingClosed", "bridgePillar", "prosthesis", "mobility",
+      "toothSubstrate", "restorationType", "restorationMaterial", "crownLeakage",
       "customStates", "note",
     ];
     for (const f of SERIALIZED) {

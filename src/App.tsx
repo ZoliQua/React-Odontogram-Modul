@@ -486,6 +486,10 @@ export default function App({
                 <span>{t("restoration.label")}</span>
                 <select id="restorationSelect"></select>
               </div>
+              <label id="crownLeakageRow" className="row hidden">
+                <input type="checkbox" id="crownLeakage" />
+                <span>{t("crownLeakage.label")}</span>
+              </label>
               <div id="brokenCrownRow" className="row inline-checks contact-row">
                 <label>
                   <input type="checkbox" id="brokenMesial" />

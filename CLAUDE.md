@@ -27,12 +27,13 @@
 Each tooth has:
 - `toothSelection`: tooth-base | missing | implant | pontic
 - `toothSubstrate`: natural | radix | broken | crownprep
-- `restorationType`: none | crown | inlay | onlay | veneer | bridge
+- `restorationType`: none | crown | inlay | onlay | veneer | bridge (implant-gated crowns/bridges compose with an implant connector layer)
 - `restorationMaterial`: none | emax | gold | gradia | zircon | metal | metal-ceramic | telescope | temporary
+- `prosthesis`: none | healing-abutment | locator | locator-denture | bar | bar-denture | removable-partial | removable-full — orthogonal implant-attachment / removable-denture axis, surfaced as "Kivehető:" entries in the combined restoration dropdown
+- `crownLeakage`: boolean — marginal-leakage finding, shown only when `restorationType` is crown or bridge
 - `endo`: none | root-canal | post-core | apicoectomy
 - `caries`: array of surface identifiers (mesial, occlusal, distal, buccal, lingual)
 - `fillingSurfaces`: array of filled surfaces
-- `bridgeUnit`: none | abutment | pontic
 - `extractionPlan`, `crownNeeded`, `crownReplace`: boolean flags
 
 ## Integration with DentalQuoteCreator

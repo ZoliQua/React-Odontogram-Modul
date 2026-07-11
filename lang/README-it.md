@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.15.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -31,8 +31,8 @@ Questo progetto è un editor di odontogramma interattivo basato su browser che s
 - 🦷 Tipi di dente: permanente, deciduo (da latte), impianto, sottogengivale, mancante
 - 🦷 Substrato dentale (ortogonale a qualsiasi restauro): naturale, radix (residuo radicolare), fratturato, preparato per corona
 - 👑 Restauri per tipo × materiale: corona / inlay / onlay / faccetta / ponte in e.max, oro, gradia, zirconio, metallo, metalloceramica, telescopico o provvisorio (l'onlay è disponibile solo in vista occlusale) — scelti da un unico selettore combinato "Fix: Corona – …" a basso numero di clic; le corone `metal` esistenti migrano automaticamente a `metal-ceramic` (metalloceramica)
-- 🔩 Abutment per impianti: abutment di guarigione, locator, locator con protesi, barra, barra con protesi
-- 🌉 Elementi di ponte: zirconio, metallo, provvisorio, rimovibile, barra, barra con protesi
+- 🦿 Protesi rimovibili/su attacco sull'asse dedicato `prosthesis` (voci "Kivehető:" nel selettore combinato): abutment di guarigione dell'impianto, locator, locator con overdenture, barra, barra con overdenture; protesi parziale o totale rimovibile supportata dai denti
+- 🌉 Overlay del tratto di ponte multi-dente: i denti di ponte consecutivi (elementi intermedi + pilastri) vengono renderizzati come un connettore continuo attraverso gli spazi tra i denti, incluso nell'esportazione PNG/JPG/SVG
 - 🔍 Registrazione delle carie su 6 superfici: mesiale, distale, buccale, linguale, occlusale, sottocoronale
 - 🪥 Materiali di otturazione per superficie: amalgama, composito, vetroionomero, provvisorio
 - 🏥 Stati endodontici: otturazione medicinale, otturazione canalare, otturazione canalare incompleta, perno in fibra di vetro, perno metallico, resezione, perno parapulpale
@@ -50,6 +50,7 @@ Questo progetto è un editor di odontogramma interattivo basato su browser che s
 - 🦷 Carie secondaria (ricorrente) — derivata automaticamente quando la carie si sovrappone a un'otturazione
 - 🪨 Tartaro, riassorbimento radicolare e lesioni periapicali tipizzate (granuloma / cisti / ascesso)
 - 📏 Profondità della carie per superficie (superficiale / dentina / profonda), o punteggio ICDAS II opzionale (0–6) tramite `enableIcdas`
+- 🩹 Interruttore di microinfiltrazione marginale della corona, visibile solo con restauro a corona o ponte
 - 🧰 Barra superiore di icone unificata con menu Impostazioni (numerazione, note, ICDAS, informazioni dentali)
 - 📋 Pannello informazioni dentali: riepilogo testuale in tempo reale dell'intero odontogramma (conteggio denti, elenchi presenti/mancanti, carie incl. secondaria, otturazioni, trattamenti canalari, protesi, impianti, stato parodontale) — visibile per impostazione predefinita, attivabile/disattivabile nelle Impostazioni
 - 🗂️ Menu di esportazione unificato (Stato JSON / FHIR / PNG / JPG)
@@ -68,7 +69,7 @@ Questo progetto è un editor di odontogramma interattivo basato su browser che s
 - 🔒 Modalità sola lettura: disabilita tutte le interazioni per casi d'uso di stampa/report/visualizzazione
 - ✨ Animazioni di selezione: bordo tratteggiato pulsante e ombra luminosa sui denti selezionati (con supporto prefers-reduced-motion)
 - 📝 Note per dente: doppio clic per aggiungere/modificare note, icona nota accanto al numero del dente, tooltip al passaggio del cursore con il testo della nota, esportazione/importazione JSON
-- 🧪 284 test automatizzati (Vitest) in 33 file di test che coprono numerazione, traduzioni, preset, i18n, componente App, tema, touch, plugin e accessibilità
+- 🧪 340 test automatizzati (Vitest) in 37 file di test che coprono numerazione, traduzioni, preset, i18n, componente App, tema, touch, plugin e accessibilità
 - 📖 Documentazione API TypeDoc con commenti JSDoc su tutti gli export pubblici (`npm run docs`)
 
 ### 📦 Moduli
@@ -274,7 +275,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Test
 ```bash
-npm run test           # Esegui tutti i 284 test
+npm run test           # Esegui tutti i 340 test
 npm run test:watch     # Modalità watch
 npm run test:coverage  # Report di copertura
 ```
@@ -376,7 +377,7 @@ L'esportazione crea un file JSON (versione `2.0`) contenente:
 - `src/status_extras.ts` - 34 template di restauro predefiniti (ponti, protesi, costruzioni su barra)
 - `src/i18n/` - traduzioni (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) e hook i18n
 - `src/utils/numbering.ts` - conversione della numerazione FDI, Universal, Palmer
-- `src/__tests__/` - suite di test Vitest (284 test in 33 file)
+- `src/__tests__/` - suite di test Vitest (340 test in 37 file)
 - `src/assets/teeth-svgs/` - template SVG dentali (6 file: incisivi, canini, premolari, molari + viste occlusali)
 - `src/assets/icon-svgs/` - SVG delle icone della barra degli strumenti (5 file)
 

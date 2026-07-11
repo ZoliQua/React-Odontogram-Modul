@@ -5,7 +5,6 @@ const EXPECT: Record<string, string[]> = {
   toothSelection: ["none","tooth-base","milktooth","implant","tooth-under-gum","no-tooth-after-extraction"],
   endo: ["none","endo-medical-filling","endo-filling","endo-filling-incomplete","endo-glass-pin","endo-metal-pin"],
   fillingMaterial: ["none","amalgam","composite","gic","temporary"],
-  bridgeUnit: ["none","removable","zircon","metal","temporary","bar","bar-prosthesis"],
   mobility: ["none","m1","m2","m3"],
   toothSubstrate: ["natural","radix","broken","crownprep"],
   restorationType: ["none","crown","inlay","onlay","veneer","bridge"],

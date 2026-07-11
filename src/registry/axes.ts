@@ -65,9 +65,9 @@ export const AXES: ClinicalAxis[] = [
   { id: "restorationMaterial", field: "restorationMaterial", kind: "enum", valueGroup: "restorationMaterial",
     skipValue: "none", finding: { local: "restoration-material", display: "Restoration material" },
     values: valuesFrom("restorationMaterial") },
-  { id: "bridgeUnit", field: "bridgeUnit", kind: "enum", valueGroup: "bridgeUnit",
-    skipValue: "none", finding: { local: "bridge-unit", display: "Prosthetic / bridge unit" },
-    values: valuesFrom("bridgeUnit") },
+  { id: "prosthesis", field: "prosthesis", kind: "enum", valueGroup: "prosthesis",
+    skipValue: "none", finding: { local: "prosthesis-type", display: "Prosthesis / attachment" },
+    values: valuesFrom("prosthesis") },
   { id: "mobility", field: "mobility", kind: "enum", valueGroup: "mobility",
     skipValue: "none", finding: { local: "tooth-mobility", display: "Tooth mobility" },
     values: valuesFrom("mobility"),
@@ -158,4 +158,12 @@ export const AXES: ClinicalAxis[] = [
   { id: "missingClosed", field: "missingClosed", kind: "boolean",
     finding: { local: "missing-gap-closed", display: "Closed gap (missing tooth)" },
     svgLayer: "missing-closed", appliesWhen: (c) => c.isNone },
+  // SP3b Task 6: crown-marginal-leakage toggle (spec §3.4). The SVG artwork has
+  // shipped a dormant `crown-leakage` layer since v2.5.0 (never toggled — see
+  // src/__tests__/svg-assets.test.ts), but no clinical axis or UI control ever
+  // activated it until now.
+  { id: "crownLeakage", field: "crownLeakage", kind: "boolean",
+    finding: { local: "crown-leakage", display: "Crown marginal leakage" },
+    svgLayer: "crown-leakage",
+    appliesWhen: (c, s) => s.restorationType === "crown" || s.restorationType === "bridge" },
 ];
