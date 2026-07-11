@@ -1,0 +1,128 @@
+[
+  {
+    "name": "empty",
+    "parsed": {
+      "version": "1.4",
+      "globals": {},
+      "teeth": {}
+    }
+  },
+  {
+    "name": "edentulous",
+    "parsed": {
+      "version": "1.4",
+      "globals": {
+        "edentulous": true
+      },
+      "teeth": {}
+    }
+  },
+  {
+    "name": "mixed",
+    "parsed": {
+      "version": "1.4",
+      "globals": {},
+      "teeth": {
+        "12": {
+          "toothSelection": "none"
+        },
+        "14": {
+          "toothSelection": "milktooth"
+        },
+        "15": {
+          "toothSelection": "implant"
+        },
+        "16": {
+          "toothSelection": "tooth-under-gum"
+        },
+        "17": {
+          "toothSelection": "no-tooth-after-extraction"
+        },
+        "19": {
+          "crownMaterial": "broken"
+        },
+        "20": {
+          "crownMaterial": "crownprep"
+        },
+        "21": {
+          "crownMaterial": "radix"
+        },
+        "22": {
+          "crownMaterial": "emax"
+        },
+        "23": {
+          "crownMaterial": "zircon"
+        },
+        "24": {
+          "crownMaterial": "metal"
+        },
+        "25": {
+          "crownMaterial": "temporary"
+        },
+        "26": {
+          "crownMaterial": "telescope"
+        },
+        "27": {
+          "crownMaterial": "healing-abutment"
+        },
+        "28": {
+          "crownMaterial": "locator"
+        },
+        "29": {
+          "crownMaterial": "locator-prosthesis"
+        },
+        "30": {
+          "crownMaterial": "bar"
+        },
+        "31": {
+          "crownMaterial": "bar-prosthesis"
+        },
+        "33": {
+          "endo": "endo-medical-filling"
+        },
+        "34": {
+          "endo": "endo-filling"
+        },
+        "35": {
+          "endo": "endo-filling-incomplete"
+        },
+        "36": {
+          "endo": "endo-glass-pin"
+        },
+        "37": {
+          "endo": "endo-metal-pin"
+        },
+        "39": {
+          "bridgeUnit": "removable"
+        },
+        "40": {
+          "bridgeUnit": "zircon"
+        },
+        "41": {
+          "bridgeUnit": "metal"
+        },
+        "42": {
+          "bridgeUnit": "temporary"
+        },
+        "43": {
+          "bridgeUnit": "bar"
+        },
+        "44": {
+          "bridgeUnit": "bar-prosthesis"
+        },
+        "46": {
+          "mobility": "m1"
+        },
+        "47": {
+          "mobility": "m2"
+        },
+        "48": {
+          "mobility": "m3"
+        },
+        "50": {
+          "periapicalType": "granuloma"
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,1698 @@
+[
+  {
+    "name": "empty",
+    "bundle": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "entry": [
+        {
+          "fullUrl": "urn:uuid:odontogram-subject",
+          "resource": {
+            "resourceType": "Patient",
+            "id": "odontogram-subject"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "edentulous",
+    "bundle": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "entry": [
+        {
+          "fullUrl": "urn:uuid:odontogram-subject",
+          "resource": {
+            "resourceType": "Patient",
+            "id": "odontogram-subject"
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "edentulous",
+                  "display": "Edentulous (whole mouth)"
+                }
+              ],
+              "text": "Edentulous (whole mouth)"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "valueBoolean": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": "mixed",
+    "bundle": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "entry": [
+        {
+          "fullUrl": "urn:uuid:odontogram-subject",
+          "resource": {
+            "resourceType": "Patient",
+            "id": "odontogram-subject"
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-status",
+                  "display": "Tooth status"
+                }
+              ],
+              "text": "Tooth status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "12"
+                }
+              ],
+              "text": "Tooth 12"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "none",
+                  "display": "No tooth status"
+                }
+              ],
+              "text": "No tooth status"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-status",
+                  "display": "Tooth status"
+                }
+              ],
+              "text": "Tooth status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "14"
+                }
+              ],
+              "text": "Tooth 14"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "milktooth",
+                  "display": "Primary (deciduous) tooth"
+                }
+              ],
+              "text": "Primary (deciduous) tooth"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-status",
+                  "display": "Tooth status"
+                }
+              ],
+              "text": "Tooth status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "15"
+                }
+              ],
+              "text": "Tooth 15"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "implant",
+                  "display": "Dental implant"
+                }
+              ],
+              "text": "Dental implant"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-status",
+                  "display": "Tooth status"
+                }
+              ],
+              "text": "Tooth status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "16"
+                }
+              ],
+              "text": "Tooth 16"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-under-gum",
+                  "display": "Tooth under gum"
+                }
+              ],
+              "text": "Tooth under gum"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-status",
+                  "display": "Tooth status"
+                }
+              ],
+              "text": "Tooth status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "17"
+                }
+              ],
+              "text": "Tooth 17"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "no-tooth-after-extraction",
+                  "display": "Missing after extraction"
+                }
+              ],
+              "text": "Missing after extraction"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "19"
+                }
+              ],
+              "text": "Tooth 19"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "broken",
+                  "display": "Broken crown"
+                }
+              ],
+              "text": "Broken crown"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "20"
+                }
+              ],
+              "text": "Tooth 20"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crownprep",
+                  "display": "Crown preparation"
+                }
+              ],
+              "text": "Crown preparation"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "21"
+                }
+              ],
+              "text": "Tooth 21"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "radix",
+                  "display": "Root remnant (radix)"
+                }
+              ],
+              "text": "Root remnant (radix)"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "22"
+                }
+              ],
+              "text": "Tooth 22"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "emax",
+                  "display": "E.max crown"
+                }
+              ],
+              "text": "E.max crown"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "23"
+                }
+              ],
+              "text": "Tooth 23"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "zircon",
+                  "display": "Zirconia crown"
+                }
+              ],
+              "text": "Zirconia crown"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "24"
+                }
+              ],
+              "text": "Tooth 24"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "metal",
+                  "display": "Metal-ceramic crown"
+                }
+              ],
+              "text": "Metal-ceramic crown"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "25"
+                }
+              ],
+              "text": "Tooth 25"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "temporary",
+                  "display": "Temporary crown"
+                }
+              ],
+              "text": "Temporary crown"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "26"
+                }
+              ],
+              "text": "Tooth 26"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "telescope",
+                  "display": "Telescopic crown"
+                }
+              ],
+              "text": "Telescopic crown"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "27"
+                }
+              ],
+              "text": "Tooth 27"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "healing-abutment",
+                  "display": "Healing abutment"
+                }
+              ],
+              "text": "Healing abutment"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "28"
+                }
+              ],
+              "text": "Tooth 28"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "locator",
+                  "display": "Locator abutment"
+                }
+              ],
+              "text": "Locator abutment"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "29"
+                }
+              ],
+              "text": "Tooth 29"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "locator-prosthesis",
+                  "display": "Locator-retained prosthesis"
+                }
+              ],
+              "text": "Locator-retained prosthesis"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "30"
+                }
+              ],
+              "text": "Tooth 30"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bar",
+                  "display": "Bar abutment"
+                }
+              ],
+              "text": "Bar abutment"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "crown-material",
+                  "display": "Crown material"
+                }
+              ],
+              "text": "Crown material"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "31"
+                }
+              ],
+              "text": "Tooth 31"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bar-prosthesis",
+                  "display": "Bar-retained prosthesis"
+                }
+              ],
+              "text": "Bar-retained prosthesis"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endodontic-status",
+                  "display": "Endodontic status"
+                }
+              ],
+              "text": "Endodontic status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "33"
+                }
+              ],
+              "text": "Tooth 33"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endo-medical-filling",
+                  "display": "Endodontic medical filling"
+                }
+              ],
+              "text": "Endodontic medical filling"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endodontic-status",
+                  "display": "Endodontic status"
+                }
+              ],
+              "text": "Endodontic status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "34"
+                }
+              ],
+              "text": "Tooth 34"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endo-filling",
+                  "display": "Root canal filling"
+                }
+              ],
+              "text": "Root canal filling"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endodontic-status",
+                  "display": "Endodontic status"
+                }
+              ],
+              "text": "Endodontic status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "35"
+                }
+              ],
+              "text": "Tooth 35"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endo-filling-incomplete",
+                  "display": "Incomplete root canal filling"
+                }
+              ],
+              "text": "Incomplete root canal filling"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endodontic-status",
+                  "display": "Endodontic status"
+                }
+              ],
+              "text": "Endodontic status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "36"
+                }
+              ],
+              "text": "Tooth 36"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endo-glass-pin",
+                  "display": "Glass fiber post"
+                }
+              ],
+              "text": "Glass fiber post"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endodontic-status",
+                  "display": "Endodontic status"
+                }
+              ],
+              "text": "Endodontic status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "37"
+                }
+              ],
+              "text": "Tooth 37"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "endo-metal-pin",
+                  "display": "Metal post"
+                }
+              ],
+              "text": "Metal post"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bridge-unit",
+                  "display": "Prosthetic / bridge unit"
+                }
+              ],
+              "text": "Prosthetic / bridge unit"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "39"
+                }
+              ],
+              "text": "Tooth 39"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "removable",
+                  "display": "Removable prosthesis"
+                }
+              ],
+              "text": "Removable prosthesis"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bridge-unit",
+                  "display": "Prosthetic / bridge unit"
+                }
+              ],
+              "text": "Prosthetic / bridge unit"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "40"
+                }
+              ],
+              "text": "Tooth 40"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "zircon",
+                  "display": "Zirconia bridge"
+                }
+              ],
+              "text": "Zirconia bridge"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bridge-unit",
+                  "display": "Prosthetic / bridge unit"
+                }
+              ],
+              "text": "Prosthetic / bridge unit"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "41"
+                }
+              ],
+              "text": "Tooth 41"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "metal",
+                  "display": "Metal bridge"
+                }
+              ],
+              "text": "Metal bridge"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bridge-unit",
+                  "display": "Prosthetic / bridge unit"
+                }
+              ],
+              "text": "Prosthetic / bridge unit"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "42"
+                }
+              ],
+              "text": "Tooth 42"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "temporary",
+                  "display": "Temporary bridge"
+                }
+              ],
+              "text": "Temporary bridge"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bridge-unit",
+                  "display": "Prosthetic / bridge unit"
+                }
+              ],
+              "text": "Prosthetic / bridge unit"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "43"
+                }
+              ],
+              "text": "Tooth 43"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bar",
+                  "display": "Bar"
+                }
+              ],
+              "text": "Bar"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bridge-unit",
+                  "display": "Prosthetic / bridge unit"
+                }
+              ],
+              "text": "Prosthetic / bridge unit"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "44"
+                }
+              ],
+              "text": "Tooth 44"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "bar-prosthesis",
+                  "display": "Bar-retained prosthesis"
+                }
+              ],
+              "text": "Bar-retained prosthesis"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-mobility",
+                  "display": "Tooth mobility"
+                }
+              ],
+              "text": "Tooth mobility"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "46"
+                }
+              ],
+              "text": "Tooth 46"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "m1",
+                  "display": "Mobility grade 1"
+                }
+              ],
+              "text": "Mobility grade 1"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-mobility",
+                  "display": "Tooth mobility"
+                }
+              ],
+              "text": "Tooth mobility"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "47"
+                }
+              ],
+              "text": "Tooth 47"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "m2",
+                  "display": "Mobility grade 2"
+                }
+              ],
+              "text": "Mobility grade 2"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-mobility",
+                  "display": "Tooth mobility"
+                }
+              ],
+              "text": "Tooth mobility"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "48"
+                }
+              ],
+              "text": "Tooth 48"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "m3",
+                  "display": "Mobility grade 3"
+                }
+              ],
+              "text": "Mobility grade 3"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "periapical-lesion-type",
+                  "display": "Periapical lesion type"
+                }
+              ],
+              "text": "Periapical lesion type"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "50"
+                }
+              ],
+              "text": "Tooth 50"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "granuloma",
+                  "display": "Periapical granuloma"
+                }
+              ],
+              "text": "Periapical granuloma"
+            }
+          }
+        }
+      ]
+    }
+  }
+]

@@ -724,8 +724,7 @@ function getCariesDepthOptions(): Array<{ value: number; label: string; title?: 
 }
 
 // ---- SVG apply logic ----
-function applyStateToSvgSingle(toothNo: Any, svg: Any){
-  const state = toothState.get(toothNo);
+function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.get(toothNo)){
   if(!state || !svg) return;
 
   // 0) Start from a clean baseline: turn OFF all switchables, then apply ON flags.
@@ -1117,6 +1116,44 @@ function applyStateToSvg(toothNo: Any){
   }
   applyPluginOverlays(toothNo);
   updateToothTooltip(toothNo);
+}
+
+/** Collect, IN DOCUMENT ORDER (not sorted — order captures z-order/re-parenting),
+ *  one entry per id'd element that is visible after render: self and every ancestor
+ *  have data-active !== "0", excluding <defs> and non-visual defs elements. Each
+ *  entry also carries the element's inline `opacity` (parsed from the style
+ *  attribute, "" if none) and its `class` ("" if none), so per-surface caries-depth
+ *  encoding (style.opacity / classList "caries-deep") is visible to the fingerprint. */
+function collectActiveLayers(svg: Any): { id: string; opacity: string; cls: string }[] {
+  const NONVISUAL = new Set(["defs","linearGradient","radialGradient","stop","clipPath","mask","style","title","desc","metadata"]);
+  const localName = (el: Element) => el.tagName.replace(/^.*:/, "").toLowerCase();
+  const out: { id: string; opacity: string; cls: string }[] = [];
+  for (const n of Array.from(svg.querySelectorAll("[id]")) as Element[]) {
+    if (NONVISUAL.has(localName(n))) continue;
+    let inDefs = false, hidden = false;
+    for (let cur: Element | null = n; cur && cur !== (svg.parentElement as Element | null); cur = cur.parentElement) {
+      if (localName(cur) === "defs") { inDefs = true; break; }
+      if (cur.getAttribute && cur.getAttribute("data-active") === "0") { hidden = true; break; }
+    }
+    if (inDefs || hidden) continue;
+    const style = n.getAttribute("style") || "";
+    const m = style.match(/opacity:\s*([0-9.]+)/);
+    out.push({ id: n.getAttribute("id") as string, opacity: m ? m[1] : "", cls: n.getAttribute("class") || "" });
+  }
+  return out; // document order — NOT sorted
+}
+
+/** TEST-ONLY: render `serialized` state onto a fresh copy of `rawSvgText` and return the
+ *  in-document-order active-layer fingerprint (id + opacity + class per element). Used by
+ *  the SP2 parity harness; not part of the public API. */
+export function __renderActiveLayers(rawSvgText: string, toothNo: number, serialized: Record<string, unknown>): { id: string; opacity: string; cls: string }[] {
+  const parsed = new DOMParser().parseFromString(rawSvgText, "image/svg+xml");
+  const svg = parsed.documentElement as unknown as Any;
+  stripDisplayNoneToDataActive(svg);
+  ensureDataActiveForSwitchables(svg);
+  const state = hydrateState(serialized as Any);
+  applyStateToSvgSingle(toothNo, svg, state);
+  return collectActiveLayers(svg);
 }
 
 // ---- Plugin overlay rendering ----
@@ -2424,17 +2461,17 @@ function serializeState(s: Any){
 }
 
 // Allowed values for imported state fields
-const VALID_TOOTH_SELECTION = new Set(["none","tooth-base","milktooth","implant","tooth-under-gum","no-tooth-after-extraction"]);
-const VALID_ENDO = new Set(["none","endo-medical-filling","endo-filling","endo-filling-incomplete","endo-glass-pin","endo-metal-pin"]);
-const VALID_FILLING_MATERIAL = new Set(["none","amalgam","composite","gic","temporary"]);
-const VALID_BRIDGE_UNIT = new Set(["none","removable","zircon","metal","temporary","bar","bar-prosthesis"]);
-const VALID_MOBILITY = new Set(["none","m1","m2","m3"]);
-const VALID_CROWN_MATERIAL = new Set(["natural","broken","crownprep","radix","emax","zircon","metal","temporary","telescope","healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"]);
-const VALID_MODS = new Set(["inflammation","parodontal","mobility"]);
-const VALID_PERIAPICAL_TYPE = new Set(["none","granuloma","cyst","abscess"]);
-const VALID_CARIES = new Set(["caries-subcrown","caries-buccal","caries-lingual","caries-mesial","caries-distal","caries-occlusal"]);
+export const VALID_TOOTH_SELECTION = new Set(["none","tooth-base","milktooth","implant","tooth-under-gum","no-tooth-after-extraction"]);
+export const VALID_ENDO = new Set(["none","endo-medical-filling","endo-filling","endo-filling-incomplete","endo-glass-pin","endo-metal-pin"]);
+export const VALID_FILLING_MATERIAL = new Set(["none","amalgam","composite","gic","temporary"]);
+export const VALID_BRIDGE_UNIT = new Set(["none","removable","zircon","metal","temporary","bar","bar-prosthesis"]);
+export const VALID_MOBILITY = new Set(["none","m1","m2","m3"]);
+export const VALID_CROWN_MATERIAL = new Set(["natural","broken","crownprep","radix","emax","zircon","metal","temporary","telescope","healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"]);
+export const VALID_MODS = new Set(["inflammation","parodontal","mobility"]);
+export const VALID_PERIAPICAL_TYPE = new Set(["none","granuloma","cyst","abscess"]);
+export const VALID_CARIES = new Set(["caries-subcrown","caries-buccal","caries-lingual","caries-mesial","caries-distal","caries-occlusal"]);
 const VALID_CARIES_DEPTH = new Set(["surface","dentin","deep"]);
-const VALID_FILLING_SURFACES = new Set(["buccal","lingual","mesial","distal","occlusal"]);
+export const VALID_FILLING_SURFACES = new Set(["buccal","lingual","mesial","distal","occlusal"]);
 
 function filterSet(arr: Any, allowed: Set<string>): Set<string>{
   if(!Array.isArray(arr)) return new Set();
