@@ -17,7 +17,7 @@ export const FIXED_CLEAR_LAYERS: string[] = [
   // GROUPS.variants
   "tooth-broken-incisal","tooth-broken-distal-incisal","tooth-broken-distal","tooth-broken-mesial-distal-incisal",
   "tooth-broken-mesial-distal","tooth-broken-mesial-incisal","tooth-broken-mesial","tooth-crownprep","tooth-under-gum",
-  "no-tooth-after-extraction","tooth-radix",
+  "tooth-radix",
   // GROUPS.mods + periapical glyphs
   "inflammation","parodontal","mobility","cysta","granuloma","abscess",
   // GROUPS.endo + endo-resorption

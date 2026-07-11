@@ -21,7 +21,6 @@ interface Deps {
 export function buildFlagCtx(state: any, toothNo: number, d: Deps): FlagCtx {
   const sel = state.toothSelection;
   return {
-    toothNo,
     isImplant: sel === "implant",
     isMilktooth: sel === "milktooth",
     underGum: d.isUnderGum(sel),

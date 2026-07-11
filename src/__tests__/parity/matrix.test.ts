@@ -8,7 +8,7 @@ describe("parity matrix", () => {
     expect(a.length).toBeGreaterThan(200);
     expect(new Set(a.map(c => c.template)).size).toBe(6);
   });
-  it("payload cases include empty, edentulous, mixed", () => {
-    expect(payloadCases().map(p => p.name)).toEqual(["empty", "edentulous", "mixed"]);
+  it("payload cases include empty, edentulous, mixed, branches", () => {
+    expect(payloadCases().map(p => p.name)).toEqual(["empty", "edentulous", "mixed", "branches"]);
   });
 });

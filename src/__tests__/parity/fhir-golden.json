@@ -1694,5 +1694,369 @@
         }
       ]
     }
+  },
+  {
+    "name": "branches",
+    "bundle": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "entry": [
+        {
+          "fullUrl": "urn:uuid:odontogram-subject",
+          "resource": {
+            "resourceType": "Patient",
+            "id": "odontogram-subject"
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "caries",
+                  "display": "Dental caries"
+                }
+              ],
+              "text": "Dental caries"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "11"
+                }
+              ],
+              "text": "Tooth 11"
+            },
+            "component": [
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                      "code": "caries-occlusal",
+                      "display": "Occlusal caries"
+                    }
+                  ],
+                  "text": "Occlusal caries"
+                },
+                "valueInteger": 4
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "restoration",
+                  "display": "Dental restoration"
+                }
+              ],
+              "text": "Dental restoration"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "12"
+                }
+              ],
+              "text": "Tooth 12"
+            },
+            "component": [
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                      "code": "mesial",
+                      "display": "Mesial surface"
+                    }
+                  ],
+                  "text": "Mesial surface"
+                },
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                      "code": "composite",
+                      "display": "Composite filling"
+                    }
+                  ],
+                  "text": "Composite filling"
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                      "code": "occlusal",
+                      "display": "Occlusal surface"
+                    }
+                  ],
+                  "text": "Occlusal surface"
+                },
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                      "code": "amalgam",
+                      "display": "Amalgam filling"
+                    }
+                  ],
+                  "text": "Amalgam filling"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "calculus",
+                  "display": "Dental calculus"
+                }
+              ],
+              "text": "Dental calculus"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "13"
+                }
+              ],
+              "text": "Tooth 13"
+            },
+            "valueBoolean": true
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "pulp-inflammation",
+                  "display": "Pulp inflammation"
+                }
+              ],
+              "text": "Pulp inflammation"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "13"
+                }
+              ],
+              "text": "Tooth 13"
+            },
+            "valueBoolean": true
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "extraction-planned",
+                  "display": "Planned extraction"
+                }
+              ],
+              "text": "Planned extraction"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "13"
+                }
+              ],
+              "text": "Tooth 13"
+            },
+            "valueBoolean": true
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "tooth-status",
+                  "display": "Tooth status"
+                }
+              ],
+              "text": "Tooth status"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "14"
+                }
+              ],
+              "text": "Tooth 14"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "none",
+                  "display": "No tooth status"
+                }
+              ],
+              "text": "No tooth status"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "Exam"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  "code": "missing-gap-closed",
+                  "display": "Closed gap (missing tooth)"
+                }
+              ],
+              "text": "Closed gap (missing tooth)"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3950",
+                  "code": "14"
+                }
+              ],
+              "text": "Tooth 14"
+            },
+            "valueBoolean": true
+          }
+        }
+      ]
+    }
   }
 ]

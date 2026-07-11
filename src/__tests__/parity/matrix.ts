@@ -39,6 +39,14 @@ function trickyStates(): { label: string; state: Record<string, unknown> }[] {
     { label: "implant+metal-crown", state: { toothSelection:"implant", crownMaterial:"metal" } },
     { label: "removable-bridge", state: { toothSelection:"none", bridgeUnit:"removable" } },
     { label: "extraction-wound", state: { toothSelection:"none", extractionWound:true } },
+    // crown-replace: gate needs crownMaterial in {emax,zircon,metal,temporary,telescope} (never active in base/enum rows)
+    { label: "crown-replace-metal", state: { toothSelection:"tooth-base", crownMaterial:"metal", crownReplace:true } },
+    { label: "crown-replace-emax", state: { toothSelection:"tooth-base", crownMaterial:"emax", crownReplace:true } },
+    // missing-closed: gate needs toothSelection === "none"
+    { label: "missing-closed", state: { toothSelection:"none", missingClosed:true } },
+    // boolean appliesWhen SUPPRESSION: calculus must not render off a present tooth-base
+    { label: "calculus-on-implant", state: { toothSelection:"implant", calculus:true } },
+    { label: "calculus-on-extracted", state: { toothSelection:"none", extractionWound:true, calculus:true } },
   ];
 }
 
@@ -76,5 +84,13 @@ export function payloadCases() {
     { name: "empty", payload: { version: "1.4", teeth: {} } },
     { name: "edentulous", payload: { version: "1.4", globals: { edentulous: true }, teeth: {} } },
     { name: "mixed", payload: { version: "1.4", teeth } },
+    // Force the FHIR emit/parse branches the enum-only "mixed" sample never reaches:
+    { name: "branches", payload: { version: "1.4", teeth: {
+      "11": { toothSelection:"tooth-base", caries:["caries-occlusal"], cariesDepths:{ occlusal: 4 } },              // set -> valueInteger
+      "12": { toothSelection:"tooth-base", fillingMaterial:"composite", fillingSurfaces:["mesial","occlusal"],
+              fillingSurfaceMaterials:{ mesial:"composite", occlusal:"amalgam" } },                                  // restoration -> component
+      "13": { toothSelection:"tooth-base", pulpInflam:true, calculus:true, extractionPlan:true },                    // boolean -> valueBoolean
+      "14": { toothSelection:"none", missingClosed:true },                                                           // boolean on none
+    } } },
   ];
 }

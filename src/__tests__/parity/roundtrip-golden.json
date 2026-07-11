@@ -124,5 +124,37 @@
         }
       }
     }
+  },
+  {
+    "name": "branches",
+    "parsed": {
+      "version": "1.4",
+      "globals": {},
+      "teeth": {
+        "11": {
+          "caries": [
+            "caries-occlusal"
+          ],
+          "cariesDepths": {
+            "occlusal": 4
+          }
+        },
+        "12": {
+          "fillingSurfaceMaterials": {
+            "mesial": "composite",
+            "occlusal": "amalgam"
+          }
+        },
+        "13": {
+          "calculus": true,
+          "pulpInflam": true,
+          "extractionPlan": true
+        },
+        "14": {
+          "toothSelection": "none",
+          "missingClosed": true
+        }
+      }
+    }
   }
 ]
