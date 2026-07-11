@@ -23,8 +23,8 @@ export interface ToothRecord {
   fissureSealing?: boolean;
   contactMesial?: boolean;
   contactDistal?: boolean;
-  bruxismWear?: boolean;
-  bruxismNeckWear?: boolean;
+  wearEdge?: string;
+  wearCervical?: string;
   brokenMesial?: boolean;
   brokenIncisal?: boolean;
   brokenDistal?: boolean;

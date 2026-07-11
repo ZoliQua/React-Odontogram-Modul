@@ -584,14 +584,8 @@ export default function App({
                 </label>
               </div>
               <div id="bruxismRow" className="row inline-checks bruxism-row">
-                <label>
-                  <input type="checkbox" id="bruxismWear" />
-                  <span>{t("tooth.bruxism.edgeWear")}</span>
-                </label>
-                <label>
-                  <input type="checkbox" id="bruxismNeckWear" />
-                  <span>{t("tooth.bruxism.neckWear")}</span>
-                </label>
+                <label><span>{t("tooth.bruxism.edgeWear")}</span><select id="wearEdgeSelect"></select></label>
+                <label><span>{t("tooth.bruxism.neckWear")}</span><select id="wearCervicalSelect"></select></label>
               </div>
               <div id="crownActionsRow" className="row inline-checks bridge-actions-row">
                 <label id="bridgePillarRow" className="inline-check">

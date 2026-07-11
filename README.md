@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.22.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.23.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -38,12 +38,12 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🩹 Merged "Root and periodontium" card (single collapsible section for root/periapical and periodontal findings)
 - ⚕️ Modifications: periapical inflammation (hidden on present teeth, where `apicalDx` alone drives the periapical glyph — retiring the duplicate toggle; still available for missing/extraction-socket teeth), periodontal disease, mobility grades (M1/M2/M3)
 - 🦷🔩 Peri-implant status (`periImplant`: none / mucositis / peri-implantitis-mild / -moderate / -severe) — 2018 World Workshop staging, shown as a dedicated selector on implants; mucositis reuses the periodontal gum glyph, peri-implantitis adds a graded `peri-implant-bone-loss` layer (opacity 0.4/0.7/1.0). Implants no longer render the periapical lesion glyph — their inflammation is expressed through this axis instead — and the periodontal-modifier checkboxes are hidden on implants (the ad-hoc "Peri-implantitis" checkbox relabel is retired)
-- 🏷️ Special indicators: crown needed, crown replacement needed, missing closed gap, extraction plan, bruxism wear/neck wear, fissure sealing, contact point loss
+- 🏷️ Special indicators: crown needed, crown replacement needed, missing closed gap, extraction plan, fissure sealing, contact point loss
 - 👁️ Occlusal view, wisdom teeth, bone and pulp visibility toggles
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 2.7; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, and 2.6 and migrate automatically, with plugin custom states and per-tooth notes)
+- 💾 Status export/import in JSON (version 2.8; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, and 2.7 and migrate automatically, with plugin custom states and per-tooth notes)
 - 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition, local code system — SNOMED CT mapping planned)
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
@@ -55,6 +55,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🎚️ Three caries granularity settings (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) plus a `cariesDepthEnabled` toggle, collapsing each scale to a simpler picker view without losing the stored value
 - 🩹 Fillings-panel subcaries summary line: lists any selected tooth with recurrent caries and its surfaces below the filling controls (e.g. "36 (O) has subcaries set on its filling.")
 - 🪛 Per-surface filling defects (`fillingDefect`: none / marginal / fracture / wear) on direct restorations, independent of recurrent caries — authored via a per-surface indicator on the Fillings card (mirroring the caries-depth indicator), rendered on the chart, and shown in the tooltip and whole-mouth fillings summary
+- 🦷💥 Tooth wear typed by clinical cause and location (`wearEdge`: none / attrition / erosion, incisal/occlusal; `wearCervical`: none / abrasion / abfraction / erosion, cervical) — replacing the two on/off bruxism-wear flags; authored via two dropdowns on the wear row, reuses the existing wear artwork, and shown in the tooltip and a new whole-mouth "Wear" summary section
 - ✏️ Anterior teeth (incisors/canines) label their occlusal surface "incisal" throughout the UI (picker, popup, summaries); the stored surface key stays `occlusal`
 - 🪨 Calculus, and root resorption typed as internal or external-cervical (`resorptionType`)
 - 📏 Per-surface caries depth (superficial / dentin / deep), or optional ICDAS II scoring (0–6) via `enableIcdas`
@@ -73,7 +74,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔌 Custom SVG plugin system: inject visual overlays, per-tooth custom state, JSON export/import support
 - ⚠️ State validation warnings for incompatible tooth state combinations
 - 🏷️ Automatic state tooltip on tooth tiles (shows all active states)
-- 🩺 Modernized per-tooth tooltip and whole-mouth summary panel: both surface the full set of clinical findings (pulp/apical diagnosis + lesion subtype, root resorption, peri-implant status, graded root caries, calculus, crown marginal leakage, fracture, contact loss, bruxism wear), with a dedicated "Diagnoses" section in the panel and a coarse caries-severity qualifier (superficial/moderate/deep)
+- 🩺 Modernized per-tooth tooltip and whole-mouth summary panel: both surface the full set of clinical findings (pulp/apical diagnosis + lesion subtype, root resorption, peri-implant status, graded root caries, calculus, crown marginal leakage, fracture, contact loss, typed edge/cervical wear), with a dedicated "Diagnoses" section in the panel, a dedicated "Wear" section, and a coarse caries-severity qualifier (superficial/moderate/deep)
 - ♿ Keyboard accessibility (WCAG): ARIA listbox/option roles, Enter/Space selection, arrow key navigation, focus-visible outlines
 - 🔒 Read-only mode: disable all interactions for print/report/view use cases
 - ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
@@ -212,7 +213,10 @@ This project is an interactive, browser-based odontogram editor that supports fa
 **Caries granularity settings** (global): `secondaryCariesMode` (`simple`/`standard`/`full`, default `standard`), `rootCariesMode` (`simple`/`severity`, default `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, default `off`), `cariesDepthEnabled` (boolean, default `true`) — each collapses its scale to a simpler picker view without altering the stored value
 
 **Special indicators:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `endoResection`, `calculus`, `parapulpalPin`
+
+**Tooth wear** (`wearEdge`, `wearCervical`; per-location clinical type, gated on tooth-base + no restoration + natural substrate; render the existing `tooth-bruxism-wear`/`tooth-bruxism-neck-wear` layers):
+`wearEdge`: `none`, `attrition`, `erosion` — `wearCervical`: `none`, `abrasion`, `abfraction`, `erosion`
 
 ### 🖼️ SVG Template System
 
@@ -401,8 +405,8 @@ The export creates a JSON file (version `2.4`; imports also accept legacy `1.4`,
 - `fissureSealing` - fissure sealant flag
 - `contactMesial` - mesial contact point loss
 - `contactDistal` - distal contact point loss
-- `bruxismWear` - occlusal bruxism wear
-- `bruxismNeckWear` - cervical bruxism wear
+- `wearEdge` - incisal/occlusal wear type (none/attrition/erosion)
+- `wearCervical` - cervical wear type (none/abrasion/abfraction/erosion)
 - `brokenMesial`, `brokenIncisal`, `brokenDistal` - fracture locations
 - `extractionWound` - post-extraction wound
 - `extractionPlan` - planned extraction
@@ -479,12 +483,12 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🩹 Tarjeta combinada "Raíz y periodonto" (sección colapsable única para hallazgos radiculares/periapicales y periodontales)
 - ⚕️ Modificaciones: inflamación periapical (oculta en dientes presentes, donde el glifo periapical lo determina únicamente `apicalDx` — se retira el interruptor duplicado; sigue disponible para dientes ausentes/alvéolo de extracción), enfermedad periodontal, grados de movilidad (M1/M2/M3)
 - 🦷🔩 Estado periimplantario (`periImplant`: none / mucositis / peri-implantitis-mild / -moderate / -severe) — clasificación del World Workshop 2018, mostrada como un selector dedicado en los implantes; la mucositis reutiliza el glifo gingival periodontal, y la periimplantitis añade una capa graduada `peri-implant-bone-loss` (opacidad 0.4/0.7/1.0). Los implantes ya no renderizan el glifo de lesión periapical — su inflamación se expresa mediante este eje — y las casillas de modificadores periodontales quedan ocultas en los implantes (se retira el renombrado ad-hoc "Peri-implantitis" de la casilla)
-- 🏷️ Indicadores especiales: corona necesaria, reemplazo de corona necesario, espacio cerrado, plan de extracción, desgaste por bruxismo/desgaste cervical, sellado de fisuras, pérdida de punto de contacto
+- 🏷️ Indicadores especiales: corona necesaria, reemplazo de corona necesario, espacio cerrado, plan de extracción, sellado de fisuras, pérdida de punto de contacto
 - 👁️ Vista oclusal, muelas del juicio, visibilidad de hueso y pulpa
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 2.7; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5 y 2.6 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
+- 💾 Exportación/importación de estado en JSON (versión 2.8; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6 y 2.7 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
 - 🔗 Exportación HL7 FHIR R4 (Bundle de colección con Observations por diente, codificación dental ISO 3950 para dentición permanente, sistema de códigos local — mapeo SNOMED CT planificado)
 - ✚ Selección de superficies en cruz (B/M/O/D/L) para caries y obturaciones
 - 🧱 Materiales de obturación por superficie (obturaciones mixtas, p. ej. bucal amalgama + distal composite)
@@ -496,6 +500,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🎚️ Tres ajustes de granularidad de caries (`secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`) más un interruptor `cariesDepthEnabled`, que reducen cada escala a una vista de selector más simple sin perder el valor almacenado
 - 🩹 Línea de resumen de subcaries en el panel de obturaciones: lista, debajo de los controles de obturación, cualquier diente seleccionado con caries recurrente y sus superficies (p. ej. "36 (O) tiene subcaries junto a su obturación.")
 - 🪛 Defectos de obturación por superficie (`fillingDefect`: none / marginal / fracture / wear) en restauraciones directas, independientes de la caries recurrente — se registran mediante un indicador por superficie en la tarjeta de Obturaciones (espejo del indicador de profundidad de caries), se renderizan en el odontograma y se muestran en el tooltip y en el resumen de obturaciones de toda la boca
+- 🦷💥 Desgaste dental tipificado por causa clínica y localización (`wearEdge`: none / attrition / erosion, incisal/oclusal; `wearCervical`: none / abrasion / abfraction / erosion, cervical) — sustituye los dos indicadores on/off de desgaste por bruxismo; se registra mediante dos menús desplegables en la fila de desgaste, reutiliza el arte existente y se muestra en el tooltip y en una nueva sección de resumen "Desgaste" de toda la boca
 - ✏️ Los dientes anteriores (incisivos/caninos) rotulan su superficie oclusal como "incisal" en toda la interfaz (selector, popup, resúmenes); la clave de superficie almacenada sigue siendo `occlusal`
 - 🪨 Cálculo, y reabsorción radicular tipificada como interna o cervical externa (`resorptionType`)
 - 📏 Profundidad de caries por superficie (superficial / dentina / profunda), o puntuación ICDAS II opcional (0–6) con `enableIcdas`
@@ -514,7 +519,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔌 Sistema de plugins SVG personalizados: superposiciones visuales, estado personalizado por diente, soporte de exportación/importación JSON
 - ⚠️ Validación de estado con advertencias para combinaciones incompatibles
 - 🏷️ Tooltip automático de estado en las losetas dentales (muestra todos los estados activos)
-- 🩺 Tooltip por diente y panel de resumen de toda la boca modernizados: ambos muestran el conjunto completo de hallazgos clínicos (diagnóstico pulpar/apical + subtipo de lesión, reabsorción radicular, estado periimplantario, caries radicular graduada, cálculo, filtración marginal de corona, fractura, pérdida de contacto, desgaste por bruxismo), con una sección "Diagnósticos" dedicada en el panel y un calificador de gravedad de caries de grano grueso (superficial/moderada/profunda)
+- 🩺 Tooltip por diente y panel de resumen de toda la boca modernizados: ambos muestran el conjunto completo de hallazgos clínicos (diagnóstico pulpar/apical + subtipo de lesión, reabsorción radicular, estado periimplantario, caries radicular graduada, cálculo, filtración marginal de corona, fractura, pérdida de contacto, desgaste tipificado incisal/oclusal y cervical), con una sección "Diagnósticos" dedicada, una sección "Desgaste" dedicada en el panel y un calificador de gravedad de caries de grano grueso (superficial/moderada/profunda)
 - ♿ Accesibilidad por teclado (WCAG): roles ARIA listbox/option, selección con Enter/Espacio, navegación con flechas, contornos focus-visible
 - 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
 - ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados
@@ -653,7 +658,10 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 **Ajustes de granularidad de caries** (globales): `secondaryCariesMode` (`simple`/`standard`/`full`, por defecto `standard`), `rootCariesMode` (`simple`/`severity`, por defecto `simple`), `radiographicDepthMode` (`off`/`threeLevel`/`detailed`, por defecto `off`), `cariesDepthEnabled` (booleano, por defecto `true`) — cada uno reduce su escala a una vista de selector más simple sin alterar el valor almacenado
 
 **Indicadores especiales:**
-`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `bruxismWear`, `bruxismNeckWear`, `endoResection`, `calculus`, `parapulpalPin`
+`crownNeeded`, `crownReplace`, `missingClosed`, `extractionPlan`, `extractionWound`, `bridgePillar`, `fissureSealing`, `contactMesial`, `contactDistal`, `endoResection`, `calculus`, `parapulpalPin`
+
+**Desgaste dental** (`wearEdge`, `wearCervical`; tipo clínico por localización, condicionado a diente natural + sin restauración + sustrato natural; renderizan las capas existentes `tooth-bruxism-wear`/`tooth-bruxism-neck-wear`):
+`wearEdge`: `none`, `attrition`, `erosion` — `wearCervical`: `none`, `abrasion`, `abfraction`, `erosion`
 
 ### 🖼️ Sistema de plantillas SVG
 

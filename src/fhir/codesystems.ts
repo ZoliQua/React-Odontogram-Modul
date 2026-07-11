@@ -164,6 +164,17 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "internal": { code: "internal", display: "Internal root resorption" },
     "external-cervical": { code: "external-cervical", display: "External cervical root resorption" },
   },
+  wearEdge: {
+    "none": { code: "none", display: "No incisal/occlusal wear" },
+    "attrition": { code: "attrition", display: "Attrition (tooth-to-tooth wear)" },
+    "erosion": { code: "erosion", display: "Erosion (chemical/acid wear)" },
+  },
+  wearCervical: {
+    "none": { code: "none", display: "No cervical wear" },
+    "abrasion": { code: "abrasion", display: "Abrasion (mechanical cervical wear)" },
+    "abfraction": { code: "abfraction", display: "Abfraction (cervical stress lesion)" },
+    "erosion": { code: "erosion", display: "Erosion (chemical/acid wear)" },
+  },
   // SP5 Task 1: caries fields foundation (additive; not yet rendered). `rootCaries`
   // is a normal enum axis (registered in axes.ts/fieldMappings.ts). `secondaryCaries`
   // (CARS 0-6) and `radiographicDepth` are per-surface scalar maps handled the same

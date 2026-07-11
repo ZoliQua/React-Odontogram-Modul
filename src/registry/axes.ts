@@ -120,12 +120,6 @@ export const AXES: ClinicalAxis[] = [
   { id: "contactDistal", field: "contactDistal", kind: "boolean",
     finding: { local: "contact-distal", display: "Distal contact issue" },
     svgLayer: "distal-no-contact-point", appliesWhen: (c) => c.contactAllowed },
-  { id: "bruxismWear", field: "bruxismWear", kind: "boolean",
-    finding: { local: "bruxism-wear", display: "Bruxism wear" },
-    svgLayer: "tooth-bruxism-wear", appliesWhen: (c) => c.bruxismAllowed },
-  { id: "bruxismNeckWear", field: "bruxismNeckWear", kind: "boolean",
-    finding: { local: "bruxism-neck-wear", display: "Cervical (neck) wear" },
-    svgLayer: "tooth-bruxism-neck-wear", appliesWhen: (c) => c.bruxismAllowed },
   { id: "brokenMesial", field: "brokenMesial", kind: "boolean",
     finding: { local: "broken-mesial", display: "Mesial fracture" } },
   { id: "brokenIncisal", field: "brokenIncisal", kind: "boolean",
@@ -193,6 +187,20 @@ export const AXES: ClinicalAxis[] = [
     // applyStateToSvgSingle (odontogram.ts), byte-identical to the retired
     // `rootResorption:true` boolean render (SP4 Task 2).
     svgLayer: "endo-resorption", appliesWhen: (c) => c.toothPresent },
+
+  // SP11 Task 1: bruxismWear/bruxismNeckWear (booleans) retired in favor of the
+  // wearEdge/wearCervical type enums (mirrors resorptionType above).
+  { id: "wearEdge", field: "wearEdge", kind: "enum", valueGroup: "wearEdge",
+    skipValue: "none", finding: { local: "tooth-wear-edge", display: "Incisal/occlusal wear" },
+    values: valuesFrom("wearEdge"),
+    // All types render the single `tooth-bruxism-wear` layer; the axis svgLayer is
+    // metadata only (svg-layers.test coverage) — activation is explicit in
+    // applyStateToSvgSingle (applyFlagLayers only auto-activates boolean axes).
+    svgLayer: "tooth-bruxism-wear", appliesWhen: (c) => c.bruxismAllowed },
+  { id: "wearCervical", field: "wearCervical", kind: "enum", valueGroup: "wearCervical",
+    skipValue: "none", finding: { local: "tooth-wear-cervical", display: "Cervical wear" },
+    values: valuesFrom("wearCervical"),
+    svgLayer: "tooth-bruxism-neck-wear", appliesWhen: (c) => c.bruxismAllowed },
 
   // SP5 Task 1: caries fields foundation (additive scaffolding — registry/FHIR/i18n
   // only; render + migration land in later SP5 tasks). `rootCaries` is a normal enum

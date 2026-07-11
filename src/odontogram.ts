@@ -172,8 +172,8 @@ function defaultState(){
     calculus: false,
     contactMesial: false,
     contactDistal: false,
-    bruxismWear: false,
-    bruxismNeckWear: false,
+    wearEdge: "none", // none | attrition | erosion  (incisal/occlusal)
+    wearCervical: "none", // none | abrasion | abfraction | erosion  (cervical)
     brokenMesial: false,
     brokenIncisal: false,
     brokenDistal: false,
@@ -1264,6 +1264,22 @@ function getApicalDxOptions(): { value: string; label: string }[]{
 function getResorptionOptions(): { value: string; label: string }[]{
   return Array.from(VALID_RESORPTION_TYPE).map(v => ({ value: v, label: t("resorption.type." + kebabToCamel(v)) }));
 }
+function getWearEdgeOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_WEAR_EDGE).map(v => ({ value: v, label: t("wearType." + v) }));
+}
+function getWearCervicalOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_WEAR_CERVICAL).map(v => ({ value: v, label: t("wearType." + v) }));
+}
+
+// SP11 Task 3: #bruxismRow visibility gate — aligned to the render gate
+// (__renderActiveLayers' wearAllowed, ~line 1355) by requiring
+// toothSubstrate === "natural" too; the row gate previously omitted it.
+function wearRowAllowed(s: Any): boolean{
+  return s?.toothSelection === "tooth-base" && s?.restorationType === "none" && s?.toothSubstrate === "natural";
+}
+export function __wearRowAllowedForTest(s: Record<string, unknown>): boolean {
+  return wearRowAllowed(s);
+}
 function getPeriImplantOptions(): { value: string; label: string }[]{
   return Array.from(VALID_PERI_IMPLANT).map(v => ({ value: v, label: t("periImplant." + kebabToCamel(v)) }));
 }
@@ -1341,6 +1357,15 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   // the retired rootResorption:true render (same appliesWhen: toothPresent).
   if(state.resorptionType !== "none" && isToothPresent(state.toothSelection)){
     setActive(svgGetById(svg, "endo-resorption"), true);
+  }
+
+  // SP11: tooth wear (per location; reuses the two existing wear layers). Same
+  // gate the retired booleans used (bruxismAllowed) so migrated legacy states
+  // render byte-identically.
+  const wearAllowed = state.toothSelection === "tooth-base" && state.restorationType === "none" && state.toothSubstrate === "natural";
+  if(wearAllowed){
+    if(state.wearEdge !== "none") setActive(svgGetById(svg, "tooth-bruxism-wear"), true);
+    if(state.wearCervical !== "none") setActive(svgGetById(svg, "tooth-bruxism-neck-wear"), true);
   }
 
   // SP5 Task 2: rootCaries (enum) wires the previously-dormant `caries-root`
@@ -1995,8 +2020,13 @@ function getStateSummary(toothNo: number): string[]{
   { const fx = fractureSummaryLabel(state); if(fx) summary.push(fx); }
   if(state.contactMesial) summary.push(t("tooth.contact.mesialMissing"));
   if(state.contactDistal) summary.push(t("tooth.contact.distalMissing"));
-  if(state.bruxismWear) summary.push(t("tooth.bruxism.edgeWear"));
-  if(state.bruxismNeckWear) summary.push(t("tooth.bruxism.neckWear"));
+  // Review fix (post-SP11): gate wear on the same wearRowAllowed predicate the
+  // render/UI row use — a crowned/non-natural-substrate tooth must not surface
+  // a stored wearEdge/wearCervical value that the chart itself hides.
+  if(wearRowAllowed(state)){
+    if(state.wearEdge !== "none") summary.push(`${t("tooth.bruxism.edgeWear")}: ${t("wearType." + state.wearEdge)}`);
+    if(state.wearCervical !== "none") summary.push(`${t("tooth.bruxism.neckWear")}: ${t("wearType." + state.wearCervical)}`);
+  }
 
   // Flags
   if(state.extractionPlan) summary.push(t("tooth.extractionPlan"));
@@ -2290,8 +2320,10 @@ function syncControlsFromState(state: Any){
   $("#fissureSealing").checked = !!state.fissureSealing;
   $("#contactMesial").checked = !!state.contactMesial;
   $("#contactDistal").checked = !!state.contactDistal;
-  $("#bruxismWear").checked = !!state.bruxismWear;
-  $("#bruxismNeckWear").checked = !!state.bruxismNeckWear;
+  setSelectOptions($("#wearEdgeSelect"), getWearEdgeOptions(), state.wearEdge);
+  if($("#wearEdgeSelect").value !== state.wearEdge) state.wearEdge = $("#wearEdgeSelect").value;
+  setSelectOptions($("#wearCervicalSelect"), getWearCervicalOptions(), state.wearCervical);
+  if($("#wearCervicalSelect").value !== state.wearCervical) state.wearCervical = $("#wearCervicalSelect").value;
   $("#brokenMesial").checked = !!state.brokenMesial;
   $("#brokenIncisal").checked = !!state.brokenIncisal;
   $("#brokenDistal").checked = !!state.brokenDistal;
@@ -2506,7 +2538,7 @@ function syncControlsFromState(state: Any){
   });
   const bruxismAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
-    return s && s.toothSelection === "tooth-base" && s.restorationType === "none";
+    return s && wearRowAllowed(s);
   });
   const fissureAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
@@ -3561,8 +3593,8 @@ function serializeState(s: Any){
     calculus: !!s.calculus,
     contactMesial: !!s.contactMesial,
     contactDistal: !!s.contactDistal,
-    bruxismWear: !!s.bruxismWear,
-    bruxismNeckWear: !!s.bruxismNeckWear,
+    wearEdge: s.wearEdge,
+    wearCervical: s.wearCervical,
     brokenMesial: !!s.brokenMesial,
     brokenIncisal: !!s.brokenIncisal,
     brokenDistal: !!s.brokenDistal,
@@ -3605,6 +3637,8 @@ export const VALID_PULP_DX = validValues("pulpDx");
 export const VALID_PULP_LATIN = validValues("pulpLatin");
 export const VALID_APICAL_DX = validValues("apicalDx");
 export const VALID_RESORPTION_TYPE = validValues("resorptionType");
+export const VALID_WEAR_EDGE = validValues("wearEdge");
+export const VALID_WEAR_CERVICAL = validValues("wearCervical");
 const VALID_CARIES_DEPTH = new Set(["surface","dentin","deep"]);
 export const VALID_FILLING_SURFACES = validSurfaces();
 // SP5/SP6: caries fields. `rootCaries` is a registered axis, so it reads from
@@ -3965,8 +3999,14 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
   s.calculus = !!raw.calculus;
   s.contactMesial = !!raw.contactMesial;
   s.contactDistal = !!raw.contactDistal;
-  s.bruxismWear = !!raw.bruxismWear;
-  s.bruxismNeckWear = !!raw.bruxismNeckWear;
+  // SP11: bruxismWear/bruxismNeckWear (booleans) retired in favor of the
+  // wearEdge/wearCervical type enums. Legacy edge boolean -> attrition (dominant
+  // bruxism edge wear); cervical boolean -> abrasion (generic cervical wear);
+  // false/absent -> none. A modern payload's own valid value wins.
+  const migratedWearEdge = raw.bruxismWear ? "attrition" : "none";
+  s.wearEdge = validateEnum(raw.wearEdge, VALID_WEAR_EDGE, migratedWearEdge);
+  const migratedWearCervical = raw.bruxismNeckWear ? "abrasion" : "none";
+  s.wearCervical = validateEnum(raw.wearCervical, VALID_WEAR_CERVICAL, migratedWearCervical);
   s.brokenMesial = !!raw.brokenMesial;
   s.brokenIncisal = !!raw.brokenIncisal;
   s.brokenDistal = !!raw.brokenDistal;
@@ -4036,7 +4076,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.7",
+    version: "2.8",
     globals: {
       wisdomVisible,
       showBase,
@@ -4998,18 +5038,13 @@ function wireControls(){
     });
   });
 
-  // Bruxism wear
-  $("#bruxismWear").addEventListener("change", (e)=>{
-    applyToSelected((s)=>{
-      s.bruxismWear = (e.target as HTMLInputElement).checked;
-    });
+  // Wear (SP11 Task 3: wearEdge/wearCervical enum pickers — replaces the
+  // bruxism checkboxes; mirrors the #resorptionSelect buildSelect wiring).
+  buildSelect($("#wearEdgeSelect"), getWearEdgeOptions(), (value)=>{
+    applyToSelected((s)=>{ s.wearEdge = value; });
   });
-
-  // Bruxism neck wear
-  $("#bruxismNeckWear").addEventListener("change", (e)=>{
-    applyToSelected((s)=>{
-      s.bruxismNeckWear = (e.target as HTMLInputElement).checked;
-    });
+  buildSelect($("#wearCervicalSelect"), getWearCervicalOptions(), (value)=>{
+    applyToSelected((s)=>{ s.wearCervical = value; });
   });
 
   // Bridge pillar
@@ -5435,7 +5470,7 @@ export function getToothStateSummary(toothNo: number): string[]{
 
 /** One heading + its per-tooth entries in the tooth-information summary. */
 export type OdontogramSummarySection = {
-  key: "caries" | "fillings" | "endo" | "diagnoses" | "prosthetics";
+  key: "caries" | "fillings" | "endo" | "diagnoses" | "wear" | "prosthetics";
   heading: string;
   items: string[];
   /** Localized "no such tooth" sentence, shown when `items` is empty. */
@@ -5502,6 +5537,7 @@ export function getOdontogramSummary(): OdontogramSummary {
   const prosthetics: string[] = [];
   const inflamed: string[] = [];
   const diagnoses: string[] = [];
+  const wear: string[] = [];
 
   for(const toothNo of ALL_TEETH){
     const s = toothState.get(toothNo);
@@ -5607,6 +5643,16 @@ export function getOdontogramSummary(): OdontogramSummary {
     // SP9: clinical diagnoses (pulp / apical / resorption / peri-implant).
     const dxs = diagnosisSummaryLabels(s);
     if(dxs.length) diagnoses.push(`${lbl(toothNo)} (${dxs.join("; ")})`);
+    // SP11: wear (edge/cervical) type-per-location whole-mouth section.
+    // Review fix (post-SP11): gate on wearRowAllowed, same as the tooltip and
+    // the render/UI row — suppresses stored wear on a crowned/non-natural-
+    // substrate tooth that the chart itself no longer shows.
+    if(wearRowAllowed(s)){
+      const parts: string[] = [];
+      if(s.wearEdge !== "none") parts.push(`${t("tooth.bruxism.edgeWear")}: ${t("wearType." + s.wearEdge)}`);
+      if(s.wearCervical !== "none") parts.push(`${t("tooth.bruxism.neckWear")}: ${t("wearType." + s.wearCervical)}`);
+      if(parts.length) wear.push(`${lbl(toothNo)} (${parts.join(", ")})`);
+    }
     // SP9: calculus + mobility join the periodontal findings.
     if(s.calculus) inflamed.push(`${lbl(toothNo)} (${t("calculus.label")})`);
     if(s.mobility && s.mobility !== "none") inflamed.push(`${lbl(toothNo)} (${t("inflammation.mobilityLabel")} ${t("mobility." + s.mobility)})`);
@@ -5644,6 +5690,7 @@ export function getOdontogramSummary(): OdontogramSummary {
     { key: "fillings", heading: t("toothInfo.fillings"), items: fillings, emptyText: t("toothInfo.fillingsEmpty") },
     { key: "endo", heading: t("toothInfo.endo"), items: endo, emptyText: t("toothInfo.endoEmpty") },
     { key: "diagnoses", heading: t("toothInfo.diagnoses"), items: diagnoses, emptyText: t("toothInfo.diagnosesEmpty") },
+    { key: "wear", heading: t("toothInfo.wear"), items: wear, emptyText: t("toothInfo.wearEmpty") },
     { key: "prosthetics", heading: t("toothInfo.prosthetics"), items: prosthetics, emptyText: t("toothInfo.prostheticsEmpty") },
   ];
 

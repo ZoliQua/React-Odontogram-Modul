@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.23.0] - 2026-07-11
+### Changed
+- Tooth wear is now recorded by clinical type per location: an incisal/occlusal wear type (attrition / erosion) and a cervical wear type (abrasion / abfraction / erosion), replacing the two on/off wear flags. Shown in the tooltip and a new whole-mouth "Wear" summary section.
+### Migration
+- Payload version 2.8 (imports 1.4–2.7 accepted). A legacy edge-wear flag becomes attrition; a legacy cervical-wear flag becomes abrasion. The chart rendering is unchanged for migrated data.
+
 ## [1.22.0] - 2026-07-11
 ### Added
 - Per-surface filling defects for direct restorations: mark a filled surface as having a marginal defect, fracture/chip, or wear (independent of recurrent caries). Authored via a per-surface indicator on the Fillings card; shown in the tooltip and the whole-mouth summary; rendered on the chart.

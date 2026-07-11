@@ -48,8 +48,6 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "fissureSealing", kind: "boolean", findingCode: "fissure-sealing", findingDisplay: "Fissure sealing" },
   { field: "contactMesial", kind: "boolean", findingCode: "contact-mesial", findingDisplay: "Mesial contact issue" },
   { field: "contactDistal", kind: "boolean", findingCode: "contact-distal", findingDisplay: "Distal contact issue" },
-  { field: "bruxismWear", kind: "boolean", findingCode: "bruxism-wear", findingDisplay: "Bruxism wear" },
-  { field: "bruxismNeckWear", kind: "boolean", findingCode: "bruxism-neck-wear", findingDisplay: "Cervical (neck) wear" },
   { field: "brokenMesial", kind: "boolean", findingCode: "broken-mesial", findingDisplay: "Mesial fracture" },
   { field: "brokenIncisal", kind: "boolean", findingCode: "broken-incisal", findingDisplay: "Incisal fracture" },
   { field: "brokenDistal", kind: "boolean", findingCode: "broken-distal", findingDisplay: "Distal fracture" },
@@ -67,6 +65,8 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "pulpLatin", kind: "enum", valueGroup: "pulpLatin", skipValue: "none", findingCode: "pulp-diagnosis-latin", findingDisplay: "Pulp diagnosis (Latin, practical)" },
   { field: "apicalDx", kind: "enum", valueGroup: "apicalDx", skipValue: "normal", findingCode: "apical-diagnosis", findingDisplay: "Apical diagnosis (AAE)" },
   { field: "resorptionType", kind: "enum", valueGroup: "resorptionType", skipValue: "none", findingCode: "root-resorption-type", findingDisplay: "Root resorption type" },
+  { field: "wearEdge", kind: "enum", valueGroup: "wearEdge", skipValue: "none", findingCode: "tooth-wear-edge", findingDisplay: "Incisal/occlusal wear" },
+  { field: "wearCervical", kind: "enum", valueGroup: "wearCervical", skipValue: "none", findingCode: "tooth-wear-cervical", findingDisplay: "Cervical wear" },
 
   // SP5 Task 1: caries fields foundation (additive; see axes.ts). `secondaryCaries`/
   // `radiographicDepth` are per-surface scalar maps, special-cased outside this table

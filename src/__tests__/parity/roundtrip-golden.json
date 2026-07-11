@@ -2,7 +2,7 @@
   {
     "name": "empty",
     "parsed": {
-      "version": "2.7",
+      "version": "2.8",
       "globals": {},
       "teeth": {}
     }
@@ -10,7 +10,7 @@
   {
     "name": "edentulous",
     "parsed": {
-      "version": "2.7",
+      "version": "2.8",
       "globals": {
         "edentulous": true
       },
@@ -20,7 +20,7 @@
   {
     "name": "mixed",
     "parsed": {
-      "version": "2.7",
+      "version": "2.8",
       "globals": {},
       "teeth": {
         "12": {
@@ -71,7 +71,7 @@
   {
     "name": "branches",
     "parsed": {
-      "version": "2.7",
+      "version": "2.8",
       "globals": {},
       "teeth": {
         "11": {
