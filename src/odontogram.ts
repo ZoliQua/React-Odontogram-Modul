@@ -175,6 +175,11 @@ function defaultState(){
     wearEdge: "none", // none | attrition | erosion  (incisal/occlusal)
     wearCervical: "none", // none | abrasion | abfraction | erosion  (cervical)
     discoloration: "none", // none | tetracycline | fluorosis | nonvital | extrinsic | other
+    // SP14 Task 1: orthodontic axes foundation (additive; render lands in Task 2).
+    orthoAppliance: "none", // none | bracket | band
+    orthoDrift: "none", // none | mesial | distal
+    orthoVertical: "none", // none | extrusion | intrusion
+    orthoRotation: false,
     brokenMesial: false,
     brokenIncisal: false,
     brokenDistal: false,
@@ -1295,6 +1300,17 @@ function getDiscolorationOptions(): { value: string; label: string }[]{
   return Array.from(VALID_DISCOLORATION).map(v => ({ value: v, label: t("discoloration." + v) }));
 }
 
+// SP14 Task 1: orthodontic axes foundation (additive; render lands in Task 2).
+function getOrthoApplianceOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_ORTHO_APPLIANCE).map(v => ({ value: v, label: t("ortho.appliance." + v) }));
+}
+function getOrthoDriftOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_ORTHO_DRIFT).map(v => ({ value: v, label: t("ortho.drift." + v) }));
+}
+function getOrthoVerticalOptions(): { value: string; label: string }[]{
+  return Array.from(VALID_ORTHO_VERTICAL).map(v => ({ value: v, label: t("ortho.vertical." + v) }));
+}
+
 // SP11 Task 3: #bruxismRow visibility gate — aligned to the render gate
 // (__renderActiveLayers' wearAllowed, ~line 1355) by requiring
 // toothSubstrate === "natural" too; the row gate previously omitted it.
@@ -1320,6 +1336,21 @@ export function __discolorationAllowedForTest(s: Record<string, unknown>): boole
 // (mirrors __wearRowAllowedForTest); same underlying predicate as the render
 // gate above — the row's visibility must never contradict the chart.
 export function __discolorationRowAllowedForTest(s: Record<string, unknown>): boolean { return discolorationAllowed(s); }
+
+// SP14: orthodontic glyphs (appliance/drift/vertical/rotation) — gated to a
+// present natural tooth (permanent or milk), same shape as discolorationAllowed
+// above minus the restoration/substrate constraints (ortho hardware can sit on
+// a restored tooth). ONE shared predicate reused by the Task 3 UI picker and
+// the Task 4 whole-mouth summary (SP9/10/11 lesson: don't fork the gate).
+function orthoAllowed(s: Any): boolean {
+  return s?.toothSelection === "tooth-base" || s?.toothSelection === "milktooth";
+}
+export function __orthoAllowedForTest(s: Record<string, unknown>): boolean { return orthoAllowed(s); }
+// SP14 Task 3: named alias for the #orthoCard visibility-gate test seam
+// (mirrors __discolorationRowAllowedForTest); same underlying predicate as
+// the render gate above — the card's visibility must never contradict the
+// chart.
+export function __orthoCardAllowedForTest(s: Record<string, unknown>): boolean { return orthoAllowed(s); }
 
 function getPeriImplantOptions(): { value: string; label: string }[]{
   return Array.from(VALID_PERI_IMPLANT).map(v => ({ value: v, label: t("periImplant." + kebabToCamel(v)) }));
@@ -1562,6 +1593,32 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
       const base = el.getAttribute("data-base-fill") || "";
       el.style.fill = (tintOn && id === activeId) ? tint : base;
     }
+  }
+
+  // SP14: orthodontic glyphs (dormant since v2.5.0). Explicit + symmetric; null-guarded
+  // (occlusal templates lack ring/bracket/up/down — 4 of the 7 ids — so every lookup
+  // must be guarded). Gate: present natural tooth (orthoAllowed, shared w/ Task 3/4).
+  //
+  // extrusion/intrusion <-> arrow-up/arrow-down binding (verified from 11.svg geometry,
+  // viewBox "0 0 39.2 62.7"): the crown/incisal edge sits at LARGER y (e.g. crown-needed
+  // spans y~34.5-61, near the bottom of the 62.7-tall canvas) and the root/apex at
+  // SMALLER y. Group "arrow-up" has its 2-line chevron vertex (tip) at y~60.2-60.3 with
+  // the shaft's tail at y~53.6 — tip toward LARGER y (incisal edge) => this glyph visually
+  // points toward the crown => extrusion. Group "arrow-down" has its chevron vertex at
+  // y~54.5-54.7 with the shaft's tail at y~61.2 — tip toward SMALLER y (apex) => this
+  // glyph visually points toward the root => intrusion. (The layer *ids* arrow-up/
+  // arrow-down don't literally match their visual direction; binding by drawn geometry,
+  // not by id text, per Step 1's instruction.)
+  {
+    const ok = orthoAllowed(state);
+    const set = (id: string, on: boolean) => { const el = svgGetById(svg, id); if(el) setActive(el, on); };
+    set("ortho-bracket", ok && state.orthoAppliance === "bracket");
+    set("ortho-ring",    ok && state.orthoAppliance === "band");
+    set("arrow-mesial",  ok && state.orthoDrift === "mesial");
+    set("arrow-distal",  ok && state.orthoDrift === "distal");
+    set("arrow-up",      ok && state.orthoVertical === "extrusion");
+    set("arrow-down",    ok && state.orthoVertical === "intrusion");
+    set("arrow-rotation",ok && state.orthoRotation === true);
   }
 
   // 2) Mods — periapical glyph.
@@ -2106,6 +2163,15 @@ function getStateSummary(toothNo: number): string[]{
   if(discolorationAllowed(state) && state.discoloration !== "none"){
     summary.push(`${t("discoloration.label")}: ${t("discoloration." + state.discoloration)}`);
   }
+  // SP14 Task 4: gate orthodontic findings on the same orthoAllowed predicate
+  // the render glyphs and the Ortho UI card use — an implant/missing/pontic
+  // tooth must not surface a stored ortho value the chart itself hides.
+  if(orthoAllowed(state)){
+    if(state.orthoAppliance !== "none") summary.push(`${t("ortho.appliance.label")}: ${t("ortho.appliance." + state.orthoAppliance)}`);
+    if(state.orthoDrift !== "none") summary.push(`${t("ortho.drift.label")}: ${t("ortho.drift." + state.orthoDrift)}`);
+    if(state.orthoVertical !== "none") summary.push(`${t("ortho.vertical.label")}: ${t("ortho.vertical." + state.orthoVertical)}`);
+    if(state.orthoRotation === true) summary.push(t("ortho.rotation.label"));
+  }
 
   // Flags
   if(state.extractionPlan) summary.push(t("tooth.extractionPlan"));
@@ -2437,6 +2503,13 @@ function syncControlsFromState(state: Any){
   if($("#wearCervicalSelect").value !== state.wearCervical) state.wearCervical = $("#wearCervicalSelect").value;
   setSelectOptions($("#discolorationSelect"), getDiscolorationOptions(), state.discoloration);
   if($("#discolorationSelect").value !== state.discoloration) state.discoloration = $("#discolorationSelect").value;
+  setSelectOptions($("#orthoApplianceSelect"), getOrthoApplianceOptions(), state.orthoAppliance);
+  if($("#orthoApplianceSelect").value !== state.orthoAppliance) state.orthoAppliance = $("#orthoApplianceSelect").value;
+  setSelectOptions($("#orthoDriftSelect"), getOrthoDriftOptions(), state.orthoDrift);
+  if($("#orthoDriftSelect").value !== state.orthoDrift) state.orthoDrift = $("#orthoDriftSelect").value;
+  setSelectOptions($("#orthoVerticalSelect"), getOrthoVerticalOptions(), state.orthoVertical);
+  if($("#orthoVerticalSelect").value !== state.orthoVertical) state.orthoVertical = $("#orthoVerticalSelect").value;
+  ($("#orthoRotationToggle") as HTMLInputElement).checked = state.orthoRotation === true;
   syncToothDetailControls(state);
   $("#brokenMesial").checked = !!state.brokenMesial;
   $("#brokenIncisal").checked = !!state.brokenIncisal;
@@ -2661,6 +2734,13 @@ function syncControlsFromState(state: Any){
     const s = toothState.get(tn);
     return s && discolorationAllowed(s);
   });
+  // SP14 Task 3: #orthoCard visibility gate — reuses the same orthoAllowed
+  // predicate the render glyphs and tooltip use (Task 2/4), so the card's
+  // visibility never contradicts the chart (SP9/10/11 lesson).
+  const orthoCardAllowed = selectedList.length > 0 && selectedList.every(tn => {
+    const s = toothState.get(tn);
+    return s && orthoAllowed(s);
+  });
   const fissureAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
     return s && s.toothSelection === "tooth-base" && FISSURE_ALLOWED.has(tn);
@@ -2668,6 +2748,7 @@ function syncControlsFromState(state: Any){
   $("#contactPointRow").classList.toggle("hidden", !contactAllowed);
   $("#bruxismRow").classList.toggle("hidden", !bruxismAllowed);
   $("#discolorationRow").classList.toggle("hidden", !discolorationRowAllowed);
+  $("#orthoCard").classList.toggle("hidden", !orthoCardAllowed);
   $("#fissureSealingRow").classList.toggle("hidden", !fissureAllowed);
   const extractionPlanAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
@@ -3718,6 +3799,10 @@ function serializeState(s: Any){
     wearEdge: s.wearEdge,
     wearCervical: s.wearCervical,
     discoloration: s.discoloration,
+    orthoAppliance: s.orthoAppliance,
+    orthoDrift: s.orthoDrift,
+    orthoVertical: s.orthoVertical,
+    orthoRotation: !!s.orthoRotation,
     brokenMesial: !!s.brokenMesial,
     brokenIncisal: !!s.brokenIncisal,
     brokenDistal: !!s.brokenDistal,
@@ -3763,6 +3848,10 @@ export const VALID_RESORPTION_TYPE = validValues("resorptionType");
 export const VALID_WEAR_EDGE = validValues("wearEdge");
 export const VALID_WEAR_CERVICAL = validValues("wearCervical");
 export const VALID_DISCOLORATION = validValues("discoloration");
+// SP14 Task 1: orthodontic axes foundation (additive; see registry/axes.ts).
+export const VALID_ORTHO_APPLIANCE = validValues("orthoAppliance");
+export const VALID_ORTHO_DRIFT = validValues("orthoDrift");
+export const VALID_ORTHO_VERTICAL = validValues("orthoVertical");
 const VALID_CARIES_DEPTH = new Set(["surface","dentin","deep"]);
 export const VALID_FILLING_SURFACES = validSurfaces();
 // SP5/SP6: caries fields. `rootCaries` is a registered axis, so it reads from
@@ -4132,6 +4221,11 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
   const migratedWearCervical = raw.bruxismNeckWear ? "abrasion" : "none";
   s.wearCervical = validateEnum(raw.wearCervical, VALID_WEAR_CERVICAL, migratedWearCervical);
   s.discoloration = validateEnum(raw.discoloration, VALID_DISCOLORATION, "none");
+  // SP14 Task 1: orthodontic axes foundation (additive; no legacy fields to migrate).
+  s.orthoAppliance = validateEnum(raw.orthoAppliance, VALID_ORTHO_APPLIANCE, "none");
+  s.orthoDrift = validateEnum(raw.orthoDrift, VALID_ORTHO_DRIFT, "none");
+  s.orthoVertical = validateEnum(raw.orthoVertical, VALID_ORTHO_VERTICAL, "none");
+  s.orthoRotation = raw.orthoRotation === true;
   s.brokenMesial = !!raw.brokenMesial;
   s.brokenIncisal = !!raw.brokenIncisal;
   s.brokenDistal = !!raw.brokenDistal;
@@ -4201,7 +4295,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.9",
+    version: "2.10",
     globals: {
       wisdomVisible,
       showBase,
@@ -5197,6 +5291,23 @@ function wireControls(){
     applyToSelected((s)=>{ s.discoloration = on ? "other" : "none"; });
   });
 
+  // Ortho (SP14 Task 3: appliance/drift/vertical enum pickers + rotation
+  // boolean toggle — mirrors the discoloration buildSelect/toggle wiring
+  // above).
+  buildSelect($("#orthoApplianceSelect"), getOrthoApplianceOptions(), (value)=>{
+    applyToSelected((s)=>{ s.orthoAppliance = value; });
+  });
+  buildSelect($("#orthoDriftSelect"), getOrthoDriftOptions(), (value)=>{
+    applyToSelected((s)=>{ s.orthoDrift = value; });
+  });
+  buildSelect($("#orthoVerticalSelect"), getOrthoVerticalOptions(), (value)=>{
+    applyToSelected((s)=>{ s.orthoVertical = value; });
+  });
+  $("#orthoRotationToggle").addEventListener("change", (e)=>{
+    const on = (e.target as HTMLInputElement).checked;
+    applyToSelected((s)=>{ s.orthoRotation = on; });
+  });
+
   // Bridge pillar
   $("#bridgePillar").addEventListener("change", (e)=>{
     applyToSelected((s)=>{
@@ -5620,7 +5731,7 @@ export function getToothStateSummary(toothNo: number): string[]{
 
 /** One heading + its per-tooth entries in the tooth-information summary. */
 export type OdontogramSummarySection = {
-  key: "caries" | "fillings" | "endo" | "diagnoses" | "wear" | "discoloration" | "prosthetics";
+  key: "caries" | "fillings" | "endo" | "diagnoses" | "wear" | "discoloration" | "orthodontics" | "prosthetics";
   heading: string;
   items: string[];
   /** Localized "no such tooth" sentence, shown when `items` is empty. */
@@ -5689,6 +5800,7 @@ export function getOdontogramSummary(): OdontogramSummary {
   const diagnoses: string[] = [];
   const wear: string[] = [];
   const discoloration: string[] = [];
+  const orthodontics: string[] = [];
 
   for(const toothNo of ALL_TEETH){
     const s = toothState.get(toothNo);
@@ -5810,6 +5922,17 @@ export function getOdontogramSummary(): OdontogramSummary {
     if(discolorationAllowed(s) && s.discoloration !== "none"){
       discoloration.push(`${lbl(toothNo)} (${t("discoloration." + s.discoloration)})`);
     }
+    // SP14 Task 4: orthodontic findings — gate on the same orthoAllowed
+    // predicate the render glyphs and the Ortho UI card use, so the summary
+    // never claims a finding on a tooth the chart itself doesn't show it on.
+    if(orthoAllowed(s)){
+      const orthoParts: string[] = [];
+      if(s.orthoAppliance !== "none") orthoParts.push(t("ortho.appliance." + s.orthoAppliance));
+      if(s.orthoDrift !== "none") orthoParts.push(t("ortho.drift." + s.orthoDrift));
+      if(s.orthoVertical !== "none") orthoParts.push(t("ortho.vertical." + s.orthoVertical));
+      if(s.orthoRotation === true) orthoParts.push(t("ortho.rotation.label"));
+      if(orthoParts.length) orthodontics.push(`${lbl(toothNo)} (${orthoParts.join(", ")})`);
+    }
     // SP9: calculus + mobility join the periodontal findings.
     if(s.calculus) inflamed.push(`${lbl(toothNo)} (${t("calculus.label")})`);
     if(s.mobility && s.mobility !== "none") inflamed.push(`${lbl(toothNo)} (${t("inflammation.mobilityLabel")} ${t("mobility." + s.mobility)})`);
@@ -5849,6 +5972,7 @@ export function getOdontogramSummary(): OdontogramSummary {
     { key: "diagnoses", heading: t("toothInfo.diagnoses"), items: diagnoses, emptyText: t("toothInfo.diagnosesEmpty") },
     { key: "wear", heading: t("toothInfo.wear"), items: wear, emptyText: t("toothInfo.wearEmpty") },
     { key: "discoloration", heading: t("toothInfo.discoloration"), items: discoloration, emptyText: t("toothInfo.discolorationEmpty") },
+    { key: "orthodontics", heading: t("toothInfo.orthodontics"), items: orthodontics, emptyText: t("toothInfo.orthodonticsEmpty") },
     { key: "prosthetics", heading: t("toothInfo.prosthetics"), items: prosthetics, emptyText: t("toothInfo.prostheticsEmpty") },
   ];
 

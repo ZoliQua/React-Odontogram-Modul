@@ -637,6 +637,28 @@ export default function App({
               </label>
             </section>
 
+            <section id="orthoCard" className="card">
+              <div className="card-title card-title-row">
+                <span>{t("toothInfo.orthodontics")}</span>
+              </div>
+              <div id="orthoApplianceRow" className="row">
+                <span>{t("ortho.appliance.label")}</span>
+                <select id="orthoApplianceSelect"></select>
+              </div>
+              <div id="orthoDriftRow" className="row">
+                <span>{t("ortho.drift.label")}</span>
+                <select id="orthoDriftSelect"></select>
+              </div>
+              <div id="orthoVerticalRow" className="row">
+                <span>{t("ortho.vertical.label")}</span>
+                <select id="orthoVerticalSelect"></select>
+              </div>
+              <label id="orthoRotationRow" className="row inline-check">
+                <input type="checkbox" id="orthoRotationToggle" />
+                <span>{t("ortho.rotation.label")}</span>
+              </label>
+            </section>
+
             <section id="cariesSection" className="card">
               <div className="card-title card-title-row">
                 <span>{t("caries.title")}</span>

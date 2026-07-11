@@ -28,6 +28,11 @@ export interface ToothRecord {
   // SP12 Task 1: tooth discoloration foundation (additive; see docs/superpowers
   // SP12 design). Enum axis, no svgLayer — see registry/axes.ts.
   discoloration?: string;
+  // SP14 Task 1: orthodontic axes foundation (additive; see registry/axes.ts).
+  orthoAppliance?: string;
+  orthoDrift?: string;
+  orthoVertical?: string;
+  orthoRotation?: boolean;
   brokenMesial?: boolean;
   brokenIncisal?: boolean;
   brokenDistal?: boolean;

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.26.0] - 2026-07-11
+### Added
+- Per-tooth orthodontic charting: appliance (bracket/band), drift (mesial/distal), vertical movement (extrusion/intrusion), and rotation, reusing the dormant v2.5.0 ortho artwork (no new SVG). Shown on the chart, in the tooltip, and a new whole-mouth "Orthodontics" summary section.
+### Migration
+- Payload version 2.10 (imports 1.4–2.9 accepted). Additive — legacy charts carry no orthodontic findings.
+
 ## [1.25.0] - 2026-07-11
 ### Changed
 - Tooth wear controls now sit on separate rows with the "Planned extraction" toggle below them (previously overflowed the panel).

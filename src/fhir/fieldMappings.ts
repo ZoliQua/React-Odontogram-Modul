@@ -69,6 +69,12 @@ export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "wearCervical", kind: "enum", valueGroup: "wearCervical", skipValue: "none", findingCode: "tooth-wear-cervical", findingDisplay: "Cervical wear" },
   { field: "discoloration", kind: "enum", valueGroup: "discoloration", skipValue: "none", findingCode: "tooth-discoloration", findingDisplay: "Tooth discoloration" },
 
+  // SP14 Task 1: orthodontic axes foundation (additive; see axes.ts).
+  { field: "orthoAppliance", kind: "enum", valueGroup: "orthoAppliance", skipValue: "none", findingCode: "tooth-ortho-appliance", findingDisplay: "Orthodontic appliance" },
+  { field: "orthoDrift", kind: "enum", valueGroup: "orthoDrift", skipValue: "none", findingCode: "tooth-ortho-drift", findingDisplay: "Orthodontic drift" },
+  { field: "orthoVertical", kind: "enum", valueGroup: "orthoVertical", skipValue: "none", findingCode: "tooth-ortho-vertical", findingDisplay: "Vertical malposition" },
+  { field: "orthoRotation", kind: "boolean", findingCode: "tooth-ortho-rotation", findingDisplay: "Tooth rotation" },
+
   // SP5 Task 1: caries fields foundation (additive; see axes.ts). `secondaryCaries`/
   // `radiographicDepth` are per-surface scalar maps, special-cased outside this table
   // exactly like `cariesDepths` — no row here for them by design.

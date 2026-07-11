@@ -73,6 +73,13 @@ export const FIXED_CLEAR_LAYERS: string[] = [
   "crown-leakage",
   // toothSelection activation layers (see comment above): cleared here, re-set at :763-764
   "implant","milktooth",
+  // SP14 Task 2: orthodontic glyphs (appliance/drift/vertical/rotation) — dormant
+  // since v2.5.0, activated by the new ortho render block in applyStateToSvgSingle
+  // (odontogram.ts). 4 of these 7 ids (ortho-bracket/ortho-ring/arrow-up/arrow-down)
+  // are absent from the 2 occlusal templates (14_occl.svg/16_occl.svg) — clearing an
+  // id absent from a given template is a harmless no-op (svgGetById returns null,
+  // setActive(null, ...) is a guarded early-return).
+  "ortho-bracket","ortho-ring","arrow-mesial","arrow-distal","arrow-up","arrow-down","arrow-rotation",
 ];
 
 export function axisClearLayers(): string[] {

@@ -210,6 +210,27 @@ export const AXES: ClinicalAxis[] = [
     // crown path's .style.fill (no layer toggle), so there is no layer to declare.
     values: valuesFrom("discoloration") },
 
+  // SP14 Task 1: orthodontic axes foundation (registry/FHIR/i18n only; render
+  // lands in SP14 Task 2). The 3 enum axes mirror wearEdge: svgLayer is metadata
+  // only (activation stays explicit in applyStateToSvgSingle/applyFlagLayers only
+  // auto-activates boolean-kind axes). `orthoRotation` (boolean) deliberately
+  // omits svgLayer, mirroring pulpDx, so applyFlagLayers never auto-activates it
+  // — it will be rendered explicitly in Task 2.
+  { id: "orthoAppliance", field: "orthoAppliance", kind: "enum", valueGroup: "orthoAppliance",
+    skipValue: "none", finding: { local: "tooth-ortho-appliance", display: "Orthodontic appliance" },
+    values: valuesFrom("orthoAppliance"),
+    svgLayer: "ortho-bracket", appliesWhen: (c) => c.toothPresent },
+  { id: "orthoDrift", field: "orthoDrift", kind: "enum", valueGroup: "orthoDrift",
+    skipValue: "none", finding: { local: "tooth-ortho-drift", display: "Orthodontic drift" },
+    values: valuesFrom("orthoDrift"),
+    svgLayer: "arrow-mesial", appliesWhen: (c) => c.toothPresent },
+  { id: "orthoVertical", field: "orthoVertical", kind: "enum", valueGroup: "orthoVertical",
+    skipValue: "none", finding: { local: "tooth-ortho-vertical", display: "Vertical malposition" },
+    values: valuesFrom("orthoVertical"),
+    svgLayer: "arrow-up", appliesWhen: (c) => c.toothPresent },
+  { id: "orthoRotation", field: "orthoRotation", kind: "boolean",
+    finding: { local: "tooth-ortho-rotation", display: "Tooth rotation" } },
+
   // SP5 Task 1: caries fields foundation (additive scaffolding — registry/FHIR/i18n
   // only; render + migration land in later SP5 tasks). `rootCaries` is a normal enum
   // axis. `secondaryCaries` (per-surface CARS 0-6) and `radiographicDepth`

@@ -183,6 +183,23 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "extrinsic": { code: "extrinsic", display: "Extrinsic staining" },
     "other": { code: "other", display: "Other / unknown discoloration" },
   },
+  // SP14 Task 1: orthodontic axes foundation (registry/FHIR/i18n only; render
+  // lands in SP14 Task 2). `orthoRotation` is a boolean axis (no value map).
+  orthoAppliance: {
+    "none": { code: "none", display: "No orthodontic appliance" },
+    "bracket": { code: "bracket", display: "Fixed bracket" },
+    "band": { code: "band", display: "Orthodontic band" },
+  },
+  orthoDrift: {
+    "none": { code: "none", display: "No drift" },
+    "mesial": { code: "mesial", display: "Mesial drift" },
+    "distal": { code: "distal", display: "Distal drift" },
+  },
+  orthoVertical: {
+    "none": { code: "none", display: "No vertical malposition" },
+    "extrusion": { code: "extrusion", display: "Extrusion" },
+    "intrusion": { code: "intrusion", display: "Intrusion" },
+  },
   // SP5 Task 1: caries fields foundation (additive; not yet rendered). `rootCaries`
   // is a normal enum axis (registered in axes.ts/fieldMappings.ts). `secondaryCaries`
   // (CARS 0-6) and `radiographicDepth` are per-surface scalar maps handled the same
