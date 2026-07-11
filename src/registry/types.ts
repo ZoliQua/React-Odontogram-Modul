@@ -18,6 +18,14 @@ export interface AxisValue {
   svgLayer?: string | string[];   // SVG layer id(s) this value toggles (render metadata)
 }
 
+/** Precomputed render context for flag activation (mirrors the render's derived booleans). */
+export interface FlagCtx {
+  toothNo: number;
+  hasCrown: boolean; isImplant: boolean; isMilktooth: boolean; underGum: boolean;
+  extraction: boolean; isNone: boolean; toothPresent: boolean;
+  fissureAllowed: boolean; contactAllowed: boolean; bruxismAllowed: boolean; extractionPlanAllowed: boolean;
+}
+
 /** One chartable tooth axis. Resolver fields are optional here (filled per stage). */
 export interface ClinicalAxis {
   id: string;                    // axis id (e.g. "crownMaterial")
@@ -29,6 +37,8 @@ export interface ClinicalAxis {
   skipValue?: string;            // value that emits nothing (enum/restoration)
   surfacesField?: string;        // restoration axis: the ToothRecord field holding the surface list
   flag?: string;                 // feature-flag gate (e.g. "icdasEnabled")
+  svgLayer?: string;                                    // boolean axis: the layer it toggles
+  appliesWhen?: (ctx: FlagCtx, state: any) => boolean;  // boolean axis: gating predicate
 }
 
 /** Per-tooth rendering context (static tables; populated in later stages). */

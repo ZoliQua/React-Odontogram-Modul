@@ -19,6 +19,11 @@ describe("AXES svgLayer metadata", () => {
       for (const id of layers) expect(ALL.includes(`id="${id}"`), `${ax.id}:${v.id} → ${id}`).toBe(true);
     }
   });
+
+  it("every boolean-axis svgLayer exists in an installed SVG", () => {
+    for (const ax of AXES) if (ax.svgLayer)
+      expect(ALL.includes(`id="${ax.svgLayer}"`), `${ax.id} → ${ax.svgLayer}`).toBe(true);
+  });
 });
 
 describe("clear-set derivation", () => {

@@ -6,6 +6,7 @@ import { buildFhirBundle } from "./fhir/toFhir";
 import { parseFhirBundle } from "./fhir/fromFhir";
 import type { FhirExportOptions } from "./fhir/types";
 import { allClearLayers } from "./registry/svgLayers";
+import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import tooth11Url from "./assets/teeth-svgs/11.svg";
 import tooth13Url from "./assets/teeth-svgs/13.svg";
 import tooth14Url from "./assets/teeth-svgs/14.svg";
@@ -756,6 +757,14 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   const bruxismAllowed = state.toothSelection === "tooth-base" && state.crownMaterial === "natural";
   const extractionPlanAllowed = ["tooth-base","milktooth","implant","tooth-under-gum"].includes(state.toothSelection);
 
+  applyFlagLayers(svg, state, buildFlagCtx(state, toothNo, {
+    setActive, svgGetById, isToothPresent, isUnderGum, isExtraction,
+    fissureAllowedTeeth: FISSURE_ALLOWED, brokenVariants: BROKEN_VARIANTS,
+  }), {
+    setActive, svgGetById, isToothPresent, isUnderGum, isExtraction,
+    fissureAllowedTeeth: FISSURE_ALLOWED, brokenVariants: BROKEN_VARIANTS,
+  });
+
   // base visibility toggle
   setActive(svgGetById(svg, "base"), showBase);
 
@@ -809,9 +818,6 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   }
 
   // 2) Mods
-  for(const id of state.mods){
-    setActive(svgGetById(svg, id), true);
-  }
   if(state.mods.has("inflammation")){
     const glyph = state.periapicalType === "cyst" ? "cysta"
       : state.periapicalType === "abscess" ? "abscess"
@@ -820,21 +826,6 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   }
   if(state.mobility !== "none" && state.toothSelection !== "none" && !extraction){
     setActive(svgGetById(svg, "mobility"), true);
-  }
-  if(state.extractionPlan && extractionPlanAllowed){
-    setActive(svgGetById(svg, "extraction-plan"), true);
-  }
-  // crown-replace: permanent tooth with emax/zircon/metal/temporary/telescope crown
-  if(state.crownReplace && state.toothSelection === "tooth-base" && ["emax","zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
-    setActive(svgGetById(svg, "crown-replace"), true);
-  }
-  // crown-needed: permanent tooth with natural (full), broken, or crown-prep crown
-  if(state.crownNeeded && state.toothSelection === "tooth-base" && ["natural","broken","crownprep"].includes(state.crownMaterial)){
-    setActive(svgGetById(svg, "crown-needed"), true);
-  }
-  // missing-closed: foghiány
-  if(state.missingClosed && isNone){
-    setActive(svgGetById(svg, "missing-closed"), true);
   }
 
   // 3) Endo exclusivity (only if tooth present)
@@ -852,15 +843,6 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
       setActive(svgGetById(svg, "endo-filling"), true);
       setActive(svgGetById(svg, "endo-metal-pin"), true);
     }
-  }
-  if(state.endoResection && isToothPresent(state.toothSelection) && !underGum && !extraction){
-    setActive(svgGetById(svg, "endo-resection"), true);
-  }
-  if(state.parapulpalPin && isToothPresent(state.toothSelection) && !underGum && !extraction){
-    setActive(svgGetById(svg, "parapulpal-pin"), true);
-  }
-  if(state.rootResorption && isToothPresent(state.toothSelection)){
-    setActive(svgGetById(svg, "endo-resorption"), true);
   }
 
   // 4) Removable prosthesis
@@ -1006,23 +988,6 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
       }
     }
 
-    if(state.calculus) setActive(svgGetById(svg, "calculus"), true);
-  }
-
-  if(fissureAllowed && state.fissureSealing){
-    setActive(svgGetById(svg, "fissure-sealing"), true);
-  }
-
-  if(contactAllowed){
-    if(state.contactMesial) setActive(svgGetById(svg, "mesial-no-contact-point"), true);
-    if(state.contactDistal) setActive(svgGetById(svg, "distal-no-contact-point"), true);
-  }
-
-  if(bruxismAllowed && state.bruxismWear){
-    setActive(svgGetById(svg, "tooth-bruxism-wear"), true);
-  }
-  if(bruxismAllowed && state.bruxismNeckWear){
-    setActive(svgGetById(svg, "tooth-bruxism-neck-wear"), true);
   }
 
   // Periapical inflammation lives in the `mods` group, which paints beneath the
