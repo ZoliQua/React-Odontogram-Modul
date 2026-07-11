@@ -3,7 +3,7 @@ import { LOCAL_SYSTEM } from "../fhir/codesystems";
 import {
   valueConcept, findingConcept, baseObservation, EXAM_CATEGORY,
   PLACEHOLDER_PATIENT_ID, PLACEHOLDER_PATIENT_FULLURL,
-} from "../fhir/toFhir";
+} from "../fhir/primitives";
 import { AXES } from "./axes";
 import type { ClinicalAxis } from "./types";
 
