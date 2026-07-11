@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0] - 2026-07-11
+
+### Added
+- Two-dimensional restoration model: `restorationType` (crown/inlay/onlay/veneer/bridge) × `restorationMaterial` (e.max/gold/gradia/zirconia/metal/metal-ceramic/telescope/temporary), replacing the flat `crownMaterial` enum as the clinical axis.
+- New `toothSubstrate` axis (natural/radix/broken/crownprep) describing the tooth's underlying structure, independent of any restoration placed on it.
+- Gold, Gradia, and metal-ceramic (PFM) restoration materials, and inlay/onlay/veneer restoration types, wired from the previously dormant v2.5 artwork into charting.
+- Combined, low-click restoration dropdown (type × material in a single control) in the tooth editor.
+- Groundwork for crown-marginal-leakage findings (new axis values only; UI is not wired yet — deferred to a later stage).
+
+### Changed
+- Legacy `metal` crowns and bridges now migrate to `metal-ceramic` (PFM) on load; the pre-existing full-cast look is now the distinct `metal` restoration material.
+- JSON export payload bumped to **version 2.0**; imports still accept legacy 1.4 payloads and migrate them automatically.
+- FHIR export now emits `restoration-type` / `restoration-material` / `tooth-substrate` codings in place of the old `crown-material` coding.
+
+### Removed
+- The flat `crownMaterial` enum as a clinical axis (a legacy field of the same name is retained internally only to drive implant-attachment rendering, per the migration plan).
+
 ## [1.13.0] - 2026-07-11
 
 ### Changed

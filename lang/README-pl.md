@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -29,7 +29,8 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 ### ✨ Kluczowe funkcje
 - 🖱️ Szybkie zaznaczanie i wielokrotne zaznaczanie (CMD/CTRL + klik)
 - 🦷 Typy zębów: stały, mleczny, implant, poddziąsłowy, brakujący
-- 👑 Materiały korony: naturalna (korona pełna), złamana, przygotowana pod koronę, radix, e.max, cyrkon, metalowo-ceramiczna, tymczasowa, teleskopowa
+- 🦷 Podłoże zęba (niezależne od jakiejkolwiek odbudowy): naturalne, radix (pozostałość korzenia), złamane, przygotowane pod koronę
+- 👑 Odbudowy według typu × materiału: korona / wkład (inlay) / nakład (onlay) / licówka / most z e.max, złota, gradii, cyrkonu, metalu, metalowo-ceramicznego, teleskopowego lub tymczasowego (nakład dostępny tylko w widoku okluzyjnym) — wybierane z jednego połączonego, niskoklikowego selektora „Fix: Korona – …”; istniejące korony `metal` migrują automatycznie do `metal-ceramic` (metalowo-ceramicznej)
 - 🔩 Filary implantów: śruba gojąca, lokator, lokator z protezą, belka, belka z protezą
 - 🌉 Elementy mostowe: cyrkon, metal, tymczasowy, ruchomy, belka, belka z protezą
 - 🔍 Dokumentowanie próchnicy na 6 powierzchniach: mezjalnej, dystalnej, policzkowej, językowej, okluzyjnej, podkoronowej
@@ -41,7 +42,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🔢 12 filtrów wyboru (wszystkie, obecne, stałe, mleczne, implanty, brakujące, górne/dolne, przednie/trzonowe)
 - 📊 Predefiniowane presety statusu (reset, uzębienie mleczne, uzębienie mieszane, bezzębny)
 - 📦 34 predefiniowane szablony uzupełnień (mosty, protezy ruchome, protezy na belce z implantami)
-- 💾 Eksport/import statusu w formacie JSON (wersja 1.4, z niestandardowymi stanami wtyczek i notatkami do zębów)
+- 💾 Eksport/import statusu w formacie JSON (wersja 2.0; import nadal akceptuje wersję 1.4 i migruje ją automatycznie, z niestandardowymi stanami wtyczek i notatkami do zębów)
 - 🔗 Eksport HL7 FHIR R4 (kolekcja Bundle z obserwacjami na ząb, kodowanie zębów wg ISO 3950 dla uzębienia stałego, lokalny system kodów — mapowanie SNOMED CT planowane)
 - ✚ Interfejs wyboru powierzchni w układzie krzyżowym (B/M/O/D/L) dla próchnicy i wypełnień
 - 🧱 Materiały wypełnień na powierzchnię (mieszane wypełnienia, np. policzkowe amalgamat + dystalne kompozyt)
@@ -67,7 +68,7 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 - 🔒 Tryb tylko do odczytu: wyłączenie wszystkich interakcji do drukowania/raportowania/przeglądania
 - ✨ Animacje zaznaczenia: pulsująca przerywana ramka i świecący cień na zaznaczonych zębach (z obsługą prefers-reduced-motion)
 - 📝 Notatki do zębów: dwuklik, aby dodać/edytować notatki, ikona notatki obok numeru zęba, etykietka po najechaniu z tekstem notatki, eksport/import JSON
-- 🧪 202 testy automatyczne (Vitest) w 16 plikach testowych obejmujące numerację, tłumaczenia, presety, i18n, komponent App, motyw, dotyk, wtyczki i dostępność
+- 🧪 284 testy automatyczne (Vitest) w 33 plikach testowych obejmujące numerację, tłumaczenia, presety, i18n, komponent App, motyw, dotyk, wtyczki i dostępność
 - 📖 Dokumentacja API TypeDoc z komentarzami JSDoc dla wszystkich publicznych eksportów (`npm run docs`)
 
 ### 📦 Moduły
@@ -135,8 +136,14 @@ Ten projekt to interaktywny edytor odontogramu oparty na przeglądarce, umożliw
 **Warianty zęba złamanego:**
 `tooth-broken-inicisal`, `tooth-broken-distal-inicisal`, `tooth-broken-distal`, `tooth-broken-mesial-distal-inicisal`, `tooth-broken-mesial-distal`, `tooth-broken-mesial-inicisal`, `tooth-broken-mesial`, `no-tooth-after-extraction`
 
-**Materiały korony (zęby stałe):**
-`radix`, `natural` (korona pełna, domyślna), `broken`, `crownprep` (przygotowany pod koronę), `emax`, `zircon`, `metal`, `temporary`, `telescope`
+**Podłoże zęba (zęby stałe):**
+`natural` (domyślne), `radix` (pozostałość korzenia), `broken`, `crownprep` (przygotowany pod koronę)
+
+**Typ odbudowy (zęby stałe):**
+`none`, `crown`, `inlay`, `onlay` (tylko widok okluzyjny), `veneer`, `bridge`
+
+**Materiał odbudowy (zęby stałe):**
+`none`, `emax`, `gold`, `gradia`, `zircon`, `metal`, `metal-ceramic` (istniejące korony `metal` migrują tutaj), `telescope`, `temporary`
 
 **Materiały korony (implanty):**
 `natural` (brak), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
@@ -267,7 +274,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testowanie
 ```bash
-npm run test           # Uruchom wszystkie 202 testy
+npm run test           # Uruchom wszystkie 284 testy
 npm run test:watch     # Tryb obserwowania
 npm run test:coverage  # Raport pokrycia
 ```
@@ -324,7 +331,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `startIntroTour()` | Uruchom 12-krokowy interaktywny samouczek wprowadzający |
 
 ### 💾 Format eksportu/importu statusu
-Eksport tworzy plik JSON (wersja `1.4`) zawierający:
+Eksport tworzy plik JSON (wersja `2.0`) zawierający:
 
 **Pola globalne:**
 - `wisdomVisible` - widoczność zębów mądrości
@@ -369,7 +376,7 @@ Eksport tworzy plik JSON (wersja `1.4`) zawierający:
 - `src/status_extras.ts` - 34 predefiniowane szablony uzupełnień (mosty, protezy, konstrukcje belkowe)
 - `src/i18n/` - tłumaczenia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) i hook i18n
 - `src/utils/numbering.ts` - konwersja numeracji FDI, Universal, Palmer
-- `src/__tests__/` - zestaw testów Vitest (202 testy w 16 plikach)
+- `src/__tests__/` - zestaw testów Vitest (284 testy w 33 plikach)
 - `src/assets/teeth-svgs/` - szablony SVG zębów (6 plików: siekacze, kły, zęby przedtrzonowe, trzonowce + widoki okluzyjne)
 - `src/assets/icon-svgs/` - ikony SVG paska narzędzi (5 plików)
 

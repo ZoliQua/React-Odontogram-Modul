@@ -26,7 +26,9 @@
 ## Tooth State Model
 Each tooth has:
 - `toothSelection`: tooth-base | missing | implant | pontic
-- `crownMaterial`: natural | metal | ceramic | zirconia | porcelain-fused-metal | temporary | veneer
+- `toothSubstrate`: natural | radix | broken | crownprep
+- `restorationType`: none | crown | inlay | onlay | veneer | bridge
+- `restorationMaterial`: none | emax | gold | gradia | zircon | metal | metal-ceramic | telescope | temporary
 - `endo`: none | root-canal | post-core | apicoectomy
 - `caries`: array of surface identifiers (mesial, occlusal, distal, buccal, lingual)
 - `fillingSurfaces`: array of filled surfaces

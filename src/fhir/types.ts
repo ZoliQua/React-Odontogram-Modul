@@ -35,6 +35,10 @@ export interface ToothRecord {
   bridgePillar?: boolean;
   bridgeUnit?: string;
   mobility?: string;
+  toothSubstrate?: string;
+  restorationType?: string;
+  restorationMaterial?: string;
+  /** Interim legacy field: retained only for the implant-attachment render path (SP3b). */
   crownMaterial?: string;
   customStates?: Record<string, unknown>;
   note?: string;

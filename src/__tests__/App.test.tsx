@@ -191,9 +191,10 @@ describe('App.tsx', () => {
       expect(document.getElementById('toothSelect')).toBeInTheDocument();
     });
 
-    it('renders crown select dropdown', () => {
+    it('renders restoration + substrate select dropdowns', () => {
       render(<App />);
-      expect(document.getElementById('crownSelect')).toBeInTheDocument();
+      expect(document.getElementById('restorationSelect')).toBeInTheDocument();
+      expect(document.getElementById('substrateSelect')).toBeInTheDocument();
     });
 
     it('renders endo select dropdown', () => {

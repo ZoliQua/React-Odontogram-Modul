@@ -470,9 +470,9 @@ export default function App({
                 <span>{t("tooth.baseLabel")}</span>
                 <select id="toothSelect"></select>
               </div>
-              <div id="bridgeUnitRow" className="row">
-                <span>{t("tooth.bridgeLabel")}</span>
-                <select id="bridgeUnitSelect"></select>
+              <div id="substrateRow" className="row">
+                <span>{t("substrate.label")}</span>
+                <select id="substrateSelect"></select>
               </div>
               <label id="extractionRow" className="row">
                 <input type="checkbox" id="extractionWound" />
@@ -482,9 +482,9 @@ export default function App({
                 <input type="checkbox" id="missingClosed" />
                 <span>{t("tooth.missingClosed")}</span>
               </label>
-              <div id="crownRow" className="row">
-                <span>{t("tooth.crownLabel")}</span>
-                <select id="crownSelect"></select>
+              <div id="restorationRow" className="row">
+                <span>{t("restoration.label")}</span>
+                <select id="restorationSelect"></select>
               </div>
               <div id="brokenCrownRow" className="row inline-checks contact-row">
                 <label>

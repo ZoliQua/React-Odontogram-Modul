@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -27,7 +27,8 @@ This project is an interactive, browser-based odontogram editor that supports fa
 ### ✨ Key Features
 - 🖱️ Fast selection and multi-select (CMD/CTRL + click)
 - 🦷 Tooth types: permanent, primary (milk), implant, subgingival, missing
-- 👑 Crown materials: natural (full crown), broken, prepared for crown, radix, e.max, zircon, metal-ceramic, temporary, telescope
+- 🦷 Tooth substrate (orthogonal to any restoration): natural, radix (root remnant), broken, prepared for crown
+- 👑 Restorations by type × material: crown / inlay / onlay / veneer / bridge in e.max, gold, gradia, zirconia, metal, metal-ceramic, telescope or temporary (onlay is occlusal-view only) — chosen from one combined low-click "Fix: Crown – …" picker; legacy `metal` crowns migrate to `metal-ceramic` (PFM)
 - 🔩 Implant abutments: healing abutment, locator, locator with prosthesis, bar, bar with prosthesis
 - 🌉 Bridge units: zircon, metal, temporary, removable, bar, bar with prosthesis
 - 🔍 Caries charting on 6 surfaces: mesial, distal, buccal, lingual, occlusal, subcrown
@@ -39,7 +40,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 1.4, with plugin custom states and per-tooth notes)
+- 💾 Status export/import in JSON (version 2.0; imports still accept 1.4 and migrate automatically, with plugin custom states and per-tooth notes)
 - 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition, local code system — SNOMED CT mapping planned)
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
@@ -65,7 +66,7 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🔒 Read-only mode: disable all interactions for print/report/view use cases
 - ✨ Selection animations: pulsing dashed border and glowing drop-shadow on selected teeth (with prefers-reduced-motion support)
 - 📝 Per-tooth notes: double-click to add/edit notes, note icon next to tooth number, hover tooltip with note text, JSON export/import
-- 🧪 202 automated tests (Vitest) across 16 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins and accessibility
+- 🧪 284 automated tests (Vitest) across 33 test files covering numbering, translations, presets, i18n, App component, theme, touch, plugins and accessibility
 - 📖 TypeDoc API documentation with JSDoc comments on all public exports (`npm run docs`)
 
 ### 📦 Modules
@@ -133,8 +134,14 @@ This project is an interactive, browser-based odontogram editor that supports fa
 **Broken tooth variants:**
 `tooth-broken-inicisal`, `tooth-broken-distal-inicisal`, `tooth-broken-distal`, `tooth-broken-mesial-distal-inicisal`, `tooth-broken-mesial-distal`, `tooth-broken-mesial-inicisal`, `tooth-broken-mesial`, `no-tooth-after-extraction`
 
-**Crown materials (permanent teeth):**
-`radix`, `natural` (full crown, default), `broken`, `crownprep` (prepared for crown), `emax`, `zircon`, `metal`, `temporary`, `telescope`
+**Tooth substrate (permanent teeth):**
+`natural` (default), `radix` (root remnant), `broken`, `crownprep` (prepared for crown)
+
+**Restoration type (permanent teeth):**
+`none`, `crown`, `inlay`, `onlay` (occlusal view only), `veneer`, `bridge`
+
+**Restoration material (permanent teeth):**
+`none`, `emax`, `gold`, `gradia`, `zircon`, `metal`, `metal-ceramic` (legacy `metal` crowns migrate here), `telescope`, `temporary`
 
 **Crown materials (implants):**
 `natural` (none), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
@@ -265,7 +272,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testing
 ```bash
-npm run test           # Run all 202 tests
+npm run test           # Run all 284 tests
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
 ```
@@ -322,7 +329,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `startIntroTour()` | Launch the 12-step interactive intro tour |
 
 ### 💾 Status Export/Import Format
-The export creates a JSON file (version `1.4`) containing:
+The export creates a JSON file (version `2.0`) containing:
 
 **Global fields:**
 - `wisdomVisible` - wisdom teeth visible
@@ -367,7 +374,7 @@ The export creates a JSON file (version `1.4`) containing:
 - `src/status_extras.ts` - 34 predefined restoration templates (bridges, dentures, bar constructions)
 - `src/i18n/` - translations (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) and i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer numbering conversion
-- `src/__tests__/` - Vitest test suite (202 tests across 16 files)
+- `src/__tests__/` - Vitest test suite (284 tests across 33 files)
 - `src/assets/teeth-svgs/` - SVG tooth templates (6 files: incisors, canines, premolars, molars + occlusal views)
 - `src/assets/icon-svgs/` - toolbar icon SVGs (5 files)
 
@@ -412,7 +419,8 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 ### ✨ Características principales
 - 🖱️ Selección rápida y selección múltiple (CMD/CTRL + clic)
 - 🦷 Tipos de dientes: permanente, primario (de leche), implante, subgingival, ausente
-- 👑 Materiales de corona: natural (corona completa), fracturada, preparado para corona, radix, e.max, circonio, metal-cerámica, temporal, telescópica
+- 🦷 Sustrato dental (ortogonal a cualquier restauración): natural, radix (resto radicular), fracturado, preparado para corona
+- 👑 Restauraciones por tipo × material: corona / incrustación (inlay) / incrustación oclusal (onlay) / carilla / puente en e.max, oro, gradia, circonio, metal, metal-cerámica, telescópica o temporal (el onlay es solo de vista oclusal) — se eligen desde un único selector combinado "Fix: Corona – …" de pocos clics; las coronas `metal` heredadas migran a `metal-ceramic` (metal-cerámica)
 - 🔩 Pilares de implante: pilar de cicatrización, localizador, localizador con prótesis, barra, barra con prótesis
 - 🌉 Pónticos: circonio, metal, provisional, removible, barra, barra con prótesis
 - 🔍 Registro de caries en 6 superficies: mesial, distal, bucal, lingual, oclusal, subcoronal
@@ -424,7 +432,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 1.4, con estados personalizados de plugins y notas por diente)
+- 💾 Exportación/importación de estado en JSON (versión 2.0; las importaciones siguen aceptando la versión 1.4 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
 - 🔗 Exportación HL7 FHIR R4 (Bundle de colección con Observations por diente, codificación dental ISO 3950 para dentición permanente, sistema de códigos local — mapeo SNOMED CT planificado)
 - ✚ Selección de superficies en cruz (B/M/O/D/L) para caries y obturaciones
 - 🧱 Materiales de obturación por superficie (obturaciones mixtas, p. ej. bucal amalgama + distal composite)
@@ -450,7 +458,7 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🔒 Modo solo lectura: desactivar todas las interacciones para vistas de impresión/informes
 - ✨ Animaciones de selección: borde punteado pulsante y sombra brillante en los dientes seleccionados
 - 📝 Notas por diente: doble clic para añadir/editar notas, icono de nota junto al número de diente, tooltip con texto de nota, exportación/importación JSON
-- 🧪 202 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins y accesibilidad
+- 🧪 284 pruebas automatizadas (Vitest) para numeración, traducciones, plantillas, i18n, componente App, tema, táctil, plugins y accesibilidad
 - 📖 Documentación API TypeDoc con comentarios JSDoc en todas las exportaciones públicas (`npm run docs`)
 
 ### 📦 Módulos
@@ -518,8 +526,14 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 **Variantes de diente fracturado:**
 `tooth-broken-inicisal`, `tooth-broken-distal-inicisal`, `tooth-broken-distal`, `tooth-broken-mesial-distal-inicisal`, `tooth-broken-mesial-distal`, `tooth-broken-mesial-inicisal`, `tooth-broken-mesial`, `no-tooth-after-extraction`
 
-**Materiales de corona (dientes permanentes):**
-`radix`, `natural` (corona completa, predeterminado), `broken`, `crownprep` (preparado para corona), `emax`, `zircon`, `metal`, `temporary`, `telescope`
+**Sustrato dental (dientes permanentes):**
+`natural` (predeterminado), `radix` (resto radicular), `broken`, `crownprep` (preparado para corona)
+
+**Tipo de restauración (dientes permanentes):**
+`none`, `crown`, `inlay`, `onlay` (solo vista oclusal), `veneer`, `bridge`
+
+**Material de restauración (dientes permanentes):**
+`none`, `emax`, `gold`, `gradia`, `zircon`, `metal`, `metal-ceramic` (las coronas `metal` heredadas migran aquí), `telescope`, `temporary`
 
 **Materiales de corona (implantes):**
 `natural` (ninguno), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
@@ -669,7 +683,7 @@ export default function Host(){
 - `src/status_extras.ts` - 34 plantillas de restauración predefinidas (puentes, prótesis, construcciones con barra)
 - `src/i18n/` - traducciones (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) y hook i18n
 - `src/utils/numbering.ts` - conversión de numeración FDI, Universal, Palmer
-- `src/__tests__/` - suite de pruebas Vitest (202 pruebas)
+- `src/__tests__/` - suite de pruebas Vitest (284 pruebas)
 - `src/assets/teeth-svgs/` - plantillas SVG dentales (6 archivos: incisivos, caninos, premolares, molares + vistas oclusales)
 - `src/assets/icon-svgs/` - SVGs de iconos de barra de herramientas (5 archivos)
 

@@ -29,7 +29,7 @@ export function buildFlagCtx(state: any, toothNo: number, d: Deps): FlagCtx {
     toothPresent: d.isToothPresent(sel),
     fissureAllowed: sel === "tooth-base" && d.fissureAllowedTeeth.has(toothNo),
     contactAllowed: sel === "tooth-base" || sel === "milktooth" || d.brokenVariants.has(sel),
-    bruxismAllowed: sel === "tooth-base" && state.crownMaterial === "natural",
+    bruxismAllowed: sel === "tooth-base" && state.restorationType === "none" && state.toothSubstrate === "natural",
     extractionPlanAllowed: ["tooth-base","milktooth","implant","tooth-under-gum"].includes(sel),
   };
 }

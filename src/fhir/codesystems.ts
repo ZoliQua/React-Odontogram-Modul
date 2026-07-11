@@ -119,6 +119,31 @@ export const LOCAL_VALUE_MAPS: Record<string, Record<string, CodeEntry>> = {
     "distal": { code: "distal", display: "Distal surface" },
     "occlusal": { code: "occlusal", display: "Occlusal surface" },
   },
+  toothSubstrate: {
+    "natural": { code: "natural", display: "Natural substrate" },
+    "radix": { code: "radix", display: "Root remnant (radix)" },
+    "broken": { code: "broken", display: "Broken tooth" },
+    "crownprep": { code: "crownprep", display: "Prepared for crown" },
+  },
+  restorationType: {
+    "none": { code: "none", display: "No restoration" },
+    "crown": { code: "crown", display: "Crown" },
+    "inlay": { code: "inlay", display: "Inlay" },
+    "onlay": { code: "onlay", display: "Onlay" },
+    "veneer": { code: "veneer", display: "Veneer" },
+    "bridge": { code: "bridge", display: "Bridge unit" },
+  },
+  restorationMaterial: {
+    "none": { code: "none", display: "No material" },
+    "emax": { code: "emax", display: "Lithium disilicate (e.max)" },
+    "gold": { code: "gold", display: "Gold" },
+    "gradia": { code: "gradia", display: "Indirect composite (Gradia)" },
+    "zircon": { code: "zircon", display: "Zirconia" },
+    "metal": { code: "metal", display: "Full-cast metal" },
+    "metal-ceramic": { code: "metal-ceramic", display: "Metal-ceramic (PFM)" },
+    "telescope": { code: "telescope", display: "Telescopic crown" },
+    "temporary": { code: "temporary", display: "Temporary" },
+  },
 };
 
 /**

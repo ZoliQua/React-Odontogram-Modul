@@ -31,7 +31,9 @@ export type FieldMapping =
 export const FIELD_MAPPINGS: FieldMapping[] = [
   { field: "toothSelection", kind: "enum", valueGroup: "toothSelection", skipValue: "tooth-base", findingCode: "tooth-status", findingDisplay: "Tooth status" },
   { field: "endo", kind: "enum", valueGroup: "endo", skipValue: "none", findingCode: "endodontic-status", findingDisplay: "Endodontic status" },
-  { field: "crownMaterial", kind: "enum", valueGroup: "crownMaterial", skipValue: "natural", findingCode: "crown-material", findingDisplay: "Crown material" },
+  { field: "toothSubstrate", kind: "enum", valueGroup: "toothSubstrate", skipValue: "natural", findingCode: "tooth-substrate", findingDisplay: "Tooth substrate" },
+  { field: "restorationType", kind: "enum", valueGroup: "restorationType", skipValue: "none", findingCode: "restoration-type", findingDisplay: "Restoration type" },
+  { field: "restorationMaterial", kind: "enum", valueGroup: "restorationMaterial", skipValue: "none", findingCode: "restoration-material", findingDisplay: "Restoration material" },
   { field: "bridgeUnit", kind: "enum", valueGroup: "bridgeUnit", skipValue: "none", findingCode: "bridge-unit", findingDisplay: "Prosthetic / bridge unit" },
   { field: "mobility", kind: "enum", valueGroup: "mobility", skipValue: "none", findingCode: "tooth-mobility", findingDisplay: "Tooth mobility" },
 

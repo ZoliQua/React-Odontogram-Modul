@@ -15,7 +15,12 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
   it("matches frozen snapshots for note / customStates / custom subject (branches outside the matrix)", () => {
     const noteP = { teeth: { "11": { note: "chipped mesial" } } };
     const customP = { teeth: { "11": { customStates: { pluginA: "x", pluginB: 3, pluginC: true } } } };
-    const subjP = { teeth: { "11": { crownMaterial: "metal" } } };
+    // `crownMaterial` is no longer a live FHIR-mapped field (SP3a core swap) —
+    // restorationType/restorationMaterial are its replacement axes. Authored
+    // directly with the new-model equivalent of the old "metal" (now
+    // metal-ceramic) crown, so this still exercises a real restoration
+    // finding through the custom-subject option.
+    const subjP = { teeth: { "11": { restorationType: "crown", restorationMaterial: "metal-ceramic" } } };
     const opts = { subject: "Patient/xyz" };
     expect(buildFhirBundleFromRegistry(noteP as any)).toMatchInlineSnapshot(`
       {
@@ -241,12 +246,12 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "code": {
                 "coding": [
                   {
-                    "code": "crown-material",
-                    "display": "Crown material",
+                    "code": "restoration-type",
+                    "display": "Restoration type",
                     "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
                   },
                 ],
-                "text": "Crown material",
+                "text": "Restoration type",
               },
               "resourceType": "Observation",
               "status": "final",
@@ -256,12 +261,61 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "valueCodeableConcept": {
                 "coding": [
                   {
-                    "code": "metal",
-                    "display": "Metal-ceramic crown",
+                    "code": "crown",
+                    "display": "Crown",
                     "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
                   },
                 ],
-                "text": "Metal-ceramic crown",
+                "text": "Crown",
+              },
+            },
+          },
+          {
+            "resource": {
+              "bodySite": {
+                "coding": [
+                  {
+                    "code": "11",
+                    "system": "urn:iso:std:iso:3950",
+                  },
+                ],
+                "text": "Tooth 11",
+              },
+              "category": [
+                {
+                  "coding": [
+                    {
+                      "code": "exam",
+                      "display": "Exam",
+                      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    },
+                  ],
+                },
+              ],
+              "code": {
+                "coding": [
+                  {
+                    "code": "restoration-material",
+                    "display": "Restoration material",
+                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  },
+                ],
+                "text": "Restoration material",
+              },
+              "resourceType": "Observation",
+              "status": "final",
+              "subject": {
+                "reference": "Patient/xyz",
+              },
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "metal-ceramic",
+                    "display": "Metal-ceramic (PFM)",
+                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                  },
+                ],
+                "text": "Metal-ceramic (PFM)",
               },
             },
           },

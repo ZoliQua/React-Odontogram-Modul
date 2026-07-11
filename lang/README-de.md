@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -29,7 +29,8 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 ### ✨ Hauptmerkmale
 - 🖱️ Schnelle Auswahl und Mehrfachauswahl (CMD/CTRL + Klick)
 - 🦷 Zahntypen: bleibend, Milchzahn, Implantat, subgingival, fehlend
-- 👑 Kronenmaterialien: natürlich (Vollkrone), frakturiert, für Krone präpariert, Radix, e.max, Zirkon, Metallkeramik, provisorisch, Teleskop
+- 🦷 Zahnsubstrat (unabhängig von jeder Restauration): natürlich, Radix (Wurzelrest), frakturiert, für Krone präpariert
+- 👑 Restaurationen nach Typ × Material: Krone / Inlay / Onlay / Veneer / Brücke in e.max, Gold, Gradia, Zirkon, Metall, Metallkeramik, Teleskop oder provisorisch (Onlay nur okklusale Ansicht) — Auswahl über einen einzigen kombinierten „Fix: Krone – …“-Picker mit wenigen Klicks; bestehende `metal`-Kronen werden automatisch zu `metal-ceramic` (Metallkeramik) migriert
 - 🔩 Implantat-Abutments: Heilabutment, Locator, Locator mit Prothese, Steg, Steg mit Prothese
 - 🌉 Brückenglieder: Zirkon, Metall, provisorisch, herausnehmbar, Steg, Steg mit Prothese
 - 🔍 Karieskartierung auf 6 Flächen: mesial, distal, bukkal, lingual, okklusal, subkronal
@@ -41,7 +42,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔢 12 Auswahlfilter (alle, vorhandene, bleibende, Milch, Implantate, fehlende, Ober-/Unterkiefer, Front/Molaren)
 - 📊 Vordefinierte Statusvorlagen (Zurücksetzen, Milchgebiss, Wechselgebiss, zahnlos)
 - 📦 34 vordefinierte Restaurationsvorlagen (Brücken, herausnehmbare Prothesen, Stegprothesen mit Implantaten)
-- 💾 Status-Export/Import in JSON (Version 1.4, mit Plugin Custom States und per-Zahn Notizen)
+- 💾 Status-Export/Import in JSON (Version 2.0; Importe akzeptieren weiterhin Version 1.4 und werden automatisch migriert, mit Plugin Custom States und per-Zahn Notizen)
 - 🔗 HL7 FHIR R4 Export (Collection-Bundle aus Observations pro Zahn, ISO 3950 Zahnkodierung für das bleibende Gebiss, lokales Codesystem — SNOMED-CT-Mapping geplant)
 - ✚ Kreuz-/Plus-Oberflächenauswahl (B/M/O/D/L) für Karies und Füllungen
 - 🧱 Füllungsmaterialien pro Fläche (gemischte Füllungen, z. B. bukkal Amalgam + distal Komposit)
@@ -67,7 +68,7 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 - 🔒 Schreibgeschützter Modus: alle Interaktionen deaktivieren für Druck-/Berichtsansichten
 - ✨ Auswahl-Animationen: pulsierende gestrichelte Umrandung und leuchtender Schatten auf ausgewählten Zähnen (mit Unterstützung für prefers-reduced-motion)
 - 📝 Per-Zahn Notizen: Doppelklick zum Hinzufügen/Bearbeiten, Notiz-Symbol neben der Zahnnummer, Hover-Tooltip mit Notiztext, JSON Export/Import
-- 🧪 202 automatisierte Tests (Vitest) in 16 Testdateien für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
+- 🧪 284 automatisierte Tests (Vitest) in 33 Testdateien für Nummerierung, Übersetzungen, Vorlagen, i18n, App-Komponente, Theme, Touch, Plugins und Barrierefreiheit
 - 📖 TypeDoc API-Dokumentation mit JSDoc-Kommentaren für alle öffentlichen Exporte (`npm run docs`)
 
 ### 📦 Module
@@ -135,8 +136,14 @@ Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der ei
 **Gebrochene Zahnvarianten:**
 `tooth-broken-inicisal`, `tooth-broken-distal-inicisal`, `tooth-broken-distal`, `tooth-broken-mesial-distal-inicisal`, `tooth-broken-mesial-distal`, `tooth-broken-mesial-inicisal`, `tooth-broken-mesial`, `no-tooth-after-extraction`
 
-**Kronenmaterialien (bleibende Zähne):**
-`radix`, `natural` (Vollkrone, Standard), `broken`, `crownprep` (für Krone präpariert), `emax`, `zircon`, `metal`, `temporary`, `telescope`
+**Zahnsubstrat (bleibende Zähne):**
+`natural` (Standard), `radix` (Wurzelrest), `broken`, `crownprep` (für Krone präpariert)
+
+**Restaurationstyp (bleibende Zähne):**
+`none`, `crown`, `inlay`, `onlay` (nur okklusale Ansicht), `veneer`, `bridge`
+
+**Restaurationsmaterial (bleibende Zähne):**
+`none`, `emax`, `gold`, `gradia`, `zircon`, `metal`, `metal-ceramic` (bestehende `metal`-Kronen migrieren hierher), `telescope`, `temporary`
 
 **Kronenmaterialien (Implantate):**
 `natural` (keine), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
@@ -267,7 +274,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Tests
 ```bash
-npm run test           # Alle 202 Tests ausführen
+npm run test           # Alle 284 Tests ausführen
 npm run test:watch     # Watch-Modus
 npm run test:coverage  # Coverage-Bericht
 ```
@@ -324,7 +331,7 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `startIntroTour()` | Die 12-stufige interaktive Einführungstour starten |
 
 ### 💾 Status Export-/Importformat
-Der Export erzeugt eine JSON-Datei (Version `1.4`) mit folgenden Feldern:
+Der Export erzeugt eine JSON-Datei (Version `2.0`) mit folgenden Feldern:
 
 **Globale Felder:**
 - `wisdomVisible` - Weisheitszähne sichtbar
@@ -369,7 +376,7 @@ Der Export erzeugt eine JSON-Datei (Version `1.4`) mit folgenden Feldern:
 - `src/status_extras.ts` - 34 vordefinierte Restaurationsvorlagen (Brücken, Prothesen, Stegkonstruktionen)
 - `src/i18n/` - Übersetzungen (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) und i18n-Hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer Nummerierungskonvertierung
-- `src/__tests__/` - Vitest-Testsuite (202 Tests in 16 Dateien)
+- `src/__tests__/` - Vitest-Testsuite (284 Tests in 33 Dateien)
 - `src/assets/teeth-svgs/` - SVG-Zahnvorlagen (6 Dateien: Schneide-, Eck-, Prämolaren, Molaren + Okklusionsansichten)
 - `src/assets/icon-svgs/` - Toolbar-Icon-SVGs (5 Dateien)
 

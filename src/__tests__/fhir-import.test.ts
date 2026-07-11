@@ -5,10 +5,10 @@ import { parseFhirBundle } from "../fhir/fromFhir";
 describe("parseFhirBundle (FHIR import)", () => {
   it("round-trips meaningful per-tooth fields from a self-produced bundle", () => {
     const payload = {
-      version: "1.4",
+      version: "2.0",
       globals: { edentulous: false, wisdomVisible: true, showBase: false, occlusalVisible: false, showHealthyPulp: false },
       teeth: {
-        "11": { toothSelection: "implant", crownMaterial: "zircon" },
+        "11": { toothSelection: "implant", restorationType: "crown", restorationMaterial: "zircon" },
         "21": { caries: ["caries-mesial", "caries-occlusal"], note: "watch" },
         "36": { fillingSurfaceMaterials: { buccal: "amalgam", distal: "composite" } },
         "46": { mobility: "m2", extractionPlan: true },
@@ -20,7 +20,8 @@ describe("parseFhirBundle (FHIR import)", () => {
     const bundle = buildFhirBundle(payload as never);
     const out = parseFhirBundle(bundle);
     expect(out.teeth["11"].toothSelection).toBe("implant");
-    expect(out.teeth["11"].crownMaterial).toBe("zircon");
+    expect(out.teeth["11"].restorationType).toBe("crown");
+    expect(out.teeth["11"].restorationMaterial).toBe("zircon");
     expect((out.teeth["21"].caries ?? []).sort()).toEqual(["caries-mesial", "caries-occlusal"]);
     expect(out.teeth["21"].note).toBe("watch");
     expect(out.teeth["36"].fillingSurfaceMaterials).toEqual({ buccal: "amalgam", distal: "composite" });

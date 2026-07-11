@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.13.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.14.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -29,7 +29,8 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 ### ✨ Kľúčové funkcie
 - 🖱️ Rýchly výber a viacnásobný výber (CMD/CTRL + klik)
 - 🦷 Typy zubov: trvalý, mliečny, implantát, subgingiválny, chýbajúci
-- 👑 Materiály korunky: prirodzená (plná korunka), zlomená, preparovaná na korunku, radix, e.max, zirkón, kovovo-keramická, dočasná, teleskopická
+- 🦷 Substrát zuba (nezávislý od akejkoľvek náhrady): prirodzený, radix (zvyšok koreňa), zlomený, preparovaný na korunku
+- 👑 Náhrady podľa typu × materiálu: korunka / inlay / onlay / fazeta / mostík z e.max, zlata, gradie, zirkónu, kovu, kovovo-keramického materiálu, teleskopu alebo dočasného materiálu (onlay je dostupný len v okluzálnom zobrazení) — vyberané z jedného kombinovaného výberu „Fix: Korunka – …" s nízkym počtom klikov; staršie korunky `metal` sa automaticky migrujú na `metal-ceramic` (kovovo-keramickú)
 - 🔩 Implantátové abutmenty: hojivý abutment, lokátor, lokátor s protézou, steg, steg s protézou
 - 🌉 Mostové členy: zirkón, kov, dočasný, snímateľný, steg, steg s protézou
 - 🔍 Zaznamenávanie kazu na 6 plochách: meziálne, distálne, bukálne, linguálne, oklúzne, subkoronálne
@@ -41,7 +42,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🔢 12 filtrov výberu (všetky, prítomné, trvalé, mliečne, implantáty, chýbajúce, horné/dolné, predné/moláre)
 - 📊 Preddefinované stavové predvoľby (obnoviť, mliečny chrup, zmiešaný chrup, bezzubý)
 - 📦 34 preddefinovaných šablón reštaurácií (mostíky, snímateľné protézy, stegové protézy s implantátmi)
-- 💾 Export/import stavu v JSON (verzia 1.4, s vlastnými stavmi pluginov a poznámkami ku každému zubu)
+- 💾 Export/import stavu v JSON (verzia 2.0; import stále akceptuje verziu 1.4 a automaticky ju migruje, s vlastnými stavmi pluginov a poznámkami ku každému zubu)
 - 🔗 Export HL7 FHIR R4 (kolekcia Bundle s Observations pre každý zub, kódovanie zubov ISO 3950 pre trvalý chrup, lokálny systém kódov — mapovanie SNOMED CT plánované)
 - ✚ Krížový výber plôch (B/M/O/D/L) pre kaz a výplne
 - 🧱 Materiály reštaurácie pre každú plochu (zmiešané výplne, napr. bukálny amalgám + distálny kompozit)
@@ -67,7 +68,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 - 🔒 Režim iba na čítanie: zakázanie všetkých interakcií pre prípady tlače/správ/prezerania
 - ✨ Animácie výberu: pulzujúci prerušovaný okraj a žiariaci tieň na vybraných zuboch (s podporou prefers-reduced-motion)
 - 📝 Poznámky ku každému zubu: dvojklik pre pridanie/úpravu poznámok, ikona poznámky vedľa čísla zuba, tooltip pri najetí s textom poznámky, export/import JSON
-- 🧪 202 automatizovaných testov (Vitest) v 16 testovacích súboroch pokrývajúcich číslovanie, preklady, predvoľby, i18n, komponent App, tému, dotyk, pluginy a prístupnosť
+- 🧪 284 automatizovaných testov (Vitest) v 33 testovacích súboroch pokrývajúcich číslovanie, preklady, predvoľby, i18n, komponent App, tému, dotyk, pluginy a prístupnosť
 - 📖 Dokumentácia API TypeDoc s komentármi JSDoc pre všetky verejné exporty (`npm run docs`)
 
 ### 📦 Moduly
@@ -135,8 +136,14 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 **Varianty zlomeného zuba:**
 `tooth-broken-inicisal`, `tooth-broken-distal-inicisal`, `tooth-broken-distal`, `tooth-broken-mesial-distal-inicisal`, `tooth-broken-mesial-distal`, `tooth-broken-mesial-inicisal`, `tooth-broken-mesial`, `no-tooth-after-extraction`
 
-**Materiály korunky (trvalé zuby):**
-`radix`, `natural` (plná korunka, predvolené), `broken`, `crownprep` (preparovaná na korunku), `emax`, `zircon`, `metal`, `temporary`, `telescope`
+**Substrát zuba (trvalé zuby):**
+`natural` (predvolené), `radix` (zvyšok koreňa), `broken`, `crownprep` (preparovaná na korunku)
+
+**Typ náhrady (trvalé zuby):**
+`none`, `crown`, `inlay`, `onlay` (len okluzálne zobrazenie), `veneer`, `bridge`
+
+**Materiál náhrady (trvalé zuby):**
+`none`, `emax`, `gold`, `gradia`, `zircon`, `metal`, `metal-ceramic` (staršie korunky `metal` sa migrujú sem), `telescope`, `temporary`
 
 **Materiály korunky (implantáty):**
 `natural` (žiadna), `healing-abutment`, `zircon`, `metal`, `temporary`, `locator`, `locator-prosthesis`, `bar`, `bar-prosthesis`
@@ -267,7 +274,7 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Testovanie
 ```bash
-npm run test           # Spustiť všetkých 202 testov
+npm run test           # Spustiť všetkých 284 testov
 npm run test:watch     # Sledovací režim
 npm run test:coverage  # Správa pokrytia
 ```
@@ -324,7 +331,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `startIntroTour()` | Spustiť 12-krokový interaktívny úvodný sprievodca |
 
 ### 💾 Formát exportu/importu stavu
-Export vytvorí súbor JSON (verzia `1.4`) obsahujúci:
+Export vytvorí súbor JSON (verzia `2.0`) obsahujúci:
 
 **Globálne polia:**
 - `wisdomVisible` - zuby múdrosti viditeľné
@@ -369,7 +376,7 @@ Export vytvorí súbor JSON (verzia `1.4`) obsahujúci:
 - `src/status_extras.ts` - 34 preddefinovaných šablón reštaurácií (mostíky, protézy, stegové konštrukcie)
 - `src/i18n/` - preklady (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) a i18n hook
 - `src/utils/numbering.ts` - konverzia číslovania FDI, Universal, Palmer
-- `src/__tests__/` - testovacia sada Vitest (202 testov v 16 súboroch)
+- `src/__tests__/` - testovacia sada Vitest (284 testov v 33 súboroch)
 - `src/assets/teeth-svgs/` - SVG šablóny zubov (6 súborov: rezáky, špičáky, premoláre, moláre + oklúzne pohľady)
 - `src/assets/icon-svgs/` - SVG ikony panela nástrojov (5 súborov)
 

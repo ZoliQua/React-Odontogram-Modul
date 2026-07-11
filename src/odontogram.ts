@@ -9,6 +9,8 @@ import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
 import { optionsFor } from "./registry/uiOptions";
+import { composeRestorationLayers, restorationOptions } from "./registry/restorations";
+import { LOCAL_VALUE_MAPS } from "./fhir/codesystems";
 import tooth11Url from "./assets/teeth-svgs/11.svg";
 import tooth13Url from "./assets/teeth-svgs/13.svg";
 import tooth14Url from "./assets/teeth-svgs/14.svg";
@@ -105,6 +107,15 @@ const FILLING_SURFACE_LABELS: Record<string, string> = {
 
 type Any = any;
 
+// Restoration material -> its SVG wrapper <g> id. Every material lives inside a
+// per-material group in the artwork; activating the group lets its (individually
+// toggled) crown/connector/inlay/onlay/veneer children paint. `temporary` uses a
+// legacy group id; all others match the material id.
+const RESTORATION_WRAPPER_GROUP: Record<string, string> = {
+  emax: "emax", gold: "gold", gradia: "gradia", zircon: "zircon", metal: "metal",
+  "metal-ceramic": "metal-ceramic", telescope: "telescope", temporary: "temporary-restorations",
+};
+
 function defaultState(){
   return {
     toothSelection: "tooth-base", // none | tooth-base | milktooth | implant | variants
@@ -136,9 +147,14 @@ function defaultState(){
     crownNeeded: false,
     missingClosed: false,
     bridgePillar: false,
-    bridgeUnit: "none", // none | removable | zircon | metal | temporary
+    bridgeUnit: "none", // none | removable | bar | bar-prosthesis (fixed values migrated to restorationType×material)
     mobility: "none", // none | m1 | m2 | m3
-    crownMaterial: "natural",   // natural | broken | crownprep | radix | emax | zircon | metal | temporary | telescope
+    toothSubstrate: "natural",  // natural | radix | broken | crownprep
+    restorationType: "none",    // none | crown | inlay | onlay | veneer | bridge
+    restorationMaterial: "none", // none | emax | gold | gradia | zircon | metal | metal-ceramic | telescope | temporary
+    // Legacy field retained (interim) only for the implant-attachment render path
+    // (healing-abutment/locator/bar) absorbed by SP3b; no longer drives crown/substrate.
+    crownMaterial: "natural",   // interim: implant attachments (healing-abutment/locator/bar[-prosthesis]/locator-prosthesis)
     customStates: {} as Record<string, unknown>,
     note: "",
   };
@@ -573,31 +589,41 @@ function getFillingOptions(isMilktooth: Any){
   ];
 }
 
-function getCrownOptions(isImplant: Any){
-  if(isImplant){
-    return [
-      {value:"natural", label:t("crown.option.noneImplant")},
-      {value:"healing-abutment", label:t("crown.option.healingAbutment")},
-      {value:"zircon", label:t("crown.option.zircon")},
-      {value:"metal", label:t("crown.option.metal")},
-      {value:"temporary", label:t("crown.option.temporary")},
-      {value:"locator", label:t("crown.option.locator")},
-      {value:"locator-prosthesis", label:t("crown.option.locatorProsthesis")},
-      {value:"bar", label:t("crown.option.bar")},
-      {value:"bar-prosthesis", label:t("crown.option.barProsthesis")},
-    ];
-  }
+// Teeth that render an occlusal view (premolars + molars); their restoration
+// dropdown offers occlusal-only types (onlay).
+const OCCLUSAL_TEETH = new Set([14,15,24,25,34,35,44,45,16,17,18,26,27,28,36,37,38,46,47,48]);
+function restorationViewFor(toothNo: Any): "front" | "occlusal"{
+  return typeof toothNo === "number" && OCCLUSAL_TEETH.has(toothNo) ? "occlusal" : "front";
+}
+
+// Tooth-substrate control options (natural / radix / broken / crown-prep).
+function getSubstrateOptions(){
   return [
-    {value:"radix", label:t("crown.option.radix")},
-    {value:"natural", label:t("crown.option.full")},
-    {value:"broken", label:t("crown.option.broken")},
-    {value:"crownprep", label:t("toothSelect.crownPrep")},
-    {value:"emax", label:t("crown.option.emax")},
-    {value:"zircon", label:t("crown.option.zircon")},
-    {value:"metal", label:t("crown.option.metal")},
-    {value:"temporary", label:t("crown.option.temporary")},
-    {value:"telescope", label:t("crown.option.telescope")},
+    {value:"natural", label:t("substrate.natural")},
+    {value:"radix", label:t("substrate.radix")},
+    {value:"broken", label:t("substrate.broken")},
+    {value:"crownprep", label:t("substrate.crownprep")},
   ];
+}
+
+// Combined restoration dropdown, generated from RESTORATION_MATRIX via
+// restorationOptions(). Each option encodes `${type}|${material}` so a single
+// select writes BOTH restorationType and restorationMaterial.
+function getRestorationOptions(view: "front" | "occlusal"){
+  return restorationOptions(view, {}).map(o => ({
+    value: `${o.restorationType}|${o.restorationMaterial}`,
+    label: o.restorationType === "none"
+      ? t(o.labelKey)
+      : `${t(o.prefixKey ?? "restoration.prefix.fixed")}: ${t(o.typeLabelKey ?? "")} – ${t(o.materialLabelKey ?? "")}`,
+  }));
+}
+
+// "Type – Material" label for a fixed restoration (crown/inlay/onlay/veneer/bridge),
+// shared by the tooltip summary and the tooth-information prosthetics section.
+// Mirrors the label composition used by getRestorationOptions() above.
+function restorationSummaryLabel(type: Any, material: Any): string {
+  const materialKey = `restoration.material.${material === "metal-ceramic" ? "metalCeramic" : material}`;
+  return `${t(`restoration.type.${type}`)} – ${t(materialKey)}`;
 }
 
 function getBrokenCrownVariant(state: Any){
@@ -612,18 +638,6 @@ function getBrokenCrownVariant(state: Any){
   if(m) return "tooth-broken-mesial";
   if(i) return "tooth-broken-incisal";
   return null;
-}
-
-function getBridgeUnitOptions(){
-  return [
-    {value:"none", label:t("bridge.option.none")},
-    {value:"removable", label:t("bridge.option.removable")},
-    {value:"zircon", label:t("bridge.option.zircon")},
-    {value:"metal", label:t("bridge.option.metal")},
-    {value:"temporary", label:t("bridge.option.temporary")},
-    {value:"bar", label:t("bridge.option.bar")},
-    {value:"bar-prosthesis", label:t("bridge.option.barProsthesis")},
-  ];
 }
 
 function getToothSelectOptions(){
@@ -680,8 +694,8 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   // Turn OFF all known switchable layers (derived from the registry + fixed non-axis set).
   for (const id of allClearLayers()) setActive(svgGetById(svg, id), false);
 
-  const hasCrown = state.crownMaterial !== "natural";
-  const brokenVariant = state.crownMaterial === "broken" ? getBrokenCrownVariant(state) : null;
+  const hasCrown = state.restorationType !== "none";
+  const brokenVariant = state.toothSubstrate === "broken" ? getBrokenCrownVariant(state) : null;
   const isImplant = state.toothSelection === "implant";
   const isMilktooth = state.toothSelection === "milktooth";
   const underGum = isUnderGum(state.toothSelection);
@@ -689,6 +703,9 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   const hasRemovable = state.toothSelection === "none" && state.bridgeUnit === "removable";
   const isNone = state.toothSelection === "none";
   const hasRestoration = hasCrown || hasRemovable;
+  // Occlusal-view SVGs are the only templates carrying `*-onlay` layers; the
+  // presence of one tells composeRestorationLayers to include occlusal-only types.
+  const restorationView: "front" | "occlusal" = svg.querySelector('[id$="-onlay"]') ? "occlusal" : "front";
 
   const flagDeps = {
     setActive, svgGetById, isToothPresent, isUnderGum, isExtraction,
@@ -716,8 +733,9 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   }else if(isToothPresent(state.toothSelection)){
     if(state.toothSelection === "tooth-base"){
       setActive(svgGetById(svg, "tooth-base"), true);
-      // Gloss only on a natural crown — not on broken/radix/prosthetic crowns.
-      setActive(svgGetById(svg, "tooth-base-beauty"), state.crownMaterial === "natural");
+      // Gloss only on an intact natural crown — not on broken/radix/prepared
+      // substrates or a prosthetic restoration.
+      setActive(svgGetById(svg, "tooth-base-beauty"), state.toothSubstrate === "natural" && state.restorationType === "none");
     }else{
       setActive(svgGetById(svg, state.toothSelection), true);
     }
@@ -734,13 +752,13 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
     setActive(svgGetById(svg, "tooth-base"), false);
     setActive(svgGetById(svg, brokenVariant), true);
   }
-  if(state.crownMaterial === "radix" && state.toothSelection === "tooth-base"){
+  if(state.toothSubstrate === "radix" && state.toothSelection === "tooth-base"){
     setActive(svgGetById(svg, "tooth-base"), false);
     setActive(svgGetById(svg, "tooth-radix"), true);
   }
-  // "Prepared for crown" is a crown type on a permanent tooth: hide the natural
-  // crown and show the crown-prep layer. Its state properties mirror "broken".
-  if(state.crownMaterial === "crownprep" && state.toothSelection === "tooth-base"){
+  // "Prepared for crown" is a substrate state on a permanent tooth: hide the
+  // natural crown and show the crown-prep layer. Its properties mirror "broken".
+  if(state.toothSubstrate === "crownprep" && state.toothSelection === "tooth-base"){
     setActive(svgGetById(svg, "tooth-base"), false);
     setActive(svgGetById(svg, "tooth-crownprep"), true);
   }
@@ -783,12 +801,25 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
     setActive(svgGetById(svg, "prosthesis-connector"), true);
   }
 
-  // crown materials (zircon/metal/temporary/telescope)
+  // Implant attachments (healing-abutment / locator / bar) — legacy interim path
+  // retained via `crownMaterial` until SP3b's prosthesis path absorbs it. The
+  // fixed-material implant crown (zircon/metal/temporary) now flows through the
+  // restoration composition below.
   if(isImplant){
     if(state.crownMaterial === "healing-abutment"){
       setActive(svgGetById(svg, "implant-healing-abutment"), true);
     } else if(["zircon","metal","temporary"].includes(state.crownMaterial)){
+      // Implant fixed crown (SP3b defers migration): render the connector plus
+      // the legacy shared-crown layers exactly as a549534 did — these no longer
+      // flow through the restoration composition (restorationType stays "none").
       setActive(svgGetById(svg, "implant-connector"), true);
+      if(state.crownMaterial === "temporary"){
+        setActive(svgGetById(svg, "temporary-restorations"), true);
+        setActive(svgGetById(svg, "temporary-crown"), true);
+      } else {
+        setActive(svgGetById(svg, state.crownMaterial), true);
+        setActive(svgGetById(svg, state.crownMaterial + "-crown"), true);
+      }
     } else if(state.crownMaterial === "locator"){
       setActive(svgGetById(svg, "restorations"), true);
       setActive(svgGetById(svg, "implant"), true);
@@ -821,19 +852,9 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   }
   if(isNone){
     setActive(svgGetById(svg, "restorations"), true);
-    if(state.bridgeUnit === "zircon"){
-      setActive(svgGetById(svg, "zircon"), true);
-      setActive(svgGetById(svg, "zircon-crown"), true);
-      setActive(svgGetById(svg, "zircon-bridge-connector"), true);
-    } else if(state.bridgeUnit === "metal"){
-      setActive(svgGetById(svg, "metal"), true);
-      setActive(svgGetById(svg, "metal-crown"), true);
-      setActive(svgGetById(svg, "metal-bridge-connector"), true);
-    } else if(state.bridgeUnit === "temporary"){
-      setActive(svgGetById(svg, "temporary-restorations"), true);
-      setActive(svgGetById(svg, "temporary-crown"), true);
-      setActive(svgGetById(svg, "temporary-bridge-connector"), true);
-    } else if(state.bridgeUnit === "bar"){
+    // Legacy removable/bar prosthesis on a gap (retained through SP3a; SP3b
+    // absorbs it). Fixed bridge values now flow through the composition below.
+    if(state.bridgeUnit === "bar"){
       setActive(svgGetById(svg, "implant"), true);
       setActive(svgGetById(svg, "implant-bar"), true);
     } else if(state.bridgeUnit === "bar-prosthesis"){
@@ -844,45 +865,18 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
       setActive(svgGetById(svg, "prosthesis-implant-gum"), true);
     }
   }
-  if(hasCrown && !["healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"].includes(state.crownMaterial)){
-    if(state.crownMaterial !== "broken"){
-      if(["zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
-        if(state.crownMaterial === "temporary"){
-          setActive(svgGetById(svg, "temporary-restorations"), true);
-        }else{
-          setActive(svgGetById(svg, state.crownMaterial), true);
-        }
-      }
-    }
-    if(state.crownMaterial === "emax"){
-      setActive(svgGetById(svg, "emax-crown"), true);
-    } else if(state.crownMaterial === "zircon"){
-      setActive(svgGetById(svg, "zircon-crown"), true);
-    } else if(state.crownMaterial === "metal"){
-      setActive(svgGetById(svg, "metal-crown"), true);
-    } else if(state.crownMaterial === "temporary"){
-      setActive(svgGetById(svg, "temporary-crown"), true);
-    } else if(state.crownMaterial === "telescope"){
-      setActive(svgGetById(svg, "telescope-crown"), true);
-      setActive(svgGetById(svg, "telescope-crown-inside"), true);
-      setActive(svgGetById(svg, "telescope-crown-outside"), true);
-    } else if(state.crownMaterial === "broken"){
-      if(brokenVariant) setActive(svgGetById(svg, brokenVariant), true);
-    }
-  }
-  if(state.bridgePillar){
-    if(state.crownMaterial === "zircon"){
-      setActive(svgGetById(svg, "zircon"), true);
-      setActive(svgGetById(svg, "zircon-bridge-connector"), true);
-    } else if(state.crownMaterial === "metal"){
-      setActive(svgGetById(svg, "metal"), true);
-      setActive(svgGetById(svg, "metal-bridge-connector"), true);
-    } else if(state.crownMaterial === "temporary"){
-      setActive(svgGetById(svg, "temporary-restorations"), true);
-      setActive(svgGetById(svg, "temporary-bridge-connector"), true);
-    } else if(state.crownMaterial === "telescope"){
-      setActive(svgGetById(svg, "telescope"), true);
-      setActive(svgGetById(svg, "telescope-bridge-connector"), true);
+
+  // Restoration composition (crown / inlay / onlay / veneer / bridge × material).
+  // composeRestorationLayers is the single source of truth for which SVG layer
+  // ids activate; the chosen material's wrapper <g> is turned on so its children
+  // (cleared to off in the clear-set) become visible. `restorations` stays on.
+  if(state.restorationType !== "none" && state.restorationMaterial !== "none"){
+    const wrapper = RESTORATION_WRAPPER_GROUP[state.restorationMaterial];
+    const ids = composeRestorationLayers(state.restorationType, state.restorationMaterial, restorationView);
+    if(wrapper && ids.length){
+      setActive(svgGetById(svg, "restorations"), true);
+      setActive(svgGetById(svg, wrapper), true);
+      for(const id of ids) setActive(svgGetById(svg, id), true);
     }
   }
 
@@ -1008,6 +1002,29 @@ export function __renderActiveLayers(rawSvgText: string, toothNo: number, serial
   return collectActiveLayers(svg);
 }
 
+/** TEST-ONLY: hydrate `raw` and store it as `toothNo`'s state directly in the
+ *  module-level state map, bypassing all DOM/UI wiring (no initOdontogram()
+ *  required). Lets summary/warning getters be exercised without a live SVG grid.
+ *  Not part of the public API. */
+export function __setToothStateForTest(toothNo: number, raw: Record<string, unknown>): void {
+  toothState.set(toothNo, hydrateState(raw));
+}
+
+/** TEST-ONLY: read back a tooth's current state as a plain object (Sets/Maps
+ *  converted to arrays/objects for easy assertions). Not part of the public API. */
+export function __getToothStateForTest(toothNo: number): Record<string, unknown> | undefined {
+  const s = toothState.get(toothNo);
+  if(!s) return undefined;
+  return {
+    ...s,
+    caries: Array.from(s.caries ?? []),
+    fillingSurfaces: Array.from(s.fillingSurfaces ?? []),
+    fillingSurfaceMaterials: Object.fromEntries(s.fillingSurfaceMaterials ?? []),
+    cariesDepths: Object.fromEntries(s.cariesDepths ?? []),
+    mods: Array.from(s.mods ?? []),
+  };
+}
+
 // ---- Plugin overlay rendering ----
 function applyPluginOverlays(toothNo: number){
   if(registeredPlugins.length === 0) return;
@@ -1088,17 +1105,25 @@ function getStateSummary(toothNo: number): string[]{
   else if(state.toothSelection === "implant") summary.push(t("toothSelect.implant"));
   else if(state.toothSelection === "tooth-under-gum") summary.push(t("toothSelect.underGum"));
 
-  // Crown
-  if(state.crownMaterial !== "natural"){
-    const crownKey = {
-      broken: "crown.option.broken", crownprep: "toothSelect.crownPrep",
-      radix: "crown.option.radix", emax: "crown.option.emax",
-      zircon: "crown.option.zircon", metal: "crown.option.metal", temporary: "crown.option.temporary",
-      telescope: "crown.option.telescope", "healing-abutment": "crown.option.healingAbutment",
+  // Tooth substrate (radix / broken / crown-prep) — independent of any restoration.
+  if(state.toothSubstrate !== "natural"){
+    summary.push(t(`substrate.${state.toothSubstrate}`));
+  }
+
+  // Fixed restoration (crown / inlay / onlay / veneer / bridge)
+  if(state.restorationType !== "none"){
+    summary.push(restorationSummaryLabel(state.restorationType, state.restorationMaterial));
+  }
+
+  // Implant attachment (interim: still carried on the legacy crownMaterial field —
+  // absorbed by SP3b; the fixed-restoration values above never appear here anymore).
+  {
+    const attachmentKey = {
+      "healing-abutment": "crown.option.healingAbutment",
       locator: "crown.option.locator", "locator-prosthesis": "crown.option.locatorProsthesis",
       bar: "crown.option.bar", "bar-prosthesis": "crown.option.barProsthesis",
     }[state.crownMaterial];
-    if(crownKey) summary.push(t(crownKey));
+    if(attachmentKey) summary.push(t(attachmentKey));
   }
 
   // Endo
@@ -1125,11 +1150,11 @@ function getStateSummary(toothNo: number): string[]{
   // Caries
   if(state.caries.size > 0) summary.push(t("caries.title"));
 
-  // Bridge
+  // Removable / bar bridge unit (legacy field — fixed bridge values now live in
+  // restorationType/restorationMaterial and are covered by the block above).
   if(state.bridgeUnit !== "none"){
     const bridgeKey = {
-      removable: "bridge.option.removable", zircon: "bridge.option.zircon",
-      metal: "bridge.option.metal", temporary: "bridge.option.temporary",
+      removable: "bridge.option.removable",
       bar: "bridge.option.bar", "bar-prosthesis": "bridge.option.barProsthesis",
     }[state.bridgeUnit];
     if(bridgeKey) summary.push(t(bridgeKey));
@@ -1214,20 +1239,27 @@ function getStateWarnings(state: Any): string[]{
   if(state.fillingMaterial !== "none" && isNone){
     warnings.push(t("warn.fillingOnMissing"));
   }
-  // Crown replace without crown
-  if(state.crownReplace && !["emax","zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
+  // Crown replace without a fixed restoration present (mirrors the crownReplace
+  // axis's appliesWhen in src/registry/axes.ts: tooth-base + restorationType !== "none").
+  if(state.crownReplace && !(state.toothSelection === "tooth-base" && state.restorationType !== "none")){
     warnings.push(t("warn.crownReplaceNoCrown"));
   }
   // Caries on missing tooth
   if(state.caries.size > 0 && isNone){
     warnings.push(t("warn.cariesOnMissing"));
   }
-  // Bridge pillar without crown material
-  if(state.bridgePillar && !["zircon","metal","temporary","telescope"].includes(state.crownMaterial)){
+  // Bridge pillar without a fixed restoration present (same tooth-base + restoration gate).
+  if(state.bridgePillar && !(state.toothSelection === "tooth-base" && state.restorationType !== "none")){
     warnings.push(t("warn.pillarNoCrown"));
   }
 
   return warnings;
+}
+
+/** TEST-ONLY: run the clinical-consistency warning checks against a plain state
+ *  object (no DOM/SVG involved). Not part of the public API. */
+export function __getStateWarnings(state: Any): string[]{
+  return getStateWarnings(state);
 }
 
 function updateWarningsFromState(state: Any){
@@ -1260,8 +1292,6 @@ function syncControlsFromState(state: Any){
   $("#crownNeeded").checked = !!state.crownNeeded;
   $("#missingClosed").checked = !!state.missingClosed;
   $("#bridgePillar").checked = !!state.bridgePillar;
-  $("#bridgeUnitSelect").value = state.bridgeUnit;
-
   const isMilktooth = state.toothSelection === "milktooth";
   const isImplant = state.toothSelection === "implant";
   const underGum = isUnderGum(state.toothSelection);
@@ -1269,17 +1299,36 @@ function syncControlsFromState(state: Any){
 
   // tooth selection
   $("#toothSelect").value = state.toothSelection;
-  setSelectOptions($("#crownSelect"), getCrownOptions(isImplant), state.crownMaterial);
-  if($("#crownSelect").value !== state.crownMaterial){
-    state.crownMaterial = $("#crownSelect").value;
+
+  // Substrate control (natural / radix / broken / crown-prep).
+  setSelectOptions($("#substrateSelect"), getSubstrateOptions(), state.toothSubstrate);
+  if($("#substrateSelect").value !== state.toothSubstrate){
+    state.toothSubstrate = $("#substrateSelect").value;
   }
-  if(isMilktooth || underGum || extraction){
-    state.crownMaterial = "natural";
-    $("#crownSelect").value = "natural";
+
+  // Combined restoration dropdown — one <select> encodes `${type}|${material}`
+  // and writes BOTH fields. Options are filtered by the active tooth's view.
+  const restoView = restorationViewFor(activeTooth);
+  setSelectOptions($("#restorationSelect"), getRestorationOptions(restoView), `${state.restorationType}|${state.restorationMaterial}`);
+  {
+    const [selType, selMat] = String($("#restorationSelect").value).split("|");
+    if(selType !== state.restorationType || selMat !== state.restorationMaterial){
+      state.restorationType = selType || "none";
+      state.restorationMaterial = selMat || "none";
+    }
   }
-  setSelectOptions($("#bridgeUnitSelect"), getBridgeUnitOptions(), state.bridgeUnit);
-  if($("#bridgeUnitSelect").value !== state.bridgeUnit){
-    state.bridgeUnit = $("#bridgeUnitSelect").value;
+
+  // Gating: implant / milktooth / under-gum / extraction carry no fixed
+  // restoration (mirrors the old crownMaterial="natural" reset).
+  if(isImplant || isMilktooth || underGum || extraction){
+    state.restorationType = "none";
+    state.restorationMaterial = "none";
+    $("#restorationSelect").value = "none|none";
+  }
+  // Substrate applies only to a present permanent tooth.
+  if(state.toothSelection !== "tooth-base"){
+    state.toothSubstrate = "natural";
+    $("#substrateSelect").value = "natural";
   }
   setSelectOptions($("#endoSelect"), getEndoOptions(isMilktooth), state.endo);
   if($("#endoSelect").value !== state.endo){
@@ -1340,7 +1389,7 @@ function syncControlsFromState(state: Any){
   });
 
   // disable logic in UI
-  const hasCrown = state.crownMaterial !== "natural";
+  const hasCrown = state.restorationType !== "none";
   const hasRemovable = state.toothSelection === "none" && state.bridgeUnit === "removable";
   const hasRestoration = hasCrown || hasRemovable;
   $$("#cariesChecks input[type=checkbox], #cariesSubcrownRow input[type=checkbox]").forEach(c => {
@@ -1368,14 +1417,19 @@ function syncControlsFromState(state: Any){
   const noneSelected = selectedArr.length > 0 && selectedArr.some(tn => toothState.get(tn)?.toothSelection === "none");
   const implantSelected = selectedArr.length > 0 && selectedArr.some(tn => toothState.get(tn)?.toothSelection === "implant");
   const hideByNone = state.toothSelection === "none" || noneSelected;
-  const hideByRadix = state.crownMaterial === "radix";
+  const hideByRadix = state.toothSubstrate === "radix";
   $("#cariesSection").classList.toggle("hidden", hideByBase || hideByRadix);
   $("#endoSection").classList.toggle("hidden", hideByBase);
-  const hideFillingsByCrown = state.toothSelection === "tooth-base" && hasCrown && state.crownMaterial !== "radix";
+  const hideFillingsByCrown = state.toothSelection === "tooth-base" && hasCrown;
   $("#fillingSection").classList.toggle("hidden", hideByBase || hideFillingsByCrown);
-  const hideCrownRow = hideByNone || isMilktooth || underGum || extraction;
-  $("#crownRow").classList.toggle("hidden", hideCrownRow);
-  $("#brokenCrownRow").classList.toggle("hidden", state.crownMaterial !== "broken" || hideCrownRow);
+  // Combined restoration dropdown: available on a present permanent tooth and on
+  // a gap (bridge pontic); hidden for milk/implant/under-gum/extraction.
+  const hideRestorationRow = isImplant || isMilktooth || underGum || extraction;
+  $("#restorationRow").classList.toggle("hidden", hideRestorationRow);
+  // Substrate control: only for a present permanent tooth.
+  const hideSubstrateRow = state.toothSelection !== "tooth-base";
+  $("#substrateRow").classList.toggle("hidden", hideSubstrateRow);
+  $("#brokenCrownRow").classList.toggle("hidden", state.toothSubstrate !== "broken" || hideSubstrateRow);
   $("#extractionRow").classList.toggle("hidden", state.toothSelection !== "none");
   $("#inflammationSection").classList.toggle("hidden", hideByNone);
   const selectedList = selectedArr.length > 0 ? selectedArr : (activeTooth ? [activeTooth] : []);
@@ -1383,12 +1437,12 @@ function syncControlsFromState(state: Any){
     const s = toothState.get(tn);
     const allowedBase = s && (s.toothSelection === "tooth-base" || s.toothSelection === "milktooth" || BROKEN_VARIANTS.has(s.toothSelection));
     if(!allowedBase) return false;
-    if(s.toothSelection === "tooth-base" && s.crownMaterial !== "natural") return false;
+    if(s.toothSelection === "tooth-base" && s.restorationType !== "none") return false;
     return true;
   });
   const bruxismAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
-    return s && s.toothSelection === "tooth-base" && s.crownMaterial === "natural";
+    return s && s.toothSelection === "tooth-base" && s.restorationType === "none";
   });
   const fissureAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
@@ -1402,16 +1456,16 @@ function syncControlsFromState(state: Any){
     return s && ["tooth-base","milktooth","implant","tooth-under-gum"].includes(s.toothSelection);
   });
   $("#extractionPlanRow").classList.toggle("hidden", !extractionPlanAllowed);
-  // crown-replace: visible when permanent tooth + emax/zircon/metal/temporary/telescope crown
+  // crown-replace: visible when permanent tooth carries a fixed restoration
   const crownReplaceAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
-    return s && s.toothSelection === "tooth-base" && ["emax","zircon","metal","temporary","telescope"].includes(s.crownMaterial);
+    return s && s.toothSelection === "tooth-base" && s.restorationType !== "none";
   });
   $("#crownReplaceRow").classList.toggle("hidden", !crownReplaceAllowed);
-  // crown-needed: visible when permanent tooth + natural or broken crown
+  // crown-needed: visible when permanent tooth has no restoration yet (natural/broken/crown-prep substrate)
   const crownNeededAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
-    return s && s.toothSelection === "tooth-base" && ["natural","broken","crownprep"].includes(s.crownMaterial);
+    return s && s.toothSelection === "tooth-base" && s.restorationType === "none" && ["natural","broken","crownprep"].includes(s.toothSubstrate);
   });
   $("#crownNeededRow").classList.toggle("hidden", !crownNeededAllowed);
   // missing-closed: visible when foghiány
@@ -1420,9 +1474,8 @@ function syncControlsFromState(state: Any){
     return s && s.toothSelection === "none";
   });
   $("#missingClosedRow").classList.toggle("hidden", !missingClosedAllowed);
-  $("#bridgeUnitRow").classList.toggle("hidden", state.toothSelection !== "none");
-  const crownRowHidden = $("#crownRow").classList.contains("hidden");
-  const bridgePillarAllowed = !crownRowHidden && (state.crownMaterial === "zircon" || state.crownMaterial === "metal" || state.crownMaterial === "temporary" || state.crownMaterial === "telescope");
+  const restorationRowHidden = $("#restorationRow").classList.contains("hidden");
+  const bridgePillarAllowed = !restorationRowHidden && state.restorationType !== "none";
   $("#bridgePillarRow").classList.toggle("hidden", !bridgePillarAllowed);
 
   const extractionPlanRow = $("#extractionPlanRow");
@@ -1430,7 +1483,7 @@ function syncControlsFromState(state: Any){
   const bruxismRow = $("#bruxismRow");
   const crownActionsRow = $("#crownActionsRow");
   if(extractionPlanRow && brokenCrownRow && bruxismRow && crownActionsRow){
-    const brokenMode = state.crownMaterial === "broken" && !crownRowHidden;
+    const brokenMode = state.toothSubstrate === "broken" && state.toothSelection === "tooth-base";
     if(brokenMode){
       if(extractionPlanRow.parentElement !== brokenCrownRow){
         brokenCrownRow.appendChild(extractionPlanRow);
@@ -1617,11 +1670,10 @@ function refreshAllSelectOptions(){
   refreshStatusExtraOptions();
   const state = activeTooth ? toothState.get(activeTooth) : null;
   const isMilktooth = state?.toothSelection === "milktooth";
-  const isImplant = state?.toothSelection === "implant";
-  const crownEl = $("#crownSelect");
-  if(crownEl) setSelectOptions(crownEl, getCrownOptions(isImplant), crownEl.value);
-  const bridgeEl = $("#bridgeUnitSelect");
-  if(bridgeEl) setSelectOptions(bridgeEl, getBridgeUnitOptions(), bridgeEl.value);
+  const substrateEl = $("#substrateSelect");
+  if(substrateEl) setSelectOptions(substrateEl, getSubstrateOptions(), substrateEl.value);
+  const restorationEl = $("#restorationSelect");
+  if(restorationEl) setSelectOptions(restorationEl, getRestorationOptions(restorationViewFor(activeTooth)), restorationEl.value);
   const endoEl = $("#endoSelect");
   if(endoEl) setSelectOptions(endoEl, getEndoOptions(isMilktooth), endoEl.value);
   const fillingEl = $("#fillingSelect");
@@ -2306,7 +2358,12 @@ function serializeState(s: Any){
     bridgePillar: !!s.bridgePillar,
     bridgeUnit: s.bridgeUnit,
     mobility: s.mobility,
-    crownMaterial: s.crownMaterial,
+    toothSubstrate: s.toothSubstrate,
+    restorationType: s.restorationType,
+    restorationMaterial: s.restorationMaterial,
+    // Interim: emit `crownMaterial` only when it holds an implant-attachment value
+    // (the legacy render path SP3b will absorb); natural/retired values are dropped.
+    ...(ATTACHMENT_CROWN_VALUES.has(s.crownMaterial) ? { crownMaterial: s.crownMaterial } : {}),
     ...(Object.keys(s.customStates || {}).length > 0 ? { customStates: s.customStates } : {}),
     ...(s.note ? { note: s.note } : {}),
   };
@@ -2318,7 +2375,15 @@ export const VALID_ENDO = validValues("endo");
 export const VALID_FILLING_MATERIAL = validValues("fillingMaterial");
 export const VALID_BRIDGE_UNIT = validValues("bridgeUnit");
 export const VALID_MOBILITY = validValues("mobility");
-export const VALID_CROWN_MATERIAL = validValues("crownMaterial");
+export const VALID_TOOTH_SUBSTRATE = validValues("toothSubstrate");
+export const VALID_RESTORATION_TYPE = validValues("restorationType");
+export const VALID_RESTORATION_MATERIAL = validValues("restorationMaterial");
+// Interim: `crownMaterial` axis retired, but the field survives for the legacy
+// implant-attachment render path (SP3b). Source its vocabulary directly from the
+// value map (the axis — and thus validValues("crownMaterial") — no longer exists).
+export const VALID_CROWN_MATERIAL = new Set(Object.keys(LOCAL_VALUE_MAPS.crownMaterial));
+// Implant-attachment values kept in `crownMaterial` after migration (interim path).
+const ATTACHMENT_CROWN_VALUES = new Set(["healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"]);
 export const VALID_MODS = validValues("mods");
 export const VALID_PERIAPICAL_TYPE = validValues("periapicalType");
 export const VALID_CARIES = validValues("caries");
@@ -2337,6 +2402,53 @@ function validateEnum(value: Any, allowed: Set<string>, fallback: string): strin
 function hydrateState(raw: Any){
   const s = defaultState();
   if(!raw || typeof raw !== "object") return s;
+  // Legacy migration (payload < 2.0): the flat `crownMaterial` enum and the
+  // FIXED `bridgeUnit` values split into `toothSubstrate` +
+  // `restorationType`×`restorationMaterial`. Detected by the absence of the new
+  // `restorationType` field (mirrors the fillingSurfaceMaterials v1.3 fallback).
+  // Unknown/absent values fall through to defaults; never throws.
+  const legacyFixedBridge = raw.bridgeUnit === "zircon" || raw.bridgeUnit === "metal" || raw.bridgeUnit === "temporary";
+  if(raw.restorationType === undefined && (raw.crownMaterial !== undefined || legacyFixedBridge)){
+    const cm = typeof raw.crownMaterial === "string" ? raw.crownMaterial : "natural";
+    const isImplantSel = raw.toothSelection === "implant";
+    if(cm === "natural" || cm === "radix" || cm === "broken" || cm === "crownprep"){
+      raw.toothSubstrate = cm;
+      raw.restorationType = "none";
+      raw.restorationMaterial = "none";
+      raw.crownMaterial = "natural";
+    }else if(isImplantSel && (cm === "zircon" || cm === "metal" || cm === "temporary")){
+      // Implant fixed crowns stay on the legacy `crownMaterial` path (like the
+      // implant attachments healing-abutment/locator/bar). SP3b absorbs them.
+      // Do NOT fold into restorationType:"crown" (that would VANISH on sync,
+      // which force-resets implants to restorationType:"none"). No metal rename.
+      raw.restorationType = "none";
+      raw.restorationMaterial = "none";
+      // raw.crownMaterial preserved as zircon/metal/temporary
+    }else if(cm === "metal"){
+      // Legacy "metal" crown = PFM → metal-ceramic (deliberate rename).
+      raw.toothSubstrate = "crownprep";
+      raw.restorationType = "crown";
+      raw.restorationMaterial = "metal-ceramic";
+      raw.crownMaterial = "natural";
+    }else if(["emax","zircon","temporary","telescope","gold","gradia"].includes(cm)){
+      raw.toothSubstrate = "crownprep";
+      raw.restorationType = "crown";
+      raw.restorationMaterial = cm;
+      raw.crownMaterial = "natural";
+    }else{
+      // Implant attachments (healing-abutment/locator/bar…): preserved in
+      // `crownMaterial` for the interim render path (absorbed by SP3b).
+      raw.restorationType = "none";
+      raw.restorationMaterial = "none";
+    }
+    // Fixed bridge values fold into restorationType:bridge × material; removable/
+    // bar values stay on `bridgeUnit` (legacy path, retained through SP3a).
+    if(raw.bridgeUnit === "zircon" || raw.bridgeUnit === "metal" || raw.bridgeUnit === "temporary"){
+      raw.restorationType = "bridge";
+      raw.restorationMaterial = raw.bridgeUnit === "metal" ? "metal-ceramic" : raw.bridgeUnit;
+      raw.bridgeUnit = "none";
+    }
+  }
   s.toothSelection = validateEnum(raw.toothSelection, VALID_TOOTH_SELECTION, s.toothSelection);
   s.pulpInflam = !!raw.pulpInflam;
   s.endoResection = !!raw.endoResection;
@@ -2398,7 +2510,11 @@ function hydrateState(raw: Any){
   s.bridgePillar = !!raw.bridgePillar;
   s.bridgeUnit = validateEnum(raw.bridgeUnit, VALID_BRIDGE_UNIT, s.bridgeUnit);
   s.mobility = validateEnum(raw.mobility, VALID_MOBILITY, s.mobility);
-  s.crownMaterial = validateEnum(raw.crownMaterial, VALID_CROWN_MATERIAL, s.crownMaterial);
+  s.toothSubstrate = validateEnum(raw.toothSubstrate, VALID_TOOTH_SUBSTRATE, s.toothSubstrate);
+  s.restorationType = validateEnum(raw.restorationType, VALID_RESTORATION_TYPE, s.restorationType);
+  s.restorationMaterial = validateEnum(raw.restorationMaterial, VALID_RESTORATION_MATERIAL, s.restorationMaterial);
+  // Interim: only the implant-attachment values survive in `crownMaterial`.
+  s.crownMaterial = validateEnum(raw.crownMaterial, VALID_CROWN_MATERIAL, "natural");
   // Restore note
   if(typeof raw.note === "string") s.note = raw.note;
   // Restore plugin custom states (only for registered plugin IDs)
@@ -2420,7 +2536,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "1.4",
+    version: "2.0",
     globals: {
       wisdomVisible,
       showBase,
@@ -2743,12 +2859,29 @@ function applyStatusExtra(option: Any){
     updateSelectionFilterButtons();
   };
 
+  // Legacy crownMaterial values only ever offered "zircon" | "metal" here; fold
+  // the deliberate metal -> metal-ceramic rename (matches the hydrateState migration).
+  const toRestorationMaterial = (material: Any) => material === "metal" ? "metal-ceramic" : material;
+
+  // Pillar (abutment) tooth: a present tooth gets a crown restoration, flagged
+  // as a bridge pillar. Full multi-tooth bridge-span rendering on a tooth-base
+  // pillar is an SP3b concern; this only sets the new-model fields.
   const setBridgeCrown = (s, material)=>{
-    s.crownMaterial = material;
+    s.toothSubstrate = "crownprep";
+    s.restorationType = "crown";
+    s.restorationMaterial = toRestorationMaterial(material);
+    s.crownMaterial = "natural";
     s.bridgePillar = true;
     s.brokenMesial = false;
     s.brokenIncisal = false;
     s.brokenDistal = false;
+  };
+
+  // Pontic (gap) tooth: a missing tooth gets a bridge-type restoration.
+  const setBridgePontic = (s, material)=>{
+    s.restorationType = "bridge";
+    s.restorationMaterial = toRestorationMaterial(material);
+    s.bridgeUnit = "none";
   };
 
   if(option.type === "span"){
@@ -2756,7 +2889,7 @@ function applyStatusExtra(option: Any){
       if(s.toothSelection === "tooth-base"){
         setBridgeCrown(s, option.material);
       }else if(s.toothSelection === "none"){
-        s.bridgeUnit = option.material;
+        setBridgePontic(s, option.material);
       }
     });
     return;
@@ -2777,7 +2910,7 @@ function applyStatusExtra(option: Any){
         if(s.toothSelection === "tooth-base"){
           setBridgeCrown(s, option.material);
         }else if(s.toothSelection === "none" && between.includes(tn)){
-          s.bridgeUnit = option.missingMaterial || option.material;
+          setBridgePontic(s, option.missingMaterial || option.material);
         }
       });
     }else{
@@ -2839,6 +2972,13 @@ function applyStatusExtra(option: Any){
       return next;
     });
   }
+}
+
+/** TEST-ONLY: apply a clinical status-extra preset (span/arch-bridge/removable/
+ *  bar-denture) directly against the module-level state map. Not part of the
+ *  public API. */
+export function __applyStatusExtraForTest(option: Any): void {
+  applyStatusExtra(option);
 }
 
 // ---- Load and build grid ----
@@ -3062,22 +3202,34 @@ function wireControls(){
     if(value !== "none") setEdentulous(false);
   });
 
-  // Crown dropdown
-  buildSelect($("#crownSelect"), getCrownOptions(false), (value)=>{
+  // Substrate dropdown (tooth condition: natural / radix / broken / crown-prep)
+  buildSelect($("#substrateSelect"), getSubstrateOptions(), (value)=>{
     applyToSelected((s)=>{
-      s.crownMaterial = value;
+      s.toothSubstrate = value;
       if(value !== "broken"){
         s.brokenMesial = false;
         s.brokenIncisal = false;
         s.brokenDistal = false;
       }
-      if(!["zircon","metal","temporary","telescope"].includes(value)){
+      // crown-needed only applies while a natural/broken/prepared tooth is unrestored
+      if(!["natural","broken","crownprep"].includes(value) || s.restorationType !== "none"){
+        s.crownNeeded = false;
+      }
+    });
+    setEdentulous(false);
+  });
+
+  // Combined restoration dropdown (crown / inlay / onlay / veneer / bridge ×
+  // material). Value encodes `${type}|${material}` and writes BOTH fields.
+  buildSelect($("#restorationSelect"), getRestorationOptions("occlusal"), (value)=>{
+    const [type, material] = String(value).split("|");
+    applyToSelected((s)=>{
+      s.restorationType = type || "none";
+      s.restorationMaterial = material || "none";
+      if(s.restorationType === "none"){
         s.bridgePillar = false;
-      }
-      if(!["emax","zircon","metal","temporary","telescope"].includes(value)){
         s.crownReplace = false;
-      }
-      if(!["natural","broken","crownprep"].includes(value)){
+      }else{
         s.crownNeeded = false;
       }
     });
@@ -3115,13 +3267,6 @@ function wireControls(){
   // Root resorption
   $("#rootResorption").addEventListener("change", (e)=>{
     applyToSelected((s)=>{ s.rootResorption = (e.target as HTMLInputElement).checked; });
-  });
-
-  // Bridge unit (missing tooth)
-  buildSelect($("#bridgeUnitSelect"), getBridgeUnitOptions(), (value)=>{
-    applyToSelected((s)=>{
-      s.bridgeUnit = value;
-    });
   });
 
   // Extraction wound
@@ -3742,14 +3887,10 @@ const SUMMARY_ENDO_KEY: Record<string, string> = {
   "endo-glass-pin": "endo.option.glassPin",
   "endo-metal-pin": "endo.option.metalPin",
 };
-const SUMMARY_PROSTHETIC_CROWNS = new Set(["emax", "zircon", "metal", "temporary", "telescope"]);
-const SUMMARY_CROWN_KEY: Record<string, string> = {
-  emax: "crown.option.emax", zircon: "crown.option.zircon", metal: "crown.option.metal",
-  temporary: "crown.option.temporary", telescope: "crown.option.telescope",
-};
+// Removable / bar bridge unit — the only values `bridgeUnit` still carries; fixed
+// bridge values now live in restorationType:"bridge" × restorationMaterial (below).
 const SUMMARY_BRIDGE_KEY: Record<string, string> = {
-  removable: "bridge.option.removable", zircon: "bridge.option.zircon", metal: "bridge.option.metal",
-  temporary: "bridge.option.temporary", bar: "bridge.option.bar", "bar-prosthesis": "bridge.option.barProsthesis",
+  removable: "bridge.option.removable", bar: "bridge.option.bar", "bar-prosthesis": "bridge.option.barProsthesis",
 };
 
 /**
@@ -3816,9 +3957,9 @@ export function getOdontogramSummary(): OdontogramSummary {
       endo.push(`${lbl(toothNo)} (${name})`);
     }
 
-    // Prosthetics (prosthetic crowns + bridge units)
-    if(SUMMARY_PROSTHETIC_CROWNS.has(s.crownMaterial)){
-      prosthetics.push(`${lbl(toothNo)}: ${t(SUMMARY_CROWN_KEY[s.crownMaterial])}`);
+    // Prosthetics (fixed restorations — crown/inlay/onlay/veneer/bridge — + removable/bar bridge units)
+    if(s.restorationType && s.restorationType !== "none"){
+      prosthetics.push(`${lbl(toothNo)}: ${restorationSummaryLabel(s.restorationType, s.restorationMaterial)}`);
     }
     if(s.bridgeUnit && s.bridgeUnit !== "none"){
       prosthetics.push(`${lbl(toothNo)}: ${t(SUMMARY_BRIDGE_KEY[s.bridgeUnit] || s.bridgeUnit)}`);

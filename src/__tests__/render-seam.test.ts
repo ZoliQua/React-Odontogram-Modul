@@ -19,8 +19,18 @@ describe("__renderActiveLayers seam", () => {
     expect(ids).not.toContain("caries-occlusal");
   });
 
-  it("crownMaterial=metal activates the metal-crown layer", () => {
+  it("legacy crownMaterial=metal migrates to a metal-ceramic crown (PFM rename)", () => {
     const ids = __renderActiveLayers(svgText("11"), 11, { toothSelection: "tooth-base", crownMaterial: "metal" }).map(l => l.id);
-    expect(ids).toContain("metal-crown");
+    expect(ids).toContain("metal-ceramic-crown");
+    expect(ids).not.toContain("metal-crown");
+  });
+
+  it("new-model restorationType×material composes the crown layer + wrapper group", () => {
+    const ids = __renderActiveLayers(svgText("11"), 11, {
+      toothSelection: "tooth-base", toothSubstrate: "crownprep", restorationType: "crown", restorationMaterial: "emax",
+    }).map(l => l.id);
+    expect(ids).toContain("emax");        // wrapper <g> active
+    expect(ids).toContain("emax-crown");  // composed child layer active
+    expect(ids).toContain("tooth-crownprep");
   });
 });

@@ -57,15 +57,21 @@ describe("FHIR field mappings", () => {
     );
     // Handled outside FIELD_MAPPINGS by design (special-cased in buildFhirBundle):
     // fillingSurfaceMaterials is consumed inline by the restoration emitter (per-surface materials).
-    const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials", "cariesActiveDepth", "cariesDepths"]);
-    // Full output of serializeState() (odontogram.ts:2111-2142):
+    // Handled outside FIELD_MAPPINGS by design: fillingSurfaceMaterials (consumed
+    // inline by the restoration emitter) + caries depth; `crownMaterial` is now an
+    // interim legacy field (implant-attachment render path, SP3b) that is emitted
+    // to the JSON payload only for attachment values and is deliberately NOT
+    // FHIR-mapped (its concerns split across toothSubstrate/restoration axes).
+    const SPECIAL = new Set(["customStates", "note", "fillingSurfaceMaterials", "cariesActiveDepth", "cariesDepths", "crownMaterial"]);
+    // Full output of serializeState():
     const SERIALIZED = [
       "toothSelection", "pulpInflam", "endoResection", "mods", "periapicalType", "endo", "caries",
       "cariesActiveDepth", "cariesDepths", "calculus", "rootResorption",
       "fillingMaterial", "fillingSurfaces", "fillingSurfaceMaterials", "fissureSealing", "contactMesial", "contactDistal",
       "bruxismWear", "bruxismNeckWear", "brokenMesial", "brokenIncisal", "brokenDistal",
       "extractionWound", "extractionPlan", "parapulpalPin", "crownReplace", "crownNeeded",
-      "missingClosed", "bridgePillar", "bridgeUnit", "mobility", "crownMaterial",
+      "missingClosed", "bridgePillar", "bridgeUnit", "mobility",
+      "toothSubstrate", "restorationType", "restorationMaterial", "crownMaterial",
       "customStates", "note",
     ];
     for (const f of SERIALIZED) {
@@ -214,8 +220,8 @@ describe("buildFhirBundle — mapping behavior", () => {
   });
 
   it("tolerates unknown enum values via a local code, no throw", () => {
-    const b = buildFhirBundle({ version: "1.3", teeth: { "11": { crownMaterial: "future-material-xyz" } } });
-    const cm = obsOf(b).find((o) => o.code.coding?.[0].code === "crown-material");
+    const b = buildFhirBundle({ version: "2.0", teeth: { "11": { restorationMaterial: "future-material-xyz" } } });
+    const cm = obsOf(b).find((o) => o.code.coding?.[0].code === "restoration-material");
     expect(cm?.valueCodeableConcept?.coding?.[0].code).toBe("future-material-xyz");
   });
 

@@ -1,4 +1,5 @@
 import { AXES } from "./axes";
+import { allRestorationLayers } from "./restorations";
 
 /** Non-axis layers the render clears (base/pulp/milktooth/bruxism/crown-branch intermediates/etc.).
  *  Transcribed verbatim from odontogram.ts applyStateToSvgSingle's clear block (:742-787).
@@ -38,6 +39,15 @@ export const FIXED_CLEAR_LAYERS: string[] = [
   "zircon-crown","metal-crown","temporary-crown","telescope-crown-inside","telescope-crown-outside","extraction-plan",
   "zircon-bridge-connector","metal-bridge-connector","temporary-bridge-connector","telescope-bridge-connector",
   "temporary-restorations",
+  // SP3 restoration composition — per-material wrapper <g> groups...
+  "emax","gold","gradia","metal-ceramic",
+  // ...and every composed child layer (crown / bridge-connector / inlay / onlay / veneer),
+  // superset of allRestorationLayers() so allClearLayers() stays equal to this list.
+  "gold-crown","gradia-crown","metal-ceramic-crown","telescope-crown",
+  "emax-bridge-connector","gold-bridge-connector","gradia-bridge-connector","metal-ceramic-bridge-connector",
+  "emax-inlay","gold-inlay","gradia-inlay","zircon-inlay","temporary-inlay",
+  "emax-onlay","gold-onlay","gradia-onlay","zircon-onlay","temporary-onlay",
+  "emax-veneer","gold-veneer","gradia-veneer","zircon-veneer","temporary-veneer",
   // specials
   "crown-replace","crown-needed","missing-closed",
   // toothSelection activation layers (see comment above): cleared here, re-set at :763-764
@@ -57,5 +67,10 @@ export function axisClearLayers(): string[] {
 export function allClearLayers(): string[] {
   const set = new Set(FIXED_CLEAR_LAYERS);
   for (const id of axisClearLayers()) set.add(id);
+  // SP3: every valid restoration composition layer must be cleared before the
+  // render re-activates the selected one. These ids are all also listed in
+  // FIXED_CLEAR_LAYERS (so the set-equality test still holds), but deriving them
+  // from the matrix keeps the two in lockstep as materials evolve.
+  for (const id of allRestorationLayers()) set.add(id);
   return [...set];
 }
