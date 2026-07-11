@@ -7,6 +7,7 @@ import { parseFhirBundle } from "./fhir/fromFhir";
 import type { FhirExportOptions } from "./fhir/types";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
+import { validValues, validSurfaces } from "./registry/validate";
 import tooth11Url from "./assets/teeth-svgs/11.svg";
 import tooth13Url from "./assets/teeth-svgs/13.svg";
 import tooth14Url from "./assets/teeth-svgs/14.svg";
@@ -2382,17 +2383,17 @@ function serializeState(s: Any){
 }
 
 // Allowed values for imported state fields
-export const VALID_TOOTH_SELECTION = new Set(["none","tooth-base","milktooth","implant","tooth-under-gum","no-tooth-after-extraction"]);
-export const VALID_ENDO = new Set(["none","endo-medical-filling","endo-filling","endo-filling-incomplete","endo-glass-pin","endo-metal-pin"]);
-export const VALID_FILLING_MATERIAL = new Set(["none","amalgam","composite","gic","temporary"]);
-export const VALID_BRIDGE_UNIT = new Set(["none","removable","zircon","metal","temporary","bar","bar-prosthesis"]);
-export const VALID_MOBILITY = new Set(["none","m1","m2","m3"]);
-export const VALID_CROWN_MATERIAL = new Set(["natural","broken","crownprep","radix","emax","zircon","metal","temporary","telescope","healing-abutment","locator","locator-prosthesis","bar","bar-prosthesis"]);
-export const VALID_MODS = new Set(["inflammation","parodontal","mobility"]);
-export const VALID_PERIAPICAL_TYPE = new Set(["none","granuloma","cyst","abscess"]);
-export const VALID_CARIES = new Set(["caries-subcrown","caries-buccal","caries-lingual","caries-mesial","caries-distal","caries-occlusal"]);
+export const VALID_TOOTH_SELECTION = validValues("toothSelection");
+export const VALID_ENDO = validValues("endo");
+export const VALID_FILLING_MATERIAL = validValues("fillingMaterial");
+export const VALID_BRIDGE_UNIT = validValues("bridgeUnit");
+export const VALID_MOBILITY = validValues("mobility");
+export const VALID_CROWN_MATERIAL = validValues("crownMaterial");
+export const VALID_MODS = validValues("mods");
+export const VALID_PERIAPICAL_TYPE = validValues("periapicalType");
+export const VALID_CARIES = validValues("caries");
 const VALID_CARIES_DEPTH = new Set(["surface","dentin","deep"]);
-export const VALID_FILLING_SURFACES = new Set(["buccal","lingual","mesial","distal","occlusal"]);
+export const VALID_FILLING_SURFACES = validSurfaces();
 
 function filterSet(arr: Any, allowed: Set<string>): Set<string>{
   if(!Array.isArray(arr)) return new Set();
