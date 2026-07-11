@@ -37,6 +37,10 @@ const settings: SettingsState = {
   onDiscolorationDetailLevel: vi.fn(),
   notes: false,
   onNotes: vi.fn(),
+  showStatusCard: true,
+  onShowStatusCard: vi.fn(),
+  showOrthoCard: true,
+  onShowOrthoCard: vi.fn(),
 };
 
 const renderModal = () =>

@@ -696,18 +696,35 @@ function isToothPresent(sel: Any){
   return sel !== "none" && sel !== "implant";
 }
 
-/** SP7 Task 5: hide the `mods.inflammation` checkbox's row (built by
- *  buildChecks() as a <label> wrapping the checkbox input) inside `#modsChecks`
- *  for a present tooth — apicalDx now drives the periapical glyph there, so
- *  the checkbox would be a redundant/confusing second control. A non-present
- *  tooth (missing / implant) never derives apicalDx and still uses the mod for
- *  its periodontal/peri-implant meaning, so it stays visible there. */
+/** SP7 Task 5 (extended by SP15 Task 3 / B4): hide the `mods.inflammation`
+ *  checkbox's row (built by buildChecks() as a <label> wrapping the checkbox
+ *  input) inside `#modsChecks` for a PRESENT tooth (tooth-base/milktooth) —
+ *  apicalDx now drives the periapical glyph there, so the checkbox would be a
+ *  redundant/confusing second control — AND for an implant, where the
+ *  dedicated `periImplant` axis (peri-implantitis) already covers implant
+ *  inflammation, making this toggle redundant there too. It stays VISIBLE for
+ *  a missing tooth (`toothSelection === "none"`) and for an extraction-socket
+ *  (`toothSelection === "no-tooth-after-extraction"`), where it marks
+ *  periodontal inflammation in the socket — a finding neither `apicalDx` nor
+ *  `periImplant` cover there (the label itself swaps to "periodontal
+ *  inflammation" for that case — see the `#lbl-inflammation` relabel in
+ *  syncControlsFromState()). MUST run AFTER syncPeriImplantVisibility() in
+ *  syncControlsFromState(): that function's implant-only loop also toggles
+ *  this same checkbox's `.hidden` class, so whichever of the two runs last
+ *  wins for the inflammation checkbox specifically — this one is the
+ *  authoritative, final word. */
 function syncInflammationModVisibility(container: Element | null, toothSelection: Any): void {
   if(!container) return;
   const inflChk = container.querySelector('input[value="inflammation"]') as HTMLInputElement | null;
   if(!inflChk) return;
   const inflLabel = inflChk.closest("label") || inflChk.parentElement;
-  if(inflLabel) inflLabel.classList.toggle("hidden", isToothPresent(toothSelection));
+  // Hidden for a present tooth or an implant; visible for missing/socket.
+  // isToothPresent() alone can't express the socket case: it returns true for
+  // "no-tooth-after-extraction" (neither "none" nor "implant"), so isExtraction()
+  // carves that value back out of the "present" bucket to keep it visible.
+  const hidden = toothSelection === "implant"
+    || (isToothPresent(toothSelection) && !isExtraction(toothSelection));
+  if(inflLabel) inflLabel.classList.toggle("hidden", hidden);
 }
 
 /** TEST-ONLY: apply {@link syncInflammationModVisibility} to a hand-built
@@ -721,8 +738,14 @@ export function __syncInflammationModVisibilityForTest(container: Element, tooth
  *  parodontal/inflammation mods (they're migrated away for implants — see
  *  hydrateState's implant-mods migration), so show `#periImplantRow` only for
  *  an implant and hide BOTH mod checkboxes' rows there. Composes with
- *  {@link syncInflammationModVisibility} (that one hides `inflammation` for a
- *  PRESENT tooth) — both only ever set `.hidden`, order doesn't matter. */
+ *  {@link syncInflammationModVisibility} for the `parodontal` checkbox (order
+ *  doesn't matter there — nothing else touches it). For `inflammation`,
+ *  though, this function's blanket implant-only rule (visible for EVERY
+ *  non-implant selection, including a present tooth) is deliberately
+ *  overridden by syncInflammationModVisibility's more specific present/socket
+ *  rule (SP15 Task 3 / B4) — syncControlsFromState() calls this function
+ *  FIRST and syncInflammationModVisibility() AFTER, so the latter always has
+ *  the final say for `inflammation`. */
 function syncPeriImplantVisibility(periImplantRow: Element | null, modsContainer: Element | null, toothSelection: Any): void {
   const isImplantSel = toothSelection === "implant";
   if(periImplantRow) periImplantRow.classList.toggle("hidden", !isImplantSel);
@@ -851,6 +874,22 @@ function getRestorationOptions(view: "front" | "occlusal", ctx: { isImplant?: bo
         : `${t(o.prefixKey ?? "restoration.prefix.fixed")}: ${t(o.typeLabelKey ?? "")} – ${t(o.materialLabelKey ?? "")}`,
     };
   });
+}
+
+// SP15 Task 1 (B5/B7): #restorationRow visibility gate — extracted as a
+// standalone predicate (mirrors wearRowAllowed) so it's independently unit
+// testable. An implant IS allowed here (restorationOptions already restricts
+// it to a crown/bridge + attachment set); milk teeth, under-gum,
+// extraction-socket teeth, and a radix substrate (a broken root can't carry a
+// restoration) are not.
+function restorationRowHidden(s: Any): boolean {
+  const isMilktooth = s?.toothSelection === "milktooth";
+  const underGum = isUnderGum(s?.toothSelection);
+  const extraction = isExtraction(s?.toothSelection) || (s?.toothSelection === "none" && s?.extractionWound);
+  return isMilktooth || underGum || extraction || s?.toothSubstrate === "radix";
+}
+export function __restorationRowHiddenForTest(s: Record<string, unknown>): boolean {
+  return restorationRowHidden(s);
 }
 
 // Apply a combined-dropdown value to a tooth state. The value is either a fixed
@@ -1004,6 +1043,31 @@ function getStatusExtrasMeta(){
 
 function getMobilityOptions(){
   return optionsFor("mobility").map(o => ({ value: o.value, label: t(o.labelKey) }));
+}
+
+// SP15 Task 1 (B5): #mobilityRow / #mobilitySelect gates — standard tooth
+// mobility grading (Miller) applies to a natural tooth's periodontal
+// ligament; an implant is osseointegrated and has no PDL, so the control is
+// hidden/disabled there. Extracted as standalone predicates (mirrors
+// wearRowAllowed) so they're independently unit testable. Hiding the control
+// is enough — any previously stored mobility value is left untouched.
+function mobilityRowHidden(s: Any): boolean {
+  const isImplant = s?.toothSelection === "implant";
+  const underGum = isUnderGum(s?.toothSelection);
+  const extraction = isExtraction(s?.toothSelection) || (s?.toothSelection === "none" && s?.extractionWound);
+  return isImplant || underGum || extraction;
+}
+export function __mobilityRowHiddenForTest(s: Record<string, unknown>): boolean {
+  return mobilityRowHidden(s);
+}
+
+function mobilityDisabled(s: Any): boolean {
+  const isImplant = s?.toothSelection === "implant";
+  const extraction = isExtraction(s?.toothSelection) || (s?.toothSelection === "none" && s?.extractionWound);
+  return s?.toothSelection === "none" || extraction || isImplant;
+}
+export function __mobilityDisabledForTest(s: Record<string, unknown>): boolean {
+  return mobilityDisabled(s);
 }
 
 const VALID_ICDAS = new Set([1,2,3,4,5,6]);
@@ -1662,7 +1726,11 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
     // empty-of-children-but-active "inflammation" group.
     setActive(svgGetById(svg, "inflammation"), false);
   }
-  if(state.mobility !== "none" && state.toothSelection !== "none" && !extraction){
+  // SP15 wholebranch fix: mobilityRowHidden() also hides the mobility control
+  // on an implant (osseointegrated, no PDL) — gate the render the same way.
+  // The stored value is deliberately left untouched (T1's choice), just not
+  // drawn/summarized on an implant.
+  if(state.mobility !== "none" && state.toothSelection !== "none" && !extraction && !isImplant){
     setActive(svgGetById(svg, "mobility"), true);
   }
 
@@ -2135,7 +2203,10 @@ function getStateSummary(toothNo: number): string[]{
       else if(mod === "inflammation") summary.push(t("mods.periapicalInflammation"));
     }
   }
-  if(state.mobility !== "none") summary.push(t("inflammation.mobilityLabel") + " " + t(`mobility.${state.mobility}`));
+  // SP15 wholebranch fix: mobilityRowHidden() hides the mobility control on
+  // an implant — the summary must not contradict that hidden control, so
+  // suppress the line there too (stored value stays untouched, per T1).
+  if(state.mobility !== "none" && state.toothSelection !== "implant") summary.push(t("inflammation.mobilityLabel") + " " + t(`mobility.${state.mobility}`));
 
   // SP9: previously-invisible findings.
   if(state.calculus) summary.push(t("calculus.label"));
@@ -2563,12 +2634,16 @@ function syncControlsFromState(state: Any){
     }
   }
 
-  // Gating: milktooth / under-gum / extraction carry no fixed restoration
-  // (mirrors the old crownMaterial="natural" reset). Implants are exempt —
-  // a fixed crown/bridge on an abutment is first-class (Task 3): the
-  // restorationOptions(ctx) call above already restricts an implant's
-  // dropdown to crown/bridge × material.
-  if(isMilktooth || underGum || extraction){
+  // Gating: milktooth / under-gum / extraction / radix substrate carry no
+  // fixed restoration (mirrors the old crownMaterial="natural" reset).
+  // Implants are exempt — a fixed crown/bridge on an abutment is
+  // first-class (Task 3): the restorationOptions(ctx) call above already
+  // restricts an implant's dropdown to crown/bridge × material. A radix
+  // substrate (root remnant) is included here (SP15 wholebranch fix): the
+  // restoration row is hidden for it (restorationRowHidden above), so a
+  // stored crown must be cleared too — otherwise it keeps rendering
+  // (emax-crown over tooth-radix) with no control left to clear it.
+  if(isMilktooth || underGum || extraction || state.toothSubstrate === "radix"){
     state.restorationType = "none";
     state.restorationMaterial = "none";
     $("#restorationSelect").value = "none|none";
@@ -2594,11 +2669,6 @@ function syncControlsFromState(state: Any){
   }
   // mods
   $$("#modsChecks input[type=checkbox]").forEach(c => c.checked = state.mods.has(c.value));
-  // SP7 Task 5: the periapical-inflammation mod is retired as an authoring
-  // control on a PRESENT tooth (apicalDx drives the glyph). On a non-present
-  // tooth (missing / implant) it keeps its second, periodontal role, so it
-  // stays visible there.
-  syncInflammationModVisibility($("#modsChecks"), state.toothSelection);
   // SP4: the periapical lesion-subtype row follows the apical diagnosis on a
   // present tooth (apicalDx !== "normal"). A non-present tooth (implant/missing)
   // never derives apicalDx but CAN still carry `mods.inflammation` (peri-implant /
@@ -2620,6 +2690,14 @@ function syncControlsFromState(state: Any){
     state.periImplant = $("#periImplantSelect").value;
   }
   syncPeriImplantVisibility($("#periImplantRow"), $("#modsChecks"), state.toothSelection);
+  // SP7 Task 5 (extended by SP15 Task 3 / B4): the periapical-inflammation mod
+  // is retired as an authoring control on a PRESENT tooth (apicalDx drives the
+  // glyph) AND on an implant (periImplant covers implant inflammation). It
+  // stays visible for a missing tooth or an extraction-socket, where it marks
+  // periodontal inflammation that neither apicalDx nor periImplant cover.
+  // MUST run after syncPeriImplantVisibility() above — see that function's and
+  // syncInflammationModVisibility's doc comments for why the order matters.
+  syncInflammationModVisibility($("#modsChecks"), state.toothSelection);
   // SP4 Task 5: resorptionType (enum) is authored via a none/internal/
   // external-cervical picker (both subtypes render identically; the picker only
   // records which). Replaces the interim on/off checkbox.
@@ -2682,8 +2760,7 @@ function syncControlsFromState(state: Any){
   setDisabled($("#resorptionSelect"), endoDisabled);
   setDisabled($("#endoResection"), endoDisabled);
   setDisabled($("#parapulpalPin"), endoDisabled);
-  const mobilityDisabled = state.toothSelection === "none" || extraction;
-  setDisabled($("#mobilitySelect"), mobilityDisabled);
+  setDisabled($("#mobilitySelect"), mobilityDisabled(state));
 
   const selectedArr = selectedTeeth.size > 0 ? Array.from(selectedTeeth) : [];
   const hiddenSelected = selectedArr.length > 0 && selectedArr.some(tn => {
@@ -2699,7 +2776,7 @@ function syncControlsFromState(state: Any){
   $("#fillingSection").classList.toggle("hidden", hideByBase || hideFillingsByCrown);
   // Combined restoration dropdown: available on a present permanent tooth and on
   // a gap (bridge pontic); hidden for milk/implant/under-gum/extraction.
-  const hideRestorationRow = isImplant || isMilktooth || underGum || extraction;
+  const hideRestorationRow = restorationRowHidden(state);
   $("#restorationRow").classList.toggle("hidden", hideRestorationRow);
   // Substrate control: only for a present permanent tooth.
   const hideSubstrateRow = state.toothSelection !== "tooth-base";
@@ -2773,12 +2850,12 @@ function syncControlsFromState(state: Any){
     return s && s.toothSelection === "none";
   });
   $("#missingClosedRow").classList.toggle("hidden", !missingClosedAllowed);
-  const restorationRowHidden = $("#restorationRow").classList.contains("hidden");
-  const bridgePillarAllowed = !restorationRowHidden && state.restorationType !== "none";
+  const restorationRowCurrentlyHidden = $("#restorationRow").classList.contains("hidden");
+  const bridgePillarAllowed = !restorationRowCurrentlyHidden && state.restorationType !== "none";
   $("#bridgePillarRow").classList.toggle("hidden", !bridgePillarAllowed);
   // Crown-leakage toggle: only meaningful on a fixed crown/bridge restoration
   // (mirrors the crownLeakage axis's appliesWhen in src/registry/axes.ts).
-  const crownLeakageAllowed = !restorationRowHidden && (state.restorationType === "crown" || state.restorationType === "bridge");
+  const crownLeakageAllowed = !restorationRowCurrentlyHidden && (state.restorationType === "crown" || state.restorationType === "bridge");
   $("#crownLeakageRow").classList.toggle("hidden", !crownLeakageAllowed);
 
   const extractionPlanRow = $("#extractionPlanRow");
@@ -2822,7 +2899,7 @@ function syncControlsFromState(state: Any){
   if(inflammationLabel){
     inflammationLabel.textContent = extraction ? t("mods.periodontalInflammation") : t("mods.periapicalInflammation");
   }
-  $("#mobilityRow").classList.toggle("hidden", underGum || extraction);
+  $("#mobilityRow").classList.toggle("hidden", mobilityRowHidden(state));
   const parodontalInput = $("#chk-parodontal");
   if(parodontalInput){
     setDisabled(parodontalInput, extraction);
@@ -2988,7 +3065,7 @@ function refreshAllSelectOptions(){
   const substrateEl = $("#substrateSelect");
   if(substrateEl) setSelectOptions(substrateEl, getSubstrateOptions(), substrateEl.value);
   const restorationEl = $("#restorationSelect");
-  if(restorationEl) setSelectOptions(restorationEl, getRestorationOptions(restorationViewFor(activeTooth), { isImplant: state?.toothSelection === "implant" }), restorationEl.value);
+  if(restorationEl) setSelectOptions(restorationEl, getRestorationOptions(restorationViewFor(activeTooth), { isImplant: state?.toothSelection === "implant", toothSelection: state?.toothSelection }), restorationEl.value);
   const fillingEl = $("#fillingSelect");
   if(fillingEl) setSelectOptions(fillingEl, getFillingOptions(isMilktooth), fillingEl.value);
   const mobilityEl = $("#mobilitySelect");
@@ -4241,6 +4318,18 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
   s.toothSubstrate = validateEnum(raw.toothSubstrate, VALID_TOOTH_SUBSTRATE, s.toothSubstrate);
   s.restorationType = validateEnum(raw.restorationType, VALID_RESTORATION_TYPE, s.restorationType);
   s.restorationMaterial = validateEnum(raw.restorationMaterial, VALID_RESTORATION_MATERIAL, s.restorationMaterial);
+  // SP15 wholebranch fix: a radix substrate (broken root remnant) can't carry
+  // a fixed restoration — restorationRowHidden() hides the restoration
+  // control for it (B7), and syncControlsFromState's reset block clears a
+  // LIVE crown/bridge when the substrate select changes to radix. Mirror that
+  // guard here too so a crafted/imported/directly-hydrated radix+crown payload
+  // self-heals on hydrate, the same way FIX 4 below self-heals a
+  // crown+prosthesis payload — a stale crown must never render over a
+  // tooth-radix layer nor appear alongside "Radix" in the summary.
+  if(s.toothSubstrate === "radix" && s.restorationType !== "none"){
+    s.restorationType = "none";
+    s.restorationMaterial = "none";
+  }
   // SP3b Task 6 (spec §9 gap): the two fields above are validated independently
   // against their own enums, so a hand-edited/imported payload can still pair a
   // legal type with a material that type never supports (e.g. inlay+metal — the
@@ -4672,6 +4761,12 @@ function applyStatusExtra(option: Any){
         setBridgePontic(s, option.material);
       }
     });
+    // B9: applyChanges() only touches per-tooth SVG (applyStateToSvg); it never
+    // calls notifyStateChange(), so updateBridgeOverlay() (the only caller of
+    // renderBridgeOverlay()) never runs and a bridge added via a Statuses
+    // preset shows no connector. Fire it once here, after all teeth in this
+    // preset are applied, not per-tooth.
+    notifyStateChange();
     return;
   }
 
@@ -4701,6 +4796,7 @@ function applyStatusExtra(option: Any){
         }
       });
     }
+    notifyStateChange();
     return;
   }
 
@@ -4713,6 +4809,7 @@ function applyStatusExtra(option: Any){
         s.prosthesis = "removable-partial";
       }
     });
+    notifyStateChange();
     return;
   }
 
@@ -4725,6 +4822,7 @@ function applyStatusExtra(option: Any){
       next.prosthesis = wisdom.has(tn) ? "none" : "removable-full";
       return next;
     });
+    notifyStateChange();
     return;
   }
 
@@ -4750,6 +4848,7 @@ function applyStatusExtra(option: Any){
       next.toothSelection = "none";
       return next;
     });
+    notifyStateChange();
   }
 }
 
@@ -5870,7 +5969,11 @@ export function getOdontogramSummary(): OdontogramSummary {
               .filter((surface) => s.fillingDefect?.has(surface) && s.fillingSurfaceMaterials.has(surface))
               .map((surface) => `${summarySurfaceLetter(surface, toothNo)}: ${t("fillingDefect." + s.fillingDefect.get(surface))}`)
           : [];
-        const suffix = defects.length ? ` – ${defects.join(", ")}` : "";
+        // SP15 Task 5 (B3): name the finding explicitly with the
+        // fillingDefect.label qualifier, the same way secondary caries always
+        // names itself (toothInfo.secondary) on the Caries line — a bare
+        // "surface: type" suffix read as generic filling info, not a defect.
+        const suffix = defects.length ? ` – ${t("fillingDefect.label")}: ${defects.join(", ")}` : "";
         fillings.push(`${lbl(toothNo)} (${letters.join(", ")})${suffix}`);
       }
     }
@@ -5934,8 +6037,11 @@ export function getOdontogramSummary(): OdontogramSummary {
       if(orthoParts.length) orthodontics.push(`${lbl(toothNo)} (${orthoParts.join(", ")})`);
     }
     // SP9: calculus + mobility join the periodontal findings.
+    // SP15 wholebranch fix: gate mobility on the same !isImplant condition as
+    // the render/tooltip — an implant has no PDL (mobilityRowHidden hides the
+    // control there), so the whole-mouth panel must not contradict that.
     if(s.calculus) inflamed.push(`${lbl(toothNo)} (${t("calculus.label")})`);
-    if(s.mobility && s.mobility !== "none") inflamed.push(`${lbl(toothNo)} (${t("inflammation.mobilityLabel")} ${t("mobility." + s.mobility)})`);
+    if(s.mobility && s.mobility !== "none" && s.toothSelection !== "implant") inflamed.push(`${lbl(toothNo)} (${t("inflammation.mobilityLabel")} ${t("mobility." + s.mobility)})`);
     // FIX 1(c): peri-implant status is a periodontal finding, not a diagnosis —
     // route it into `inflamed` (periodontalText) instead of `diagnoses`, so an
     // implant with peri-implantitis is no longer reported "healthy" there.

@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.27.0] - 2026-07-11
+### Fixed
+- Implants and missing/gap teeth once again offer their full restoration/attachment picker: crown/bridge + healing-abutment/locator/locator-denture/bar/bar-denture on an implant; bridge-pontic + removable-partial/removable-full on a missing/gap tooth.
+- Restoration row is now hidden on a `radix` substrate tooth (no restoration can be authored on a root remnant).
+- Mobility control is now hidden on implant teeth.
+- Bridge teeth render both the crown cap AND the saddle connector (previously the connector only).
+- Bridge overlay connectors are now arch-aware, fixing a lower-arch misalignment (mirrored saddle-Y geometry for the lower arch).
+- Adding a bridge via a Statuses preset now triggers the overlay recompute, so the connector renders immediately instead of requiring a follow-up edit.
+- The periapical-inflammation modifier toggle now shows only on missing/extraction-socket teeth (hidden on present teeth and on implants, where `apicalDx`/`periImplant` already drive the periapical/peri-implant glyph).
+- Filling defects are now explicitly labeled in the whole-mouth Fillings summary line, matching how secondary caries is labeled on the Caries line.
+### Added
+- Settings → new "Panels" tab: independently toggle the Statuses and Orthodontics whole-mouth panel visibility.
+- The Caries and Secondary-caries settings tabs are merged into one "Caries" tab, with the CARS (secondary-caries) control moved above Radiographic depth.
+### Note
+- The tooth SVG assets were refreshed alongside this release (unified front dimensions + occlusal ortho-bracket/ring, SVG version 2.5.0) — byte-identical render, no functional change.
+
 ## [1.26.0] - 2026-07-11
 ### Added
 - Per-tooth orthodontic charting: appliance (bracket/band), drift (mesial/distal), vertical movement (extrusion/intrusion), and rotation, reusing the dormant v2.5.0 ortho artwork (no new SVG). Shown on the chart, in the tooltip, and a new whole-mouth "Orthodontics" summary section.

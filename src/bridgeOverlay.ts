@@ -44,8 +44,17 @@ const ARCHES: readonly (readonly number[])[] = [UPPER_ARCH, LOWER_ARCH];
 
 // Saddle bar geometry (fractions of the tile box). Shared by the live overlay
 // and the export pass so both stay byte-consistent.
-/** Vertical center of the saddle bar, as a fraction of tile height (gum line). */
+/** Vertical center of the saddle bar, as a fraction of tile height (gum line),
+ *  for an UPPER-arch tile. */
 export const SADDLE_Y_FRACTION = 0.72;
+/**
+ * Vertical center of the saddle bar for a LOWER-arch tile. Lower-arch tiles
+ * are rendered rotated 180°, so the true connector position mirrors the
+ * upper-arch fraction around the tile's vertical center (starting point:
+ * `1 - SADDLE_Y_FRACTION`). May need further visual tuning against the
+ * connector artwork (recon estimated true lower ≈ 0.19).
+ */
+export const SADDLE_Y_FRACTION_LOWER = 1 - SADDLE_Y_FRACTION;
 /** Thickness of the saddle bar, as a fraction of tile height. */
 export const SADDLE_THICKNESS = 0.09;
 /** How far the bar overlaps into each adjacent tile, as a fraction of tile width. */
@@ -171,6 +180,11 @@ export function computeBridgeBars(
   const bars: BridgeBar[] = [];
   for(const span of spans){
     const fill = materialColor(spanMaterial(span, getState));
+    // Lower-arch tooth numbers are 31-48 (see LOWER_ARCH); every tooth in a
+    // span belongs to the same arch (detectBridgeSpans never crosses the
+    // 28|48 boundary), so the first tooth number tells the whole span's arch.
+    const isLower = span[0] >= 31;
+    const yFraction = isLower ? SADDLE_Y_FRACTION_LOWER : SADDLE_Y_FRACTION;
     for(let i = 0; i < span.length - 1; i++){
       const a = rectFor(span[i]);
       const b = rectFor(span[i + 1]);
@@ -186,7 +200,7 @@ export function computeBridgeBars(
       const width = x1 - x0;
       if(width <= 0) continue;
       const height = leftRect.height * SADDLE_THICKNESS;
-      const midY = leftRect.y + leftRect.height * SADDLE_Y_FRACTION;
+      const midY = leftRect.y + leftRect.height * yFraction;
       bars.push({ x: x0, y: midY - height / 2, width, height, fill });
     }
   }

@@ -46,6 +46,10 @@ export type SettingsState = {
   onDiscolorationDetailLevel: (value: ToothDetailLevel) => void;
   notes: boolean;
   onNotes: (value: boolean) => void;
+  showStatusCard: boolean;
+  onShowStatusCard: (value: boolean) => void;
+  showOrthoCard: boolean;
+  onShowOrthoCard: (value: boolean) => void;
 };
 
 /** Context handed to every tab's `render()`. */
@@ -248,6 +252,28 @@ export const SETTINGS_TABS: SettingsTab[] = [
     ),
   },
   {
+    id: "panels",
+    titleKey: "settings.tab.panels",
+    render: ({ t, s }) => (
+      <>
+        <ToggleRow
+          t={t}
+          label={t("settings.panels.statuses")}
+          descKey="settings.panels.statuses.desc"
+          checked={s.showStatusCard}
+          onChange={s.onShowStatusCard}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.panels.orthodontics")}
+          descKey="settings.panels.orthodontics.desc"
+          checked={s.showOrthoCard}
+          onChange={s.onShowOrthoCard}
+        />
+      </>
+    ),
+  },
+  {
     id: "toothDetails",
     titleKey: "settings.tab.toothDetails",
     render: ({ t, s }) => (
@@ -269,20 +295,6 @@ export const SETTINGS_TABS: SettingsTab[] = [
           onChange={s.onDiscolorationDetailLevel}
         />
       </>
-    ),
-  },
-  {
-    id: "secondaryCaries",
-    titleKey: "settings.tab.secondaryCaries",
-    render: ({ t, s }) => (
-      <SelectRow<SecondaryCariesMode>
-        t={t}
-        label={t("caries.secondaryLabel")}
-        descKey="settings.secondaryCaries.desc"
-        value={s.secondaryCariesMode}
-        options={SECONDARY_OPTIONS}
-        onChange={s.onSecondaryCariesMode}
-      />
     ),
   },
   {
@@ -311,6 +323,14 @@ export const SETTINGS_TABS: SettingsTab[] = [
           value={s.rootCariesMode}
           options={ROOT_OPTIONS}
           onChange={s.onRootCariesMode}
+        />
+        <SelectRow<SecondaryCariesMode>
+          t={t}
+          label={t("caries.secondaryLabel")}
+          descKey="settings.secondaryCaries.desc"
+          value={s.secondaryCariesMode}
+          options={SECONDARY_OPTIONS}
+          onChange={s.onSecondaryCariesMode}
         />
         <SelectRow<RadiographicDepthMode>
           t={t}

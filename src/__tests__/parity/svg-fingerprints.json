@@ -4106,6 +4106,11 @@
         "cls": ""
       },
       {
+        "id": "zircon-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -4248,6 +4253,11 @@
         "cls": ""
       },
       {
+        "id": "metal-ceramic-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -4386,6 +4396,11 @@
       },
       {
         "id": "temporary-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary-crown",
         "opacity": "",
         "cls": ""
       },
@@ -16253,6 +16268,11 @@
         "cls": ""
       },
       {
+        "id": "gold-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -16393,6 +16413,11 @@
       },
       {
         "id": "gradia-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gradia-crown",
         "opacity": "",
         "cls": ""
       },
@@ -22229,6 +22254,11 @@
         "cls": ""
       },
       {
+        "id": "zircon-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -22371,6 +22401,11 @@
         "cls": ""
       },
       {
+        "id": "metal-ceramic-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -22509,6 +22544,11 @@
       },
       {
         "id": "temporary-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary-crown",
         "opacity": "",
         "cls": ""
       },
@@ -34376,6 +34416,11 @@
         "cls": ""
       },
       {
+        "id": "gold-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -34516,6 +34561,11 @@
       },
       {
         "id": "gradia-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gradia-crown",
         "opacity": "",
         "cls": ""
       },
@@ -40772,6 +40822,11 @@
         "cls": ""
       },
       {
+        "id": "zircon-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -40924,6 +40979,11 @@
         "cls": ""
       },
       {
+        "id": "metal-ceramic-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -41072,6 +41132,11 @@
       },
       {
         "id": "temporary-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary-crown",
         "opacity": "",
         "cls": ""
       },
@@ -54374,6 +54439,11 @@
         "cls": ""
       },
       {
+        "id": "gold-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -54524,6 +54594,11 @@
       },
       {
         "id": "gradia-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gradia-crown",
         "opacity": "",
         "cls": ""
       },
@@ -60870,6 +60945,11 @@
         "cls": ""
       },
       {
+        "id": "zircon-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -61022,6 +61102,11 @@
         "cls": ""
       },
       {
+        "id": "metal-ceramic-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -61170,6 +61255,11 @@
       },
       {
         "id": "temporary-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary-crown",
         "opacity": "",
         "cls": ""
       },
@@ -74482,6 +74572,11 @@
         "cls": ""
       },
       {
+        "id": "gold-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -74632,6 +74727,11 @@
       },
       {
         "id": "gradia-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gradia-crown",
         "opacity": "",
         "cls": ""
       },
@@ -80518,6 +80618,11 @@
         "cls": ""
       },
       {
+        "id": "zircon-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -80665,6 +80770,11 @@
         "cls": ""
       },
       {
+        "id": "metal-ceramic-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -80808,6 +80918,11 @@
       },
       {
         "id": "temporary-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary-crown",
         "opacity": "",
         "cls": ""
       },
@@ -92355,6 +92470,11 @@
         "cls": ""
       },
       {
+        "id": "gold-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -92495,6 +92615,11 @@
       },
       {
         "id": "gradia-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gradia-crown",
         "opacity": "",
         "cls": ""
       },
@@ -98791,6 +98916,11 @@
         "cls": ""
       },
       {
+        "id": "zircon-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -98933,6 +99063,11 @@
         "cls": ""
       },
       {
+        "id": "metal-ceramic-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -99071,6 +99206,11 @@
       },
       {
         "id": "temporary-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "temporary-crown",
         "opacity": "",
         "cls": ""
       },
@@ -110213,6 +110353,11 @@
         "cls": ""
       },
       {
+        "id": "gold-crown",
+        "opacity": "",
+        "cls": ""
+      },
+      {
         "id": "ortho",
         "opacity": "",
         "cls": ""
@@ -110348,6 +110493,11 @@
       },
       {
         "id": "gradia-bridge-connector",
+        "opacity": "",
+        "cls": ""
+      },
+      {
+        "id": "gradia-crown",
         "opacity": "",
         "cls": ""
       },

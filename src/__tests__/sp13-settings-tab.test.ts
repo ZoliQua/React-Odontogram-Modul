@@ -36,19 +36,27 @@ function stubSettings(): SettingsState {
     onDiscolorationDetailLevel: vi.fn(),
     notes: false,
     onNotes: vi.fn(),
+    showStatusCard: true,
+    onShowStatusCard: vi.fn(),
+    showOrthoCard: true,
+    onShowOrthoCard: vi.fn(),
   };
 }
 
 describe("SP13 Task 3: toothDetails settings tab", () => {
-  it("exists in SETTINGS_TABS immediately after the general tab", () => {
+  // SP15 Task 4 (B1/B2) inserted the "panels" tab immediately after "general"
+  // and removed the standalone "secondaryCaries" tab (merged into "caries"),
+  // so toothDetails is now general+2 rather than general+1. See
+  // sp15-settings.test.ts for the panels-tab and merged-caries assertions.
+  it("exists in SETTINGS_TABS after the general and panels tabs", () => {
     const generalIdx = SETTINGS_TABS.findIndex((tab) => tab.id === "general");
+    const panelsIdx = SETTINGS_TABS.findIndex((tab) => tab.id === "panels");
     const toothDetailsIdx = SETTINGS_TABS.findIndex((tab) => tab.id === "toothDetails");
-    const secondaryIdx = SETTINGS_TABS.findIndex((tab) => tab.id === "secondaryCaries");
 
     expect(generalIdx).toBe(0);
+    expect(panelsIdx).toBe(generalIdx + 1);
     expect(toothDetailsIdx).toBeGreaterThan(-1);
-    expect(toothDetailsIdx).toBe(generalIdx + 1);
-    expect(secondaryIdx).toBe(toothDetailsIdx + 1);
+    expect(toothDetailsIdx).toBe(panelsIdx + 1);
     expect(SETTINGS_TABS[toothDetailsIdx].titleKey).toBe("settings.tab.toothDetails");
   });
 

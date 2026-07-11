@@ -110,6 +110,19 @@ type AppProps = {
    * toggle) or `"complex"` (choose the discoloration cause, default).
    */
   discolorationDetailLevel?: ToothDetailLevel;
+  /**
+   * Whether the Statuses panel (`#statusCard`) is shown. Default `true`. The
+   * panel visibility is a settings-driven wrapper around the section — the
+   * section's own imperative collapse/expand behavior is unaffected.
+   */
+  showStatusCard?: boolean;
+  /**
+   * Whether the Orthodontics panel (`#orthoCard`) is shown. Default `true`.
+   * Composes with the panel's own imperative ortho-eligibility gate (hidden
+   * when no selected tooth is ortho-eligible) — both must be satisfied for
+   * the panel to render.
+   */
+  showOrthoCard?: boolean;
 };
 
 const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
@@ -166,6 +179,8 @@ export default function App({
   cariesDepthEnabled,
   wearDetailLevel,
   discolorationDetailLevel,
+  showStatusCard: showStatusCardProp,
+  showOrthoCard: showOrthoCardProp,
 }: AppProps){
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
@@ -184,6 +199,8 @@ export default function App({
   const [wearLevel, setWearLevel] = useState<ToothDetailLevel>(wearDetailLevel ?? "complex");
   const [discoLevel, setDiscoLevel] = useState<ToothDetailLevel>(discolorationDetailLevel ?? "complex");
   const [toothInfoOn, setToothInfoOn] = useState<boolean>(true);
+  const [showStatusCard, setShowStatusCard] = useState<boolean>(showStatusCardProp ?? true);
+  const [showOrthoCard, setShowOrthoCard] = useState<boolean>(showOrthoCardProp ?? true);
   const [summary, setSummary] = useState<OdontogramSummary | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const exportRef = useRef<HTMLDivElement | null>(null);
@@ -293,6 +310,8 @@ export default function App({
   }, [cariesDepthEnabled]);
   useEffect(() => { const v = wearDetailLevel ?? "complex"; setWearDetailLevel(v); setWearLevel(v); }, [wearDetailLevel]);
   useEffect(() => { const v = discolorationDetailLevel ?? "complex"; setDiscolorationDetailLevel(v); setDiscoLevel(v); }, [discolorationDetailLevel]);
+  useEffect(() => { setShowStatusCard(showStatusCardProp ?? true); }, [showStatusCardProp]);
+  useEffect(() => { setShowOrthoCard(showOrthoCardProp ?? true); }, [showOrthoCardProp]);
 
   // Refresh the tooth-information summary while its panel is open. Recomputes on
   // every state change, and when language/numbering change (which affect labels).
@@ -350,6 +369,10 @@ export default function App({
     onDiscolorationDetailLevel: (v) => { setDiscoLevel(v); setDiscolorationDetailLevel(v); },
     notes: notesOn,
     onNotes: (v) => { setNotesOn(v); setNotesEnabled(v); },
+    showStatusCard,
+    onShowStatusCard: (v) => setShowStatusCard(v),
+    showOrthoCard,
+    onShowOrthoCard: (v) => setShowOrthoCard(v),
   };
 
   return (
@@ -530,25 +553,27 @@ export default function App({
           </div>
 
           <div className="panel-body">
-            <section className="card" id="statusCard">
-              <div className="card-title card-title-row">
-                <span>{t("status.title")}</span>
-                <button id="btnToggleStatusCard" className="icon-btn" title={t("actions.collapse", { label: t("status.title") })} aria-label={t("actions.collapse", { label: t("status.title") })}>
-                  <span className="toggle-icon" aria-hidden="true">−</span>
-                </button>
-              </div>
-              <div className="row status-actions" id="statusCardBody">
-                <button id="btnResetAll" className="btn btn-ghost btn-sm">{t("status.resetAll")}</button>
-                <button id="btnPrimaryDentition" className="btn btn-ghost btn-sm">{t("status.primaryDentition")}</button>
-                <button id="btnMixedDentition" className="btn btn-ghost btn-sm">{t("status.mixedDentition")}</button>
-                <button id="btnEdentulous" className="btn btn-toggle btn-sm" aria-pressed="false">{t("status.edentulous")}</button>
-              </div>
-              <div className="row status-extra-row">
-                <span>{t("status.extraLabel")}</span>
-                <select id="statusExtraSelect"></select>
-                <button id="statusExtraApply" className="btn btn-ghost btn-sm">{t("status.extraApply")}</button>
-              </div>
-            </section>
+            <div className={showStatusCard ? "" : "hidden"}>
+              <section className="card" id="statusCard">
+                <div className="card-title card-title-row">
+                  <span>{t("status.title")}</span>
+                  <button id="btnToggleStatusCard" className="icon-btn" title={t("actions.collapse", { label: t("status.title") })} aria-label={t("actions.collapse", { label: t("status.title") })}>
+                    <span className="toggle-icon" aria-hidden="true">−</span>
+                  </button>
+                </div>
+                <div className="row status-actions" id="statusCardBody">
+                  <button id="btnResetAll" className="btn btn-ghost btn-sm">{t("status.resetAll")}</button>
+                  <button id="btnPrimaryDentition" className="btn btn-ghost btn-sm">{t("status.primaryDentition")}</button>
+                  <button id="btnMixedDentition" className="btn btn-ghost btn-sm">{t("status.mixedDentition")}</button>
+                  <button id="btnEdentulous" className="btn btn-toggle btn-sm" aria-pressed="false">{t("status.edentulous")}</button>
+                </div>
+                <div className="row status-extra-row">
+                  <span>{t("status.extraLabel")}</span>
+                  <select id="statusExtraSelect"></select>
+                  <button id="statusExtraApply" className="btn btn-ghost btn-sm">{t("status.extraApply")}</button>
+                </div>
+              </section>
+            </div>
 
             <section className="card">
               <div className="card-title card-title-row">
@@ -637,27 +662,29 @@ export default function App({
               </label>
             </section>
 
-            <section id="orthoCard" className="card">
-              <div className="card-title card-title-row">
-                <span>{t("toothInfo.orthodontics")}</span>
-              </div>
-              <div id="orthoApplianceRow" className="row">
-                <span>{t("ortho.appliance.label")}</span>
-                <select id="orthoApplianceSelect"></select>
-              </div>
-              <div id="orthoDriftRow" className="row">
-                <span>{t("ortho.drift.label")}</span>
-                <select id="orthoDriftSelect"></select>
-              </div>
-              <div id="orthoVerticalRow" className="row">
-                <span>{t("ortho.vertical.label")}</span>
-                <select id="orthoVerticalSelect"></select>
-              </div>
-              <label id="orthoRotationRow" className="row inline-check">
-                <input type="checkbox" id="orthoRotationToggle" />
-                <span>{t("ortho.rotation.label")}</span>
-              </label>
-            </section>
+            <div className={showOrthoCard ? "" : "hidden"}>
+              <section id="orthoCard" className="card">
+                <div className="card-title card-title-row">
+                  <span>{t("toothInfo.orthodontics")}</span>
+                </div>
+                <div id="orthoApplianceRow" className="row">
+                  <span>{t("ortho.appliance.label")}</span>
+                  <select id="orthoApplianceSelect"></select>
+                </div>
+                <div id="orthoDriftRow" className="row">
+                  <span>{t("ortho.drift.label")}</span>
+                  <select id="orthoDriftSelect"></select>
+                </div>
+                <div id="orthoVerticalRow" className="row">
+                  <span>{t("ortho.vertical.label")}</span>
+                  <select id="orthoVerticalSelect"></select>
+                </div>
+                <label id="orthoRotationRow" className="row inline-check">
+                  <input type="checkbox" id="orthoRotationToggle" />
+                  <span>{t("ortho.rotation.label")}</span>
+                </label>
+              </section>
+            </div>
 
             <section id="cariesSection" className="card">
               <div className="card-title card-title-row">

@@ -108,7 +108,7 @@ describe("SP7 Task 5: Root and Periodontium merged card", () => {
     expect(document.querySelector("#btnToggleInflammationCard")).toBeNull();
   });
 
-  it("hides the inflammation mod checkbox's row for a present tooth, shows it for an implant", () => {
+  it("hides the inflammation mod checkbox's row for a present tooth and for an implant (implant case superseded by SP15 Task 3 / B4 — see sp15-inflammation-toggle.test.ts)", () => {
     // Mirrors the DOM shape buildChecks() produces for #modsChecks: a <label>
     // wrapping the checkbox input and its text span.
     document.body.innerHTML = "";
@@ -128,8 +128,11 @@ describe("SP7 Task 5: Root and Periodontium merged card", () => {
     __syncInflammationModVisibilityForTest(container, "tooth-base");
     expect(label.classList.contains("hidden")).toBe(true);
 
+    // SP15 Task 3 / B4: an implant now hides this checkbox too (peri-implant
+    // inflammation is covered by the dedicated `periImplant` axis instead) —
+    // superseding SP7's original "shows it for an implant" behavior.
     __syncInflammationModVisibilityForTest(container, "implant");
-    expect(label.classList.contains("hidden")).toBe(false);
+    expect(label.classList.contains("hidden")).toBe(true);
 
     __syncInflammationModVisibilityForTest(container, "none");
     expect(label.classList.contains("hidden")).toBe(false);

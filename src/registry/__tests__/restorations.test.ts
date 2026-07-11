@@ -5,7 +5,12 @@ describe("restoration matrix", () => {
   it("composes {material}-{type} with bridge/telescope/onlay special cases", () => {
     expect(composeRestorationLayers("crown", "gold", "front")).toEqual(["gold-crown"]);
     expect(composeRestorationLayers("inlay", "emax", "front")).toEqual(["emax-inlay"]);
-    expect(composeRestorationLayers("bridge", "metal-ceramic", "front")).toEqual(["metal-ceramic-bridge-connector"]);
+    // SP15 Task 2 (B8): a bridge tooth shows both the crown cap and the saddle
+    // connector (previously only the connector, hiding the crown).
+    expect(composeRestorationLayers("bridge", "metal-ceramic", "front"))
+      .toEqual(["metal-ceramic-crown", "metal-ceramic-bridge-connector"]);
+    expect(composeRestorationLayers("bridge", "telescope", "front"))
+      .toEqual(["telescope-crown", "telescope-crown-inside", "telescope-crown-outside", "telescope-bridge-connector"]);
     expect(composeRestorationLayers("crown", "telescope", "front"))
       .toEqual(["telescope-crown", "telescope-crown-inside", "telescope-crown-outside"]);
     expect(composeRestorationLayers("onlay", "gold", "occlusal")).toEqual(["gold-onlay"]);

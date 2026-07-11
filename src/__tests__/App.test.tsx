@@ -213,7 +213,10 @@ describe('App.tsx', () => {
     it('renders every tab and switches between them', () => {
       render(<App language="en" />);
       openModal();
-      const tabNames = ['General', 'Secondary caries', 'Caries', 'Pulp', 'Notes'];
+      // SP15 Task 4 (B2): the standalone "Secondary caries" tab was merged
+      // into "Caries" (its CARS control now lives there); "Panels" (B1) is
+      // the new tab inserted after "General".
+      const tabNames = ['General', 'Panels', 'Caries', 'Pulp', 'Notes'];
       for (const name of tabNames) {
         const tab = screen.getByRole('tab', { name });
         fireEvent.click(tab);
@@ -233,9 +236,11 @@ describe('App.tsx', () => {
     });
 
     it('changing the secondary-caries mode calls setSecondaryCariesMode', () => {
+      // SP15 Task 4 (B2): the CARS control now lives on the "Caries" tab
+      // (merged from the removed standalone "Secondary caries" tab).
       render(<App language="en" />);
       openModal();
-      fireEvent.click(screen.getByRole('tab', { name: 'Secondary caries' }));
+      fireEvent.click(screen.getByRole('tab', { name: 'Caries' }));
       const panel = screen.getByRole('tabpanel');
       const select = within(panel).getByLabelText(/Secondary caries/i) as HTMLSelectElement;
       fireEvent.change(select, { target: { value: 'full' } });
