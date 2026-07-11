@@ -31,10 +31,11 @@ Each tooth has:
 - `restorationMaterial`: none | emax | gold | gradia | zircon | metal | metal-ceramic | telescope | temporary
 - `prosthesis`: none | healing-abutment | locator | locator-denture | bar | bar-denture | removable-partial | removable-full — orthogonal implant-attachment / removable-denture axis, surfaced as "Kivehető:" entries in the combined restoration dropdown
 - `crownLeakage`: boolean — marginal-leakage finding, shown only when `restorationType` is crown or bridge
-- `endo`: none | root-canal | post-core | apicoectomy
-- `pulpDx`: normal | reversible-pulpitis | irreversible-pulpitis | necrosis — AAE pulp diagnosis (replaced the retired `pulpInflam` boolean)
+- `endo`: none | endo-medical-filling | endo-filling | endo-filling-incomplete | endo-glass-pin | endo-metal-pin — mutually exclusive with `pulpDx`; both are surfaced through one merged "Pulp / Endo status" selector (vital vs. treated groups), and setting `endo` to a treated value normalizes `pulpDx` to `normal` (suppressing the diseased-pulp glyph)
+- `pulpDx`: normal | reversible-pulpitis | irreversible-pulpitis | necrosis — AAE pulp diagnosis (replaced the retired `pulpInflam` boolean); mutually exclusive with `endo` (see above); `reversible-pulpitis` renders a reduced pulp glyph
 - `pulpLatin`: none | pulpa-sana | hyperaemia-pulpae | pulpitis-acuta-serosa | pulpitis-acuta-purulenta | pulpitis-chronica-clausa | pulpitis-chronica-ulcerosa | pulpitis-chronica-hyperplastica | necrosis-pulpae | gangraena-pulpae — practical-Latin pulp subtypes, surfaced by the pulp picker only when the `pulpDetailLevel` setting (`simple` | `aae` | `latin`, default `aae`) is `latin`
-- `apicalDx`: normal | symptomatic-apical-periodontitis | asymptomatic-apical-periodontitis | acute-apical-abscess | chronic-apical-abscess | condensing-osteitis — drives the periapical glyph directly, decoupled from the `mods.inflammation` modifier
+- `apicalDx`: normal | symptomatic-apical-periodontitis | asymptomatic-apical-periodontitis | acute-apical-abscess | chronic-apical-abscess | condensing-osteitis — drives the periapical glyph directly, decoupled from the `mods.inflammation` modifier (the duplicate `mods.inflammation` toggle is retired from the UI on present teeth; still applies to missing/extraction-socket teeth)
+- `periapicalType`: none | granuloma | cyst — periapical lesion subtype qualifying the `apicalDx` glyph, offered by the picker only under symptomatic/asymptomatic apical periodontitis; the legacy `abscess` value is still accepted/stored (folded into `apicalDx` on import) but no longer authorable, since it duplicates the apical diagnosis
 - `resorptionType`: none | internal | external-cervical — replaced the retired `rootResorption` boolean
 - `caries`: array of surface identifiers (mesial, occlusal, distal, buccal, lingual)
 - `fillingSurfaces`: array of filled surfaces

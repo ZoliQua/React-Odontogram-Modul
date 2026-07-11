@@ -62,12 +62,14 @@ describe("SP4 Task 3: pulpDx renders byte-identical to the retired pulpInflam bo
     expect(legacy.some(l => l.id === "tooth-inflam-pulp")).toBe(true);
   });
 
-  it("reversible-pulpitis and necrosis activate the SAME single tooth-inflam-pulp layer as irreversible-pulpitis (visually identical)", () => {
+  it("necrosis activates the SAME single tooth-inflam-pulp layer (with flame sublayers) as irreversible-pulpitis (visually identical); reversible-pulpitis renders a reduced glyph (SP7: no flame sublayers)", () => {
     const irreversible = render({ toothSelection: "tooth-base", pulpDx: "irreversible-pulpitis" });
     const reversible = render({ toothSelection: "tooth-base", pulpDx: "reversible-pulpitis" });
     const necrosis = render({ toothSelection: "tooth-base", pulpDx: "necrosis" });
-    expect(reversible).toEqual(irreversible);
     expect(necrosis).toEqual(irreversible);
+    expect(irreversible.some(l => l.id === "pulp-inflam-path-1")).toBe(true);
+    expect(reversible.some(l => l.id === "tooth-inflam-pulp")).toBe(true);
+    expect(reversible.some(l => l.id === "pulp-inflam-path-1")).toBe(false);
   });
 
   it("hydrateState migration: a modern payload's own pulpDx wins over a stray legacy pulpInflam", () => {

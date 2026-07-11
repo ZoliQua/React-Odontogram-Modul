@@ -26,14 +26,18 @@ type Read = {
 
 describe("SP6 Task 1: payload version 2.4", () => {
   it("collectExportPayload emits version 2.4", () => {
+    // SP7 Task 6 bumped the current export version to 2.5; this assertion
+    // tracks the current value (see sp7-payload-version.test.ts for the
+    // dedicated version-bump test) while the historical describe/it titles
+    // are left as-is, matching the existing convention (e.g. diagnosis-ui.test.ts).
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.4");
+    expect(payload.version).toBe("2.5");
   });
 
   it("parseFhirBundle (fromFhir) emits version 2.4, independent of the input payload's own version tag", () => {
     const bundle = buildFhirBundle({ version: "1.4", teeth: {} } as never);
     const out = parseFhirBundle(bundle);
-    expect(out.version).toBe("2.4");
+    expect(out.version).toBe("2.5");
   });
 
   it("rootCaries/cariesSeverity/radiographicDepth survive a JSON export(2.4) -> import round-trip", () => {
@@ -45,7 +49,7 @@ describe("SP6 Task 1: payload version 2.4", () => {
       radiographicDepth: { mesial: "D2", occlusal: "E1" },
     });
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.4");
+    expect(payload.version).toBe("2.5");
     const raw17 = payload.teeth[17];
     expect(raw17.rootCaries).toBe("active-cavitated");
     expect(raw17.cariesSeverity).toEqual({ mesial: 5, occlusal: 2 });
@@ -75,7 +79,7 @@ describe("SP6 Task 1: payload version 2.4", () => {
     };
     const bundle = buildFhirBundle(payload as never);
     const out = parseFhirBundle(bundle);
-    expect(out.version).toBe("2.4");
+    expect(out.version).toBe("2.5");
     expect(out.teeth["36"].rootCaries).toBe("arrested");
     expect(out.teeth["36"].cariesSeverity).toEqual({ buccal: 6, lingual: 1 });
     expect(out.teeth["36"].radiographicDepth).toEqual({ buccal: "D3", lingual: "E2" });

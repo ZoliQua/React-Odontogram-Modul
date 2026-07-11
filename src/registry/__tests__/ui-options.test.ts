@@ -11,7 +11,7 @@ describe("registry stable option lists match today's option functions", () => {
     { value: "m2", labelKey: "mobility.m2" }, { value: "m3", labelKey: "mobility.m3" }]));
   it("periapicalType", () => expect(optionsFor("periapicalType")).toEqual([
     { value: "none", labelKey: "periapical.type.none" }, { value: "granuloma", labelKey: "periapical.type.granuloma" },
-    { value: "cyst", labelKey: "periapical.type.cyst" }, { value: "abscess", labelKey: "periapical.type.abscess" }]));
+    { value: "cyst", labelKey: "periapical.type.cyst" }]));
   it("mods", () => expect(optionsFor("mods")).toEqual([
     { value: "parodontal", labelKey: "mods.parodontal" }, { value: "inflammation", labelKey: "mods.periapicalInflammation" }]));
   it("endo permanent", () => expect(optionsFor("endo").map(o => o.value)).toEqual([

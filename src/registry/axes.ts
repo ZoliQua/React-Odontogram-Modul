@@ -101,7 +101,7 @@ export const AXES: ClinicalAxis[] = [
     }),
     uiOptions: [
       { value: "none", labelKey: "periapical.type.none" }, { value: "granuloma", labelKey: "periapical.type.granuloma" },
-      { value: "cyst", labelKey: "periapical.type.cyst" }, { value: "abscess", labelKey: "periapical.type.abscess" },
+      { value: "cyst", labelKey: "periapical.type.cyst" },
     ] },
 
   { id: "fillingMaterial", field: "fillingMaterial", kind: "restoration", valueGroup: "fillingMaterial",

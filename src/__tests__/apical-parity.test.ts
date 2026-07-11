@@ -122,7 +122,10 @@ describe("SP4 Task 4: hydrateState migration derivation + present-tooth mods.inf
     __setToothStateForTest(11, { toothSelection: "tooth-base", mods: ["inflammation"], periapicalType: "abscess" });
     const s = __getToothStateForTest(11)!;
     expect(s.apicalDx).toBe("acute-apical-abscess");
-    expect(s.periapicalType).toBe("abscess");
+    // SP7 Task 2: the legacy `abscess` subtype is redundant with the apicalDx
+    // abscess category it migrates to, so the hydrate reconcile clears it —
+    // the finding is preserved on apicalDx alone.
+    expect(s.periapicalType).toBe("none");
     expect(s.mods).not.toContain("inflammation");
   });
 

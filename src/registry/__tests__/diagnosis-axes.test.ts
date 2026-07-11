@@ -72,3 +72,13 @@ describe("SP4 Task 1: registry catalog stays 1:1 after adding the 4 diagnosis ax
     expect(apicalDx?.svgLayer).toBeUndefined();
   });
 });
+
+import { optionsFor } from "../uiOptions";
+
+describe("SP7 Task 1: periapicalType uiOptions drop abscess (kept in values for import)", () => {
+  it("offers only none/granuloma/cyst", () => {
+    const vals = optionsFor("periapicalType").map(o => o.value);
+    expect(vals).toEqual(["none", "granuloma", "cyst"]);
+    expect(vals).not.toContain("abscess");
+  });
+});

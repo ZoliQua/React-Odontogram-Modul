@@ -1,7 +1,7 @@
 # 🦷 React Odontogram Modul
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-1.18.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-1.19.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -33,16 +33,16 @@ This project is an interactive, browser-based odontogram editor that supports fa
 - 🌉 Multi-tooth bridge-span overlay: consecutive bridge teeth (pontics + abutments) render one continuous connector across the inter-tooth gaps, included in PNG/JPG/SVG export
 - 🔍 Caries charting on 6 surfaces: mesial, distal, buccal, lingual, occlusal, subcrown
 - 🪥 Filling materials per surface: amalgam, composite, GIC, temporary
-- 🏥 Endodontic states: medicinal filling, root canal filling, incomplete root filling, glass fiber post, metal post, resection, parapulpal pin
-- 🩺 AAE pulp diagnosis (`pulpDx`: normal / reversible / irreversible pulpitis / necrosis), with an optional 3-level pulp detail setting (`pulpDetailLevel`: simple / AAE / practical-Latin) surfacing 9 practical-Latin pulp subtypes (pulpa sana … gangraena pulpae) via `pulpLatin`
-- 🦴 Apical diagnosis (`apicalDx`: symptomatic/asymptomatic apical periodontitis, acute/chronic apical abscess, condensing osteitis) drives the periapical glyph directly, with an optional granuloma/cyst/abscess glyph subtype
-- ⚕️ Modifications: periapical inflammation (inside/outside), periodontal disease, mobility grades (M1/M2/M3)
+- 🏥 One merged "Pulp / Endo status" selector (grouped: vital pulp vs. treated/endo): endodontic states (medicinal filling, root canal filling, incomplete root filling, glass fiber post, metal post) and AAE pulp diagnosis (`pulpDx`: normal / reversible / irreversible pulpitis / necrosis) are mutually exclusive — a root-treated tooth (`endo` set) cannot also carry a vital pulp diagnosis; on treatment, `pulpDx` is normalized to `normal` and the diseased-pulp glyph is suppressed. Reversible pulpitis renders a reduced pulp glyph. An optional 3-level pulp detail setting (`pulpDetailLevel`: simple / AAE / practical-Latin) surfaces 9 practical-Latin pulp subtypes (pulpa sana … gangraena pulpae) via `pulpLatin`; resection and parapulpal pin remain separate special indicators
+- 🦴 Apical diagnosis (`apicalDx`: symptomatic/asymptomatic apical periodontitis, acute/chronic apical abscess, condensing osteitis) drives the periapical glyph directly; a granuloma/cyst lesion-subtype qualifier is shown only under symptomatic/asymptomatic apical periodontitis (the redundant "abscess" subtype was dropped — it's already covered by the apical diagnosis)
+- 🩹 Merged "Root and periodontium" card (single collapsible section for root/periapical and periodontal findings)
+- ⚕️ Modifications: periapical inflammation (hidden on present teeth, where `apicalDx` alone drives the periapical glyph — retiring the duplicate toggle; still available for missing/extraction-socket teeth), periodontal disease, mobility grades (M1/M2/M3)
 - 🏷️ Special indicators: crown needed, crown replacement needed, missing closed gap, extraction plan, bruxism wear/neck wear, fissure sealing, contact point loss
 - 👁️ Occlusal view, wisdom teeth, bone and pulp visibility toggles
 - 🔢 12 selection filters (all, present, permanent, milk, implants, missing, upper/lower, front/molars)
 - 📊 Predefined status presets (reset, primary dentition, mixed dentition, edentulous)
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
-- 💾 Status export/import in JSON (version 2.4; imports still accept legacy 1.4, 2.0, 2.1, 2.2, and 2.3 and migrate automatically, with plugin custom states and per-tooth notes)
+- 💾 Status export/import in JSON (version 2.5; imports still accept legacy 1.4, 2.0, 2.1, 2.2, 2.3, and 2.4 and migrate automatically, with plugin custom states and per-tooth notes)
 - 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition, local code system — SNOMED CT mapping planned)
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
@@ -164,6 +164,8 @@ This project is an interactive, browser-based odontogram editor that supports fa
 **Endodontic options (milk teeth):**
 `none`, `endo-medical-filling`
 
+`endo` and `pulpDx` are surfaced through one merged "Pulp / Endo status" `<select>` (grouped: vital pulp vs. treated/endo) and are mutually exclusive — choosing a treated (`endo != none`) option resets `pulpDx` to `normal` and choosing a pulp diagnosis resets `endo` to `none`.
+
 **Filling materials (permanent teeth):**
 `amalgam`, `composite`, `gic`, `temporary`
 
@@ -176,11 +178,11 @@ This project is an interactive, browser-based odontogram editor that supports fa
 **Modifications:**
 `inflammation` (periapical), `parodontal` (periodontal), `mobility` (M1/M2/M3)
 
-**Periapical lesion type** (`periapicalType`; qualifies the periapical glyph, driven by `apicalDx`):
-`none`, `granuloma`, `cyst`, `abscess`
+**Periapical lesion type** (`periapicalType`; qualifies the periapical glyph, shown only under symptomatic/asymptomatic apical periodontitis):
+`none`, `granuloma`, `cyst` — authoring options; the legacy `abscess` value is still accepted/stored but no longer offered in the picker, since it duplicates the apical diagnosis. On import it is dropped: folded into `apicalDx` when the tooth carries the inflammation modifier, otherwise cleared to `none`
 
 **Pulp diagnosis** (AAE terminology; `pulpDx`):
-`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+`normal`, `reversible-pulpitis` (renders a reduced pulp glyph), `irreversible-pulpitis`, `necrosis` — mutually exclusive with `endo`; normalized to `normal` on a root-treated tooth
 
 **Pulp diagnosis, practical Latin** (`pulpLatin`; shown by the pulp picker only when `pulpDetailLevel` is `latin`):
 `none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`
@@ -375,17 +377,18 @@ The export creates a JSON file (version `2.4`; imports also accept legacy `1.4`,
 - `toothSelection` - base tooth type
 - `crownMaterial` - crown/abutment material
 - `bridgeUnit` - bridge connector type
-- `endo` - endodontic state
-- `mods` - modifications array (inflammation, parodontal)
+- `endo` - endodontic state; mutually exclusive with `pulpDx` (surfaced together via one merged "Pulp / Endo status" picker — treating a tooth normalizes `pulpDx` to `normal`)
+- `mods` - modifications array (inflammation, parodontal); `inflammation` is retired from the UI on present teeth (`apicalDx` drives the glyph there) but still applies to missing/extraction-socket teeth
 - `caries` - active caries surfaces
 - `rootCaries` - root caries severity (none/active/arrested/active-cavitated)
 - `cariesSeverity` - unified per-surface severity (0-6): ICDAS depth on a primary (unfilled) surface, CARS score on a recurrent (filled) surface
 - `radiographicDepth` - per-surface radiographic caries depth (none/E1/E2/D1/D2/D3), independent of the visual ICDAS/CARS scale
 - `fillingMaterial` - filling material
 - `fillingSurfaces` - filled surfaces
-- `pulpDx` - AAE pulp diagnosis (normal/reversible-pulpitis/irreversible-pulpitis/necrosis)
+- `pulpDx` - AAE pulp diagnosis (normal/reversible-pulpitis/irreversible-pulpitis/necrosis); reversible-pulpitis renders a reduced glyph
 - `pulpLatin` - practical-Latin pulp subtype (shown by the pulp picker only when `pulpDetailLevel` is `latin`)
 - `apicalDx` - apical diagnosis driving the periapical glyph
+- `periapicalType` - periapical lesion subtype (none/granuloma/cyst), shown only under symptomatic/asymptomatic apical periodontitis; legacy `abscess` still accepted on import
 - `resorptionType` - root resorption type (none/internal/external-cervical)
 - `endoResection` - apicoectomy flag
 - `fissureSealing` - fissure sealant flag
@@ -464,16 +467,16 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 - 🌉 Superposición de tramo de puente multidiente: los dientes de puente consecutivos (pónticos + pilares) se renderizan como un conector continuo a través de los espacios entre dientes, incluido en la exportación PNG/JPG/SVG
 - 🔍 Registro de caries en 6 superficies: mesial, distal, bucal, lingual, oclusal, subcoronal
 - 🪥 Materiales de obturación por superficie: amalgama, composite, ionómero de vidrio, temporal
-- 🏥 Estados endodónticos: obturación medicinal, tratamiento de conductos, obturación incompleta, poste de fibra de vidrio, poste metálico, resección, pin parapulpar
-- 🩺 Diagnóstico pulpar AAE (`pulpDx`: normal / pulpitis reversible / irreversible / necrosis), con un ajuste opcional de 3 niveles de detalle pulpar (`pulpDetailLevel`: simple / AAE / latín práctico) que muestra 9 subtipos en latín práctico (pulpa sana … gangraena pulpae) mediante `pulpLatin`
-- 🦴 Diagnóstico apical (`apicalDx`: periodontitis apical sintomática/asintomática, absceso apical agudo/crónico, osteítis condensante) determina directamente el glifo periapical, con un subtipo opcional de granuloma/quiste/absceso
-- ⚕️ Modificaciones: inflamación periapical (interna/externa), enfermedad periodontal, grados de movilidad (M1/M2/M3)
+- 🏥 Un único selector combinado "Estado pulpar / endo" (agrupado: pulpa vital vs. tratada/endo): los estados endodónticos (obturación medicinal, tratamiento de conductos, obturación incompleta, poste de fibra de vidrio, poste metálico) y el diagnóstico pulpar AAE (`pulpDx`: normal / pulpitis reversible / irreversible / necrosis) son mutuamente excluyentes — un diente con tratamiento de conducto (`endo` distinto de `none`) no puede tener a la vez un diagnóstico pulpar vital; al tratarlo, `pulpDx` se normaliza a `normal` y se suprime el glifo de pulpa enferma. La pulpitis reversible se renderiza con un glifo reducido. Un ajuste opcional de 3 niveles de detalle pulpar (`pulpDetailLevel`: simple / AAE / latín práctico) muestra 9 subtipos en latín práctico (pulpa sana … gangraena pulpae) mediante `pulpLatin`; resección y pin parapulpar siguen siendo indicadores especiales aparte
+- 🦴 Diagnóstico apical (`apicalDx`: periodontitis apical sintomática/asintomática, absceso apical agudo/crónico, osteítis condensante) determina directamente el glifo periapical; el subtipo de lesión granuloma/quiste solo se muestra bajo periodontitis apical sintomática/asintomática (se eliminó el subtipo redundante "absceso", ya cubierto por el diagnóstico apical)
+- 🩹 Tarjeta combinada "Raíz y periodonto" (sección colapsable única para hallazgos radiculares/periapicales y periodontales)
+- ⚕️ Modificaciones: inflamación periapical (oculta en dientes presentes, donde el glifo periapical lo determina únicamente `apicalDx` — se retira el interruptor duplicado; sigue disponible para dientes ausentes/alvéolo de extracción), enfermedad periodontal, grados de movilidad (M1/M2/M3)
 - 🏷️ Indicadores especiales: corona necesaria, reemplazo de corona necesario, espacio cerrado, plan de extracción, desgaste por bruxismo/desgaste cervical, sellado de fisuras, pérdida de punto de contacto
 - 👁️ Vista oclusal, muelas del juicio, visibilidad de hueso y pulpa
 - 🔢 12 filtros de selección (todos, presentes, permanentes, de leche, implantes, ausentes, superior/inferior, frontales/molares)
 - 📊 Estados predefinidos (restablecer, dentición primaria, dentición mixta, edéntulo)
 - 📦 34 plantillas de restauración predefinidas (puentes, prótesis removibles, prótesis con barra e implantes)
-- 💾 Exportación/importación de estado en JSON (versión 2.4; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2 y 2.3 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
+- 💾 Exportación/importación de estado en JSON (versión 2.5; las importaciones siguen aceptando las versiones 1.4, 2.0, 2.1, 2.2, 2.3 y 2.4 y se migran automáticamente, con estados personalizados de plugins y notas por diente)
 - 🔗 Exportación HL7 FHIR R4 (Bundle de colección con Observations por diente, codificación dental ISO 3950 para dentición permanente, sistema de códigos local — mapeo SNOMED CT planificado)
 - ✚ Selección de superficies en cruz (B/M/O/D/L) para caries y obturaciones
 - 🧱 Materiales de obturación por superficie (obturaciones mixtas, p. ej. bucal amalgama + distal composite)
@@ -595,6 +598,8 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 **Opciones endodónticas (dientes de leche):**
 `none`, `endo-medical-filling`
 
+`endo` y `pulpDx` se presentan mediante un único `<select>` combinado "Estado pulpar / endo" (agrupado: pulpa vital vs. tratada/endo) y son mutuamente excluyentes — elegir una opción tratada (`endo` distinto de `none`) restablece `pulpDx` a `normal`, y elegir un diagnóstico pulpar restablece `endo` a `none`.
+
 **Materiales de obturación (dientes permanentes):**
 `amalgam`, `composite`, `gic`, `temporary`
 
@@ -607,11 +612,11 @@ Este proyecto es un editor de odontograma interactivo basado en navegador que pe
 **Modificaciones:**
 `inflammation` (periapical), `parodontal` (periodontal), `mobility` (M1/M2/M3)
 
-**Tipo de lesión periapical** (`periapicalType`; califica el glifo periapical, determinado por `apicalDx`):
-`none`, `granuloma`, `cyst`, `abscess`
+**Tipo de lesión periapical** (`periapicalType`; califica el glifo periapical, solo se muestra bajo periodontitis apical sintomática/asintomática):
+`none`, `granuloma`, `cyst` — opciones del selector; el valor heredado `abscess` sigue aceptándose/almacenándose pero ya no se ofrece en el selector, por ser redundante con el diagnóstico apical. Al importar se descarta: se incorpora a `apicalDx` si el diente tiene el modificador de inflamación, o se limpia a `none` en caso contrario
 
 **Diagnóstico pulpar** (terminología AAE; `pulpDx`):
-`normal`, `reversible-pulpitis`, `irreversible-pulpitis`, `necrosis`
+`normal`, `reversible-pulpitis` (renderiza un glifo reducido), `irreversible-pulpitis`, `necrosis` — mutuamente excluyente con `endo`; se normaliza a `normal` en un diente con tratamiento de conducto
 
 **Diagnóstico pulpar, latín práctico** (`pulpLatin`; el selector de pulpa solo lo muestra cuando `pulpDetailLevel` es `latin`):
 `none`, `pulpa-sana`, `hyperaemia-pulpae`, `pulpitis-acuta-serosa`, `pulpitis-acuta-purulenta`, `pulpitis-chronica-clausa`, `pulpitis-chronica-ulcerosa`, `pulpitis-chronica-hyperplastica`, `necrosis-pulpae`, `gangraena-pulpae`

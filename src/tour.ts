@@ -5,7 +5,7 @@ export interface TourStep { selector: string; titleKey: string; textKey: string;
 export const TOUR_STEPS: TourStep[] = [
   { selector: "#toothGrid, .tooth-grid", titleKey: "intro.step1.title", textKey: "intro.step1.text" },
   { selector: "#cariesSection", titleKey: "intro.step2.title", textKey: "intro.step2.text" },
-  { selector: "#pulpSelect", titleKey: "intro.step3.title", textKey: "intro.step3.text" },
+  { selector: "#pulpEndoSelect", titleKey: "intro.step3.title", textKey: "intro.step3.text" },
   { selector: "#toothSelect", titleKey: "intro.step4.title", textKey: "intro.step4.text" },
   { selector: "#fillingSection", titleKey: "intro.step5.title", textKey: "intro.step5.text" },
   { selector: "#crownSelect", titleKey: "intro.step6.title", textKey: "intro.step6.text" },

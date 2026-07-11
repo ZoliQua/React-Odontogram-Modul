@@ -130,5 +130,5 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
     for (const surf of Object.keys(rec.secondaryCaries)) delete rec.cariesSeverity[surf];
     if (Object.keys(rec.cariesSeverity).length === 0) delete rec.cariesSeverity;
   }
-  return { version: "2.4", globals, teeth };
+  return { version: "2.5", globals, teeth };
 }

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.19.0] - 2026-07-11
+
+### Changed
+- **Merged Pulp/Endo status selector**: the endodontic-treatment (`endo`) and pulp-diagnosis (`pulpDx`) pickers are now one control; a root-treated tooth (`endo != none`) no longer carries a vital pulp diagnosis — the two fields are mutually exclusive, and on such a tooth `pulpDx` is normalized to `normal` with the diseased-pulp glyph suppressed.
+- **Merged "Root and periodontium" card**: the separate "Root" and "Periodontium and inflammations" panels are consolidated into a single card.
+- **Periapical lesion subtype reduced to granuloma/cyst**: the redundant "abscess" subtype is dropped (it is already covered by the apical diagnosis); the subtype selector (`none` / `granuloma` / `cyst`) is now shown only under symptomatic or asymptomatic apical periodontitis.
+- **Reversible pulpitis** now renders a reduced pulp glyph.
+- **Retired the duplicate "periapical inflammation" toggle** on present teeth; the apical diagnosis alone drives the periapical glyph.
+
+### Migration
+- JSON/FHIR export payload version bumped to **2.5**; imports still accept legacy 1.4–2.4 payloads and migrate them automatically. On import, a treated tooth's pulp diagnosis is normalized to `normal`, and a legacy `abscess` periapical-lesion subtype is dropped — folded into the apical diagnosis when the tooth carries the inflammation modifier, otherwise cleared, since the apical diagnosis already covers abscess.
+
 ## [1.18.0] - 2026-07-11
 
 ### Added

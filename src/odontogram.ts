@@ -618,8 +618,7 @@ const CARD_TOGGLE_LABELS: Record<string, string> = {
   btnToggleStatusCard: "status.title",
   btnToggleCariesCard: "caries.title",
   btnToggleFillingCard: "filling.title",
-  btnToggleEndoCard: "endo.title",
-  btnToggleInflammationCard: "inflammation.title",
+  btnToggleRootPeriodontiumCard: "card.rootPeriodontium",
 };
 
 // Delegated handler for all card collapse toggles. Attached once to `document`
@@ -664,6 +663,27 @@ function onGlobalToggleClick(e: Any){
 
 function isToothPresent(sel: Any){
   return sel !== "none" && sel !== "implant";
+}
+
+/** SP7 Task 5: hide the `mods.inflammation` checkbox's row (built by
+ *  buildChecks() as a <label> wrapping the checkbox input) inside `#modsChecks`
+ *  for a present tooth — apicalDx now drives the periapical glyph there, so
+ *  the checkbox would be a redundant/confusing second control. A non-present
+ *  tooth (missing / implant) never derives apicalDx and still uses the mod for
+ *  its periodontal/peri-implant meaning, so it stays visible there. */
+function syncInflammationModVisibility(container: Element | null, toothSelection: Any): void {
+  if(!container) return;
+  const inflChk = container.querySelector('input[value="inflammation"]') as HTMLInputElement | null;
+  if(!inflChk) return;
+  const inflLabel = inflChk.closest("label") || inflChk.parentElement;
+  if(inflLabel) inflLabel.classList.toggle("hidden", isToothPresent(toothSelection));
+}
+
+/** TEST-ONLY: apply {@link syncInflammationModVisibility} to a hand-built
+ *  `#modsChecks` DOM fragment, without requiring a live initOdontogram(). Not
+ *  part of the public API. */
+export function __syncInflammationModVisibilityForTest(container: Element, toothSelection: string): void {
+  syncInflammationModVisibility(container, toothSelection);
 }
 
 function isUnderGum(sel: Any){
@@ -1044,14 +1064,17 @@ export function pulpSelectOptionValues(level: PulpDetailLevel): { value: string;
 /** Maps a pulp-control selection to the {pulpDx,pulpLatin} it writes. At "latin"
  *  the selected Latin value sets `pulpLatin` and its parent `pulpDx`; at
  *  "simple"/"aae" the value is a `pulpDx` and `pulpLatin` is cleared to "none". */
-/** Whether the periapical lesion-subtype (#periapicalTypeRow) is visible for a
- *  tooth: on a present tooth it follows the apical diagnosis; on a non-present
- *  tooth (implant/missing, which never derives apicalDx) it follows the still-
- *  toggleable `mods.inflammation` (pre-SP4 behaviour — keeps the subtype authorable). */
+/** SP7: the periapical lesion subtype (granuloma / cyst) is a refinement of
+ *  apical periodontitis, so its row (#periapicalTypeRow) shows only when the
+ *  apical diagnosis is symptomatic or asymptomatic apical periodontitis. Other
+ *  apicalDx values (abscess forms, condensing osteitis, normal) carry no
+ *  granuloma/cyst refinement. Non-present teeth keep apicalDx="normal" (their
+ *  glyph is driven by mods.inflammation in the render, unchanged) so the row is
+ *  hidden for them — subtype authoring on implant/missing is deferred to the
+ *  peri-implantitis sub-project. */
 export function periapicalRowVisible(state: Any): boolean {
-  if(state.apicalDx !== "normal") return true;
-  const mods: Set<string> | undefined = state.mods;
-  return !isToothPresent(state.toothSelection) && !!mods && mods.has("inflammation");
+  return state.apicalDx === "symptomatic-apical-periodontitis"
+    || state.apicalDx === "asymptomatic-apical-periodontitis";
 }
 
 export function pulpSelectionToState(level: PulpDetailLevel, value: string): { pulpDx: string; pulpLatin: string }{
@@ -1076,11 +1099,77 @@ export function pulpDisplayValue(level: PulpDetailLevel, state: { pulpDx?: strin
 function getPulpOptions(): { value: string; label: string }[]{
   return pulpSelectOptionValues(pulpDetailLevel).map(o => ({ value: o.value, label: t(o.labelKey) }));
 }
+
+// SP7 Task 4: a value belongs to the "treated (endo)" branch iff it is a non-"none"
+// endo value; otherwise it is a vital pulp value. `endo`/`pulpDx` never share
+// a value, so this disambiguation is total.
+export function isEndoValue(value: string): boolean {
+  return value !== "none" && VALID_ENDO.has(value);
+}
+
+// SP7 Task 4: the merged selector's displayed value. A treated tooth shows its
+// endo value; otherwise the pulp value collapsed to the active detail level.
+export function pulpEndoDisplayValue(state: Any): string {
+  if(state.endo && state.endo !== "none") return state.endo;
+  return pulpDisplayValue(pulpDetailLevel, state);
+}
+
+// SP7 Task 4: build/refresh the grouped #pulpEndoSelect. Two <optgroup>s: vital
+// pulp diagnoses (at the active detail level) and treated endo options
+// (non-"none", milktooth-filtered). Selection is applied by pulpEndoOnSelect.
+export function buildPulpEndoSelect(sel: Any, isMilktooth: boolean, selected: string): void {
+  if(!sel) return;
+  sel.innerHTML = "";
+  const mkGroup = (labelKey: string, opts: { value: string; label: string }[]) => {
+    const g = document.createElement("optgroup");
+    g.label = t(labelKey);
+    for(const o of opts){
+      const el = document.createElement("option");
+      el.value = o.value; el.textContent = o.label;
+      g.appendChild(el);
+    }
+    sel.appendChild(g);
+  };
+  mkGroup("pulpEndo.groupVital", getPulpOptions());
+  mkGroup("pulpEndo.groupTreated", getEndoOptions(isMilktooth).filter(o => o.value !== "none"));
+  sel.value = selected;
+}
+
+// SP7 Task 4: apply a merged-selector choice, enforcing the mutual-exclusion
+// invariant (mirrors the hydrate-time normalize at s.endo assignment, above).
+export function pulpEndoOnSelect(s: Any, value: string): void {
+  if(isEndoValue(value)){
+    s.endo = value;
+    s.pulpDx = "normal";
+    s.pulpLatin = "none";
+  }else{
+    s.endo = "none";
+    const mapped = pulpSelectionToState(pulpDetailLevel, value);
+    s.pulpDx = mapped.pulpDx;
+    s.pulpLatin = mapped.pulpLatin;
+  }
+}
+
 function getApicalDxOptions(): { value: string; label: string }[]{
   return Array.from(VALID_APICAL_DX).map(v => ({ value: v, label: t("apicalDx." + kebabToCamel(v)) }));
 }
 function getResorptionOptions(): { value: string; label: string }[]{
   return Array.from(VALID_RESORPTION_TYPE).map(v => ({ value: v, label: t("resorption.type." + kebabToCamel(v)) }));
+}
+
+// SP7 (fixed post-review): symmetrically set the 8 flame sublayers (and their
+// "-N1" variants) of the tooth-inflam-pulp / milktooth-inflam-pulp group to
+// `active`. The mild (reversible) tier turns them OFF, every other diseased
+// tier turns them ON. Must be called unconditionally on every diseased-pulp
+// render — the live app reuses one persistent SVG DOM node per tooth, so a
+// one-directional (deactivate-only) helper left the flames stuck off after a
+// mild render even when a later render is full-severity. Missing ids no-op
+// (setActive tolerates null), so teeth without the full set are unaffected.
+function setPulpInflamPaths(svg: Any, active: boolean){
+  for(let n = 1; n <= 8; n++){
+    setActive(svgGetById(svg, "pulp-inflam-path-" + n), active);
+    setActive(svgGetById(svg, "pulp-inflam-path-" + n + "1"), active);
+  }
 }
 
 // ---- SVG apply logic ----
@@ -1167,6 +1256,16 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   // otherwise unchanged.
   const pulpDiseased = state.pulpDx !== "normal";
 
+  // SP7: reversible pulpitis (and its Latin equivalent, hyperaemia pulpae) is a
+  // mild, reversible state — render a reduced glyph (the base inflamed-pulp
+  // shape without the flame sublayers). Every other diseased state renders the
+  // full glyph, as before. Checking both fields keeps this correct in aae and
+  // latin modes regardless of the Latin->AAE parent mapping.
+  const pulpTierMild = state.pulpDx === "reversible-pulpitis" || state.pulpLatin === "hyperaemia-pulpae";
+  // SP7: a root-treated tooth has no vital pulp — its endo artwork represents
+  // the canal, so suppress both pulp glyphs.
+  const endoTreated = state.endo !== "none";
+
   // base visibility toggle
   setActive(svgGetById(svg, "base"), showBase);
 
@@ -1180,7 +1279,10 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
     setActive(svgGetById(svg, "milktooth-base"), true);
     setActive(svgGetById(svg, "milktooth-beauty"), true);
     if(pulpDiseased){
-      setActive(svgGetById(svg, "milktooth-inflam-pulp"), true);
+      if(!endoTreated){
+        setActive(svgGetById(svg, "milktooth-inflam-pulp"), true);
+        setPulpInflamPaths(svg, !pulpTierMild);
+      }
     }else if(showHealthyPulp){
       setActive(svgGetById(svg, "milktooth-healthy-pulp"), true);
     }
@@ -1194,9 +1296,15 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
       setActive(svgGetById(svg, state.toothSelection), true);
     }
     if(!underGum && !extraction){
-      // Pulpa: show when tooth is present
+      // Pulpa: a diseased-pulp glyph is suppressed on an endodontically treated
+      // tooth (the endo artwork represents the filled canal). The healthy-pulp
+      // glyph is unchanged (legacy behaviour — a treated tooth may still show it
+      // under the endo layer).
       if(pulpDiseased){
-        setActive(svgGetById(svg, "tooth-inflam-pulp"), true);
+        if(!endoTreated){
+          setActive(svgGetById(svg, "tooth-inflam-pulp"), true);
+          setPulpInflamPaths(svg, !pulpTierMild);
+        }
       }else if(showHealthyPulp){
         setActive(svgGetById(svg, "tooth-healthy-pulp"), true);
       }
@@ -1492,6 +1600,33 @@ export function __renderActiveLayers(rawSvgText: string, toothNo: number, serial
   const svg = parsed.documentElement as unknown as Any;
   stripDisplayNoneToDataActive(svg);
   ensureDataActiveForSwitchables(svg);
+  const state = hydrateState(serialized as Any);
+  applyStateToSvgSingle(toothNo, svg, state);
+  return collectActiveLayers(svg);
+}
+
+/** TEST-ONLY: parse `rawSvgText` once (same prep `__renderActiveLayers` does —
+ *  strip display:none to data-active, seed missing data-active defaults) and
+ *  return the live parsed element. Pair with `__renderActiveLayersOnNode` to
+ *  render multiple states onto the SAME node, reproducing how the live app
+ *  reuses one persistent SVG DOM node per tooth across renders (unlike
+ *  `__renderActiveLayers`, which re-parses a fresh node every call and so
+ *  cannot catch a render that fails to reset state a prior render left
+ *  behind). Not part of the public API. */
+export function __parseSvgForTest(rawSvgText: string): Any {
+  const parsed = new DOMParser().parseFromString(rawSvgText, "image/svg+xml");
+  const svg = parsed.documentElement as unknown as Any;
+  stripDisplayNoneToDataActive(svg);
+  ensureDataActiveForSwitchables(svg);
+  return svg;
+}
+
+/** TEST-ONLY: hydrate `serialized` and render it onto an already-parsed `svg`
+ *  node (as returned by `__parseSvgForTest`), reusing that SAME node — see
+ *  `__parseSvgForTest` for why this matters. Returns the in-document-order
+ *  active-layer fingerprint, same shape as `__renderActiveLayers`. Not part
+ *  of the public API. */
+export function __renderActiveLayersOnNode(svg: Any, toothNo: number, serialized: Record<string, unknown>): { id: string; opacity: string; cls: string }[] {
   const state = hydrateState(serialized as Any);
   applyStateToSvgSingle(toothNo, svg, state);
   return collectActiveLayers(svg);
@@ -1924,12 +2059,6 @@ function updateFillingSubcariesSummary(): void {
 }
 
 function syncControlsFromState(state: Any){
-  // SP4 Task 5: pulp diagnosis is authored via #pulpSelect, presented at the
-  // active pulp-detail level. The displayed option is the stored value collapsed
-  // to that level (see pulpDisplayValue) — a display-only projection that must
-  // NOT be written back to state, so (unlike the other selects below) there is
-  // deliberately no normalization assignment here.
-  setSelectOptions($("#pulpSelect"), getPulpOptions(), pulpDisplayValue(pulpDetailLevel, state));
   // SP4 Task 5: apical (AAE) diagnosis picker.
   setSelectOptions($("#apicalDxSelect"), getApicalDxOptions(), state.apicalDx);
   if($("#apicalDxSelect").value !== state.apicalDx){
@@ -2008,10 +2137,12 @@ function syncControlsFromState(state: Any){
     state.toothSubstrate = "natural";
     $("#substrateSelect").value = "natural";
   }
-  setSelectOptions($("#endoSelect"), getEndoOptions(isMilktooth), state.endo);
-  if($("#endoSelect").value !== state.endo){
-    state.endo = $("#endoSelect").value;
-  }
+  // SP7 Task 4: merged pulp/endo status selector (two optgroups). Displayed
+  // value derives from (endo, pulpDx) via pulpEndoDisplayValue; the change
+  // handler (wireControls) routes selection through pulpEndoOnSelect, which
+  // enforces the mutual-exclusion invariant, so no post-sync normalization is
+  // needed here (unlike the old #endoSelect block this replaces).
+  buildPulpEndoSelect($("#pulpEndoSelect"), isMilktooth, pulpEndoDisplayValue(state));
   setSelectOptions($("#fillingSelect"), getFillingOptions(isMilktooth), state.fillingMaterial);
   if($("#fillingSelect").value !== state.fillingMaterial){
     state.fillingMaterial = $("#fillingSelect").value;
@@ -2022,6 +2153,11 @@ function syncControlsFromState(state: Any){
   }
   // mods
   $$("#modsChecks input[type=checkbox]").forEach(c => c.checked = state.mods.has(c.value));
+  // SP7 Task 5: the periapical-inflammation mod is retired as an authoring
+  // control on a PRESENT tooth (apicalDx drives the glyph). On a non-present
+  // tooth (missing / implant) it keeps its second, periodontal role, so it
+  // stays visible there.
+  syncInflammationModVisibility($("#modsChecks"), state.toothSelection);
   // SP4: the periapical lesion-subtype row follows the apical diagnosis on a
   // present tooth (apicalDx !== "normal"). A non-present tooth (implant/missing)
   // never derives apicalDx but CAN still carry `mods.inflammation` (peri-implant /
@@ -2091,8 +2227,7 @@ function syncControlsFromState(state: Any){
 
   // endo only if tooth present
   const endoDisabled = !isToothPresent(state.toothSelection) || underGum || extraction;
-  setDisabled($("#endoSelect"), endoDisabled);
-  setDisabled($("#pulpSelect"), endoDisabled);
+  setDisabled($("#pulpEndoSelect"), endoDisabled);
   setDisabled($("#apicalDxSelect"), endoDisabled);
   setDisabled($("#resorptionSelect"), endoDisabled);
   setDisabled($("#endoResection"), endoDisabled);
@@ -2111,7 +2246,6 @@ function syncControlsFromState(state: Any){
   const hideByNone = state.toothSelection === "none" || noneSelected;
   const hideByRadix = state.toothSubstrate === "radix";
   $("#cariesSection").classList.toggle("hidden", hideByBase || hideByRadix);
-  $("#endoSection").classList.toggle("hidden", hideByBase);
   const hideFillingsByCrown = state.toothSelection === "tooth-base" && hasCrown;
   $("#fillingSection").classList.toggle("hidden", hideByBase || hideFillingsByCrown);
   // Combined restoration dropdown: available on a present permanent tooth and on
@@ -2123,7 +2257,15 @@ function syncControlsFromState(state: Any){
   $("#substrateRow").classList.toggle("hidden", hideSubstrateRow);
   $("#brokenCrownRow").classList.toggle("hidden", state.toothSubstrate !== "broken" || hideSubstrateRow);
   $("#extractionRow").classList.toggle("hidden", state.toothSelection !== "none");
-  $("#inflammationSection").classList.toggle("hidden", hideByNone);
+  // SP7 Task 5: the merged Root+Periodontium card reconciles the two original
+  // cards' different hide predicates — the root block (endo/apical/lesion/
+  // resorption/resection/pin) keeps the old #endoSection predicate
+  // (hideByBase), the perio block (mobility/mods/calculus) keeps the old
+  // #inflammationSection predicate (hideByNone); the card itself only
+  // collapses away when BOTH blocks would be empty.
+  $("#rpRootBlock").classList.toggle("hidden", hideByBase);
+  $("#rpPerioBlock").classList.toggle("hidden", hideByNone);
+  $("#rootPeriodontiumSection").classList.toggle("hidden", hideByBase && hideByNone);
   const selectedList = selectedArr.length > 0 ? selectedArr : (activeTooth ? [activeTooth] : []);
   const contactAllowed = selectedList.length > 0 && selectedList.every(tn => {
     const s = toothState.get(tn);
@@ -2364,8 +2506,7 @@ function refreshToggleLabels(){
   const cardConfig = [
     { card: "#cariesSection", btn: "#btnToggleCariesCard", labelKey: "caries.title" },
     { card: "#fillingSection", btn: "#btnToggleFillingCard", labelKey: "filling.title" },
-    { card: "#endoSection", btn: "#btnToggleEndoCard", labelKey: "endo.title" },
-    { card: "#inflammationSection", btn: "#btnToggleInflammationCard", labelKey: "inflammation.title" },
+    { card: "#rootPeriodontiumSection", btn: "#btnToggleRootPeriodontiumCard", labelKey: "card.rootPeriodontium" },
   ];
   for(const cfg of cardConfig){
     const cardEl = $(cfg.card);
@@ -2384,16 +2525,17 @@ function refreshAllSelectOptions(){
   if(substrateEl) setSelectOptions(substrateEl, getSubstrateOptions(), substrateEl.value);
   const restorationEl = $("#restorationSelect");
   if(restorationEl) setSelectOptions(restorationEl, getRestorationOptions(restorationViewFor(activeTooth), { isImplant: state?.toothSelection === "implant" }), restorationEl.value);
-  const endoEl = $("#endoSelect");
-  if(endoEl) setSelectOptions(endoEl, getEndoOptions(isMilktooth), endoEl.value);
   const fillingEl = $("#fillingSelect");
   if(fillingEl) setSelectOptions(fillingEl, getFillingOptions(isMilktooth), fillingEl.value);
   const mobilityEl = $("#mobilitySelect");
   if(mobilityEl) setSelectOptions(mobilityEl, getMobilityOptions(), mobilityEl.value);
   const periapicalEl = $("#periapicalTypeSelect");
   if(periapicalEl) setSelectOptions(periapicalEl, getPeriapicalTypeOptions(), periapicalEl.value);
-  const pulpEl = $("#pulpSelect");
-  if(pulpEl) setSelectOptions(pulpEl, getPulpOptions(), pulpEl.value);
+  // SP7 Task 4: merged pulp/endo selector — rebuild both optgroups, preserving
+  // the currently selected value (mirrors the other re-localize-in-place calls
+  // in this function).
+  const pulpEndoEl = $("#pulpEndoSelect");
+  if(pulpEndoEl) buildPulpEndoSelect(pulpEndoEl, isMilktooth, pulpEndoEl.value);
   const apicalEl = $("#apicalDxSelect");
   if(apicalEl) setSelectOptions(apicalEl, getApicalDxOptions(), apicalEl.value);
   const resorptionEl = $("#resorptionSelect");
@@ -3371,7 +3513,31 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
     s.mods.delete("inflammation");
   }
   s.apicalDx = validateEnum(raw.apicalDx, VALID_APICAL_DX, migratedApicalDx);
+  // SP7: enforce the lesion-subtype invariant on read. On a PRESENT tooth the
+  // granuloma/cyst subtype (including the legacy `abscess` subtype) is valid
+  // only under symptomatic/asymptomatic apical periodontitis; otherwise it is
+  // cleared to "none". Non-present teeth are left untouched (their stored
+  // subtype still feeds the unchanged non-present render path). Never throws.
+  if(isToothPresent(s.toothSelection)){
+    if(s.apicalDx !== "symptomatic-apical-periodontitis"
+        && s.apicalDx !== "asymptomatic-apical-periodontitis"){
+      s.periapicalType = "none";
+    }
+  }
   s.endo = validateEnum(raw.endo, VALID_ENDO, s.endo);
+  // SP7: enforce the endo/pulp mutual-exclusion invariant on read. A tooth with
+  // any endodontic treatment (endo !== "none") has no vital pulp, so it cannot
+  // carry a pulpitis/necrosis diagnosis. Normalize to "normal" (also clears any
+  // Latin subtype). Runs unconditionally — a conformant payload never violates
+  // this, so it is a no-op except on contradictory legacy/hand-edited data.
+  // NOTE: placed here (after s.endo is assigned from `raw`, not immediately
+  // after the s.pulpDx assignment above) because s.endo is not populated from
+  // `raw.endo` until this line — checking it any earlier would only ever see
+  // defaultState()'s "none" placeholder and never normalize a real payload.
+  if(s.endo && s.endo !== "none" && (s.pulpDx !== "normal" || s.pulpLatin !== "none")){
+    s.pulpDx = "normal";
+    s.pulpLatin = "none";
+  }
   s.caries = filterSet(raw.caries, VALID_CARIES);
   const toIcdas = (v: Any): number | null => {
     if(typeof v === "number" && VALID_ICDAS.has(v)) return v;
@@ -3569,7 +3735,7 @@ function collectExportPayload(){
     teeth[toothNo] = serializeState(s);
   }
   return {
-    version: "2.4",
+    version: "2.5",
     globals: {
       wisdomVisible,
       showBase,
@@ -4283,28 +4449,26 @@ function wireControls(){
     setEdentulous(false);
   });
 
-  // Root dropdown
-  buildSelect($("#endoSelect"), getEndoOptions(false), (value)=>{
-    applyToSelected((s)=>{
-      s.endo = value;
+  // SP7 Task 4: merged pulp/endo status. Custom-built (optgroups) rather than
+  // via buildSelect; the change handler routes to pulpEndoOnSelect, which
+  // enforces the mutual-exclusion invariant (endo <-> vital pulpDx).
+  {
+    const sel = $("#pulpEndoSelect");
+    sel.addEventListener("change", () => {
+      const value = sel.value;
+      applyToSelected((s)=>{ pulpEndoOnSelect(s, value); });
     });
-  });
-
-  // Pulp diagnosis (SP4 Task 5: pulpDx/pulpLatin enums, presented at the active
-  // pulp-detail level). The selection maps to {pulpDx, pulpLatin} via
-  // pulpSelectionToState — at "latin" it writes the Latin subtype AND its parent
-  // pulpDx; at "simple"/"aae" it writes pulpDx and clears pulpLatin to "none".
-  buildSelect($("#pulpSelect"), getPulpOptions(), (value)=>{
-    applyToSelected((s)=>{
-      const mapped = pulpSelectionToState(pulpDetailLevel, value);
-      s.pulpDx = mapped.pulpDx;
-      s.pulpLatin = mapped.pulpLatin;
-    });
-  });
+  }
 
   // Apical (AAE) diagnosis
   buildSelect($("#apicalDxSelect"), getApicalDxOptions(), (value)=>{
-    applyToSelected((s)=>{ s.apicalDx = value; });
+    applyToSelected((s)=>{
+      s.apicalDx = value;
+      // SP7: granuloma/cyst is a refinement of apical periodontitis only.
+      if(value !== "symptomatic-apical-periodontitis" && value !== "asymptomatic-apical-periodontitis"){
+        s.periapicalType = "none";
+      }
+    });
   });
 
   // Resection
@@ -4727,8 +4891,7 @@ function wireControls(){
   [
     { card: "#cariesSection", btn: "#btnToggleCariesCard", labelKey: "caries.title" },
     { card: "#fillingSection", btn: "#btnToggleFillingCard", labelKey: "filling.title" },
-    { card: "#endoSection", btn: "#btnToggleEndoCard", labelKey: "endo.title" },
-    { card: "#inflammationSection", btn: "#btnToggleInflammationCard", labelKey: "inflammation.title" },
+    { card: "#rootPeriodontiumSection", btn: "#btnToggleRootPeriodontiumCard", labelKey: "card.rootPeriodontium" },
   ].forEach(({card, btn, labelKey})=>{
     const cardEl = $(card);
     const btnEl = $(btn);

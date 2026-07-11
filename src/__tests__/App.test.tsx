@@ -334,9 +334,14 @@ describe('App.tsx', () => {
       expect(document.getElementById('substrateSelect')).toBeInTheDocument();
     });
 
-    it('renders endo select dropdown', () => {
+    // SP7 Task 4: #endoSelect/#pulpSelect were merged into one #pulpEndoSelect
+    // (two optgroups, populated dynamically by odontogram.ts — mocked out here,
+    // see sp7-pulp-endo-select.test.ts for the populated/behavioral coverage).
+    it('renders the merged pulp/endo select dropdown, not the old separate ones', () => {
       render(<App />);
-      expect(document.getElementById('endoSelect')).toBeInTheDocument();
+      expect(document.getElementById('pulpEndoSelect')).toBeInTheDocument();
+      expect(document.getElementById('endoSelect')).not.toBeInTheDocument();
+      expect(document.getElementById('pulpSelect')).not.toBeInTheDocument();
     });
 
     it('renders filling select dropdown', () => {

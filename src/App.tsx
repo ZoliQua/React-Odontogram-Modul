@@ -652,59 +652,53 @@ export default function App({
               <div id="fillingSubcariesSummary" className="hint hidden"></div>
             </section>
 
-            <section id="endoSection" className="card">
+            <section id="rootPeriodontiumSection" className="card">
               <div className="card-title card-title-row">
-                <span>{t("endo.title")}</span>
-                <button id="btnToggleEndoCard" className="icon-btn" title={t("actions.collapse", { label: t("endo.title") })} aria-label={t("actions.collapse", { label: t("endo.title") })}>
+                <span>{t("card.rootPeriodontium")}</span>
+                <button id="btnToggleRootPeriodontiumCard" className="icon-btn" title={t("actions.collapse", { label: t("card.rootPeriodontium") })} aria-label={t("actions.collapse", { label: t("card.rootPeriodontium") })}>
                   <span className="toggle-icon" aria-hidden="true">−</span>
                 </button>
               </div>
-              <div className="hint">{t("endo.hint")}</div>
-              <div className="row">
-                <select id="endoSelect"></select>
-              </div>
-              <div id="pulpDxRow" className="row">
-                <span>{t("pulp.dxLabel")}</span>
-                <select id="pulpSelect"></select>
-              </div>
-              <div id="apicalDxRow" className="row">
-                <span>{t("apical.dxLabel")}</span>
-                <select id="apicalDxSelect"></select>
-              </div>
-              <div id="resorptionRow" className="row">
-                <span>{t("root.resorption")}</span>
-                <select id="resorptionSelect"></select>
-              </div>
-              <div className="row inline-checks">
-                <label>
-                  <input type="checkbox" id="endoResection" />
-                  <span>{t("endo.resection")}</span>
-                </label>
-                <label>
-                  <input type="checkbox" id="parapulpalPin" />
-                  <span>{t("endo.parapulpalPin")}</span>
-                </label>
-              </div>
-            </section>
 
-            <section id="inflammationSection" className="card">
-              <div className="card-title card-title-row">
-                <span>{t("inflammation.title")}</span>
-                <button id="btnToggleInflammationCard" className="icon-btn" title={t("actions.collapse", { label: t("inflammation.title") })} aria-label={t("actions.collapse", { label: t("inflammation.title") })}>
-                  <span className="toggle-icon" aria-hidden="true">−</span>
-                </button>
+              <div id="rpRootBlock">
+                <div className="hint">{t("endo.hint")}</div>
+                <div id="pulpEndoRow" className="row">
+                  <span>{t("pulpEndo.label")}</span>
+                  <select id="pulpEndoSelect"></select>
+                </div>
+                <div id="apicalDxRow" className="row">
+                  <span>{t("apical.dxLabel")}</span>
+                  <select id="apicalDxSelect"></select>
+                </div>
+                <div id="periapicalTypeRow" className="row hidden">
+                  <span>{t("periapical.typeLabel")}</span>
+                  <select id="periapicalTypeSelect"></select>
+                </div>
+                <div id="resorptionRow" className="row">
+                  <span>{t("root.resorption")}</span>
+                  <select id="resorptionSelect"></select>
+                </div>
+                <div className="row inline-checks">
+                  <label>
+                    <input type="checkbox" id="endoResection" />
+                    <span>{t("endo.resection")}</span>
+                  </label>
+                  <label>
+                    <input type="checkbox" id="parapulpalPin" />
+                    <span>{t("endo.parapulpalPin")}</span>
+                  </label>
+                </div>
               </div>
-              <div id="mobilityRow" className="row">
-                <span>{t("inflammation.mobilityLabel")}</span>
-                <select id="mobilitySelect"></select>
-              </div>
-              <div id="modsChecks" className="check-grid"></div>
-              <div id="periapicalTypeRow" className="row hidden">
-                <span>{t("periapical.typeLabel")}</span>
-                <select id="periapicalTypeSelect"></select>
-              </div>
-              <div id="calculusRow" className="row inline-checks hidden">
-                <label><input type="checkbox" id="calculusToggle" /><span>{t("calculus.label")}</span></label>
+
+              <div id="rpPerioBlock">
+                <div id="mobilityRow" className="row">
+                  <span>{t("inflammation.mobilityLabel")}</span>
+                  <select id="mobilitySelect"></select>
+                </div>
+                <div id="modsChecks" className="check-grid"></div>
+                <div id="calculusRow" className="row inline-checks hidden">
+                  <label><input type="checkbox" id="calculusToggle" /><span>{t("calculus.label")}</span></label>
+                </div>
               </div>
             </section>
 
