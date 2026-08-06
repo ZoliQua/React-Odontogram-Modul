@@ -899,7 +899,9 @@ export function getIcdasEnabled(): boolean { return icdasEnabled; }
 // new level; state is not mutated). Mirrors the `icdasEnabled` accessor pattern.
 let pulpDetailLevel: PulpDetailLevel = "aae";
 export function setPulpDetailLevel(value: PulpDetailLevel){
-  pulpDetailLevel = (value === "simple" || value === "latin") ? value : "aae";
+  const next = (value === "simple" || value === "latin") ? value : "aae";
+  if(next === pulpDetailLevel) return;
+  pulpDetailLevel = next;
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
   // SP17 Task 1 Fix #1: pulpDiagnosisLabel() reads getPulpDetailLevel() live to
   // pick Latin vs AAE wording — the whole-mouth summary panel and every
@@ -942,7 +944,9 @@ export function getDiscolorationDetailLevel(): ToothDetailLevel { return discolo
 export type SurfaceNotation = "simple" | "full";
 let surfaceNotation: SurfaceNotation = "full";
 export function setSurfaceNotation(value: SurfaceNotation){
-  surfaceNotation = value === "simple" ? "simple" : "full";
+  const next = value === "simple" ? "simple" : "full";
+  if(next === surfaceNotation) return;
+  surfaceNotation = next;
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
   // The new notation changes the caries/filling-defect LETTERS shown in the
   // whole-mouth summary panel and every per-tooth tooltip (both resolve
@@ -7329,6 +7333,7 @@ export function getPerioViewMode(): PerioViewMode {
 
 /** Switch the perio-chart housing mode. No-op (still notifies) if unchanged. */
 export function setPerioViewMode(mode: PerioViewMode): void {
+  if(mode === perioViewMode) return;
   perioViewMode = mode;
   notifyStateChange();
 }
@@ -7384,6 +7389,7 @@ export function getPerioRowVisibility(): Record<PerioRowId, boolean> {
 
 /** Show/hide one perio-chart index row. No-op (still notifies) if unchanged. */
 export function setPerioRowVisibility(id: PerioRowId, visible: boolean): void {
+  if(perioRowVisibility[id] === visible) return;
   perioRowVisibility = { ...perioRowVisibility, [id]: visible };
   notifyStateChange();
 }
@@ -7399,6 +7405,7 @@ export function getPerioIndexNameMode(): PerioIndexNameMode {
 
 /** Switch the perio index-name display mode. No-op (still notifies) if unchanged. */
 export function setPerioIndexNameMode(mode: PerioIndexNameMode): void {
+  if(mode === perioIndexNameMode) return;
   perioIndexNameMode = mode;
   notifyStateChange();
 }
