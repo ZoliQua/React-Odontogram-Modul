@@ -58,6 +58,17 @@ describe("Fix #1: setPulpDetailLevel live-refresh", () => {
       unsub();
     }
   });
+
+  it("does NOT fire notifyStateChange when the level is already the same (idempotent)", () => {
+    let fired = false;
+    const unsub = onStateChange(() => { fired = true; });
+    try {
+      setPulpDetailLevel("aae");
+      expect(fired).toBe(false);
+    } finally {
+      unsub();
+    }
+  });
 });
 
 describe("Fix #2: crown-leakage summary line gated on restorationType crown/bridge", () => {

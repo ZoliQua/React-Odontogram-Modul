@@ -23,6 +23,7 @@ import {
   setNumberingSystem,
   getPerioIndexNameMode,
   setPerioIndexNameMode,
+  onStateChange,
 } from "../odontogram";
 import { indexName, CANONICAL_INDEX_NAMES } from "../perioIndexNames";
 
@@ -76,6 +77,17 @@ afterEach(() => {
 describe("UI-2 Task 3: indexName() helper", () => {
   it("defaults to translated mode", () => {
     expect(getPerioIndexNameMode()).toBe("translated");
+  });
+
+  it("does NOT fire notifyStateChange when the mode is already the same (idempotent)", () => {
+    let fired = false;
+    const unsub = onStateChange(() => { fired = true; });
+    try {
+      setPerioIndexNameMode("translated");
+      expect(fired).toBe(false);
+    } finally {
+      unsub();
+    }
   });
 
   it("returns the canonical string for every row in canonical mode", () => {

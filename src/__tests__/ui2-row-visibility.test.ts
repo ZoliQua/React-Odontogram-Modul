@@ -24,6 +24,7 @@ import {
   setNumberingSystem,
   getPerioRowVisibility,
   setPerioRowVisibility,
+  onStateChange,
   type PerioRowId,
 } from "../odontogram";
 
@@ -70,6 +71,17 @@ describe("UI-2 Task 2: default visibility (all true)", () => {
   it("getPerioRowVisibility() defaults every id to true", () => {
     const visibility = getPerioRowVisibility();
     for (const id of ALL_ROW_IDS) expect(visibility[id], id).toBe(true);
+  });
+
+  it("does NOT fire notifyStateChange when the visibility is already the same (idempotent)", () => {
+    let fired = false;
+    const unsub = onStateChange(() => { fired = true; });
+    try {
+      setPerioRowVisibility("pi", true);
+      expect(fired).toBe(false);
+    } finally {
+      unsub();
+    }
   });
 
   it("every index row label is present", () => {

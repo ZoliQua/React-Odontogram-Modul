@@ -259,6 +259,17 @@ describe("setSurfaceNotation live-refreshes the whole-mouth summary + tooltips (
     }
   });
 
+  it("does NOT fire notifyStateChange when the notation is already the same (idempotent)", () => {
+    let fired = false;
+    const unsub = onStateChange(() => { fired = true; });
+    try {
+      setSurfaceNotation("full");
+      expect(fired).toBe(false);
+    } finally {
+      unsub();
+    }
+  });
+
   it("getOdontogramSummary()'s fillings line recomputes from \"I\" to \"O\" after toggling to simple", () => {
     expect(getSurfaceNotation()).toBe("full");
     const fillingsSection = (s: ReturnType<typeof getOdontogramSummary>) =>
