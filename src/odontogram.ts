@@ -889,6 +889,29 @@ let suppressEdentulousSync = false;
 let numberingSystem: NumberingSystem = "FDI";
 let readOnly = false;
 let notesEnabled = false;
+/** UI-4: per-card collapse state — a plain Record mapping card id to its
+ *  collapsed (true) / expanded (false) status. Keys mirror the btnToggle*
+ *  button ids sans the "btnToggle" prefix, lowercased: controls, status,
+ *  caries, filling, rootPeriodontium. Persisted in the payload under
+ *  `ui.collapsedCards` so the panel layout survives export/import cycles.
+ *  Non-serialized session flags (pulpDetailLevel, surfaceNotation, etc.)
+ *  remain unaffected — this is purely about which sections are open. */
+const VALID_CARD_IDS = new Set(["controls", "status", "caries", "filling", "rootPeriodontium"]);
+let collapsedCards: Record<string, boolean> = {};
+export function getCollapsedCards(): Record<string, boolean> { return { ...collapsedCards }; }
+export function isCardCollapsed(id: string): boolean {
+  return VALID_CARD_IDS.has(id) ? !!collapsedCards[id] : false;
+}
+export function setCollapsedCard(id: string, collapsed: boolean): void {
+  if(!VALID_CARD_IDS.has(id)) return;
+  collapsedCards[id] = !!collapsed;
+  notifyStateChange();
+}
+export function toggleCollapsedCard(id: string): void {
+  if(!VALID_CARD_IDS.has(id)) return;
+  collapsedCards[id] = !collapsedCards[id];
+  notifyStateChange();
+}
 let icdasEnabled = false;
 export function setIcdasEnabled(value: boolean){ icdasEnabled = !!value; if(activeTooth) syncControlsFromState(toothState.get(activeTooth)); }
 export function getIcdasEnabled(): boolean { return icdasEnabled; }
@@ -1249,11 +1272,21 @@ const CARD_TOGGLE_LABELS: Record<string, string> = {
 // Delegated handler for all card collapse toggles. Attached once to `document`
 // so it survives React StrictMode double-mount and async init timing — per-button
 // listeners wired in wireControls() proved unreliable under those conditions.
+const BTN_TO_CARD_ID: Record<string, string> = {
+  btnToggleControlsCard: "controls",
+  btnToggleStatusCard: "status",
+  btnToggleCariesCard: "caries",
+  btnToggleFillingCard: "filling",
+  btnToggleRootPeriodontiumCard: "rootPeriodontium",
+};
+
 function onCardToggleClick(e: Any){
   const target = e.target as Any;
   const btn = target?.closest?.(".icon-btn");
   if(!btn) return;
   const icon = btn.querySelector(".toggle-icon");
+  const cardId = BTN_TO_CARD_ID[btn.id];
+  if(!cardId) return; // not a recognised toggle button
   // Controls card collapses its actions container (uses `.hidden`), not the card.
   if(btn.id === "btnToggleControlsCard"){
     const actions = document.querySelector("#controlsActions");
@@ -1261,6 +1294,7 @@ function onCardToggleClick(e: Any){
     const hidden = actions.classList.toggle("hidden");
     applyToggleA11y(btn, "panel.controls", hidden);
     if(icon) icon.textContent = hidden ? "+" : "−";
+    collapsedCards.controls = hidden;
     return;
   }
   const labelKey = CARD_TOGGLE_LABELS[btn.id];
@@ -1270,6 +1304,8 @@ function onCardToggleClick(e: Any){
   const collapsed = card.classList.toggle("collapsed");
   applyToggleA11y(btn, labelKey, collapsed);
   if(icon) icon.textContent = collapsed ? "+" : "−";
+  collapsedCards[cardId] = collapsed;
+  notifyStateChange();
 }
 
 // Delegated handler for the global `setX(!current)` visibility toggles. A stable
@@ -2881,6 +2917,7 @@ export function __resetChartStateForTest(): void {
   chartMode = "status";
   toothState = charts.status;
   resetCaseMeta();
+  collapsedCards = {};
 }
 
 /** TEST-ONLY (DS-1 Task 2 seam): set the active tooth (and lazily vivify its
@@ -5965,6 +6002,61 @@ function collectGlobals(){
   };
 }
 
+/** UI-4: collect the UI layout state (card collapse settings) for the export
+ *  payload. Omitted entirely when every card is in its default (expanded)
+ *  state, so a no-collapse export stays byte-identical apart from the version
+ *  bump and the cosmetic `ui` key is absent from untouched cases. */
+function collectUiState(){
+  const nonDefault = Object.keys(collapsedCards).filter(id => collapsedCards[id]);
+  if(nonDefault.length === 0) return undefined;
+  return { collapsedCards: { ...collapsedCards } };
+}
+
+function applyCollapsedCardDom(id: string, collapsed: boolean): void {
+  const BTN_TO_DOM: Record<string, { containerId: string; isControls: boolean }> = {
+    controls: { containerId: "controlsActions", isControls: true },
+    status: { containerId: "statusCard", isControls: false },
+    caries: { containerId: "cariesSection", isControls: false },
+    filling: { containerId: "fillingSection", isControls: false },
+    rootPeriodontium: { containerId: "rootPeriodontiumSection", isControls: false },
+  };
+  const cfg = BTN_TO_DOM[id];
+  if(!cfg) return;
+  const btnId = "btnToggle" + id.charAt(0).toUpperCase() + id.slice(1) + "Card";
+  const el = document.getElementById(cfg.containerId);
+  const btn = document.getElementById(btnId);
+  if(!el || !btn) return;
+  if(cfg.isControls){
+    const wasHidden = el.classList.contains("hidden");
+    if(wasHidden !== collapsed){
+      el.classList.toggle("hidden", collapsed);
+      const icon = btn.querySelector(".toggle-icon");
+      if(icon) icon.textContent = collapsed ? "+" : "−";
+      applyToggleA11y(btn, "panel.controls", collapsed);
+    }
+  }else{
+    const wasCollapsed = el.classList.contains("collapsed");
+    if(wasCollapsed !== collapsed){
+      el.classList.toggle("collapsed", collapsed);
+      const icon = btn.querySelector(".toggle-icon");
+      if(icon) icon.textContent = collapsed ? "+" : "−";
+      const labelKey = CARD_TOGGLE_LABELS[btnId] ?? "";
+      applyToggleA11y(btn, labelKey, collapsed);
+    }
+  }
+}
+
+/** UI-4: restore the UI layout state from the hydrated payload. */
+function hydrateUiState(ui: Any): void {
+  collapsedCards = {};
+  if(!ui || typeof ui !== "object") return;
+  if(ui.collapsedCards && typeof ui.collapsedCards === "object"){
+    for(const id of Object.keys(ui.collapsedCards)){
+      if(VALID_CARD_IDS.has(id)) collapsedCards[id] = !!ui.collapsedCards[id];
+    }
+  }
+}
+
 /**
  * R2-A Task 2 (D3, RATIFIED): export/import stay STATUS-PRIMARY — `teeth`
  * is always built from `charts.status` explicitly (NOT the active-chart
@@ -5979,11 +6071,13 @@ function collectExportPayload(){
   const statusTeeth = collectTeeth(charts.status);
   const planTeeth = planInitialized ? collectTeeth(charts.plan) : null;
   const planDiffers = planTeeth !== null && JSON.stringify(planTeeth) !== JSON.stringify(statusTeeth);
+  const uiState = collectUiState();
   return {
-    version: "2.20",
+    version: "2.21",
     globals: collectGlobals(),
     teeth: statusTeeth,
     ...(caseMetaIsEmpty(caseMeta) ? {} : { case: serializeCaseMeta(caseMeta) }),
+    ...(uiState ? { ui: uiState } : {}),
     ...(planDiffers ? { plan: planTeeth } : {}),
   };
 }
@@ -6009,11 +6103,13 @@ export function getStatusChart(): Any {
  * `globals` are shared app-level settings, not owned by either chart.
  */
 export function getPlanChart(): Any {
+  const uiState = collectUiState();
   return {
-    version: "2.20",
+    version: "2.21",
     globals: collectGlobals(),
     teeth: collectTeeth(charts.plan),
     ...(caseMetaIsEmpty(caseMeta) ? {} : { case: serializeCaseMeta(caseMeta) }),
+    ...(uiState ? { ui: uiState } : {}),
   };
 }
 
@@ -7934,6 +8030,8 @@ function hydrateImportedCharts(data: Any): void {
   // `applyFn` was captured against the PRE-import state; a later
   // acceptDualStateConfirm() must never run it against freshly-hydrated charts.
   pendingDualStateConfirm = null;
+  // UI-4: restore the UI layout state (card collapse settings) from the payload.
+  hydrateUiState(data.ui);
 }
 
 /**
@@ -7982,6 +8080,10 @@ export function importStatus(data: Any){
       edentulous = data.globals.edentulous;
       setToggleButton($("#btnEdentulous"), edentulous);
     }
+  }
+  // UI-4: restore collapsed/expanded card state to the DOM after import.
+  for(const id of Object.keys(collapsedCards)){
+    applyCollapsedCardDom(id, collapsedCards[id]);
   }
   updateSelectionFilterButtons();
   updateSelectionUI();

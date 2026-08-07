@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2] - 2026-08-06
+
+### Added
+
+- **Collapsible card state persisted in the odontogram payload.** Five cards
+  (Controls, Statuses, Caries/Fillings/Root/Periodontium) now track their
+  collapsed/expanded state in the odontogram module state and the serialized
+  export payload under a new `ui.collapsedCards` key. New public API:
+  `getCollapsedCards()`, `isCardCollapsed(id)`, `setCollapsedCard(id, collapsed)`,
+  and `toggleCollapsedCard(id)` — allowing the host app to programmatically
+  collapse or expand panels and restore the user's UI layout on import. Payload
+  version **2.20 → 2.21** (additive, omit-when-empty).
+
 ## [2.2.1] - 2026-08-06
 
 ### Added
