@@ -27,7 +27,7 @@ import {
 } from "./bridgeOverlay";
 import { derivePerioClassification, type PerioClassification, type PerioDerivationInput, type ToothDerivationInput } from "./perioClassification";
 import { buildPerioSvg } from "./perioExport";
-import { assemblePdf, type PdfExportOptions, type PdfAssembleData, type PdfDocLike } from "./perioPdf";
+import { assemblePdf, PDF_PALETTES, DEFAULT_PDF_THEME, type PdfExportOptions, type PdfAssembleData, type PdfDocLike, type PdfColorTheme } from "./perioPdf";
 // Tooth-template SVGs are imported with Vite's `?raw` suffix so their markup is
 // INLINED into the JS bundle as string literals at build time — no runtime
 // `fetch()` of an emitted asset URL. This is what makes the built library
@@ -671,7 +671,7 @@ function cloneChart(src: Map<Any, Any>, dst: Map<Any, Any>): void {
 // plan (keeping the two charts in sync until the user deliberately plans that
 // tooth). Cleared whenever the plan is (re)initialized, reset, or replaced by
 // an import — a fresh plan carries no plan-edits.
-let planEditedTeeth = new Set<number>();
+const planEditedTeeth = new Set<number>();
 
 /** Deep-copy tooth `toothNo`'s STATUS state into the PLAN chart via the proven
  *  serializeState -> hydrateState round-trip (fresh Maps/Sets, no shared refs —
@@ -1121,20 +1121,6 @@ let archMode: "both" | "upper" | "lower" = "both";
 let archToggleBar: HTMLElement | null = null;
 
 // ---- UI builders ----
-function buildRadios(container: Any, name: Any, options: Any, onChange: Any){
-  container.innerHTML = "";
-  for(const opt of options){
-    const id = `${name}-${opt.value}`;
-    const label = el("label", {}, [
-      el("input", { type:"radio", name, id, value:opt.value }),
-      el("span", { text: opt.label })
-    ]);
-    const input = label.querySelector("input") as HTMLInputElement;
-    input.addEventListener("change", (e)=>onChange((e.target as HTMLInputElement).value));
-    container.appendChild(label);
-  }
-}
-
 function buildChecks(container: Any, items: Any, onToggle: Any){
   container.innerHTML = "";
   for(const it of items){
@@ -3257,7 +3243,6 @@ function updateToothLabelNoteIcon(toothNo: number){
 // ---- State validation ----
 function getStateWarnings(state: Any): string[]{
   const warnings: string[] = [];
-  const isPresent = isToothPresent(state.toothSelection);
   const isNone = state.toothSelection === "none";
   const isImplant = state.toothSelection === "implant";
 
@@ -4119,18 +4104,6 @@ function syncControlsFromState(state: Any){
 }
 
 // ---- Event handlers ----
-function applyAndSync(toothNo: Any){
-  applyStateToSvg(toothNo);
-  updateToothTileNumber(toothNo);
-  if(toothNo === activeTooth){
-    syncControlsFromState(toothState.get(toothNo));
-  }
-  if(edentulous && !suppressEdentulousSync){
-    setEdentulous(false);
-  }
-  updateSelectionFilterButtons();
-}
-
 function applyToSelected(fn: Any){
   if(selectedTeeth.size === 0) return;
   // DS-1: route the whole selection edit through the batch gate — in plan mode
@@ -5373,7 +5346,6 @@ export const VALID_DISCOLORATION = validValues("discoloration");
 export const VALID_ORTHO_APPLIANCE = validValues("orthoAppliance");
 export const VALID_ORTHO_DRIFT = validValues("orthoDrift");
 export const VALID_ORTHO_VERTICAL = validValues("orthoVertical");
-const VALID_CARIES_DEPTH = new Set(["surface","dentin","deep"]);
 export const VALID_FILLING_SURFACES = validSurfaces();
 // SP5/SP6: caries fields. `rootCaries` is a registered axis, so it reads from
 // AXES like every other enum. `cariesSeverity` (unified 0..6 visual severity)
@@ -7291,6 +7263,20 @@ export function isToothImplant(toothNo: number): boolean {
   return toothState.get(toothNo)?.toothSelection === "implant";
 }
 
+/** Round 2 (perio missing/milktooth sync): the perio-chart artwork kind for a
+ *  tooth, read from the ACTIVE chart so the perio graphic tracks the odontogram.
+ *  A missing tooth (`none`) or an extraction socket renders no crown; a milk
+ *  tooth uses the deciduous artwork; an implant uses the fixture body. Injected
+ *  into the arch builders (`buildBuccalArchSvg`/`buildPalatalArchSvg`) by both
+ *  `PerioChart` (UI) and `buildPerioSvg` (PDF), so the two stay in sync. */
+export function getPerioToothKind(toothNo: number): "missing" | "milktooth" | "implant" | "normal" {
+  const sel = toothState.get(toothNo)?.toothSelection;
+  if(sel === "implant") return "implant";
+  if(sel === "milktooth") return "milktooth";
+  if(sel === "none" || sel === "no-tooth-after-extraction") return "missing";
+  return "normal";
+}
+
 /** Read tooth `toothNo`'s Miller mobility grade from the active chart
  *  ("none" for a never-touched tooth, matching {@link defaultState}). */
 export function getToothMobility(toothNo: number): string {
@@ -7596,9 +7582,36 @@ export function namespaceIds(root: Element, prefix: string){
  * `<svg>` at its laid-out position; tooth number labels are emitted as `<text>`.
  * Returns null if the grid is not present.
  */
-export function buildOdontogramSvg(): { xml: string; width: number; height: number } | null {
+export function buildOdontogramSvg(opts: { labelFontScale?: number; packFactor?: number } = {}): { xml: string; width: number; height: number } | null {
   const grid = document.querySelector("#toothGrid, .tooth-grid") as HTMLElement | null;
   if(!grid) return null;
+  // In the Periodontal Status view the whole `.chart-column` carries an inline
+  // `display:none` (App.tsx), so the grid + every tooth SVG measure 0×0 and the
+  // export comes out blank. Temporarily clear the inline display on any hidden
+  // ancestor (reverting to its stylesheet display) so getBoundingClientRect
+  // returns real geometry, then restore. This whole function is synchronous —
+  // reading a rect forces layout but never a paint — so there is no visible
+  // flash on screen.
+  const displayRestores: Array<() => void> = [];
+  for(let el: HTMLElement | null = grid; el; el = el.parentElement){
+    if(el.style.display === "none"){
+      const target = el;
+      const prev = target.style.display;
+      target.style.display = "";
+      displayRestores.push(() => { target.style.display = prev; });
+    }
+  }
+  try{
+    return buildOdontogramSvgMeasured(grid, opts);
+  }finally{
+    for(const restore of displayRestores) restore();
+  }
+}
+
+/** The measurement + serialization body of {@link buildOdontogramSvg}, split
+ *  out so the caller can wrap it in a temporary un-hide/restore of any
+ *  `display:none` ancestor (see there). */
+function buildOdontogramSvgMeasured(grid: HTMLElement, opts: { labelFontScale?: number; packFactor?: number } = {}): { xml: string; width: number; height: number } | null {
   const gridRect = grid.getBoundingClientRect();
   const W = Math.max(1, Math.round(gridRect.width));
   const H = Math.max(1, Math.round(gridRect.height));
@@ -7615,6 +7628,14 @@ export function buildOdontogramSvg(): { xml: string; width: number; height: numb
   bg.setAttribute("fill", "#ffffff");
   out.appendChild(bg);
 
+  // 2.2.3 (round 2): PDF tooth-spacing — pack the tiles horizontally toward the
+  // start (each x-position * packFactor) while keeping their WIDTH, so the teeth
+  // move closer / overlap and the whole chart narrows → it scales up bigger to
+  // fill the PDF page width. packFactor 1 (default, and PNG/SVG exports) is a
+  // no-op. `packedRight` tracks the compressed content width for the viewBox.
+  const pack = opts.packFactor ?? 1;
+  let packedRight = 0;
+
   // Tooth SVGs, positioned by their rendered box.
   let tileIndex = 0;
   grid.querySelectorAll(".tooth-svg > svg").forEach((svgEl) => {
@@ -7624,7 +7645,9 @@ export function buildOdontogramSvg(): { xml: string; width: number; height: numb
     pruneHiddenClone(svgEl, clone);
     namespaceIds(clone, `t${tileIndex++}-`);
     const wrap = document.createElementNS(SVG_NS, "svg");
-    wrap.setAttribute("x", String(r.left - gridRect.left));
+    const px = (r.left - gridRect.left) * pack;
+    packedRight = Math.max(packedRight, px + r.width);
+    wrap.setAttribute("x", String(px));
     wrap.setAttribute("y", String(r.top - gridRect.top));
     wrap.setAttribute("width", String(r.width));
     wrap.setAttribute("height", String(r.height));
@@ -7644,7 +7667,9 @@ export function buildOdontogramSvg(): { xml: string; width: number; height: numb
   if(bridgeSpans.length){
     const rectFor = (toothNo: number) => tileRectFor(grid, gridRect, toothNo);
     const bars = computeBridgeBars(bridgeSpans, bridgeStateFor, rectFor, defaultMaterialColor);
-    for(const bar of bars) out.appendChild(barRect(bar));
+    // Pack bridge bars with the teeth (x + width * packFactor) so connectors
+    // stay aligned to the compressed columns.
+    for(const bar of bars) out.appendChild(barRect(pack === 1 ? bar : { ...bar, x: bar.x * pack, width: bar.width * pack }));
   }
 
   // Tooth number labels as text.
@@ -7655,20 +7680,34 @@ export function buildOdontogramSvg(): { xml: string; width: number; height: numb
     if(r.width === 0 || r.height === 0) return;
     const cs = window.getComputedStyle(cell);
     const txt = document.createElementNS(SVG_NS, "text");
-    txt.setAttribute("x", String(r.left - gridRect.left + r.width / 2));
+    const lx = (r.left - gridRect.left) * pack + r.width / 2;
+    packedRight = Math.max(packedRight, lx + r.width / 2);
+    txt.setAttribute("x", String(lx));
     txt.setAttribute("y", String(r.top - gridRect.top + r.height / 2));
     txt.setAttribute("text-anchor", "middle");
     txt.setAttribute("dominant-baseline", "central");
     txt.setAttribute("font-family", cs.fontFamily);
-    txt.setAttribute("font-size", cs.fontSize);
+    // 2.2.3: PDF tooth-number size — scale the emitted label font (PDF-only;
+    // default scale 1 leaves PNG/SVG exports unchanged).
+    const baseFs = parseFloat(cs.fontSize) || 12;
+    txt.setAttribute("font-size", `${baseFs * (opts.labelFontScale ?? 1)}px`);
     txt.setAttribute("font-weight", cs.fontWeight);
     txt.setAttribute("fill", cs.color);
     txt.textContent = text;
     out.appendChild(txt);
   });
 
+  // When packed (packFactor < 1), tighten the output viewBox/background to the
+  // compressed content width so the narrower chart scales up in the PDF.
+  const outW = pack < 1 ? Math.max(1, Math.ceil(packedRight)) : W;
+  if(outW !== W){
+    out.setAttribute("width", String(outW));
+    out.setAttribute("viewBox", `0 0 ${outW} ${H}`);
+    bg.setAttribute("width", String(outW));
+  }
+
   const xml = new XMLSerializer().serializeToString(out);
-  return { xml: `<?xml version="1.0" encoding="UTF-8"?>\n${xml}`, width: W, height: H };
+  return { xml: `<?xml version="1.0" encoding="UTF-8"?>\n${xml}`, width: outW, height: H };
 }
 
 /** Export the odontogram as a downloadable, scalable SVG file. */
@@ -7810,6 +7849,215 @@ export async function exportPerioImage(format: "png" | "jpg" = "png"): Promise<v
   }finally{ hideExportOverlay(); exportInProgress = false; }
 }
 
+// ---------------------------------------------------------------------------
+// 2.2.3: PDF export settings (session-only app-level state — like
+// perioViewMode; NOT part of the export payload). Drives the PDF report's
+// defaults, formatting and colour theme. The Settings modal's "PDF Settings"
+// tab reads/writes these; `exportPdf` applies them.
+// ---------------------------------------------------------------------------
+export type PdfDateFormat = "iso" | "dmy" | "mdy";
+export type PdfToothSpacing = "wide" | "medium" | "close";
+export type PdfBorderThickness = "thin" | "medium" | "thick";
+export type PdfToothNumberSize = "small" | "normal" | "xlarge";
+export type PdfPerioLabelPlacement = "center" | "edge";
+export type PdfPerioFontSize = "small" | "normal" | "xlarge";
+export type PdfSummaryGrouping = "whole" | "jaw" | "quadrant" | "sextant";
+export interface PdfSettings {
+  // --- General ---
+  /** Placeholder patient name when the case has none (default "John Doe"). */
+  defaultName: string;
+  /** Placeholder DOB (ISO `YYYY-MM-DD`) when the case has none. */
+  defaultDob: string;
+  /** Show the patient's age (in parentheses) after the DOB. */
+  showAge: boolean;
+  /** Date order for DOB / exam date / generation timestamp. */
+  dateFormat: PdfDateFormat;
+  /** Report colour theme. */
+  colorTheme: PdfColorTheme;
+  // --- Odontogram (2.2.3 Stage B) — applied to the PDF only ---
+  /** Show the bone/gum base layer on the dental chart. */
+  showBone: boolean;
+  /** Show the healthy-pulp layer on the dental chart. */
+  showHealthyPulp: boolean;
+  /** How close the teeth sit — closer spacing yields a taller chart image. */
+  toothSpacing: PdfToothSpacing;
+  /** Draw a frame around the dental-chart image. */
+  border: boolean;
+  borderThickness: PdfBorderThickness;
+  /** Frame colour (CSS hex, default black). */
+  borderColor: string;
+  /** Tooth-number label size. */
+  toothNumberSize: PdfToothNumberSize;
+  /** Include the whole-mouth prose description of the chart. */
+  includeOdontogramText: boolean;
+  /** Include the tabular findings/prosthetic summary. */
+  includeOdontogramTable: boolean;
+  // --- Periodontal chart (2.2.3 Stage C) — applied to the PDF only ---
+  /** Perio-chart tooth spacing (closer → taller chart image). */
+  perioToothSpacing: PdfToothSpacing;
+  /** Show numeric rows that have no charted value anywhere. */
+  perioShowEmptyRows: boolean;
+  /** Buccal / Lingual-Palatal band-label placement. */
+  perioLabelPlacement: PdfPerioLabelPlacement;
+  /** Perio-chart row/label font size. */
+  perioFontSize: PdfPerioFontSize;
+  /** Include the periodontal metrics + classification table. */
+  includePerioTable: boolean;
+  /** Include the abbreviation glossary. */
+  includePerioAbbrev: boolean;
+  // --- Footer (2.2.3 Stage D) ---
+  /** Show the medical disclaimer at the bottom of the report. */
+  showDisclaimer: boolean;
+  /** Custom disclaimer text; empty = use the localized default. Editable only
+   *  while `showDisclaimer` is on. */
+  disclaimerText: string;
+  /** Show the generation / version / attribution stamp. */
+  showGenerator: boolean;
+  // --- Summary (2.2.3 round 2) ---
+  /** How the dentition overview table is grouped (also drives the on-screen
+   *  Tooth-information panel table). */
+  summaryGrouping: PdfSummaryGrouping;
+}
+const VALID_PDF_DATE_FORMAT = new Set<PdfDateFormat>(["iso", "dmy", "mdy"]);
+const VALID_PDF_TOOTH_SPACING = new Set<PdfToothSpacing>(["wide", "medium", "close"]);
+const VALID_PDF_BORDER_THICKNESS = new Set<PdfBorderThickness>(["thin", "medium", "thick"]);
+const VALID_PDF_TOOTH_NUMBER_SIZE = new Set<PdfToothNumberSize>(["small", "normal", "xlarge"]);
+const VALID_PDF_PERIO_PLACEMENT = new Set<PdfPerioLabelPlacement>(["center", "edge"]);
+const VALID_PDF_PERIO_FONT_SIZE = new Set<PdfPerioFontSize>(["small", "normal", "xlarge"]);
+const VALID_PDF_SUMMARY_GROUPING = new Set<PdfSummaryGrouping>(["whole", "jaw", "quadrant", "sextant"]);
+const HEX_COLOR = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+const pdfSettings: PdfSettings = {
+  defaultName: "John Doe",
+  defaultDob: "1980-01-01",
+  showAge: true,
+  dateFormat: "iso",
+  colorTheme: DEFAULT_PDF_THEME,
+  showBone: true,
+  showHealthyPulp: true,
+  toothSpacing: "medium",
+  border: false,
+  borderThickness: "medium",
+  borderColor: "#000000",
+  toothNumberSize: "normal",
+  includeOdontogramText: true,
+  includeOdontogramTable: true,
+  perioToothSpacing: "medium",
+  perioShowEmptyRows: false,
+  perioLabelPlacement: "center",
+  perioFontSize: "normal",
+  includePerioTable: true,
+  includePerioAbbrev: true,
+  showDisclaimer: true,
+  disclaimerText: "",
+  showGenerator: true,
+  summaryGrouping: "jaw",
+};
+export function getPdfSettings(): PdfSettings { return { ...pdfSettings }; }
+export function setPdfSettings(patch: Partial<PdfSettings>): void {
+  let changed = false;
+  const setStr = (k: "defaultName" | "defaultDob" | "disclaimerText") => { if(typeof patch[k] === "string" && patch[k] !== pdfSettings[k]){ pdfSettings[k] = patch[k] as string; changed = true; } };
+  const setBool = (k: "showAge" | "showBone" | "showHealthyPulp" | "border" | "includeOdontogramText" | "includeOdontogramTable" | "perioShowEmptyRows" | "includePerioTable" | "includePerioAbbrev" | "showDisclaimer" | "showGenerator") => { if(typeof patch[k] === "boolean" && patch[k] !== pdfSettings[k]){ pdfSettings[k] = patch[k] as boolean; changed = true; } };
+  setStr("defaultName"); setStr("defaultDob"); setStr("disclaimerText");
+  setBool("showAge"); setBool("showBone"); setBool("showHealthyPulp"); setBool("border"); setBool("includeOdontogramText"); setBool("includeOdontogramTable");
+  setBool("perioShowEmptyRows"); setBool("includePerioTable"); setBool("includePerioAbbrev");
+  setBool("showDisclaimer"); setBool("showGenerator");
+  if(patch.dateFormat && VALID_PDF_DATE_FORMAT.has(patch.dateFormat) && patch.dateFormat !== pdfSettings.dateFormat){ pdfSettings.dateFormat = patch.dateFormat; changed = true; }
+  if(patch.colorTheme && (patch.colorTheme in PDF_PALETTES) && patch.colorTheme !== pdfSettings.colorTheme){ pdfSettings.colorTheme = patch.colorTheme; changed = true; }
+  if(patch.toothSpacing && VALID_PDF_TOOTH_SPACING.has(patch.toothSpacing) && patch.toothSpacing !== pdfSettings.toothSpacing){ pdfSettings.toothSpacing = patch.toothSpacing; changed = true; }
+  if(patch.borderThickness && VALID_PDF_BORDER_THICKNESS.has(patch.borderThickness) && patch.borderThickness !== pdfSettings.borderThickness){ pdfSettings.borderThickness = patch.borderThickness; changed = true; }
+  if(patch.toothNumberSize && VALID_PDF_TOOTH_NUMBER_SIZE.has(patch.toothNumberSize) && patch.toothNumberSize !== pdfSettings.toothNumberSize){ pdfSettings.toothNumberSize = patch.toothNumberSize; changed = true; }
+  if(typeof patch.borderColor === "string" && HEX_COLOR.test(patch.borderColor) && patch.borderColor !== pdfSettings.borderColor){ pdfSettings.borderColor = patch.borderColor; changed = true; }
+  if(patch.perioToothSpacing && VALID_PDF_TOOTH_SPACING.has(patch.perioToothSpacing) && patch.perioToothSpacing !== pdfSettings.perioToothSpacing){ pdfSettings.perioToothSpacing = patch.perioToothSpacing; changed = true; }
+  if(patch.perioLabelPlacement && VALID_PDF_PERIO_PLACEMENT.has(patch.perioLabelPlacement) && patch.perioLabelPlacement !== pdfSettings.perioLabelPlacement){ pdfSettings.perioLabelPlacement = patch.perioLabelPlacement; changed = true; }
+  if(patch.perioFontSize && VALID_PDF_PERIO_FONT_SIZE.has(patch.perioFontSize) && patch.perioFontSize !== pdfSettings.perioFontSize){ pdfSettings.perioFontSize = patch.perioFontSize; changed = true; }
+  if(patch.summaryGrouping && VALID_PDF_SUMMARY_GROUPING.has(patch.summaryGrouping) && patch.summaryGrouping !== pdfSettings.summaryGrouping){ pdfSettings.summaryGrouping = patch.summaryGrouping; changed = true; }
+  if(changed) notifyStateChange();
+}
+
+/** Reorder an ISO `YYYY-MM-DD` per the PDF date-format setting. Non-ISO input
+ *  (e.g. already-empty) is returned unchanged. */
+function formatPdfDate(iso: string, fmt: PdfDateFormat): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if(!m) return iso;
+  const [, y, mo, d] = m;
+  if(fmt === "dmy") return `${d}-${mo}-${y}`;
+  if(fmt === "mdy") return `${mo}-${d}-${y}`;
+  return `${y}-${mo}-${d}`;
+}
+/** Whole-years age from two ISO dates (birth → reference). `null` if malformed. */
+function computeAge(dobIso: string, refIso: string): number | null {
+  const d = dobIso.split("-").map(Number);
+  const r = refIso.split("-").map(Number);
+  if(d.length !== 3 || r.length !== 3 || [...d, ...r].some((n) => !Number.isFinite(n))) return null;
+  let age = r[0] - d[0];
+  if(r[1] < d[1] || (r[1] === d[1] && r[2] < d[2])) age--;
+  return age >= 0 && age <= 200 ? age : null;
+}
+
+// 2.2.3 Stage B: odontogram PDF-setting → concrete value maps.
+// 2.2.3 (round 2): odontogram tooth-spacing → horizontal pack factor (1 = as
+// laid out; <1 packs teeth closer / overlapping so the chart scales up bigger).
+// Round 2: the old "wide" (pack 1 = no packing) was dropped; every option is
+// now tighter. New "wide" = the old "medium", new "medium" (the DEFAULT) = the
+// old "close", and a brand-new, even tighter "close" packs the teeth further.
+const ODONTO_PACK: Record<PdfToothSpacing, number> = { wide: 0.85, medium: 0.72, close: 0.6 };
+const TOOTH_NUMBER_SCALE: Record<PdfToothNumberSize, number> = { small: 1.5, normal: 2, xlarge: 2.6 };
+const PDF_BORDER_WIDTH_MM: Record<PdfBorderThickness, number> = { thin: 0.3, medium: 0.7, thick: 1.2 };
+// 2.2.3 Stage C: perio-chart font size → {row font, row height} + tooth spacing → gap.
+// 2.2.3 (round 2): 3 sizes, shifted up — the former "extra large" is the new
+// default "normal"; "small" is one step down, "xlarge" one step up.
+const PERIO_FONT_SIZE: Record<PdfPerioFontSize, { fontSize: number; rowHeight: number }> = {
+  small: { fontSize: 10, rowHeight: 16 }, normal: { fontSize: 13, rowHeight: 21 }, xlarge: { fontSize: 16, rowHeight: 26 },
+};
+// 2.2.3 (round 2): more aggressive so the 3 levels are clearly distinct —
+// "close" overlaps the teeth, shrinking the chart width so it scales up taller.
+// Round 2 FIX: inter-tooth gap (svg user units) applied to BOTH the arch artwork
+// and the numeric-row columns (one shared geometry now — see perioExport's
+// appendArchGraphic). Values stay ≥ ~0 so the per-tooth M/D/B/L surface letters
+// (spread across each ~40-unit tooth) of adjacent teeth never overlap; the
+// narrower total width scales the whole width-fit chart up proportionally.
+const PERIO_SPACING_GAP: Record<PdfToothSpacing, number> = { wide: 8, medium: 2, close: -2 };
+/**
+ * Round 2: build the ADDITIONAL perio abbreviation-glossary entries for the PDF
+ * report — one per perio axis/code ACTUALLY charted somewhere in the mouth, so a
+ * report only explains the abbreviations it actually shows. The base
+ * PD/GM/CAL/BOP/ICDAS/CARS come from the static `pdf.footer.legend`; this adds
+ * the graded/coded indices (PI/GI/mPI/mBI/KG/GT/CEJ/root-concavity/furcation/
+ * Miller/mobility). All descriptions reuse existing i18n keys (the `perio.info.*`
+ * full names + the enum-value labels for coded faces), so no new i18n is needed.
+ */
+function buildPerioAbbreviations(): { term: string; desc: string }[] {
+  const sum = getPerioSummary();
+  const anyTooth = (fn: (n: number) => boolean) => ALL_TEETH.some(fn);
+  const out: { term: string; desc: string }[] = [];
+  const gt = sum.gtDistribution, ml = sum.millerDistribution;
+  if(sum.plaquePercent > 0) out.push({ term: "Plaque", desc: t("perio.info.plaque") });
+  if(sum.piScore !== null) out.push({ term: "PI", desc: t("perio.info.pi") });
+  if(sum.giScore !== null) out.push({ term: "GI", desc: t("perio.info.gi") });
+  if(sum.mpiScore !== null) out.push({ term: "mPI", desc: t("perio.info.mpi") });
+  if(sum.mbiScore !== null) out.push({ term: "mBI", desc: t("perio.info.mbi") });
+  if(anyTooth((n) => getKeratinizedWidth(n) !== null)) out.push({ term: "KG", desc: t("perio.info.kg") });
+  if(gt.thin + gt.medium + gt.thick > 0){
+    out.push({ term: "GT (Tn/Md/Tk)", desc: `${t("perio.info.gt")} — Tn: ${t("perio.gt.thin")}, Md: ${t("perio.gt.medium")}, Tk: ${t("perio.gt.thick")}` });
+  }
+  if(anyTooth((n) => getCejVisibility(n) !== "none")){
+    out.push({ term: "CEJ (D/ND)", desc: `${t("perio.info.cej")} — D: ${t("perio.cej.detectable")}, ND: ${t("perio.cej.notDetectable")}` });
+  }
+  if(anyTooth((n) => getRootConcavity(n) !== "none")){
+    out.push({ term: "Mi / Dp", desc: `${t("perio.info.rootConcavity")} — Mi: ${t("perio.rootConcavity.mild")}, Dp: ${t("perio.rootConcavity.deep")}` });
+  }
+  if(sum.maxFurcation !== null) out.push({ term: "Furcation (I–IV)", desc: t("perio.info.furcation") });
+  if(ml.i + ml.ii + ml.iii + ml.iv > 0) out.push({ term: "Miller (I–IV)", desc: t("perio.info.miller") });
+  if(anyTooth((n) => getToothMobility(n) !== "none")) out.push({ term: "Mobility (1–3)", desc: t("perio.info.mobility") });
+  return out;
+}
+
+/** Test seam for {@link buildPerioAbbreviations} (the fn is module-private; the
+ *  real caller `exportPdf` can't run under jsdom — jsPDF needs canvas). */
+export function __buildPerioAbbreviationsForTest(): { term: string; desc: string }[] {
+  return buildPerioAbbreviations();
+}
+
 /**
  * UI-3b Task 6: assemble a printable PDF report (jsPDF-native — vector text
  * + raster chart PNGs, no svg2pdf.js). Gathers all `data` (SVG→PNG
@@ -7831,8 +8079,26 @@ export async function exportPdf(opts: PdfExportOptions): Promise<void> {
   showExportOverlay();
   setExportProgress(10, "export.progress.preparing");
   try{
-    const odontoBuilt = opts.odontogramChart ? buildOdontogramSvg() : null;
-    if(opts.odontogramChart && !odontoBuilt) throw new Error("Odontogram grid not found");
+    const settings = getPdfSettings();
+    // 2.2.3 Stage B: apply the PDF-only odontogram settings to the live chart
+    // (bone/pulp layer flags + tooth spacing) under the export overlay, build,
+    // then restore — the on-screen chart is unchanged once export completes.
+    let odontoBuilt: { xml: string; width: number; height: number } | null = null;
+    if(opts.odontogramChart){
+      const prevBase = showBase, prevPulp = showHealthyPulp;
+      if(settings.showBone !== showBase) setShowBase(settings.showBone);
+      if(settings.showHealthyPulp !== showHealthyPulp) setHealthyPulpVisible(settings.showHealthyPulp);
+      try{
+        odontoBuilt = buildOdontogramSvg({
+          labelFontScale: TOOTH_NUMBER_SCALE[settings.toothNumberSize],
+          packFactor: ODONTO_PACK[settings.toothSpacing],
+        });
+      }finally{
+        if(showBase !== prevBase) setShowBase(prevBase);
+        if(showHealthyPulp !== prevPulp) setHealthyPulpVisible(prevPulp);
+      }
+      if(!odontoBuilt) throw new Error("Odontogram grid not found");
+    }
     setExportProgress(30, "export.progress.rendering");
     const odontogramPng = odontoBuilt
       ? await rasterizeSvgToPng(odontoBuilt.xml, odontoBuilt.width, odontoBuilt.height)
@@ -7844,7 +8110,14 @@ export async function exportPdf(opts: PdfExportOptions): Promise<void> {
     let perioImageSize: { width: number; height: number } | undefined;
     if(perioNeeded){
       setExportProgress(50, "export.progress.rendering");
-      const perioBuilt = await buildPerioSvg();
+      const pf = PERIO_FONT_SIZE[settings.perioFontSize];
+      const perioBuilt = await buildPerioSvg({
+        fontSize: pf.fontSize,
+        rowHeight: pf.rowHeight,
+        toothGap: PERIO_SPACING_GAP[settings.perioToothSpacing],
+        showEmptyRows: settings.perioShowEmptyRows,
+        labelPlacement: settings.perioLabelPlacement,
+      });
       if(!perioBuilt) throw new Error("Perio chart could not be built");
       perioPng = await rasterizeSvgToPng(perioBuilt.xml, perioBuilt.width, perioBuilt.height);
       perioImageSize = { width: perioBuilt.width, height: perioBuilt.height };
@@ -7853,60 +8126,155 @@ export async function exportPdf(opts: PdfExportOptions): Promise<void> {
 
     const odontoSummary = getOdontogramSummary();
     const perioSum = getPerioSummary();
+
+    // 2.2.2: dental-chart caption (overview + tooth lists) + findings table
+    // (non-empty per-axis sections + implants). 2.2.3 Stage B: the prose text
+    // and the findings table are independently toggleable — an empty string /
+    // empty array makes the assembler skip that part.
+    // Round 2: the flat "permanent teeth (n): …" / "teeth marked missing (n): …"
+    // lists were replaced by the grouped dentition table below — keep only the
+    // one-sentence overview as the caption so they aren't duplicated.
+    const odontogramCaption = settings.includeOdontogramText ? odontoSummary.overview : "";
+    const odontogramFindings: { label: string; value: string }[] = [];
+    if(settings.includeOdontogramTable){
+      for(const section of odontoSummary.sections){
+        if(section.items.length) odontogramFindings.push({ label: section.heading, value: section.items.join(", ") });
+      }
+      // Round 2: implants are already listed in the grouped dentition table's
+      // "Implants" column, so they are no longer duplicated as a findings row.
+      // 2.2.3 #1: surface the odontogram-markable periodontal findings
+      // (inflammation, mobility, calculus, …) here when there is no dedicated
+      // perio section (no perio module charted) — otherwise they'd be invisible.
+      if(!hasPerio && odontoSummary.periodontalHasFindings){
+        odontogramFindings.push({ label: odontoSummary.periodontalTitle, value: odontoSummary.periodontalText });
+      }
+    }
+
+    // Per-tooth notes as {tooth, note} rows (summary items are "<tooth>: <note>").
+    const individualNotes = (odontoSummary.individualNotes?.items ?? []).map((s) => {
+      const idx = s.indexOf(": ");
+      return idx > 0 ? { label: s.slice(0, idx), value: s.slice(idx + 2) } : { label: "", value: s };
+    });
+
+    // 2.2.2: periodontal metrics + 2017 classification as table rows (labels +
+    // values localized via the SAME i18n keys the on-screen panel / perio export
+    // use, so the report honors the active language).
     const worstCalText = perioSum.worstCal === null
       ? "–"
       : `${perioSum.worstCal}${perioSum.worstCalTooth !== null ? ` (${formatToothLabel(perioSum.worstCalTooth)})` : ""}`;
-    const perioSummaryText = [
-      `${t("perio.bopPercent")}: ${perioSum.bopPercent}%`,
-      `${t("perio.summary.worstCal")}: ${worstCalText}`,
-      `${t("perio.summary.maxPd")}: ${perioSum.maxPd === null ? "–" : perioSum.maxPd}`,
-      `${odontoSummary.periodontalTitle}: ${odontoSummary.periodontalText}`,
-    ].join("\n");
+    const cls = getPerioClassification();
+    const dxLabel = (v: string) => t(`perio.class.dx.${v}`);
+    const stageLabel = (v: string) =>
+      v === "na" ? t("perio.class.stage.na") : v === "indeterminate" ? t("perio.class.stage.indeterminate") : t(`perio.class.stage.${v}`);
+    const gradeLabel = (v: string) =>
+      v === "indeterminate" ? t("perio.class.grade.indeterminate") : t(`perio.class.grade.${v}`);
+    const extentLabel = (v: string) =>
+      v === "na" ? t("perio.class.extent.na") : v === "molar-incisor" ? t("perio.class.extent.molarIncisor") : t(`perio.class.extent.${v}`);
+    // 2.2.3 Stage C: the perio metrics/classification table + abbreviation
+    // glossary are each independently toggleable (empty → assembler skips it).
+    const perioMetrics = settings.includePerioTable ? [
+      { label: t("perio.bopPercent"), value: `${perioSum.bopPercent}%` },
+      { label: t("perio.summary.worstCal"), value: worstCalText },
+      { label: t("perio.summary.maxPd"), value: perioSum.maxPd === null ? "–" : String(perioSum.maxPd) },
+      { label: t("perio.class.diagnosis"), value: dxLabel(cls.diagnosis) },
+      { label: t("perio.class.stage"), value: stageLabel(cls.stage) },
+      { label: t("perio.class.grade"), value: gradeLabel(cls.grade) },
+      { label: t("perio.class.extent"), value: extentLabel(cls.extent) },
+    ] : [];
+
+    // Abbreviation glossary parsed from the localized legend ("TERM – desc; …").
+    const abbreviations = settings.includePerioAbbrev ? [
+      ...t("pdf.footer.legend")
+        .split(";")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((part) => {
+          const m = part.split(/\s[–-]\s/);
+          return m.length >= 2 ? { term: m[0].trim(), desc: m.slice(1).join(" – ").trim() } : { term: "", desc: part };
+        }),
+      // Round 2: append every ADDITIONAL perio abbreviation/code actually charted
+      // in this case (PI/GI/KG/GT/CEJ/root-concavity/furcation/Miller/mobility/
+      // mPI/mBI) — the base PD/GM/CAL/BOP/ICDAS/CARS come from the legend above.
+      ...buildPerioAbbreviations(),
+    ] : [];
+
+    // 2.2.3: apply the PDF settings — placeholder name/DOB, age toggle, date
+    // format, colour theme (`settings` captured above, before the chart build).
+    const palette = PDF_PALETTES[settings.colorTheme];
+    const cm = getCaseMeta();
+    const now = new Date();
+    const pad2 = (n: number) => String(n).padStart(2, "0");
+    const todayIsoStr = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
+    const nameVal = (cm.patientName && cm.patientName.trim() !== "") ? cm.patientName : settings.defaultName;
+    const dobIso = cm.patientDob ?? settings.defaultDob;
+    const examIso = cm.examDate ?? todayIsoStr;
+    const dobDisp = formatPdfDate(dobIso, settings.dateFormat);
+    const age = computeAge(dobIso, examIso);
+    const patient = [
+      { label: t("pdf.field.patientName"), value: nameVal },
+      { label: t("pdf.field.patientDob"), value: (settings.showAge && age !== null) ? `${dobDisp} (${age})` : dobDisp },
+      { label: t("pdf.field.examDate"), value: formatPdfDate(examIso, settings.dateFormat) },
+    ];
+
+    // 2.2.2/2.2.3: document title + end-of-document footer (disclaimer +
+    // generation timestamp / app version / attribution). __APP_VERSION__ is
+    // injected from package.json at build time (see the vite/vitest `define`).
+    const genStamp = `${formatPdfDate(todayIsoStr, settings.dateFormat)} ${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+    // 2.2.3 Stage D: disclaimer (toggle + optional custom text; empty custom =
+    // localized default) and generator/attribution (toggle) are independently
+    // shown; an empty string makes the assembler skip that footer part.
+    const footer = {
+      disclaimer: settings.showDisclaimer ? (settings.disclaimerText.trim() || t("pdf.disclaimer")) : "",
+      generated: settings.showGenerator ? t("pdf.generatedWith", { date: genStamp, app: "React Advanced Odontogram", version: __APP_VERSION__ }) : "",
+      repoUrl: settings.showGenerator ? "https://github.com/ZoliQua/React-Odontogram-Modul" : "",
+      doi: settings.showGenerator ? "https://doi.org/10.5281/zenodo.21156787" : "",
+    };
 
     const data: PdfAssembleData = {
       hasPerio,
-      caseMeta: getCaseMeta(),
+      reportTitle: t("pdf.reportTitle"),
+      footer,
+      palette,
+      patient,
       odontogramPng,
-      odontogramSummaryText: buildOdontogramProseText(odontoSummary),
-      individualNotesText: odontoSummary.individualNotes
-        ? odontoSummary.individualNotes.items.join("\n")
-        : "",
+      odontogramCaption,
+      toothTable: settings.includeOdontogramTable ? odontoSummary.toothTable : null,
+      odontogramFindings,
+      individualNotes,
       odontogramImageSize: odontoBuilt ? { width: odontoBuilt.width, height: odontoBuilt.height } : undefined,
+      // Round 2: the border colour is no longer user-configurable — it always
+      // uses the active theme's accent (palette.header) so it matches the report.
+      odontogramBorder: (settings.border && opts.odontogramChart)
+        ? { widthMm: PDF_BORDER_WIDTH_MM[settings.borderThickness], color: palette.header }
+        : null,
       perioPng,
-      perioSummaryText,
+      perioMetrics,
       perioImageSize,
+      abbreviations,
     };
 
     // Lazy-load jsPDF only when a PDF is actually exported, so it (and its
     // html2canvas/dompurify deps) stays out of consumers' main bundle.
     const { jsPDF } = await import("jspdf");
-    assemblePdf(opts, data, () => new jsPDF() as unknown as PdfDocLike);
+    // Round 2 (phase 2): load the Unicode font for the active language (Latin/
+    // Cyrillic, Arabic, or CJK) — dynamically imported so only the needed font
+    // enters the export, and registered on each created doc. `shapeText` applies
+    // Arabic joining/bidi; identity for the others.
+    const { loadPdfFont } = await import("./fonts/loader");
+    const pdfFont = await loadPdfFont(getI18nLanguage());
+    data.fontFamily = pdfFont.family;
+    data.shapeText = pdfFont.transform;
+    assemblePdf(opts, data, () => {
+      const d = new jsPDF() as unknown as PdfDocLike;
+      pdfFont.register(d);
+      return d;
+    });
     setExportProgress(100, "export.progress.done");
     await new Promise((r) => window.setTimeout(r, 300));
   }finally{
     hideExportOverlay();
     exportInProgress = false;
   }
-}
-
-/**
- * UI-3b Task 6: multi-paragraph prose built from {@link getOdontogramSummary}
- * for the PDF odontogram section — overview sentence, permanent/missing
- * tooth lists, implants, and every non-empty per-axis section (caries,
- * fillings, endo, ...), each on its own line. Kept internal to `exportPdf`'s
- * data-gathering (not part of the public summary API) since it's just a
- * PDF-specific flattening of fields `OdontogramSummary` already exposes
- * structurally.
- */
-function buildOdontogramProseText(summary: OdontogramSummary): string {
-  const parts: string[] = [summary.overview];
-  if(summary.permanentList) parts.push(summary.permanentList);
-  if(summary.missingList) parts.push(summary.missingList);
-  if(summary.implants) parts.push(`${summary.implants.heading}: ${summary.implants.text}`);
-  for(const section of summary.sections){
-    if(section.items.length) parts.push(`${section.heading}: ${section.items.join("; ")}`);
-  }
-  return parts.join("\n");
 }
 
 export function exportStatus(){
@@ -9218,11 +9586,34 @@ export type OdontogramSummarySection = {
   emptyText: string;
 };
 
+/** 2.2.3 (round 2): per-tooth status in the grouped dentition table — `empty`
+ *  (nothing charted), `content` (has some finding/treatment — shown bold/accent),
+ *  `problem` (caries / root inflammation / diagnosis / wear / discoloration —
+ *  shown bold-italic in a warning colour). */
+export type ToothTableStatus = "empty" | "content" | "problem";
+export interface ToothTableCell { toothNo: number; label: string; status: ToothTableStatus; }
+/** A grouped dentition overview: category columns (only non-empty ones) ×
+ *  anatomical group rows (whole mouth / jaw / quadrant / sextant), each cell a
+ *  list of that group's teeth of that category, tagged with a status. */
+export interface OdontogramToothTable {
+  columns: { key: string; label: string }[];
+  rows: { key: string; label: string; cells: Record<string, ToothTableCell[]> }[];
+  /** Localized note explaining the bold / bold-italic emphasis. */
+  legend: string;
+}
+
 /** Structured, already-localized textual summary of the whole odontogram. */
 export type OdontogramSummary = {
   overview: string;
   permanentList: string | null;
   missingList: string | null;
+  /** 2.2.3 (round 2): grouped dentition table (replaces the flat permanent/
+   *  missing lists in the panel + PDF; the lists stay for back-compat). */
+  toothTable: OdontogramToothTable;
+  /** 2.2.3 (round 2): true when any odontogram-markable periodontal finding
+   *  (inflammation, mobility, calculus, …) exists — drives showing the perio
+   *  summary line in the PDF's odontogram section even with no perio module. */
+  periodontalHasFindings: boolean;
   sections: OdontogramSummarySection[];
   /** Implants heading + list — only present when at least one implant exists. */
   implants: { heading: string; text: string } | null;
@@ -9282,8 +9673,101 @@ export function formatToothLabel(toothNo: number): string {
  * system. Intended for the optional "tooth information" panel; call
  * {@link onStateChange} to refresh it on edits.
  */
+// 2.2.3 (round 2): per-tooth status for the grouped dentition table.
+// PROBLEM = caries / root inflammation / any diagnosis / wear / discoloration.
+function toothTableHasProblem(s: Any): boolean {
+  return !!(
+    (s.caries && s.caries.size > 0) ||
+    (s.rootCaries && s.rootCaries !== "none") ||
+    (s.pulpDx && s.pulpDx !== "normal") ||
+    (s.apicalDx && s.apicalDx !== "normal") ||
+    (s.periapicalType && s.periapicalType !== "none") ||
+    (s.resorptionType && s.resorptionType !== "none") ||
+    (s.mods && typeof s.mods.has === "function" && s.mods.has("inflammation")) ||
+    (s.periImplant && s.periImplant !== "none") ||
+    (s.mobility && s.mobility !== "none") ||
+    (s.wearEdge && s.wearEdge !== "none") ||
+    (s.wearCervical && s.wearCervical !== "none") ||
+    (s.discoloration && s.discoloration !== "none")
+  );
+}
+// CONTENT = any problem OR any treatment/finding (restoration, prosthesis,
+// filling, endo, calculus, planned crown/extraction, ortho, non-natural substrate).
+function toothTableHasContent(s: Any): boolean {
+  return toothTableHasProblem(s) || !!(
+    (s.restorationType && s.restorationType !== "none") ||
+    (s.prosthesis && s.prosthesis !== "none") ||
+    (s.fillingSurfaceMaterials && s.fillingSurfaceMaterials.size > 0) ||
+    (s.fillingMaterial && s.fillingMaterial !== "none") ||
+    (s.endo && s.endo !== "none") ||
+    s.calculus || s.crownNeeded || s.crownReplace || s.extractionPlan || s.orthoRotation ||
+    (s.orthoAppliance && s.orthoAppliance !== "none") ||
+    (s.orthoDrift && s.orthoDrift !== "none") ||
+    (s.orthoVertical && s.orthoVertical !== "none") ||
+    (s.toothSubstrate && s.toothSubstrate !== "natural")
+  );
+}
+function toothTableStatus(s: Any): ToothTableStatus {
+  return toothTableHasProblem(s) ? "problem" : toothTableHasContent(s) ? "content" : "empty";
+}
+function toothTableCategory(sel: string): string {
+  return sel === "none" ? "missing" : sel === "implant" ? "implant" : sel === "milktooth" ? "primary" : "permanent";
+}
+function toothTableGroupKey(toothNo: number, grouping: PdfSummaryGrouping): string {
+  const q = Math.floor(toothNo / 10);
+  const p = toothNo % 10;
+  if(grouping === "whole") return "whole";
+  if(grouping === "jaw") return (q === 1 || q === 2) ? "upper" : "lower";
+  if(grouping === "quadrant") return `q${q}`;
+  const posterior = p >= 4; // premolars + molars
+  if(q === 1) return posterior ? "s_ur" : "s_ua";
+  if(q === 2) return posterior ? "s_ul" : "s_ua";
+  if(q === 4) return posterior ? "s_lr" : "s_la";
+  return posterior ? "s_ll" : "s_la"; // q === 3
+}
+const TOOTH_TABLE_GROUPS: Record<PdfSummaryGrouping, { key: string; labelKey: string }[]> = {
+  whole: [{ key: "whole", labelKey: "summary.group.wholeMouth" }],
+  jaw: [
+    { key: "upper", labelKey: "summary.group.upperJaw" },
+    { key: "lower", labelKey: "summary.group.lowerJaw" },
+  ],
+  quadrant: [
+    { key: "q1", labelKey: "summary.group.upperRight" },
+    { key: "q2", labelKey: "summary.group.upperLeft" },
+    { key: "q3", labelKey: "summary.group.lowerLeft" },
+    { key: "q4", labelKey: "summary.group.lowerRight" },
+  ],
+  sextant: [
+    { key: "s_ur", labelKey: "summary.group.upperRightPost" },
+    { key: "s_ua", labelKey: "summary.group.upperAnterior" },
+    { key: "s_ul", labelKey: "summary.group.upperLeftPost" },
+    { key: "s_lr", labelKey: "summary.group.lowerRightPost" },
+    { key: "s_la", labelKey: "summary.group.lowerAnterior" },
+    { key: "s_ll", labelKey: "summary.group.lowerLeftPost" },
+  ],
+};
+const TOOTH_TABLE_CATEGORIES = ["primary", "permanent", "implant", "missing"];
+function buildToothTable(
+  perTooth: { toothNo: number; category: string; status: ToothTableStatus }[],
+  grouping: PdfSummaryGrouping,
+): OdontogramToothTable {
+  const used = new Set(perTooth.map(pt => pt.category));
+  const columns = TOOTH_TABLE_CATEGORIES.filter(c => used.has(c)).map(c => ({ key: c, label: t(`summary.col.${c}`) }));
+  const rows = TOOTH_TABLE_GROUPS[grouping].map(g => {
+    const cells: Record<string, ToothTableCell[]> = {};
+    for(const col of columns) cells[col.key] = [];
+    for(const pt of perTooth){
+      if(toothTableGroupKey(pt.toothNo, grouping) !== g.key) continue;
+      (cells[pt.category] ??= []).push({ toothNo: pt.toothNo, label: formatToothLabel(pt.toothNo), status: pt.status });
+    }
+    return { key: g.key, label: t(g.labelKey), cells };
+  }).filter(row => columns.some(c => (row.cells[c.key] ?? []).length > 0));
+  return { columns, rows, legend: t("summary.legend") };
+}
+
 export function getOdontogramSummary(): OdontogramSummary {
   const lbl = formatToothLabel;
+  const perTooth: { toothNo: number; category: string; status: ToothTableStatus }[] = [];
 
   const permanent: number[] = [];
   const missing: number[] = [];
@@ -9315,6 +9799,8 @@ export function getOdontogramSummary(): OdontogramSummary {
     else if(isImplant) implants.push(toothNo);
     else if(isMilk) milkCount++;
     else permanent.push(toothNo);
+    // 2.2.3 (round 2): per-tooth category + status for the grouped table.
+    perTooth.push({ toothNo, category: toothTableCategory(sel), status: toothTableStatus(s) });
 
     // Caries (primary vs. secondary). SP6 Task 1: a surface is RECURRENT
     // (secondary) caries when it also carries a filling — recurrence is DERIVED
@@ -9540,6 +10026,8 @@ export function getOdontogramSummary(): OdontogramSummary {
     overview,
     permanentList,
     missingList,
+    toothTable: buildToothTable(perTooth, getPdfSettings().summaryGrouping),
+    periodontalHasFindings: inflamed.length > 0,
     sections,
     implants: implantInfo,
     periodontalTitle: t("toothInfo.periodontalTitle"),

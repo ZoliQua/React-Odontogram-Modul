@@ -33,9 +33,6 @@ function openGrid() {
   return render(createElement(PerioChart, { open: true, onClose: () => {} }));
 }
 
-function grid(): HTMLElement {
-  return document.getElementById("perioOverlayGrid") as HTMLElement;
-}
 
 beforeEach(() => {
   cleanup();

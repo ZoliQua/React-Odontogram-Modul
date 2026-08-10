@@ -27,7 +27,6 @@ import App, { PerioChart } from "../App";
 import {
   getPerioViewMode,
   setPerioViewMode,
-  openPerioOverlay,
   closePerioOverlay,
   isPerioOverlayOpen,
 } from "../odontogram";
@@ -85,7 +84,7 @@ vi.mock("../odontogram", async () => {
     exportPdf: vi.fn().mockResolvedValue(undefined),
     getOdontogramSummary: vi.fn().mockReturnValue({
       overview: "", permanentList: null, missingList: null,
-      sections: [], implants: null, periodontalTitle: "", periodontalText: "",
+      sections: [], implants: null, toothTable: { columns: [], rows: [], legend: "" }, periodontalHasFindings: false, periodontalTitle: "", periodontalText: "",
     }),
     exportFhir: vi.fn(),
     exportImage: vi.fn(),
@@ -102,6 +101,8 @@ vi.mock("../odontogram", async () => {
     setPerioRowVisibility: actual.setPerioRowVisibility,
     getPerioIndexNameMode: actual.getPerioIndexNameMode,
     setPerioIndexNameMode: actual.setPerioIndexNameMode,
+    getPdfSettings: actual.getPdfSettings,
+    setPdfSettings: actual.setPdfSettings,
     // PG-B Task 2: PerioChart now reads/sets the overlay-layer flag — forward
     // the real implementations so its switcher/overlay effects work here.
     getPerioOverlayLayer: actual.getPerioOverlayLayer,

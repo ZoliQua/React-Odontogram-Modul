@@ -2,8 +2,8 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { useEffect, useRef, useState } from "react";
-import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, formatToothLabel, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, setSurfaceNotation, getSurfaceNotation, exportFhir, exportImage, exportSvg, setImportFormat, openPerioOverlay, closePerioOverlay, isPerioOverlayOpen, getPerioViewMode, setPerioViewMode, getPerioRowVisibility, setPerioRowVisibility, getPerioIndexNameMode, setPerioIndexNameMode, isDualStateConfirmPending, acceptDualStateConfirm, cancelDualStateConfirm, hasAnyPerioData, getChartMode, setChartMode, getStatusChart, getPlanChart, setPlanChart, getPlanChanges, exportStatus, importStatus, exportPdf, exportPerioImage, exportPerioSvg } from "./odontogram";
-export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, formatToothLabel, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, setSurfaceNotation, getSurfaceNotation, exportFhir, exportImage, exportSvg, setImportFormat, getPerioViewMode, setPerioViewMode, getPerioRowVisibility, setPerioRowVisibility, getPerioIndexNameMode, setPerioIndexNameMode, isDualStateConfirmPending, acceptDualStateConfirm, cancelDualStateConfirm, initOdontogram, destroyOdontogram, setNumberingSystem, getChartMode, setChartMode, getStatusChart, getPlanChart, setPlanChart, getPlanChanges, openPerioOverlay, closePerioOverlay, isPerioOverlayOpen, hasAnyPerioData, exportStatus, importStatus, exportPdf, exportPerioImage, exportPerioSvg };
+import { destroyOdontogram, initOdontogram, setNumberingSystem, clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, formatToothLabel, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, setSurfaceNotation, getSurfaceNotation, exportFhir, exportImage, exportSvg, setImportFormat, openPerioOverlay, closePerioOverlay, isPerioOverlayOpen, getPerioViewMode, setPerioViewMode, getPerioRowVisibility, setPerioRowVisibility, getPerioIndexNameMode, setPerioIndexNameMode, getPdfSettings, setPdfSettings, isDualStateConfirmPending, acceptDualStateConfirm, cancelDualStateConfirm, hasAnyPerioData, getChartMode, setChartMode, getStatusChart, getPlanChart, setPlanChart, getPlanChanges, exportStatus, importStatus, exportPdf, exportPerioImage, exportPerioSvg } from "./odontogram";
+export { clearSelection, setOcclusalVisible, setWisdomVisible, setShowBase, setHealthyPulpVisible, registerPlugins, setPluginState, getPluginState, getToothStateSummary, getOdontogramSummary, formatToothLabel, onStateChange, setReadOnly, getReadOnly, setNotesEnabled, getNotesEnabled, setIcdasEnabled, getIcdasEnabled, setPulpDetailLevel, getPulpDetailLevel, setSecondaryCariesMode, getSecondaryCariesMode, setRootCariesMode, getRootCariesMode, setRadiographicDepthMode, getRadiographicDepthMode, setCariesDepthEnabled, getCariesDepthEnabled, setWearDetailLevel, getWearDetailLevel, setDiscolorationDetailLevel, getDiscolorationDetailLevel, setSurfaceNotation, getSurfaceNotation, exportFhir, exportImage, exportSvg, setImportFormat, getPerioViewMode, setPerioViewMode, getPerioRowVisibility, setPerioRowVisibility, getPerioIndexNameMode, setPerioIndexNameMode, getPdfSettings, setPdfSettings, isDualStateConfirmPending, acceptDualStateConfirm, cancelDualStateConfirm, initOdontogram, destroyOdontogram, setNumberingSystem, getChartMode, setChartMode, getStatusChart, getPlanChart, setPlanChart, getPlanChanges, openPerioOverlay, closePerioOverlay, isPerioOverlayOpen, hasAnyPerioData, exportStatus, importStatus, exportPdf, exportPerioImage, exportPerioSvg };
 export { default as PerioChart } from "./PerioChart";
 import type { OdontogramSummary, PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode, ToothDetailLevel, SurfaceNotation, PerioViewMode, PerioRowId, PerioIndexNameMode } from "./odontogram";
 export type { PulpDetailLevel, SecondaryCariesMode, RootCariesMode, RadiographicDepthMode, ToothDetailLevel, SurfaceNotation, PerioViewMode, PerioRowId, PerioIndexNameMode } from "./odontogram";
@@ -33,6 +33,10 @@ import iconGumSvg from "./assets/icon-svgs/icon_gum.svg?raw";
 import iconNoSelectionUrl from "./assets/icon-svgs/icon_no_selection.svg";
 import iconOcclSvg from "./assets/icon-svgs/icon_occl.svg?raw";
 import iconPulpSvg from "./assets/icon-svgs/icon_pulp.svg?raw";
+// Brand logo — `?inline` forces a base64 data URI so it is bundled into the
+// library (self-contained, no runtime asset fetch), same guarantee as the
+// ?raw-inlined SVGs above.
+import brandLogoUrl from "./assets/react-module-logo.png?inline";
 
 // Task 4 (Arabic+Chinese sub-project): languages whose native reading
 // direction is right-to-left. Only Arabic today; Chinese (zh) is LTR.
@@ -269,6 +273,8 @@ export default function App({
   const [perioIndexNameMode, setPerioIndexNameModeState] = useState<PerioIndexNameMode>(
     () => getPerioIndexNameMode(),
   );
+  // 2.2.3: PDF export settings mirror (session-only module state).
+  const [pdfSettings, setPdfSettingsState] = useState(() => getPdfSettings());
   // UI-1 Task 1: whether the perio (Dental Chart) view is the one currently
   // showing — ONLY true in toggle-mode dentalChart; popup mode never gates
   // the shared right panel this way (the popup itself renders <PerioSidebar/>
@@ -510,13 +516,15 @@ export default function App({
     onPerioRowVisibility: (id, v) => setPerioRowVisibility(id, v),
     perioIndexNameMode,
     onPerioIndexNameMode: (v) => setPerioIndexNameMode(v),
+    pdfSettings,
+    onPdfSettings: (patch) => { setPdfSettings(patch); setPdfSettingsState(getPdfSettings()); },
   };
 
   return (
     <div ref={themeRootRef} className="odontogram-root" dir={isRtl(lang) ? "rtl" : "ltr"} lang={lang}>
       <header className="topbar">
         <div className="brand">
-          <div className="dot"></div>
+          <img className="brand-logo" src={brandLogoUrl} alt="" aria-hidden="true" />
           <div>
             <div className="title">{t("app.title")}</div>
             <div className="subtitle">{`${t("app.subtitleLang")} ${t("app.subtitleNumbering." + currentNumbering)} ${t(isDark ? "app.subtitleMode.dark" : "app.subtitleMode.light")}`}</div>
@@ -697,8 +705,45 @@ export default function App({
           <section className="tooth-info card" aria-label={t("toothInfo.title")}>
             <div className="card-title">{t("toothInfo.title")}</div>
             <p className="tooth-info-overview">{summary.overview}</p>
-            {summary.permanentList && <p className="tooth-info-list">{summary.permanentList}</p>}
-            {summary.missingList && <p className="tooth-info-list">{summary.missingList}</p>}
+            {/* 2.2.3 (round 2): the grouped dentition table replaces the flat
+                permanent/missing lists — one column per tooth category, one row
+                per anatomical group (whole mouth / jaw / quadrant / sextant per
+                the PDF summary-grouping setting). Tooth numbers are coloured by
+                status (blue = has content, red+italic = has a problem). */}
+            {summary.toothTable.rows.length > 0 && (
+              <div className="tooth-info-table-wrap">
+                <table className="tooth-info-table">
+                  <thead>
+                    <tr>
+                      <th aria-hidden="true"></th>
+                      {summary.toothTable.columns.map((c) => (
+                        <th key={c.key} scope="col">{c.label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {summary.toothTable.rows.map((row) => (
+                      <tr key={row.key}>
+                        <th scope="row">{row.label}</th>
+                        {summary.toothTable.columns.map((c) => {
+                          const cells = row.cells[c.key] ?? [];
+                          return (
+                            <td key={c.key}>
+                              {cells.map((cell, i) => (
+                                <span key={cell.toothNo} className={`tooth-cell tooth-cell-${cell.status}`}>
+                                  {cell.label}{i < cells.length - 1 ? ", " : ""}
+                                </span>
+                              ))}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="tooth-info-table-legend">{summary.toothTable.legend}</p>
+              </div>
+            )}
             {summary.individualNotes && (
               <div id="toothInfoNotes" className="tooth-info-notes">
                 <span className="tooth-info-heading">{summary.individualNotes.heading}:</span>

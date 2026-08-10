@@ -16,6 +16,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `getCollapsedCards()`, `isCardCollapsed(id)`, `setCollapsedCard(id, collapsed)`,
   and `toggleCollapsedCard(id)`.
 
+## [2.3.0] - 2026-08-09
+
+### Added
+
+- **Multilingual PDF fonts.** The PDF report now embeds a bundled Unicode font
+  so text renders correctly in every UI language instead of the built-in
+  WinAnsi Helvetica (which garbled Hungarian `ő`/`ű` and could not draw
+  Cyrillic/Arabic/CJK). A Roboto subset (Latin + Latin Extended-A + Cyrillic)
+  covers `hu, en, de, es, it, sk, pl, ru, pt-br, fr`; Arabic (`ar`, Noto Naskh
+  Arabic + a contextual-joining/bidi shaper, since jsPDF applies no OpenType
+  shaping) and Simplified Chinese (`zh`, Noto Sans SC subset) are each
+  lazy-loaded on demand. All fonts are bundled (offline, never fetched) and
+  code-split so they stay out of the main bundle and load only for the language
+  actually exported.
+- **Grouped dentition summary table.** The whole-mouth Tooth-information panel
+  and the PDF report replace the flat "permanent/missing teeth" lists with a
+  table: one column per category (primary / permanent / implants / missing,
+  non-empty only), one row per anatomical group, tooth numbers coloured by
+  status — bold blue = has content, bold-italic red = has a problem — with an
+  explanatory legend. A new PDF setting controls the grouping (whole mouth /
+  jaw / quadrant / sextant).
+- **PDF Settings tab** (General / Odontogram / Periodontal / Footer): colour
+  theme, tooth spacing, chart border + thickness, tooth-number and perio font
+  sizes, empty-row toggle, dentition-summary grouping, medical disclaimer and
+  generator/attribution stamp.
+- **PDF report polish.** Document title, medical/tabular section styling
+  (Patient data, Dental chart, Diagnostics and findings, Periodontal
+  description), computed patient age, and an end-of-document footer with
+  disclaimer, generation/version stamp, and GitHub/DOI links.
+- **Dynamic perio abbreviation glossary** in the PDF: only the codes/indices
+  actually charted in the case are listed (PI, GI, mPI, mBI, KG, GT, CEJ, root
+  concavity, furcation, Miller, mobility), in addition to the base PD/GM/CAL/BOP.
+- **Odontogram-markable periodontal findings always summarised.** Inflammation
+  and mobility now always appear in the odontogram summary/description (and the
+  PDF) even when no periodontal module is charted.
+- **Brand logo** in the component header.
+
+### Changed
+
+- **PDF tooth spacing.** Odontogram spacing options were re-scaled (the old
+  "wide" was dropped; the default is now the tighter "medium", with a new,
+  closer "close"). The periodontal chart's tooth spacing now packs the arch
+  artwork with the same geometry as the number rows.
+- **Chart border colour** is now theme-driven (the colour picker was removed);
+  border thickness is disabled when the border toggle is off.
+- **Findings layout.** Per-axis findings (caries, endo, diagnoses, wear, …) get
+  their own titled "Diagnostics and findings" section; implants are shown only
+  in the dentition table (no longer duplicated as a findings row); the flat
+  permanent/missing prose lists were removed in favour of the table.
+- **"Show empty rows"** (perio PDF) now defaults to off.
+
+### Fixed
+
+- **Periodontal chart now stays in sync with the odontogram.** A tooth marked
+  missing (or an extraction socket) draws no crown in the perio chart (its
+  column is kept so the number rows stay aligned), and a primary tooth renders
+  the deciduous artwork — on screen and in the PDF export.
+- **Periodontal "tooth spacing" no longer distorts the chart.** The arch
+  artwork previously ignored the spacing setting while the number rows re-spaced,
+  drifting teeth, curves and labels out of alignment; both now share one geometry.
+- **First-column overflow** in the dentition summary table (long group labels no
+  longer overlap the first data column — the label column is wider and wraps).
+- **Classification no longer duplicated** in the perio chart image (it lives only
+  in the "Periodontal description" table).
+
+### Chore
+
+- **ESLint is usable again.** The flat config now ignores `dist/`, `docs/`,
+  `coverage/` and build metadata (previously it linted the build output,
+  producing thousands of spurious errors). Dead code and unused imports were
+  removed, intentional `_`-prefixed args are allowed, and `no-explicit-any` is a
+  warning (the engine deliberately uses `any` at DOM/SVG boundaries).
+
 ## [2.2.1] - 2026-08-06
 
 ### Added

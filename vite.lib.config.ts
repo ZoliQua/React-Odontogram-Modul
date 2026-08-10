@@ -13,6 +13,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 import path from 'path'
+import { readFileSync } from 'fs'
+
+const pkgVersion = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8')).version
 
 export default defineConfig({
   plugins: [
@@ -29,6 +32,9 @@ export default defineConfig({
       exclude: ['src/main.tsx', 'src/**/__tests__/**', 'src/**/*.test.ts', 'src/**/*.test.tsx'],
     }),
   ],
+  define: {
+    __APP_VERSION__: JSON.stringify(pkgVersion),
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

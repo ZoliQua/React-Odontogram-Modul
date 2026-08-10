@@ -102,6 +102,16 @@ export const IMPLANT_CEJ_Y: Record<TemplateNo, number> = {
   16: 34.3,
 };
 
+/** Per-template baseline anchor for a MILKTOOTH (deciduous) rendering — the
+ *  `#milktooth-base` layer's CEJ-equivalent. Round 2 (perio missing/milktooth
+ *  sync): a permanent position marked as a milk tooth in the odontogram must
+ *  render the deciduous artwork here too. This is APPROXIMATED as the natural
+ *  `CEJ_Y` (the milk crown's neck sits in roughly the same cervical band); a
+ *  milk tooth in a permanent perio column is an edge case, so exact per-template
+ *  measurement is deferred — visual placement should be confirmed in a browser,
+ *  same caveat as CEJ_Y / IMPLANT_CEJ_Y. */
+export const MILKTOOTH_CEJ_Y: Record<TemplateNo, number> = { ...CEJ_Y };
+
 /** Predicate telling the arch builders whether a given tooth is an implant on
  *  the active chart, so its graphic uses the implant fixture artwork
  *  (`#implant-base`) instead of the natural `#tooth-base`. Injected by the
@@ -111,10 +121,21 @@ export const IMPLANT_CEJ_Y: Record<TemplateNo, number> = {
  *  template cache. Defaults to "no implants" for every existing caller/test. */
 export type IsImplantFn = (toothNo: number) => boolean;
 
+/** Round 2: the artwork kind for one perio-chart tooth, resolved from the active
+ *  odontogram chart (injected, like {@link IsImplantFn}, so this module stays
+ *  DOM/state-free). `missing` → no crown is drawn (its column stays reserved so
+ *  the number rows still align); `milktooth` → deciduous artwork; `implant` →
+ *  fixture body; `normal` → the natural tooth. */
+export type PerioArtworkKind = "missing" | "milktooth" | "implant" | "normal";
+export type ToothKindFn = (toothNo: number) => PerioArtworkKind;
+
 /** The baseline anchor a tooth's graphic aligns on: the implant platform anchor
- *  for an implant, else the natural CEJ. */
-function anchorFor(tplNo: TemplateNo, implant: boolean): number {
-  return implant ? IMPLANT_CEJ_Y[tplNo] : CEJ_Y[tplNo];
+ *  for an implant, the milk-tooth anchor for a deciduous rendering, else the
+ *  natural CEJ. */
+function anchorFor(tplNo: TemplateNo, kind: PerioArtworkKind): number {
+  if (kind === "implant") return IMPLANT_CEJ_Y[tplNo];
+  if (kind === "milktooth") return MILKTOOTH_CEJ_Y[tplNo];
+  return CEJ_Y[tplNo];
 }
 
 /** Canine (FDI position 3) root-elongation factor — position 3 renders
@@ -222,8 +243,8 @@ function cloneReferencedDefs(doc: Document, referencedIds: Set<string>): SVGDefs
  *  describes it as a "group", and a future template revision could nest
  *  excluded layers under it — this keeps the exclusion guarantee robust to
  *  that. */
-function stripExcludedLayers(root: Element): void {
-  const excluded = new Set(EXCLUDED_TOOTH_BASE_IDS);
+function stripExcludedLayers(root: Element, ids: readonly string[] = EXCLUDED_TOOTH_BASE_IDS): void {
+  const excluded = new Set(ids);
   if (excluded.has(root.getAttribute("id") || "")) {
     root.remove();
     return;
@@ -259,7 +280,7 @@ function stripExcludedLayers(root: Element): void {
 export function getToothBaseGroupFromCache(
   cache: TemplateDocCache,
   toothNo: number,
-  opts: { implant?: boolean } = {},
+  opts: { implant?: boolean; milktooth?: boolean } = {},
 ): SVGGElement {
   const map = TOOTH_TEMPLATE.get(toothNo);
   if (!map) throw new Error(`perioGraphic: no TOOTH_TEMPLATE entry for tooth ${toothNo}`);
@@ -277,22 +298,31 @@ export function getToothBaseGroupFromCache(
   // flip, horizontal mirror, per-position size, baseline align) is identical for
   // both — only the source layer id and the baseline anchor differ.
   const implant = opts.implant === true;
-  const layerId = implant ? "implant-base" : "tooth-base";
+  // A milk tooth only exists in the primary positions (1–5, templates 11/13/14);
+  // molar templates carry no `#milktooth-base`. If a milktooth is requested on a
+  // template that lacks it (malformed/imported state on a molar), fall back to
+  // the natural tooth artwork rather than throwing — robustness over a crash.
+  const milktooth = opts.milktooth === true && !implant && !!doc.querySelector("#milktooth-base");
+  const kind: PerioArtworkKind = implant ? "implant" : milktooth ? "milktooth" : "normal";
+  const layerId = implant ? "implant-base" : milktooth ? "milktooth-base" : "tooth-base";
   const baseLayer = doc.querySelector(`#${layerId}`);
   if (!baseLayer) throw new Error(`perioGraphic: #${layerId} not found in template ${tplNo}`);
   const baseClone = baseLayer.cloneNode(true) as SVGElement;
-  stripExcludedLayers(baseClone);
+  // Never strip the layer we are extracting (milktooth-base is itself in the
+  // exclusion list, since it must be stripped OUT of a natural tooth-base clone).
+  stripExcludedLayers(baseClone, EXCLUDED_TOOTH_BASE_IDS.filter((id) => id !== layerId));
 
   const referenced = collectReferencedGradientIds(baseClone);
   const defsClone = cloneReferencedDefs(doc, referenced);
 
   const { w, h } = viewBoxOf(doc);
-  const cejY = anchorFor(tplNo, implant);
+  const cejY = anchorFor(tplNo, kind);
 
   const outer = document.createElementNS(SVG_NS, "g") as unknown as SVGGElement;
   outer.setAttribute("data-tooth", String(toothNo));
   outer.setAttribute("data-tpl", String(tplNo));
   if (implant) outer.setAttribute("data-implant", "1");
+  if (milktooth) outer.setAttribute("data-milktooth", "1");
 
   if (defsClone) outer.appendChild(defsClone);
 
@@ -460,7 +490,11 @@ export interface ArchLayout {
  * hard-coded spacing). Skips any tooth without a `TOOTH_TEMPLATE`/cache entry,
  * exactly like the row builder does.
  */
-export function archToothLayout(cache: TemplateDocCache, teeth: readonly number[]): ArchLayout {
+export function archToothLayout(
+  cache: TemplateDocCache,
+  teeth: readonly number[],
+  gap: number = TOOTH_GAP,
+): ArchLayout {
   const out: ArchToothLayout[] = [];
   let cursorX = 0;
   for (const toothNo of teeth) {
@@ -471,7 +505,7 @@ export function archToothLayout(cache: TemplateDocCache, teeth: readonly number[
     if (!doc) continue;
     const { w } = viewBoxOf(doc);
     out.push({ toothNo, x: cursorX, width: w });
-    cursorX += w + TOOTH_GAP;
+    cursorX += w + gap;
   }
   return { cejY: ROW_BASELINE_Y, totalWidth: cursorX, teeth: out };
 }
@@ -486,18 +520,27 @@ function buildBuccalRowGroup(
   cache: TemplateDocCache,
   teeth: readonly number[],
   isImplant: IsImplantFn = () => false,
+  gap: number = TOOTH_GAP,
+  kindFn?: ToothKindFn,
 ): { group: SVGGElement; width: number } {
   const row = document.createElementNS(SVG_NS, "g") as unknown as SVGGElement;
   row.setAttribute("class", "perio-tooth-row-buccal");
-  const layout = archToothLayout(cache, teeth);
+  const layout = archToothLayout(cache, teeth, gap);
   for (const { toothNo, x } of layout.teeth) {
+    // Round 2: resolve the artwork kind. A `kindFn` (active-chart aware, passed
+    // by PerioChart/perioExport) supersedes the legacy implant-only predicate,
+    // so the graphic tracks the odontogram: missing → drawn nothing (column
+    // stays reserved by the layout above, keeping the number rows aligned),
+    // milktooth → deciduous artwork, implant → fixture body.
+    const kind: PerioArtworkKind = kindFn ? kindFn(toothNo) : (isImplant(toothNo) ? "implant" : "normal");
+    if (kind === "missing") continue;
     const tplNo = TOOTH_TEMPLATE.get(toothNo)!.tpl as TemplateNo;
-    const implant = isImplant(toothNo);
-    const toothGroup = getToothBaseGroupFromCache(cache, toothNo, { implant });
-    // Align each tooth's baseline anchor (natural CEJ, or the implant platform
-    // for an implant) onto the SAME shared ROW_BASELINE_Y, so an implant's
-    // neck sits on the CEJ line right alongside its natural neighbours.
-    const translateY = ROW_BASELINE_Y - anchorFor(tplNo, implant);
+    const toothGroup = getToothBaseGroupFromCache(cache, toothNo, {
+      implant: kind === "implant",
+      milktooth: kind === "milktooth",
+    });
+    // Align each tooth's baseline anchor onto the SAME shared ROW_BASELINE_Y.
+    const translateY = ROW_BASELINE_Y - anchorFor(tplNo, kind);
     toothGroup.setAttribute("transform", `translate(${fmt(x)} ${fmt(translateY)})`);
     row.appendChild(toothGroup);
   }
@@ -591,8 +634,10 @@ export function buildBuccalArchSvg(
   cache: TemplateDocCache,
   teeth: readonly number[],
   isImplant: IsImplantFn = () => false,
+  gap: number = TOOTH_GAP,
+  kindFn?: ToothKindFn,
 ): SVGSVGElement {
-  const { group: row, width } = buildBuccalRowGroup(cache, teeth, isImplant);
+  const { group: row, width } = buildBuccalRowGroup(cache, teeth, isImplant, gap, kindFn);
   row.setAttribute("class", "perio-tooth-row-buccal");
   row.setAttribute("transform", `matrix(1 0 0 -1 0 ${fmt(2 * ROW_BASELINE_Y)})`);
   row.insertBefore(
@@ -618,8 +663,10 @@ export function buildPalatalArchSvg(
   cache: TemplateDocCache,
   teeth: readonly number[],
   isImplant: IsImplantFn = () => false,
+  gap: number = TOOTH_GAP,
+  kindFn?: ToothKindFn,
 ): SVGSVGElement {
-  const { group: row, width } = buildBuccalRowGroup(cache, teeth, isImplant);
+  const { group: row, width } = buildBuccalRowGroup(cache, teeth, isImplant, gap, kindFn);
   row.setAttribute("class", "perio-tooth-row-palatal-inner");
   row.insertBefore(
     buildMmGridLayer({ cejY: ROW_BASELINE_Y, mmPx: PERIO_MM_PX, width, flip: false }),

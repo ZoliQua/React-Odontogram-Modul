@@ -18,7 +18,6 @@ import {
   setNumberingSystem,
   getToothPerio,
   getToothCal,
-  setPerioSite,
   setReadOnly,
   nextPerioCell,
   prevPerioCell,

@@ -30,7 +30,6 @@ import {
   surfaceLetter,
   surfaceLabelKey,
   isUpperTooth,
-  isAnteriorTooth,
   setSurfaceNotation,
   getSurfaceNotation,
   subcariesLettersForTooth,

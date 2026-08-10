@@ -64,6 +64,8 @@ function makeSettings(overrides: Partial<SettingsState> = {}): SettingsState {
     onPerioRowVisibility: vi.fn(),
     perioIndexNameMode: "translated",
     onPerioIndexNameMode: vi.fn(),
+    pdfSettings: { defaultName: "John Doe", defaultDob: "1980-01-01", showAge: true, dateFormat: "iso", colorTheme: "blue", showBone: true, showHealthyPulp: true, toothSpacing: "wide", border: false, borderThickness: "medium", borderColor: "#000000", toothNumberSize: "normal", includeOdontogramText: true, includeOdontogramTable: true, perioToothSpacing: "wide", perioShowEmptyRows: true, perioLabelPlacement: "center", perioFontSize: "normal", includePerioTable: true, includePerioAbbrev: true, showDisclaimer: true, disclaimerText: "", summaryGrouping: "jaw", showGenerator: true },
+    onPdfSettings: vi.fn(),
     ...overrides,
   };
 }
@@ -163,6 +165,7 @@ describe("UI-2 Task 1: Periodontal settings tab", () => {
       "pulpa",
       "notes",
       "periodontal",
+      "pdf",
     ]);
   });
 

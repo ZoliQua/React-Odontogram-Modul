@@ -14,7 +14,16 @@ import type {
   PerioViewMode,
   PerioRowId,
   PerioIndexNameMode,
+  PdfSettings,
+  PdfDateFormat,
+  PdfToothSpacing,
+  PdfBorderThickness,
+  PdfToothNumberSize,
+  PdfPerioLabelPlacement,
+  PdfPerioFontSize,
+  PdfSummaryGrouping,
 } from "./odontogram";
+import type { PdfColorTheme } from "./perioPdf";
 
 /** Translation function signature (subset of `useI18n`'s `t`). */
 type TFn = (key: string, params?: Record<string, string | number>) => string;
@@ -65,6 +74,8 @@ export type SettingsState = {
   onPerioRowVisibility: (id: PerioRowId, visible: boolean) => void;
   perioIndexNameMode: PerioIndexNameMode;
   onPerioIndexNameMode: (value: PerioIndexNameMode) => void;
+  pdfSettings: PdfSettings;
+  onPdfSettings: (patch: Partial<PdfSettings>) => void;
 };
 
 /** Context handed to every tab's `render()`. */
@@ -194,6 +205,7 @@ function SelectRow<V extends string>({
   value,
   options,
   onChange,
+  disabled = false,
 }: {
   t: TFn;
   label: string;
@@ -201,6 +213,7 @@ function SelectRow<V extends string>({
   value: V;
   options: { value: V; labelKey: string }[];
   onChange: (value: V) => void;
+  disabled?: boolean;
 }) {
   return (
     <SettingRow t={t} label={label} descKey={descKey}>
@@ -208,6 +221,7 @@ function SelectRow<V extends string>({
         className="odon-settings-select"
         aria-label={label}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(e.target.value as V)}
       >
         {options.map((opt) => (
@@ -248,6 +262,114 @@ function ToggleRow({
     </SettingRow>
   );
 }
+
+/** A labelled free-text (or typed) input control bound to a string setting. */
+function InputRow({
+  t,
+  label,
+  descKey,
+  value,
+  type = "text",
+  disabled,
+  onChange,
+}: {
+  t: TFn;
+  label: string;
+  descKey: string;
+  value: string;
+  type?: "text" | "date" | "color";
+  disabled?: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <SettingRow t={t} label={label} descKey={descKey}>
+      <input
+        className="odon-settings-input"
+        type={type}
+        aria-label={label}
+        value={value}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </SettingRow>
+  );
+}
+
+/** A labelled multi-line text area bound to a string setting (with placeholder
+ *  + disabled support — used for the editable disclaimer). */
+function TextAreaRow({
+  t,
+  label,
+  descKey,
+  value,
+  placeholder,
+  disabled,
+  onChange,
+}: {
+  t: TFn;
+  label: string;
+  descKey: string;
+  value: string;
+  placeholder?: string;
+  disabled?: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <SettingRow t={t} label={label} descKey={descKey}>
+      <textarea
+        className="odon-settings-textarea"
+        aria-label={label}
+        rows={3}
+        value={value}
+        placeholder={placeholder}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </SettingRow>
+  );
+}
+
+const PDF_DATE_FORMAT_OPTIONS: { value: PdfDateFormat; labelKey: string }[] = [
+  { value: "iso", labelKey: "settings.pdf.dateFormat.iso" },
+  { value: "dmy", labelKey: "settings.pdf.dateFormat.dmy" },
+  { value: "mdy", labelKey: "settings.pdf.dateFormat.mdy" },
+];
+const PDF_COLOR_THEME_OPTIONS: { value: PdfColorTheme; labelKey: string }[] = [
+  { value: "blue", labelKey: "settings.pdf.theme.blue" },
+  { value: "teal", labelKey: "settings.pdf.theme.teal" },
+  { value: "amber", labelKey: "settings.pdf.theme.amber" },
+  { value: "slate", labelKey: "settings.pdf.theme.slate" },
+];
+const PDF_TOOTH_SPACING_OPTIONS: { value: PdfToothSpacing; labelKey: string }[] = [
+  { value: "wide", labelKey: "settings.pdf.spacing.wide" },
+  { value: "medium", labelKey: "settings.pdf.spacing.medium" },
+  { value: "close", labelKey: "settings.pdf.spacing.close" },
+];
+const PDF_BORDER_THICKNESS_OPTIONS: { value: PdfBorderThickness; labelKey: string }[] = [
+  { value: "thin", labelKey: "settings.pdf.thickness.thin" },
+  { value: "medium", labelKey: "settings.pdf.thickness.medium" },
+  { value: "thick", labelKey: "settings.pdf.thickness.thick" },
+];
+const PDF_TOOTH_NUMBER_SIZE_OPTIONS: { value: PdfToothNumberSize; labelKey: string }[] = [
+  { value: "small", labelKey: "settings.pdf.numberSize.small" },
+  { value: "normal", labelKey: "settings.pdf.numberSize.normal" },
+  { value: "xlarge", labelKey: "settings.pdf.numberSize.xlarge" },
+];
+const PDF_SUMMARY_GROUPING_OPTIONS: { value: PdfSummaryGrouping; labelKey: string }[] = [
+  { value: "whole", labelKey: "settings.pdf.summaryGrouping.whole" },
+  { value: "jaw", labelKey: "settings.pdf.summaryGrouping.jaw" },
+  { value: "quadrant", labelKey: "settings.pdf.summaryGrouping.quadrant" },
+  { value: "sextant", labelKey: "settings.pdf.summaryGrouping.sextant" },
+];
+const PDF_PERIO_PLACEMENT_OPTIONS: { value: PdfPerioLabelPlacement; labelKey: string }[] = [
+  { value: "center", labelKey: "settings.pdf.perioPlacement.center" },
+  { value: "edge", labelKey: "settings.pdf.perioPlacement.edge" },
+];
+const PDF_PERIO_FONT_OPTIONS: { value: PdfPerioFontSize; labelKey: string }[] = [
+  { value: "small", labelKey: "settings.pdf.perioFont.small" },
+  { value: "normal", labelKey: "settings.pdf.perioFont.normal" },
+  { value: "xlarge", labelKey: "settings.pdf.perioFont.xlarge" },
+];
 
 export const SETTINGS_TABS: SettingsTab[] = [
   {
@@ -459,6 +581,194 @@ export const SETTINGS_TABS: SettingsTab[] = [
           value={s.perioIndexNameMode}
           options={PERIO_INDEX_NAME_MODE_OPTIONS}
           onChange={s.onPerioIndexNameMode}
+        />
+      </>
+    ),
+  },
+  {
+    id: "pdf",
+    titleKey: "settings.tab.pdf",
+    render: ({ t, s }) => (
+      <>
+        <InputRow
+          t={t}
+          label={t("settings.pdf.defaultName")}
+          descKey="settings.pdf.defaultName.desc"
+          value={s.pdfSettings.defaultName}
+          onChange={(v) => s.onPdfSettings({ defaultName: v })}
+        />
+        <InputRow
+          t={t}
+          label={t("settings.pdf.defaultDob")}
+          descKey="settings.pdf.defaultDob.desc"
+          type="date"
+          value={s.pdfSettings.defaultDob}
+          onChange={(v) => s.onPdfSettings({ defaultDob: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.showAge")}
+          descKey="settings.pdf.showAge.desc"
+          checked={s.pdfSettings.showAge}
+          onChange={(v) => s.onPdfSettings({ showAge: v })}
+        />
+        <SelectRow<PdfDateFormat>
+          t={t}
+          label={t("settings.pdf.dateFormat")}
+          descKey="settings.pdf.dateFormat.desc"
+          value={s.pdfSettings.dateFormat}
+          options={PDF_DATE_FORMAT_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ dateFormat: v })}
+        />
+        <SelectRow<PdfColorTheme>
+          t={t}
+          label={t("settings.pdf.theme")}
+          descKey="settings.pdf.theme.desc"
+          value={s.pdfSettings.colorTheme}
+          options={PDF_COLOR_THEME_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ colorTheme: v })}
+        />
+
+        <div className="odon-settings-group-title">{t("settings.pdf.section.odontogram")}</div>
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.showBone")}
+          descKey="settings.pdf.showBone.desc"
+          checked={s.pdfSettings.showBone}
+          onChange={(v) => s.onPdfSettings({ showBone: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.showHealthyPulp")}
+          descKey="settings.pdf.showHealthyPulp.desc"
+          checked={s.pdfSettings.showHealthyPulp}
+          onChange={(v) => s.onPdfSettings({ showHealthyPulp: v })}
+        />
+        <SelectRow<PdfToothSpacing>
+          t={t}
+          label={t("settings.pdf.spacing")}
+          descKey="settings.pdf.spacing.desc"
+          value={s.pdfSettings.toothSpacing}
+          options={PDF_TOOTH_SPACING_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ toothSpacing: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.border")}
+          descKey="settings.pdf.border.desc"
+          checked={s.pdfSettings.border}
+          onChange={(v) => s.onPdfSettings({ border: v })}
+        />
+        <SelectRow<PdfBorderThickness>
+          t={t}
+          label={t("settings.pdf.borderThickness")}
+          descKey="settings.pdf.borderThickness.desc"
+          value={s.pdfSettings.borderThickness}
+          options={PDF_BORDER_THICKNESS_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ borderThickness: v })}
+          disabled={!s.pdfSettings.border}
+        />
+        <SelectRow<PdfToothNumberSize>
+          t={t}
+          label={t("settings.pdf.numberSize")}
+          descKey="settings.pdf.numberSize.desc"
+          value={s.pdfSettings.toothNumberSize}
+          options={PDF_TOOTH_NUMBER_SIZE_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ toothNumberSize: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.includeText")}
+          descKey="settings.pdf.includeText.desc"
+          checked={s.pdfSettings.includeOdontogramText}
+          onChange={(v) => s.onPdfSettings({ includeOdontogramText: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.includeTable")}
+          descKey="settings.pdf.includeTable.desc"
+          checked={s.pdfSettings.includeOdontogramTable}
+          onChange={(v) => s.onPdfSettings({ includeOdontogramTable: v })}
+        />
+        <SelectRow<PdfSummaryGrouping>
+          t={t}
+          label={t("settings.pdf.summaryGrouping")}
+          descKey="settings.pdf.summaryGrouping.desc"
+          value={s.pdfSettings.summaryGrouping}
+          options={PDF_SUMMARY_GROUPING_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ summaryGrouping: v })}
+        />
+
+        <div className="odon-settings-group-title">{t("settings.pdf.section.perio")}</div>
+        <SelectRow<PdfToothSpacing>
+          t={t}
+          label={t("settings.pdf.perioSpacing")}
+          descKey="settings.pdf.perioSpacing.desc"
+          value={s.pdfSettings.perioToothSpacing}
+          options={PDF_TOOTH_SPACING_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ perioToothSpacing: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.perioEmptyRows")}
+          descKey="settings.pdf.perioEmptyRows.desc"
+          checked={s.pdfSettings.perioShowEmptyRows}
+          onChange={(v) => s.onPdfSettings({ perioShowEmptyRows: v })}
+        />
+        <SelectRow<PdfPerioLabelPlacement>
+          t={t}
+          label={t("settings.pdf.perioPlacement")}
+          descKey="settings.pdf.perioPlacement.desc"
+          value={s.pdfSettings.perioLabelPlacement}
+          options={PDF_PERIO_PLACEMENT_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ perioLabelPlacement: v })}
+        />
+        <SelectRow<PdfPerioFontSize>
+          t={t}
+          label={t("settings.pdf.perioFont")}
+          descKey="settings.pdf.perioFont.desc"
+          value={s.pdfSettings.perioFontSize}
+          options={PDF_PERIO_FONT_OPTIONS}
+          onChange={(v) => s.onPdfSettings({ perioFontSize: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.includePerioTable")}
+          descKey="settings.pdf.includePerioTable.desc"
+          checked={s.pdfSettings.includePerioTable}
+          onChange={(v) => s.onPdfSettings({ includePerioTable: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.includePerioAbbrev")}
+          descKey="settings.pdf.includePerioAbbrev.desc"
+          checked={s.pdfSettings.includePerioAbbrev}
+          onChange={(v) => s.onPdfSettings({ includePerioAbbrev: v })}
+        />
+
+        <div className="odon-settings-group-title">{t("settings.pdf.section.footer")}</div>
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.showDisclaimer")}
+          descKey="settings.pdf.showDisclaimer.desc"
+          checked={s.pdfSettings.showDisclaimer}
+          onChange={(v) => s.onPdfSettings({ showDisclaimer: v })}
+        />
+        <TextAreaRow
+          t={t}
+          label={t("settings.pdf.disclaimerText")}
+          descKey="settings.pdf.disclaimerText.desc"
+          value={s.pdfSettings.disclaimerText}
+          placeholder={t("pdf.disclaimer")}
+          disabled={!s.pdfSettings.showDisclaimer}
+          onChange={(v) => s.onPdfSettings({ disclaimerText: v })}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.pdf.showGenerator")}
+          descKey="settings.pdf.showGenerator.desc"
+          checked={s.pdfSettings.showGenerator}
+          onChange={(v) => s.onPdfSettings({ showGenerator: v })}
         />
       </>
     ),

@@ -28,6 +28,7 @@ import {
   getRootConcavity,
   isPerioRowHidden,
   isToothImplant,
+  getPerioToothKind,
   getReadOnly,
   onStateChange,
   nextPerioCell,
@@ -129,6 +130,11 @@ const LINGUAL_SITES: readonly PerioSite[] = ["ML", "L", "DL"];
 // module-eval-safety reason as BUCCAL_SITES above). Order = the clockwise
 // M/D + B/L quadrant order the 4-quadrant plaque mark reads in.
 const PLAQUE_SURFACES: readonly string[] = ["mesial", "distal", "buccal", "lingual"];
+
+// 2.2.3 (round 2): single-letter surface tag shown as a faint watermark behind
+// each plaque/PI/GI/mPI/mBI marker square, so which surface a mark belongs to is
+// unambiguous. Dental-standard letters — language-neutral, no i18n needed.
+const SURFACE_LETTER: Record<string, string> = { mesial: "M", distal: "D", buccal: "B", lingual: "L" };
 
 // UI-3a Task 3: does SURFACE "mesial" sit in the LEFT column of a tooth's
 // diamond plaque/grade cell (`.perio-fullgrid-plaque-quad`'s `"mes dis"`
@@ -285,13 +291,16 @@ function collectCurveInput(
   const xs: number[] = [];
   for (const tooth of layout.teeth) {
     const perio = getToothPerio(tooth.toothNo);
+    // 2.2.3 (round 2): a tooth with ANY charted site on this aspect has its
+    // remaining sites treated as 0 (pd=0, gm=0), so the pocket/margin curve is
+    // drawn fully across the tooth rather than stopping at the first gap.
+    const anyCharted = siteKeys.some((s) => Object.prototype.hasOwnProperty.call(perio.pd, s));
     siteKeys.forEach((site, j) => {
       const charted = Object.prototype.hasOwnProperty.call(perio.pd, site);
-      sites.push({
-        site,
-        pd: charted ? perio.pd[site] : undefined,
-        gm: Object.prototype.hasOwnProperty.call(perio.gm, site) ? perio.gm[site] : undefined,
-      });
+      const pd = charted ? perio.pd[site] : (anyCharted ? 0 : undefined);
+      const gm = pd === undefined ? undefined
+        : (Object.prototype.hasOwnProperty.call(perio.gm, site) ? perio.gm[site] : 0);
+      sites.push({ site, pd, gm });
       xs.push(tooth.x + (tooth.width * (j + 0.5)) / 3);
     });
   }
@@ -990,6 +999,7 @@ function buildPlaqueCell(
     btn.type = "button";
     btn.id = `perio-fg-plaque-${toothNo}-${surface}`;
     btn.dataset.plaqueSurface = surface;
+    btn.dataset.surfaceLetter = SURFACE_LETTER[surface] ?? "";
     btn.style.gridArea = diamondGridArea(surface, toothNo);
     btn.title = t(`surface.${surface}`);
     btn.setAttribute("aria-label", t(`surface.${surface}`));
@@ -1084,6 +1094,7 @@ function buildGradeCell(
     btn.type = "button";
     btn.id = `perio-fg-${mapKey}-${toothNo}-${surface}`;
     btn.dataset.gradeSurface = surface;
+    btn.dataset.surfaceLetter = SURFACE_LETTER[surface] ?? "";
     btn.style.gridArea = diamondGridArea(surface, toothNo);
     btn.title = t(`surface.${surface}`);
     btn.setAttribute("aria-label", t(`surface.${surface}`));
@@ -1996,10 +2007,10 @@ export default function PerioChart({
         // UI-3a Task 2: each aspect gets its OWN grid cell — buccal into
         // `buccalCell`, palatal into `palatalCell` — instead of T1's temporary
         // stacked-into-one-cell mount.
-        buccalUpperRef.current.appendChild(buildBuccalArchSvg(cache, UPPER_ARCH, isToothImplant));
-        palatalUpperRef.current.appendChild(buildPalatalArchSvg(cache, UPPER_ARCH, isToothImplant));
-        buccalLowerRef.current.appendChild(buildBuccalArchSvg(cache, LOWER_ARCH, isToothImplant));
-        palatalLowerRef.current.appendChild(buildPalatalArchSvg(cache, LOWER_ARCH, isToothImplant));
+        buccalUpperRef.current.appendChild(buildBuccalArchSvg(cache, UPPER_ARCH, isToothImplant, undefined, getPerioToothKind));
+        palatalUpperRef.current.appendChild(buildPalatalArchSvg(cache, UPPER_ARCH, isToothImplant, undefined, getPerioToothKind));
+        buccalLowerRef.current.appendChild(buildBuccalArchSvg(cache, LOWER_ARCH, isToothImplant, undefined, getPerioToothKind));
+        palatalLowerRef.current.appendChild(buildPalatalArchSvg(cache, LOWER_ARCH, isToothImplant, undefined, getPerioToothKind));
         drawArchCurves(cache, gridUpperRef.current, UPPER_ARCH);
         drawArchCurves(cache, gridLowerRef.current, LOWER_ARCH);
         const layer = getPerioOverlayLayer();
@@ -2082,19 +2093,19 @@ export default function PerioChart({
       const palatalLower = palatalLowerRef.current;
       if (buccalUpper) {
         buccalUpper.innerHTML = "";
-        buccalUpper.appendChild(buildBuccalArchSvg(cache, UPPER_ARCH, isToothImplant));
+        buccalUpper.appendChild(buildBuccalArchSvg(cache, UPPER_ARCH, isToothImplant, undefined, getPerioToothKind));
       }
       if (palatalUpper) {
         palatalUpper.innerHTML = "";
-        palatalUpper.appendChild(buildPalatalArchSvg(cache, UPPER_ARCH, isToothImplant));
+        palatalUpper.appendChild(buildPalatalArchSvg(cache, UPPER_ARCH, isToothImplant, undefined, getPerioToothKind));
       }
       if (buccalLower) {
         buccalLower.innerHTML = "";
-        buccalLower.appendChild(buildBuccalArchSvg(cache, LOWER_ARCH, isToothImplant));
+        buccalLower.appendChild(buildBuccalArchSvg(cache, LOWER_ARCH, isToothImplant, undefined, getPerioToothKind));
       }
       if (palatalLower) {
         palatalLower.innerHTML = "";
-        palatalLower.appendChild(buildPalatalArchSvg(cache, LOWER_ARCH, isToothImplant));
+        palatalLower.appendChild(buildPalatalArchSvg(cache, LOWER_ARCH, isToothImplant, undefined, getPerioToothKind));
       }
       lastImplantSig = implantSig();
     };
@@ -2148,7 +2159,7 @@ export default function PerioChart({
         drawArchOverlay(cache, gridLowerRef.current, LOWER_ARCH, layer);
       })
       .catch((err) => {
-        // eslint-disable-next-line no-console
+         
         console.error("perio tooth-row graphic: failed to load tooth templates", err);
       });
     const unsubscribe = onStateChange(() => {

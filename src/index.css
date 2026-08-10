@@ -48,6 +48,7 @@ body{
 }
 .brand{display:flex; gap:12px; align-items:center}
 .dot{width:10px;height:10px;border-radius:999px;background:var(--accent2); box-shadow:0 0 0 6px rgba(18,185,129,.12);}
+.brand-logo{height:44px; width:auto; display:block; flex:0 0 auto;}
 .title{font-weight:700; letter-spacing:.2px}
 .subtitle{font-size:12px; color:var(--muted); margin-top:2px}
 .topbar-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
@@ -1184,6 +1185,20 @@ select:focus{
 .tooth-info-line{margin:6px 0 0; font-size:13px; line-height:1.5}
 .tooth-info-heading{font-weight:700}
 .tooth-info-empty{color:var(--muted); font-style:italic}
+/* 2.2.3 (round 2): grouped dentition table in the tooth-info panel. Tooth
+   numbers are coloured by status: content = bold accent, problem = bold-italic
+   red, empty = muted. Mirrors the PDF report's dentition table. */
+.tooth-info-table-wrap{margin:0 0 8px; overflow-x:auto}
+.tooth-info-table{border-collapse:collapse; width:100%; font-size:12px; line-height:1.4}
+.tooth-info-table th,.tooth-info-table td{border:1px solid var(--border, #d0d5dd); padding:3px 6px; text-align:left; vertical-align:top}
+.tooth-info-table thead th{background:var(--panel-2, #f2f4f7); font-weight:700; font-size:11px; white-space:nowrap}
+.tooth-info-table tbody th{background:var(--panel-2, #f2f4f7); font-weight:700; white-space:nowrap}
+.tooth-info-table tbody tr:nth-child(even) td{background:rgba(0,0,0,0.025)}
+.tooth-cell{white-space:nowrap}
+.tooth-cell-content{font-weight:700; color:var(--accent, #1f6feb)}
+.tooth-cell-problem{font-weight:700; font-style:italic; color:#be2828}
+.tooth-cell-empty{color:var(--muted)}
+.tooth-info-table-legend{margin:4px 0 0; font-size:11px; font-style:italic; color:var(--muted); line-height:1.4}
 .tooth-info-notes{margin:6px 0 0; font-size:13px; line-height:1.5}
 .tooth-info-note-item{margin:2px 0 0 12px}
 /* R2-B Task 2: "What changes" box — a tinted panel that visually separates
@@ -1309,6 +1324,30 @@ select:focus{
   font-size: 13px; font-family: inherit;
 }
 .odon-settings-select:focus-visible{
+  outline: none; box-shadow: 0 0 0 3px rgba(59,123,255,.30); border-color: rgba(59,123,255,.5);
+}
+.odon-settings-select:disabled{ opacity: .5; cursor: not-allowed; }
+.odon-settings-input{
+  min-width: 150px;
+  padding: 6px 10px;
+  border: 1px solid var(--line); border-radius: 10px;
+  background: var(--panel, #fff); color: var(--text);
+  font-size: 13px; font-family: inherit;
+}
+.odon-settings-input[type="color"]{ min-width: 52px; width: 52px; padding: 2px; height: 32px; cursor: pointer; }
+.odon-settings-input:disabled{ opacity: .5; cursor: not-allowed; }
+.odon-settings-input:focus-visible{
+  outline: none; box-shadow: 0 0 0 3px rgba(59,123,255,.30); border-color: rgba(59,123,255,.5);
+}
+.odon-settings-textarea{
+  min-width: 240px; max-width: 100%; width: 240px; resize: vertical;
+  padding: 6px 10px;
+  border: 1px solid var(--line); border-radius: 10px;
+  background: var(--panel, #fff); color: var(--text);
+  font-size: 12px; font-family: inherit; line-height: 1.4;
+}
+.odon-settings-textarea:disabled{ opacity: .5; cursor: not-allowed; }
+.odon-settings-textarea:focus-visible{
   outline: none; box-shadow: 0 0 0 3px rgba(59,123,255,.30); border-color: rgba(59,123,255,.5);
 }
 .odon-settings-switch{
@@ -2036,6 +2075,32 @@ select:focus{
 .dark .perio-fullgrid-plaque[data-present="1"]{
   background: var(--accent, #4d8bff); border-color: var(--accent, #4d8bff);
 }
+
+/* 2.2.3 (round 2): faint surface-letter watermark (M/D/B/L) behind each
+   plaque/PI/GI/mPI/mBI marker square — `isolation:isolate` + a `z-index:-1`
+   ::before keeps the letter above the button's own background but behind its
+   content (the plaque dot / grade face). */
+.perio-fullgrid-plaque,
+.perio-fullgrid-pi, .perio-fullgrid-gi, .perio-fullgrid-mpi, .perio-fullgrid-mbi{
+  position: relative; isolation: isolate;
+}
+.perio-fullgrid-plaque[data-surface-letter]::before,
+.perio-fullgrid-pi[data-surface-letter]::before,
+.perio-fullgrid-gi[data-surface-letter]::before,
+.perio-fullgrid-mpi[data-surface-letter]::before,
+.perio-fullgrid-mbi[data-surface-letter]::before{
+  content: attr(data-surface-letter);
+  position: absolute; inset: 0; z-index: -1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700; line-height: 1;
+  color: rgba(100,116,139,.42); pointer-events: none;
+}
+.perio-fullgrid-plaque[data-present="1"][data-surface-letter]::before{ color: rgba(255,255,255,.7); }
+.dark .perio-fullgrid-plaque[data-surface-letter]::before,
+.dark .perio-fullgrid-pi[data-surface-letter]::before,
+.dark .perio-fullgrid-gi[data-surface-letter]::before,
+.dark .perio-fullgrid-mpi[data-surface-letter]::before,
+.dark .perio-fullgrid-mbi[data-surface-letter]::before{ color: rgba(148,163,184,.5); }
 
 /* SP-perio PG-C Task 3 / PG-D Task 4: CEJ-visibility, root-concavity,
    gingival-thickness (GT) and Miller-class cycle controls — one compact

@@ -1,7 +1,7 @@
 # 🦷 React Advanced Odontogram
 
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![Version](https://img.shields.io/badge/version-2.2.1-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
+[![Version](https://img.shields.io/badge/version-2.3.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -71,7 +71,7 @@ Per-site probing depth, gingival margin, bleeding on probing (+ suppuration) at 
 - 🔍 Multi-surface caries & fillings (ICDAS / CARS severity, root & radiographic caries), endo & AAE pulp diagnosis, apical diagnosis, peri-implant status, wear, discoloration, orthodontics
 - 🩺 Full periodontal module (see above) + 2017 classification
 - 🔗 **HL7 FHIR R4** export/import; JSON export/import with migrations
-- 🖼️ PNG / JPG / SVG chart export and a **PDF report** (jsPDF, lazy-loaded)
+- 🖼️ PNG / JPG / SVG chart export and a customizable, **multilingual PDF report** (jsPDF, lazy-loaded) — colour themes, a grouped dentition-summary table, a periodontal chart/description, and bundled Unicode fonts so every UI language (incl. Hungarian accents, Cyrillic, Arabic RTL and Chinese) renders correctly
 - 🔢 FDI / Universal / Palmer numbering · 🌐 12 UI languages (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR, Arabic RTL) · 🎨 theming via `--odon-*` CSS variables · 🧩 plugin system · ⌨️ keyboard accessibility
 
 ## 📖 Documentation

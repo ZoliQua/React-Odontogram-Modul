@@ -77,6 +77,8 @@ function makeSettings(overrides: Partial<SettingsState> = {}): SettingsState {
     onPerioRowVisibility: (id, v) => setPerioRowVisibility(id, v),
     perioIndexNameMode: getPerioIndexNameMode(),
     onPerioIndexNameMode: (v) => setPerioIndexNameMode(v),
+    pdfSettings: { defaultName: "John Doe", defaultDob: "1980-01-01", showAge: true, dateFormat: "iso", colorTheme: "blue", showBone: true, showHealthyPulp: true, toothSpacing: "wide", border: false, borderThickness: "medium", borderColor: "#000000", toothNumberSize: "normal", includeOdontogramText: true, includeOdontogramTable: true, perioToothSpacing: "wide", perioShowEmptyRows: true, perioLabelPlacement: "center", perioFontSize: "normal", includePerioTable: true, includePerioAbbrev: true, showDisclaimer: true, disclaimerText: "", summaryGrouping: "jaw", showGenerator: true },
+    onPdfSettings: () => {},
     ...overrides,
   };
 }

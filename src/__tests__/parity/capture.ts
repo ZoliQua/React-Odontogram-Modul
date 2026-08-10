@@ -41,6 +41,6 @@ export function runCapture() {
   const roundtrip = payloadCases().map(p => ({ name: p.name, parsed: parseFhirBundle(buildFhirBundle(p.payload)) }));
   write("roundtrip-golden.json", roundtrip);
 
-  // eslint-disable-next-line no-console
+   
   console.log(`captured ${svg.length} svg fingerprints, ${fhir.length} fhir bundles, ${roundtrip.length} round-trips`);
 }

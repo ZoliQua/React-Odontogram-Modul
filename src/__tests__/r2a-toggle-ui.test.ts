@@ -79,7 +79,7 @@ vi.mock("../odontogram", async () => {
     exportPdf: vi.fn().mockResolvedValue(undefined),
     getOdontogramSummary: vi.fn().mockReturnValue({
       overview: "", permanentList: null, missingList: null,
-      sections: [], implants: null, periodontalTitle: "", periodontalText: "",
+      sections: [], implants: null, toothTable: { columns: [], rows: [], legend: "" }, periodontalHasFindings: false, periodontalTitle: "", periodontalText: "",
     }),
     onStateChange: vi.fn().mockReturnValue(() => {}),
     openPerioOverlay: vi.fn(),
@@ -95,6 +95,8 @@ vi.mock("../odontogram", async () => {
     setPerioRowVisibility: vi.fn(),
     getPerioIndexNameMode: vi.fn().mockReturnValue("translated"),
     setPerioIndexNameMode: vi.fn(),
+    getPdfSettings: vi.fn().mockReturnValue({ defaultName: "John Doe", defaultDob: "1980-01-01", showAge: true, dateFormat: "iso", colorTheme: "blue", showBone: true, showHealthyPulp: true, toothSpacing: "wide", border: false, borderThickness: "medium", borderColor: "#000000", toothNumberSize: "normal", includeOdontogramText: true, includeOdontogramTable: true, perioToothSpacing: "wide", perioShowEmptyRows: true, perioLabelPlacement: "center", perioFontSize: "normal", includePerioTable: true, includePerioAbbrev: true, showDisclaimer: true, disclaimerText: "", summaryGrouping: "jaw", showGenerator: true }),
+    setPdfSettings: vi.fn(),
     isDualStateConfirmPending: vi.fn().mockReturnValue(false),
     acceptDualStateConfirm: vi.fn(),
     cancelDualStateConfirm: vi.fn(),
@@ -209,7 +211,7 @@ describe("R2-A Task 3: real click wiring (setChartMode + syncChartModeUi via a p
   });
 
   it("clicking the already-active segment is a no-op (mode/classes unchanged)", () => {
-    const { chartCard, statusBtn, planBtn, badge } = mountChartModeFixture();
+    const { chartCard, statusBtn, badge } = mountChartModeFixture();
     statusBtn.click();
     expect(getChartMode()).toBe("status");
     expect(statusBtn.classList.contains("is-active")).toBe(true);
