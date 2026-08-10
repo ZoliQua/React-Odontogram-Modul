@@ -1,16 +1,13 @@
 // Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
-// UI-4: collapsible card state persistence — tracks which panel sections the
-// user has collapsed/expanded and persists the layout in the export payload
-// under `ui.collapsedCards` so the panel layout survives export/import cycles.
-// Exercised via module-level state and the existing `__collectExportPayloadForTest`
-// / `__hydrateImportedChartsForTest` / `__resetChartStateForTest` test seams.
+// UI-4: collapsible card state — session-only UI layout flag (never serialized
+// to the export payload, same convention as perioViewMode). Exercised via the
+// module-level get/set/toggle/reset API.
 import { describe, it, expect, beforeEach } from "vitest";
 import {
   getCollapsedCards, isCardCollapsed, setCollapsedCard, toggleCollapsedCard,
-  __resetChartStateForTest, __collectExportPayloadForTest, __hydrateImportedChartsForTest,
-  getPlanChart, getStatusChart,
+  __resetChartStateForTest,
 } from "../odontogram";
 
 beforeEach(() => __resetChartStateForTest());
@@ -89,67 +86,34 @@ describe("collapsed cards state", () => {
   });
 });
 
-describe("payload serialization", () => {
-  it("omits ui key when no cards are collapsed", () => {
-    const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.21");
-    expect(Object.prototype.hasOwnProperty.call(payload, "ui")).toBe(false);
-  });
-
-  it("includes ui.collapsedCards when cards are collapsed", () => {
-    setCollapsedCard("caries", true);
-    setCollapsedCard("controls", true);
-    const payload = __collectExportPayloadForTest();
-    expect(payload.ui).toBeDefined();
-    expect(payload.ui.collapsedCards).toMatchObject({ caries: true, controls: true });
-  });
-
-  it("does not include expanded (false) cards in the payload ui", () => {
-    setCollapsedCard("status", false);
-    setCollapsedCard("caries", true);
-    const payload = __collectExportPayloadForTest();
-    // `status: false` is included so the import can tell explicitly-set-false
-    // apart from "never set" — both read as "not collapsed" on restore
-    expect(payload.ui.collapsedCards.status).toBe(false);
-    expect(payload.ui.collapsedCards.caries).toBe(true);
-  });
-
-  it("getPlanChart also includes ui state", () => {
-    setCollapsedCard("filling", true);
-    const plan = getPlanChart();
-    expect(plan.version).toBe("2.21");
-    expect(plan.ui.collapsedCards.filling).toBe(true);
-  });
-
-  it("getStatusChart includes ui state", () => {
-    setCollapsedCard("rootPeriodontium", true);
-    const status = getStatusChart();
-    expect(status.version).toBe("2.21");
-    expect(status.ui.collapsedCards.rootPeriodontium).toBe(true);
-  });
-});
-
-describe("payload roundtrip", () => {
-  it("collapsed state survives export -> JSON -> import", () => {
-    setCollapsedCard("caries", true);
-    setCollapsedCard("controls", true);
-    setCollapsedCard("status", false);
-    const json = JSON.parse(JSON.stringify(__collectExportPayloadForTest()));
-    __resetChartStateForTest();
-    expect(Object.keys(getCollapsedCards())).toHaveLength(0); // reset cleared it
-    __hydrateImportedChartsForTest(json);
-    expect(getCollapsedCards()).toMatchObject({ caries: true, controls: true, status: false });
-  });
-
-  it("import without ui key resets collapsed state", () => {
-    setCollapsedCard("caries", true);
-    __hydrateImportedChartsForTest({ version: "2.21", teeth: {} });
-    expect(Object.keys(getCollapsedCards())).toHaveLength(0);
-  });
-
-  it("__resetChartStateForTest clears the collapsed state", () => {
+describe("session behavior", () => {
+  it("reset clears collapsed state", () => {
     setCollapsedCard("caries", true);
     __resetChartStateForTest();
     expect(Object.keys(getCollapsedCards())).toHaveLength(0);
+  });
+
+  it("setCollapsedCard same value is a no-op but still notifies", () => {
+    setCollapsedCard("caries", true);
+    const afterSet = getCollapsedCards().caries;
+    setCollapsedCard("caries", true); // same value — no-op, but notifies
+    expect(getCollapsedCards().caries).toBe(afterSet);
+  });
+
+  it("setCollapsedCard with false stores false (not absent)", () => {
+    setCollapsedCard("status", false);
+    expect(getCollapsedCards().status).toBe(false);
+    expect(isCardCollapsed("status")).toBe(false);
+  });
+
+  it("state survives reset->set cycle (session lifecycle)", () => {
+    setCollapsedCard("caries", true);
+    __resetChartStateForTest();
+    expect(Object.keys(getCollapsedCards())).toHaveLength(0);
+    setCollapsedCard("caries", true);
+    expect(isCardCollapsed("caries")).toBe(true);
+    setCollapsedCard("controls", true);
+    expect(isCardCollapsed("controls")).toBe(true);
+    expect(isCardCollapsed("caries")).toBe(true);
   });
 });
