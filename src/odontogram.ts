@@ -7369,7 +7369,7 @@ export function getPerioViewMode(): PerioViewMode {
   return perioViewMode;
 }
 
-/** Switch the perio-chart housing mode. No-op (still notifies) if unchanged. */
+/** Switch the perio-chart housing mode. No-op (does not notify) if unchanged. */
 export function setPerioViewMode(mode: PerioViewMode): void {
   if(mode === perioViewMode) return;
   perioViewMode = mode;
@@ -7425,7 +7425,7 @@ export function getPerioRowVisibility(): Record<PerioRowId, boolean> {
   return perioRowVisibility;
 }
 
-/** Show/hide one perio-chart index row. No-op (still notifies) if unchanged. */
+/** Show/hide one perio-chart index row. No-op (does not notify) if unchanged. */
 export function setPerioRowVisibility(id: PerioRowId, visible: boolean): void {
   if(perioRowVisibility[id] === visible) return;
   perioRowVisibility = { ...perioRowVisibility, [id]: visible };
@@ -7441,7 +7441,7 @@ export function getPerioIndexNameMode(): PerioIndexNameMode {
   return perioIndexNameMode;
 }
 
-/** Switch the perio index-name display mode. No-op (still notifies) if unchanged. */
+/** Switch the perio index-name display mode. No-op (does not notify) if unchanged. */
 export function setPerioIndexNameMode(mode: PerioIndexNameMode): void {
   if(mode === perioIndexNameMode) return;
   perioIndexNameMode = mode;
