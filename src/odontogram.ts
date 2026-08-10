@@ -1294,6 +1294,7 @@ function onCardToggleClick(e: Any){
     applyToggleA11y(btn, "panel.controls", hidden);
     if(icon) icon.textContent = hidden ? "+" : "−";
     collapsedCards.controls = hidden;
+    notifyStateChange();
     return;
   }
   const labelKey = CARD_TOGGLE_LABELS[btn.id];
