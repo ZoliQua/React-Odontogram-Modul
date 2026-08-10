@@ -7482,9 +7482,9 @@ export function getPerioOverlayLayer(): PerioOverlayLayer {
   return perioOverlayLayer;
 }
 
-/** Select the Dental Chart overlay layer. Always notifies (so the overlay
- *  redraws + the switcher's active state updates) even when unchanged. */
+/** Select the Dental Chart overlay layer. No-op (does not notify) if unchanged. */
 export function setPerioOverlayLayer(layer: PerioOverlayLayer): void {
+  if(layer === perioOverlayLayer) return;
   perioOverlayLayer = layer;
   notifyStateChange();
 }
