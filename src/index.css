@@ -266,11 +266,34 @@ select:focus{
 }
 
 .tooth-grid{
-  display:grid;
-  grid-template-columns: repeat(16, minmax(36px, 1fr));
+  display:flex;
+  flex-direction:column;
   gap:4px;
   padding:10px;
   position:relative;
+}
+.tooth-arch{
+  display:grid;
+  justify-content:center;
+  gap:4px;
+}
+.upper-arch{
+  grid-template-columns:
+    minmax(28px, 63px) minmax(28px, 63px) minmax(28px, 72px)
+    minmax(28px, 51px) minmax(28px, 52px) minmax(28px, 54px)
+    minmax(28px, 49px) minmax(28px, 62px)
+    minmax(28px, 62px) minmax(28px, 49px)
+    minmax(28px, 54px) minmax(28px, 52px) minmax(28px, 51px)
+    minmax(28px, 72px) minmax(28px, 63px) minmax(28px, 63px);
+}
+.lower-arch{
+  grid-template-columns:
+    minmax(28px, 75px) minmax(28px, 75px) minmax(28px, 75px)
+    minmax(28px, 51px) minmax(28px, 51px) minmax(28px, 54px)
+    minmax(28px, 40px) minmax(28px, 40px)
+    minmax(28px, 40px) minmax(28px, 40px)
+    minmax(28px, 54px) minmax(28px, 51px) minmax(28px, 51px)
+    minmax(28px, 75px) minmax(28px, 75px) minmax(28px, 75px);
 }
 /* Round 2 (Stage 3): on-screen tooth spacing — inter-tooth gap in the live grid
    (distinct from the PDF/export spacing). "normal" keeps the default 4px gap. */

@@ -29,7 +29,7 @@ const testFileUrl = import.meta.url;
 const svgText = (tplNo: TemplateNo) =>
   readFileSync(fileURLToPath(new URL(`../assets/teeth-svgs/${tplNo}.svg`, testFileUrl)), "utf8");
 
-const TEMPLATE_NOS: readonly TemplateNo[] = [11, 13, 14, 16];
+const TEMPLATE_NOS: readonly TemplateNo[] = [11, 12, 13, 14, 15, 16, 17, 31, 46];
 
 function buildCache(): TemplateDocCache {
   const cache: TemplateDocCache = new Map();
@@ -43,7 +43,7 @@ const UPPER_ARCH = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 
 const LOWER_ARCH = [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
 
 // tooth -> its FDI template number, for the sample teeth exercised below.
-const TPL_OF: Record<number, TemplateNo> = { 11: 11, 13: 13, 14: 14, 15: 14, 16: 16, 21: 11, 23: 13, 26: 16, 45: 14, 46: 16 };
+const TPL_OF: Record<number, TemplateNo> = { 11: 11, 13: 13, 14: 14, 15: 15, 16: 16, 21: 11, 23: 13, 26: 16, 45: 15, 46: 46 };
 
 function ids(group: Element): (string | null)[] {
   return Array.from(group.querySelectorAll("[id]")).map((el) => el.getAttribute("id"));
