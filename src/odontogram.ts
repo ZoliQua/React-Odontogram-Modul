@@ -36,11 +36,18 @@ import { assemblePdf, PDF_PALETTES, DEFAULT_PDF_THEME, type PdfExportOptions, ty
 // URL would 404 in a downstream app). `TEMPLATES` therefore holds SVG *text*,
 // not URLs.
 import tooth11Svg from "./assets/teeth-svgs/11.svg?raw";
+import tooth12Svg from "./assets/teeth-svgs/12.svg?raw";
 import tooth13Svg from "./assets/teeth-svgs/13.svg?raw";
 import tooth14Svg from "./assets/teeth-svgs/14.svg?raw";
+import tooth15Svg from "./assets/teeth-svgs/15.svg?raw";
 import tooth16Svg from "./assets/teeth-svgs/16.svg?raw";
+import tooth17Svg from "./assets/teeth-svgs/17.svg?raw";
+import tooth31Svg from "./assets/teeth-svgs/31.svg?raw";
+import tooth46Svg from "./assets/teeth-svgs/46.svg?raw";
 import tooth14OcclSvg from "./assets/teeth-svgs/14_occl.svg?raw";
+import tooth34OcclSvg from "./assets/teeth-svgs/34_occl.svg?raw";
 import tooth16OcclSvg from "./assets/teeth-svgs/16_occl.svg?raw";
+import tooth46OcclSvg from "./assets/teeth-svgs/46_occl.svg?raw";
 /* Tooth SVG Test UI (v2) - vanilla JS */
 
 // Exported (read-only use) so `perioGraphic.ts` can parse + clone the same
@@ -49,13 +56,20 @@ import tooth16OcclSvg from "./assets/teeth-svgs/16_occl.svg?raw";
 // call site or behavior changes. Values are inlined SVG markup (see above).
 export const TEMPLATES = {
   11: tooth11Svg,
+  12: tooth12Svg,
   13: tooth13Svg,
   14: tooth14Svg,
+  15: tooth15Svg,
   16: tooth16Svg,
+  17: tooth17Svg,
+  31: tooth31Svg,
+  46: tooth46Svg,
 };
 const TEMPLATES_OCCL = {
   14: tooth14OcclSvg,
+  34: tooth34OcclSvg,
   16: tooth16OcclSvg,
+  46: tooth46OcclSvg,
 };
 
 // Tooth mapping in details:
@@ -65,26 +79,47 @@ const TEMPLATES_OCCL = {
 // 14: 14,15 -> no rotate; 24,25 -> mirror Y; 34,35 -> rotate 180; 44,45 -> rotate 180 + mirror Y
 // 16: 16,17,18 -> no rotate; 26,27,28 -> mirror Y; 36,37,38 -> rotate 180; 46,47,48 -> rotate 180 + mirror Y
 export const TOOTH_TEMPLATE = new Map([
-  // 11 template
-  [11, {tpl:11, rot:0, mirror:false}], [12,{tpl:11,rot:0,mirror:false}],
-  [21,{tpl:11,rot:0,mirror:true}], [22,{tpl:11,rot:0,mirror:true}],
-  [31, {tpl:11, rot:180, mirror:false}], [32,{tpl:11,rot:180,mirror:false}],
-  [41,{tpl:11,rot:180,mirror:true}], [42,{tpl:11,rot:180,mirror:true}],
-  // 13 template
+  // upper central incisor
+  [11,{tpl:11,rot:0,mirror:false}],
+  [21,{tpl:11,rot:0,mirror:true}],
+  // upper lateral incisor
+  [12,{tpl:12,rot:0,mirror:false}],
+  [22,{tpl:12,rot:0,mirror:true}],
+  // lower incisors
+  [31,{tpl:31,rot:180,mirror:false}],[32,{tpl:31,rot:180,mirror:false}],
+  [41,{tpl:31,rot:180,mirror:true}],[42,{tpl:31,rot:180,mirror:true}],
+  // canines
   [13,{tpl:13,rot:0,mirror:false}],
   [23,{tpl:13,rot:0,mirror:true}],
   [33,{tpl:13,rot:180,mirror:false}],
   [43,{tpl:13,rot:180,mirror:true}],
-  // 14 template
+  // upper 1st premolar - two roots
+  [14,{tpl:14,rot:0,mirror:false}],
+  [24,{tpl:14,rot:0,mirror:true}],
+  // single-rooted premolars
+  [15,{tpl:15,rot:0,mirror:false}],
+  [25,{tpl:15,rot:0,mirror:true}],
+  [34,{tpl:15,rot:180,mirror:false}],[35,{tpl:15,rot:180,mirror:false}],
+  [44,{tpl:15,rot:180,mirror:true}],[45,{tpl:15,rot:180,mirror:true}],
+  // upper molars - three roots
+  [16,{tpl:16,rot:0,mirror:false}],
+  [26,{tpl:16,rot:0,mirror:true}],
+  [17,{tpl:17,rot:0,mirror:false}],[18,{tpl:17,rot:0,mirror:false}],
+  [27,{tpl:17,rot:0,mirror:true}],[28,{tpl:17,rot:0,mirror:true}],
+  // lower molars - two roots
+  [36,{tpl:46,rot:180,mirror:false}],[37,{tpl:46,rot:180,mirror:false}],[38,{tpl:46,rot:180,mirror:false}],
+  [46,{tpl:46,rot:180,mirror:true}],[47,{tpl:46,rot:180,mirror:true}],[48,{tpl:46,rot:180,mirror:true}],
+]);
+
+export const OCCLUSAL_TEMPLATE = new Map([
   [14,{tpl:14,rot:0,mirror:false}],[15,{tpl:14,rot:0,mirror:false}],
-  [24,{tpl:14,rot:0,mirror:true}],[25,{tpl:14,rot:0,mirror:true}],
-  [34,{tpl:14,rot:180,mirror:false}],[35,{tpl:14,rot:180,mirror:false}],
-  [44,{tpl:14,rot:180,mirror:true}],[45,{tpl:14,rot:180,mirror:true}],
-  // 16 template
   [16,{tpl:16,rot:0,mirror:false}],[17,{tpl:16,rot:0,mirror:false}],[18,{tpl:16,rot:0,mirror:false}],
+  [24,{tpl:14,rot:0,mirror:true}],[25,{tpl:14,rot:0,mirror:true}],
   [26,{tpl:16,rot:0,mirror:true}],[27,{tpl:16,rot:0,mirror:true}],[28,{tpl:16,rot:0,mirror:true}],
-  [36,{tpl:16,rot:180,mirror:false}],[37,{tpl:16,rot:180,mirror:false}],[38,{tpl:16,rot:180,mirror:false}],
-  [46,{tpl:16,rot:180,mirror:true}],[47,{tpl:16,rot:180,mirror:true}],[48,{tpl:16,rot:180,mirror:true}],
+  [34,{tpl:34,rot:180,mirror:false}],[35,{tpl:34,rot:180,mirror:false}],
+  [36,{tpl:46,rot:180,mirror:false}],[37,{tpl:46,rot:180,mirror:false}],[38,{tpl:46,rot:180,mirror:false}],
+  [44,{tpl:34,rot:180,mirror:true}],[45,{tpl:34,rot:180,mirror:true}],
+  [46,{tpl:46,rot:180,mirror:true}],[47,{tpl:46,rot:180,mirror:true}],[48,{tpl:46,rot:180,mirror:true}],
 ]);
 
 const ALL_TEETH = [
@@ -8645,11 +8680,23 @@ async function buildGrid(token: number){
   if(!grid) return;
   grid.innerHTML = "";
 
+  // Bead odontogram-6pt: the chart is TWO grids, one per arch. Every column is
+  // its own tooth plus 6px, so the same slack sits on both sides of every
+  // contact and cancels; what is left between 13 and 43 is the anatomical
+  // difference, and the lower canine tip lands in the upper lateral/canine
+  // embrasure because the teeth are the widths they are. `role="presentation"`
+  // keeps the tiles children of the listbox in the accessibility tree.
+  const upperArch = el("div", { class:"tooth-arch upper-arch", role:"presentation" });
+  const lowerArch = el("div", { class:"tooth-arch lower-arch", role:"presentation" });
+  grid.appendChild(upperArch);
+  grid.appendChild(lowerArch);
+  let arch: Any = upperArch;
+
   // preload SVG templates in parallel
   const tplCache = new Map();
   const occlCache = new Map();
-  const tplNos = [11,13,14,16] as const;
-  const occlNos = [14,16] as const;
+  const tplNos = [11,12,13,14,15,16,17,31,46] as const;
+  const occlNos = [14,34,16,46] as const;
   await Promise.all([
     ...tplNos.map(async (tplNo) => {
       tplCache.set(tplNo, await loadSvg(TEMPLATES[tplNo]));
@@ -8699,7 +8746,7 @@ async function buildGrid(token: number){
       tile.removeAttribute("data-tooth");
     }
 
-    grid.appendChild(tile);
+    arch.appendChild(tile);
 
     if(!toothSvgRoot.has(toothNo)) toothSvgRoot.set(toothNo, []);
     toothSvgRoot.get(toothNo).push(svg);
@@ -8718,28 +8765,24 @@ async function buildGrid(token: number){
     }
   }
 
-  function occlTemplateForTooth(toothNo: Any){
-    if([14,15,24,25,34,35,44,45].includes(toothNo)) return 14;
-    if([16,17,18,26,27,28,36,37,38,46,47,48].includes(toothNo)) return 16;
-    return null;
-  }
-
   function addPlaceholderTile(){
     const tile = el("div", { class:"tooth-tile occl-view placeholder" }, [
       el("div", { class:"tooth-svg" })
     ]);
-    grid.appendChild(tile);
+    arch.appendChild(tile);
   }
 
   function addRowOccl(rowTeeth: Any, placeholders: Any){
     for(const toothNo of rowTeeth){
-      const map = TOOTH_TEMPLATE.get(toothNo);
-      const tplNo = occlTemplateForTooth(toothNo);
-      if(placeholders.has(toothNo) || !tplNo || !map){
+      // The occlusal view has its OWN mapping: a lower premolar is not an
+      // upper one rotated, so 34/46 are separate drawings rather than 14/16
+      // turned round (bead odontogram-6pt).
+      const map = OCCLUSAL_TEMPLATE.get(toothNo);
+      if(placeholders.has(toothNo) || !map){
         addPlaceholderTile();
         continue;
       }
-      addTile({ toothNo, tplNo, rot: map.rot, mirror: map.mirror, view: "occl", clickable: true });
+      addTile({ toothNo, tplNo: map.tpl, rot: map.rot, mirror: map.mirror, view: "occl", clickable: true });
     }
   }
 
@@ -8751,7 +8794,7 @@ async function buildGrid(token: number){
       row.appendChild(cell);
       targetMap.set(toothNo, cell);
     }
-    grid.appendChild(row);
+    arch.appendChild(row);
   }
 
   const upperSide = [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28];
@@ -8763,6 +8806,7 @@ async function buildGrid(token: number){
   addLabelRow(upperSide, toothLabelUpper);
   addRowSide(upperSide);
   addRowOccl(upperSide, upperOcclPlaceholders);
+  arch = lowerArch;
   addRowOccl(lowerSide, lowerOcclPlaceholders);
   addRowSide(lowerSide);
   addLabelRow(lowerSide, toothLabelLower);
@@ -9499,6 +9543,18 @@ export function destroyOdontogram(){
     grid.style.transform = "";
     grid.classList.remove("odon-pinch-active", "odon-arch-upper", "odon-arch-lower");
     grid.innerHTML = "";
+
+  // Bead odontogram-6pt: the chart is TWO grids, one per arch. Every column is
+  // its own tooth plus 6px, so the same slack sits on both sides of every
+  // contact and cancels; what is left between 13 and 43 is the anatomical
+  // difference, and the lower canine tip lands in the upper lateral/canine
+  // embrasure because the teeth are the widths they are. `role="presentation"`
+  // keeps the tiles children of the listbox in the accessibility tree.
+  const upperArch = el("div", { class:"tooth-arch upper-arch", role:"presentation" });
+  const lowerArch = el("div", { class:"tooth-arch lower-arch", role:"presentation" });
+  grid.appendChild(upperArch);
+  grid.appendChild(lowerArch);
+  let arch: Any = upperArch;
   }
   if(archToggleBar){ archToggleBar.remove(); archToggleBar = null; }
   hideZoomPopover();

@@ -42,7 +42,7 @@ import { setI18nLanguage, t } from "../i18n/useI18n";
 const testFileUrl = import.meta.url;
 const svgText = (tplNo: TemplateNo) =>
   readFileSync(fileURLToPath(new URL(`../assets/teeth-svgs/${tplNo}.svg`, testFileUrl)), "utf8");
-const TEMPLATE_NOS: readonly TemplateNo[] = [11, 13, 14, 16];
+const TEMPLATE_NOS: readonly TemplateNo[] = [11, 12, 13, 14, 15, 16, 17, 31, 46];
 function buildCache(): TemplateDocCache {
   const cache: TemplateDocCache = new Map();
   for (const tplNo of TEMPLATE_NOS) {

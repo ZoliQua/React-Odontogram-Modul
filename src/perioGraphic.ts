@@ -23,7 +23,7 @@
 // No per-tooth pointer handlers here — this is read-only chart artwork.
 import { TEMPLATES, TOOTH_TEMPLATE } from "./odontogram";
 
-export type TemplateNo = 11 | 13 | 14 | 16;
+export type TemplateNo = 11 | 12 | 13 | 14 | 15 | 16 | 17 | 31 | 46;
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -62,10 +62,15 @@ export const EXCLUDED_TOOTH_BASE_IDS: readonly string[] = [
  * confirmed in a browser.
  */
 export const CEJ_Y: Record<TemplateNo, number> = {
-  11: 32.2,
-  13: 32.4,
-  14: 32.1,
-  16: 31.0,
+  11: 40.8,
+  12: 37.8,
+  13: 38.1,
+  14: 37.2,
+  15: 34.6,
+  16: 37.7,
+  17: 38.3,
+  31: 35.6,
+  46: 32.9,
 };
 
 /**
@@ -92,10 +97,15 @@ export const CEJ_Y: Record<TemplateNo, number> = {
  * placement should still be confirmed in a browser.
  */
 export const IMPLANT_CEJ_Y: Record<TemplateNo, number> = {
-  11: 33.0,
-  13: 35.4,
-  14: 34.6,
-  16: 34.3,
+  11: 35.0,
+  12: 32.5,
+  13: 35.2,
+  14: 33.2,
+  15: 31.0,
+  16: 32.9,
+  17: 33.4,
+  31: 30.7,
+  46: 28.9,
 };
 
 /** Per-template baseline anchor for a MILKTOOTH (deciduous) rendering — the

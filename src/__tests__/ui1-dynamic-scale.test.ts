@@ -50,7 +50,7 @@ function svgFor(name: string): string {
   return readFileSync(fileURLToPath(new URL(`../assets/teeth-svgs/${name}`, testFileUrl)), "utf8");
 }
 
-const TEMPLATE_NOS: readonly TemplateNo[] = [11, 13, 14, 16];
+const TEMPLATE_NOS: readonly TemplateNo[] = [11, 12, 13, 14, 15, 16, 17, 31, 46];
 function buildRefCache(): TemplateDocCache {
   const cache: TemplateDocCache = new Map();
   for (const tplNo of TEMPLATE_NOS) {
