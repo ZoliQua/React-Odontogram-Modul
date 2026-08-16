@@ -10,4 +10,4 @@ import { runCapture } from "./capture";
 // this only accounts for jsdom/test-harness overhead.
 test.skipIf(!process.env.PARITY_CAPTURE)("capture frozen parity fixtures (one-time)", () => {
   runCapture();
-}, 30000);
+}, 60000);

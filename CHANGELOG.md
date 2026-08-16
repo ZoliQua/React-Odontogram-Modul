@@ -5,10 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.5.0] - 2026-08-16
 
 ### Added
 
+- **Nine measured tooth templates & tooth generator toolchain (`tools/toothgen`).**
+  Every tooth in the mouth is now derived from literature-referenced anatomical templates (`spec.py`) preserving relative crown widths, root counts, tapers, lumens, and furcation heights across nine permanent tooth classes (11, 12, 13, 14, 15, 16, 17, 31, 46) and four occlusal views (14_occl, 16_occl, 34_occl, 46_occl). The generator verifies SVG validity, geometry digests, and alignment with the CSS grid (`verify.py`, `check_roundtrip.py`).
+- **Expanded parity test matrix.** `src/__tests__/parity/matrix.ts` test harness now covers all 13 template views (9 front + 4 occlusal), testing every clinical layer ID, active state, restoration type/material, caries finding, and modifier across the full template set.
 - **Fillings settings as controlled props (issue #17).** `<OdontogramShell>`
   now accepts the four fillings-tab settings as optional props —
   `fillingComplexity?: "complex" | "simple"`,
@@ -39,6 +42,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   change so `onStateChange` subscribers (e.g. hosts persisting preferences)
   observe fillings-setting changes. `setFillingMaterialAvailability` also
   ignores unknown materials without notifying.
+
+### Changed
+
+- **Split-arch odontogram layout with variable tooth widths.** The dental chart
+  (`#toothGrid`) now renders two independent arches (`.tooth-arch.upper-arch` and
+  `.tooth-arch.lower-arch`), with per-tooth column widths derived from anatomical
+  crown measurements (e.g. molar vs central incisor vs lateral incisor), allowing
+  the lower canine tip to naturally settle into the upper lateral/canine
+  embrasure.
+- **Periodontal anchor baselines.** Updated per-template `CEJ_Y` and `IMPLANT_CEJ_Y`
+  anchors across all nine template classes in `src/perioGraphic.ts` for
+  periodontal arch rendering.
+
+### Fixed
+
+- **Clean teardown in `destroyOdontogram()`.** Removed duplicate arch-wrapper
+  creation from `destroyOdontogram()`, ensuring `#toothGrid` is cleanly emptied
+  without leaving unused DOM elements or triggering ESLint `no-unused-vars`
+  errors.
+
+### Migration Notes
+
+- **Odontogram grid DOM hierarchy & CSS structure:**
+  - `#toothGrid` (`.tooth-grid`) transitioned from a single CSS grid (`display: grid` with 16 columns) to a flex container (`display: flex`) wrapping two `.tooth-arch` grids (`.tooth-arch.upper-arch` and `.tooth-arch.lower-arch`).
+  - `.tooth-tile` elements are now nested inside `.tooth-arch` (grandchildren of `.tooth-grid`).
+  - **Action required for host integrations:** Any host CSS or code selecting `.tooth-grid > .tooth-tile` directly or attempting to override `.tooth-grid`'s `grid-template-columns` should be updated to target `.tooth-arch` and `.tooth-tile` instead.
 
 ## [2.4.0] - 2026-08-11
 

@@ -22,11 +22,18 @@ const LEGACY_BRIDGE_UNIT_VALUES = ["none", "removable", "zircon", "metal", "temp
 
 const TEMPLATES: { toothNo: number; template: string; view: "front"|"occlusal" }[] = [
   { toothNo: 11, template: "11", view: "front" },
+  { toothNo: 12, template: "12", view: "front" },
   { toothNo: 13, template: "13", view: "front" },
   { toothNo: 14, template: "14", view: "front" },
+  { toothNo: 15, template: "15", view: "front" },
   { toothNo: 16, template: "16", view: "front" },
+  { toothNo: 17, template: "17", view: "front" },
+  { toothNo: 31, template: "31", view: "front" },
+  { toothNo: 46, template: "46", view: "front" },
   { toothNo: 14, template: "14_occl", view: "occlusal" },
+  { toothNo: 34, template: "34_occl", view: "occlusal" },
   { toothNo: 16, template: "16_occl", view: "occlusal" },
+  { toothNo: 46, template: "46_occl", view: "occlusal" },
 ];
 
 // `rootResorption` and `pulpInflam` (retired booleans, SP4 Task 2 / Task 3)

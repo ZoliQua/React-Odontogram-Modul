@@ -1,7 +1,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -17,7 +17,7 @@
 
 ## 🇨🇳 简体中文
 
-*(本文档为 README 的简体中文版本 — 译自英文原版，对应 v2.4.0)*
+*(本文档为 README 的简体中文版本 — 译自英文原版，对应 v2.5.0)*
 
 ### 📋 概述
 本项目是一款交互式、基于浏览器的牙位图（口腔检查图）编辑器，界面简洁，支持快速的牙科病历记录。它通过分层渲染 SVG 牙齿模板来表现修复体、龋齿、牙髓治疗状态、松动度及其他临床细节，同时提供多选、选择过滤器和预设状态模板。
@@ -747,12 +747,12 @@ enablePersistence({
 
 如果您在工作中使用了本模块，请引用它。
 
-**本版本（v2.4.0）：**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**本版本（v2.5.0）：**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.5.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **所有版本（概念 DOI）：** https://doi.org/10.5281/zenodo.21156787
 
 > 上述概念 DOI 始终指向最新归档的发布版本；每次在 Zenodo 上归档发布时，
-> 都会为该版本铸造一个版本专属 DOI。在 v2.4.0 被归档之前，请使用概念 DOI 进行引用。
+> 都会为该版本铸造一个版本专属 DOI。在 v2.5.0 被归档之前，请使用概念 DOI 进行引用。
 
 机器可读的引用元数据位于 [`CITATION.cff`](../CITATION.cff)。

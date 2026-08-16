@@ -1,7 +1,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -17,7 +17,7 @@
 
 ## 🇩🇪 Deutsch
 
-*(Deutsche Version des README — übersetzt aus der englischen Ausgangsversion, Stand v2.4.0)*
+*(Deutsche Version des README — übersetzt aus der englischen Ausgangsversion, Stand v2.5.0)*
 
 ### 📋 Übersicht
 Dieses Projekt ist ein interaktiver, browserbasierter Odontogramm-Editor, der eine schnelle Zahnstatuserfassung mit einer übersichtlichen Benutzeroberfläche unterstützt. Es rendert geschichtete SVG-Zahnvorlagen zur Darstellung von Restaurationen, Karies, endodontischem Status, Mobilität und anderen klinischen Details, und bietet Mehrfachauswahl, Auswahlfilter und vordefinierte Statusvorlagen.
@@ -747,14 +747,14 @@ Der Export erzeugt eine JSON-Datei (Version `2.20`; Importe akzeptieren weiterhi
 
 Wenn Sie dieses Modul in Ihrer Arbeit verwenden, zitieren Sie es bitte.
 
-**Diese Version (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Diese Version (v2.5.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.5.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Alle Versionen (Konzept-DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > Die obige versionsübergreifende Konzept-DOI verweist immer auf die zuletzt
 > archivierte Version; eine versionsspezifische DOI wird bei jeder Version erst
-> vergeben, wenn diese auf Zenodo archiviert wird. Solange v2.4.0 nicht archiviert
+> vergeben, wenn diese auf Zenodo archiviert wird. Solange v2.5.0 nicht archiviert
 > ist, zitieren Sie sie bitte über die Konzept-DOI.
 
 Maschinenlesbare Zitationsmetadaten finden Sie in [`CITATION.cff`](../CITATION.cff).

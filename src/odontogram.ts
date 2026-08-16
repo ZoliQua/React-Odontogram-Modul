@@ -2833,14 +2833,15 @@ function collectActiveLayers(svg: Any): { id: string; opacity: string; cls: stri
   return out; // document order — NOT sorted
 }
 
-/** TEST-ONLY: render `serialized` state onto a fresh copy of `rawSvgText` and return the
- *  in-document-order active-layer fingerprint (id + opacity + class per element). Used by
- *  the parity harness; not part of the public API. */
+const testParsedSvgCache = new Map<string, Any>();
+
 export function __renderActiveLayers(rawSvgText: string, toothNo: number, serialized: Record<string, unknown>): { id: string; opacity: string; cls: string }[] {
-  const parsed = new DOMParser().parseFromString(rawSvgText, "image/svg+xml");
-  const svg = parsed.documentElement as unknown as Any;
-  stripDisplayNoneToDataActive(svg);
-  ensureDataActiveForSwitchables(svg);
+  let base = testParsedSvgCache.get(rawSvgText);
+  if(!base){
+    base = __parseSvgForTest(rawSvgText);
+    testParsedSvgCache.set(rawSvgText, base);
+  }
+  const svg = base.cloneNode(true) as Any;
   const state = hydrateState(serialized as Any);
   applyStateToSvgSingle(toothNo, svg, state);
   return collectActiveLayers(svg);
@@ -9543,18 +9544,6 @@ export function destroyOdontogram(){
     grid.style.transform = "";
     grid.classList.remove("odon-pinch-active", "odon-arch-upper", "odon-arch-lower");
     grid.innerHTML = "";
-
-  // Bead odontogram-6pt: the chart is TWO grids, one per arch. Every column is
-  // its own tooth plus 6px, so the same slack sits on both sides of every
-  // contact and cancels; what is left between 13 and 43 is the anatomical
-  // difference, and the lower canine tip lands in the upper lateral/canine
-  // embrasure because the teeth are the widths they are. `role="presentation"`
-  // keeps the tiles children of the listbox in the accessibility tree.
-  const upperArch = el("div", { class:"tooth-arch upper-arch", role:"presentation" });
-  const lowerArch = el("div", { class:"tooth-arch lower-arch", role:"presentation" });
-  grid.appendChild(upperArch);
-  grid.appendChild(lowerArch);
-  let arch: Any = upperArch;
   }
   if(archToggleBar){ archToggleBar.remove(); archToggleBar = null; }
   hideZoomPopover();

@@ -1,7 +1,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -745,13 +745,13 @@ Okrem vlastného exportu odontogramu Stav JSON / FHIR / PNG / JPG / SVG má **pa
 
 Ak tento modul použijete vo svojej práci, prosím, citujte ho.
 
-**Táto verzia (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Táto verzia (v2.5.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.5.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Všetky verzie (konceptové DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > Konceptové DOI pre všetky verzie vyššie sa vždy odkazuje na najnovšie archivované
 > vydanie; DOI špecifické pre danú verziu sa vytvára pri každom vydaní v čase jeho
-> archivácie na Zenodo. Kým nie je v2.4.0 archivovaná, citujte ju cez konceptové DOI.
+> archivácie na Zenodo. Kým nie je v2.5.0 archivovaná, citujte ju cez konceptové DOI.
 
 Strojovo čitateľné citačné metadáta sú v súbore [`CITATION.cff`](../CITATION.cff).

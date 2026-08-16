@@ -1,7 +1,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -17,7 +17,7 @@
 
 ## 🇸🇦 العربية
 
-*(النسخة العربية من هذا الملف التعريفي (README) — مترجمة عن النسخة الإنجليزية الأصلية، بحسب الإصدار v2.4.0)*
+*(النسخة العربية من هذا الملف التعريفي (README) — مترجمة عن النسخة الإنجليزية الأصلية، بحسب الإصدار v2.5.0)*
 
 ### 📋 نظرة عامة
 هذا المشروع محرر تخطيط أسنان (أودونتوغرام) تفاعلي يعمل داخل المتصفح، ويدعم تسجيل حالة الأسنان بسرعة من خلال واجهة مستخدم نظيفة وواضحة. يعرض المشروع قوالب أسنان بصيغة SVG متعددة الطبقات لتمثيل الترميمات، والنخر (التسوس)، وحالة العلاج اللبي (علاج قناة الجذر)، ودرجة حركة السن، وتفاصيل سريرية أخرى، مع توفير إمكانية التحديد المتعدد، ومرشحات التحديد، وأنماط حالة جاهزة مسبقًا.
@@ -747,13 +747,13 @@ enablePersistence({
 
 إذا استخدمت هذه الوحدة في عملك، يُرجى الاستشهاد بها.
 
-**هذا الإصدار (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**هذا الإصدار (v2.5.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.5.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **كل الإصدارات (معرّف DOI المفاهيمي):** https://doi.org/10.5281/zenodo.21156787
 
 > يشير معرّف DOI المفاهيمي أعلاه، الشامل لكل الإصدارات، دائمًا إلى أحدث
 > إصدار مؤرشف؛ ويُصدَر معرّف DOI خاص بكل إصدار عند أرشفته على Zenodo.
-> وإلى حين أرشفة الإصدار v2.4.0، يُرجى الاستشهاد به عبر معرّف DOI المفاهيمي.
+> وإلى حين أرشفة الإصدار v2.5.0، يُرجى الاستشهاد به عبر معرّف DOI المفاهيمي.
 
 البيانات الوصفية للاستشهاد القابلة للقراءة الآلية موجودة في [`CITATION.cff`](../CITATION.cff).
