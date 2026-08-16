@@ -26,14 +26,14 @@ The coupling that makes this non-trivial, measured on `v2.4.0`:
 |---|---|
 | `$("#id")` lookups in `src/odontogram.ts` | **275**, over **142** distinct element IDs |
 | `id="…"` attributes in `src/App.tsx` JSX | **152** |
-| `wireControls()` | ~635 lines (`8776`–`9411`), **runs once** (`controlsWired` guard) |
-| `syncControlsFromState()` | ~413 lines (`3694`–`4107`), pushes state into DOM by ID |
+| `wireControls()` | ~635 lines, **runs once** (`controlsWired` guard) |
+| `syncControlsFromState()` | ~413 lines, pushes state into DOM by ID |
 | `initOdontogram()` | takes **no container argument** — binds against `document` |
 | Module-level mutable engine state | 54 top-level `let` + `charts` / `caseMeta` / `planEditedTeeth` |
 
 Two properties of the existing design make this **much cheaper than it looks**:
 
-1. **The DOM helper binds to `document`, not to a container** — `src/odontogram.ts:330`:
+1. **The DOM helper binds to `document`, not to a container** — the `$` helper in `src/odontogram.ts`:
    ```ts
    const $ = (sel: string, el: ParentNode = document) => el.querySelector(sel) as any;
    ```
@@ -46,16 +46,18 @@ Two properties of the existing design make this **much cheaper than it looks**:
 And one property makes it harder than it looks:
 
 3. **Wiring is one-shot.** `wireControls()` returns early once `controlsWired` is
-   set. The codebase already documents the consequence in three places and works
-   around it by hiding rather than unmounting — e.g. `src/App.tsx:883-888`:
+   set. The codebase already documents the consequence in three places in
+   `src/App.tsx` and works around it by hiding rather than unmounting. The
+   odontogram control panel, for instance, is kept always mounted across the
+   perio view toggle — its comment explains why:
 
    > Keep the odontogram control panel ALWAYS mounted, toggling only its
    > visibility with CSS. Unmounting it on the perio toggle would produce fresh
    > DOM nodes whose one-time `wireControls()` listeners are never re-attached,
    > silently breaking odontogram editing after a round-trip.
 
-   The same workaround appears at `src/App.tsx:741-742` (chart column) and
-   `src/App.tsx:753-756` (Status|Plan toggle).
+   The same hide-instead-of-unmount workaround guards the chart column and the
+   Status|Plan toggle.
 
 ## 3. Precedent inside this repository
 
@@ -86,12 +88,12 @@ working template for what the odontogram controls should become in Tier 3.
 Extract the existing JSX regions of `App.tsx` into exported surface components
 that render exactly the markup they render today:
 
-| Component | Region extracted | Current lines |
-|---|---|---|
-| `OdontogramTopbar` | `<header className="topbar">` | 594–699 |
-| `OdontogramChartSurface` | `<section className="chart">` | 747–793 |
-| `ToothInfoSurface` | `<section className="tooth-info card">` | 794–875 |
-| `ToothControlsSurface` | `.panel-odontogram-controls` | 890–1178 |
+| Component | Region extracted (JSX marker in `App.tsx`) |
+|---|---|
+| `OdontogramTopbar` | `<header className="topbar">` |
+| `OdontogramChartSurface` | `<section className="chart">` |
+| `ToothInfoSurface` | `<section className="tooth-info card">` |
+| `ToothControlsSurface` | `.panel-odontogram-controls` |
 
 Shared shell state (language, `t`, summary, settings flags, refs, handlers) moves
 into an `OdontogramUiContext`, provided by a new `OdontogramProvider`.
@@ -127,7 +129,7 @@ Removes the Tier 1 constraints, and is what makes composition genuinely useful
   unmount/remount.
 
 Highest-regression-risk tier: double-binding and stale listeners are the failure
-modes. The 1845-test suite is the safety net; new tests must cover mount → unmount
+modes. The full test suite is the safety net; new tests must cover mount → unmount
 → remount cycles.
 
 ### Tier 3 — declarative controls
