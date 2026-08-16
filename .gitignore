@@ -42,4 +42,8 @@ graphics/
 # === SNOMED CT working files ===
 snomed/
 
+# === Python ===
+__pycache__/
+*.py[cod]
+
 
